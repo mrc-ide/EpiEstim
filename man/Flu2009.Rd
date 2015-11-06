@@ -1,0 +1,40 @@
+\name{Flu2009}
+     \docType{data}
+     \alias{Flu2009}
+     \title{Data on the 2009 H1N1 influenza pandemic in a school in Pennsylvania}
+     \description{
+       This data set gives 
+	   
+	   1/ the daily incidence of onset of acute respiratory illness 
+	   (ARI, defined as at least two symptoms among fever, cough, sore throat, and runny nose)
+	   amongst children in a school in Pennsylvania during the 2009 H1N1 influenza pandemic (see source and references),
+	   
+	   2/ the discrete daily distribution of the serial interval for influenza, assuming a shifted Gamma distribution with mean 2.6 days, standard deviation 1.5 days and shift 1 day (see references).
+	   
+     }
+     \usage{Flu2009}
+     \format{
+		A list of two elements: 
+	 
+		1/ "Incidence": a vector containing 32 days of observation,
+		
+		2/ "SI.Distr": a vector containing a set of 12 probabilities.
+		}
+		\source{Cauchemez S. et al. (2011) Role of social networks in shaping disease transmission during a community outbreak of 2009 H1N1 pandemic influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.}
+     \references{
+       Cauchemez S. et al. (2011) Role of social networks in shaping disease transmission during a community outbreak of 2009 H1N1 pandemic influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
+	   
+	   Ferguson N.M. et al. (2005) Strategies for containing an emerging influenza pandemic in Southeast Asia. Nature 437(7056), 209-214.
+     }
+	 \examples{
+		## load data on pandemic flu in a school in 2009
+		data("Flu2009")
+
+		## estimate the reproduction number (method "NonParametricSI")
+		EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
+			SI.Distr=Flu2009$SI.Distr, plot=TRUE, leg.pos=xy.coords(1,3))
+		# the second plot produced shows, at each each day, 
+		# the estimate of the reproduction number over the 7-day window finishing on that day.
+
+	}
+     \keyword{datasets}
