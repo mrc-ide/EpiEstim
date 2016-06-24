@@ -2,7 +2,30 @@
 # Discretized serial interval (assuming a shifted gamma #
 # distribution (with shift 1)                           #
 #########################################################
-
+#' @title Discretized Generation Time Distribution Assuming A Shifted Gamma Distribution
+#' @description \code{DiscrSI} computes the discrete distribution of the serial interval, assuming that the serial interval is shifted Gamma distributed, with shift 1.
+#' @param \item{k}{positive integer for which the discrete distribution is desired.}
+#' @param \item{mu}{a positive real giving the mean of the Gamma distribution.}
+#' @param \item{sigma}{a non-negative real giving the standard deviation of the Gamma distribution.}
+#' @return \item{DiscrSI(k, mu, sigma)}{gives the discrete probability \eqn{w_k} that the serial interval is equal to \eqn{k}.}
+#' @author Anne Cori \email{a.cori@imperial.ac.uk}
+#' @details Assuming that the serial interval is shifted Gamma distributed with mean \eqn{\mu}, standard deviation \eqn{\sigma} and shift \eqn{1},
+#' the discrete probability \eqn{w_k} that the serial interval is equal to \eqn{k} is: \cr\eqn{w_k = kF_{\{\mu-1,\sigma\}}(k)+(k-2)F_{\{\mu-1,\sigma\}}(k-2)-2(k-1)F_{\{\mu-1,\sigma\}}(k-1)\\+(\mu-1)(2F_{\{\mu-1+\frac{\sigma^2}{\mu-1},\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-1)-F_{\{\mu-1+\frac{\sigma^2}{\mu-1},\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-2)-F_{\{\mu-1+\frac{\sigma^2}{\mu-1},\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k))}\cr where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma distribution with mean \eqn{\mu} and standard deviation \eqn{\sigma}.
+#' @seealso \code{\link{OverallInfectivity}}, \code{\link{EstimateR}
+#' @references Cori, A. et al. A new tool to estimate time-varying reproduction numbers during epidemics. (submitted)
+#' @examples
+## Computing the discrete serial interval of influenza
+#' MeanFluSI <- 2.6
+#' SdFluSI <- 1.5
+#' DicreteSIDistr <- vector()
+#' for(i in 0:20)
+#' {
+#'   DicreteSIDistr[i+1] <- DiscrSI(i, MeanFluSI, SdFluSI)
+#' }
+#' plot(0:20, DicreteSIDistr, type="h", lwd=10, lend=1, xlab="time (days)", ylab="frequency")
+#' title(main="Discrete distribution of the serial interval of influenza")
+#' }
+#' @export
 DiscrSI<-function(k,mu,sigma)
 {
   if(sigma<0)
@@ -25,6 +48,34 @@ DiscrSI<-function(k,mu,sigma)
 # Calculates Lambda_t = Sum_1^t I_{t-s} * w_s           #
 # with I incidence and w discrete SI distribution       #
 #########################################################
+#' @title Overall Infectivity Due To Previously Infected Individuals
+#' @description \code{OverallInfectivity} computes the overall infectivity due to previously infected individuals.
+#' @param \item{I}{vector of non-negative integers containing an incidence time series.}
+#' @param \item{SI.Distr}{vector of probabilities giving the discrete distribution of the serial interval.}
+#' @return \code{OverallInfectivity(I, SI.Distr)}{returns a vector which contains the overall infectivity \eqn{\lambda_t} at each time step \eqn{t}.}
+#' @author Anne Cori \email{a.cori@imperial.ac.uk}
+#' @details  The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is equal to the sum of the previously infected individuals (given by the incidence vector \eqn{I}),
+#' weigthed by their infectivity at time \eqn{t} (given by the discrete serial interval distribution \eqn{w_k}).
+#'
+#' In mathematical terms:
+#'   \cr
+#' \eqn{\lambda_t = \sum_{k=1}^{t-1}I_{t-k}w_k}
+#' \cr
+#' }
+#' @seealso \code{\link{DiscrSI}}, \code{\link{EstimateR}
+#' @references Cori, A. et al. A new tool to estimate time-varying reproduction numbers during epidemics. (submitted)
+#' @examples
+#' ## load data on pandemic flu in a school in 2009
+#' data("Flu2009")
+#'
+#' ## compute overall infectivity
+#' lambda <- OverallInfectivity(Flu2009$Incidence, Flu2009$SI.Distr)
+#' par(mfrow=c(2,1))
+#' plot(Flu2009$Incidence, type="s", xlab="time (days)", ylab="Incidence")
+#' title(main="Epidemic curve")
+#' plot(lambda, type="s", xlab="time (days)", ylab="Infectivity")
+#' title(main="Overall infectivity")
+#' @export
 
 OverallInfectivity <-function (I,SI.Distr)
 {
@@ -74,7 +125,6 @@ OverallInfectivity <-function (I,SI.Distr)
 #########################################################
 # EstimateR_new: New main function                      #
 #########################################################
-
 EstimateR_new <- function (I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
                                                          "UncertainSI","NonParametricUncertainSI"), n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                            Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
@@ -556,50 +606,104 @@ EstimateR_new <- function (I, T.Start, T.End, method = c("NonParametricSI", "Par
   return(results)
 }
 
-#######################################################################################################################
-# coarse2estim integates CoarseDataTools with EpiEstim using the amended version of EstimateR called EsimateRAmended2 #
-#######################################################################################################################
-
-coarse2estim <- function(object, n_samples=1000){
-
-  samples0 <- as.matrix(object@samples)
-  index <- sample(1:nrow(samples0), size= n_samples)
-  samples <- samples0[index, ]
-  dist <- object@dist
-
-  ##  Probability matrix that will be used in EpiEstim based on which distribution is specified by the user
-  if (dist == "G"){
-    max_interval <- c(10^(-4), 1:ceiling(qgamma(0.999, shape=object@ests[1,1], scale=object@ests[2,1])))
-    prob_matrix <- apply(samples, 1, function(x) dgamma(max_interval, shape=x[1], scale=x[2]))
-
-  } else if (dist == "off1G"){
-    # offset gamma distribution with shifted min and max value of max serial interval
-    max_interval <- c(10^(-4), 1:ceiling(qgamma(0.999, shape=object@ests[1,1], scale=object@ests[2,1])))
-    prob_matrix <- apply(samples, 1, function(x) dgamma(max_interval, shape=x[1], scale=x[2]))
-  }
-  else if (dist == "W"){
-    max_interval <- c(10^(-4), 1:ceiling(qgamma(0.999, shape=object@ests[1,1], scale=object@ests[2,1])))
-    prob_matrix <- apply(samples, 1, function(x) dweibull(max_interval, shape=x[1], scale=x[2]))
-
-  } else if (dist == "L"){
-    max_interval <- c(10^(-4), 1:ceiling(qgamma(0.999, shape=object@ests[1,1], scale=object@ests[2,1])))
-    prob_matrix <- apply(samples, 1, function(x) dlnorm(max_interval, meanlog=x[1], sdlog=x[2]))
-  } else {
-    stop(sprintf("Distribtion (%s) not supported",dist))
-  }
-  prob_matrix <- apply(prob_matrix, 2, function(x) x/sum(x))
-
-  prob_matrix <- rbind(rep(0, ncol(prob_matrix)), prob_matrix)
-  out <- list(prob_matrix = prob_matrix, dist = dist)
-
-  return(out)
-}
-
-
 #########################################################################################################################
 # EstimareR is a wraper which replace the old EstimateR with EstimateR_new and accepts an object of class "cd.fit.mcmc" #
 #########################################################################################################################
-
+#' @title Estimated Reproduction Number
+#' @description \code{EstimateR} estimates the reproduction number of an epidemic, given the incidence time series and the serial interval distribution. In the new version it is possible to use a serial interval distribution estimated in the package \code{\link{coarseDataTools}}.
+#' @param \item{I}{vector of non-negative integers containing the incidence time series.}
+#' @param \item{T.Start,T.End}{vectors of positive integers giving the starting end ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.}
+#' @param \item{method}{one of "NonParametricSI", "ParametricSI" or "UncertainSI" (see details).}
+#' @param \item{n1}{for method "UncertainSI" ; positive integer giving the size of the sample of pairs (Mean SI (serial interval), Std SI) to be drawn (see details).}
+#' @param \item{n2}{for method "UncertainSI" ; positive integer giving the size of the sample drawn from each posterior distribution conditional to a pair (Mean SI, Std SI) (see details).}
+#' @param \item{Mean.SI}{for method "ParametricSI" and "UncertainSI" ; positive real giving the mean serial interval (method "ParametricSI") or the average mean serial interval (method "UncertainSI", see details).}
+#' @param \item{Std.SI}{for method "ParametricSI" and "UncertainSI" ; non negative real giving the stadard deviation of the serial interval (method "ParametricSI") or the average standard deviation of the serial interval (method "UncertainSI", see details).}
+#' @param \item{Std.Mean.SI}{for method "UncertainSI" ; standard deviation of the distribution from which mean serial intervals are drawn (see details).}
+#' @param \item{Min.Mean.SI}{for method "UncertainSI" ; lower bound of the distribution from which mean serial intervals are drawn (see details).}
+#' @param \item{Max.Mean.SI}{for method "UncertainSI" ; upper bound of the distribution from which mean serial intervals are drawn (see details).}
+#' @param \item{Std.Std.SI}{for method "UncertainSI" ; standard deviation of the distribution from which standard deviations of the serial interval are drawn (see details).}
+#' @param \item{Min.Std.SI}{for method "UncertainSI" ; lower bound of the distribution from which standard deviations of the serial interval are drawn (see details).}
+#' @param \item{Max.Std.SI}{for method "UncertainSI" ; upper bound of the distribution from which standard deviations of the serial interval are drawn (see details).}
+#' @param \item{SI.Distr}{for method "NonParametricSI" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{SI.Distr[1]} (probability that the serial interval is zero), which should be zero.}
+#' @param \item{Mean.Prior}{a positive number giving the mean of the common prior distribution for all reproduction numbers (see details).}
+#' @param \item{Std.Prior}{a positive number giving the standard deviation of the common prior distribution for all reproduction numbers (see details).}
+#' @param \item{CV.Posterior}{a positive number giving the aimed posterior coefficient of variation (see details).}
+#' @param \item{plot}{logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
+#' @param \item{leg.pos}{one of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.}
+#' @return \item{R}{a dataframe containing: the times of start and end of each time window considered; the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window.}
+#' @return \item{SIDistr}{a dataframe containing: for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution; for method "ParametricSI", the discrete serial interval distribution; for method "UncertainSI", the means and standard deviations of the serial interval sampled to account for uncertainty on the serial interval distribution (see details).}
+#' @details Analytical estimates of the reproduction number for an epidemic over predefined time windows can be obtained within a Bayesian framework,
+#' for a given discrete distribution of the serial interval (see references).
+#'
+#' The more incident cases are observed over a time window, the smallest the posterior coefficient of variation (CV, ratio of standard deviation over mean) of the reproduction number.
+#' An aimed CV can be specified in the argument \code{CV.Posterior} (default is \code{0.3}), and a warning will be produced if the incidence within one of the time windows considered is too low to get this CV.
+#'
+#' The methods vary in the way the serial interval distribution is specified. The plots are also different according to the method used.
+#'
+#' ----------------------- \code{method "NonParametricSI"} -----------------------
+#'
+#'   The discrete distribution of the serial interval is directly specified in the argument \code{SI.Distr}.
+#'
+#' If \code{plot} is \code{TRUE}, 3 plots are produced.
+#' The first one shows the epidemic curve.
+#' The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window.
+#' The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
+#' The third plot shows the discrete distribution of the serial interval.
+#'
+#' ----------------------- \code{method "ParametricSI"} -----------------------
+#'
+#'   The mean and standard deviation of the continuous distribution of the serial interval are given in the arguments \code{Mean.SI} and \code{Std.SI}.
+#' The discrete distribution of the serial interval is derived automatically using \code{\link{DiscrSI}}.
+#'
+#' If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "NonParametricSI"} .
+#'
+#' ----------------------- \code{method "UncertainSI"} -----------------------
+#'
+#'   \code{Method "UncertainSI"} allows accounting for uncertainty on the serial interval distribution (see references).
+#' We allow the mean \eqn{\mu} and standard deviation \eqn{\sigma} of the serial interval to vary according to truncated normal distributions.
+#' We sample \code{n1} pairs of mean and standard deviations, \eqn{(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_2)},\sigma^{(n_2)})}, by first sampling the mean \eqn{\mu^{(k)}}
+#' from its truncated normal distribution (with mean \code{Mean.SI}, standard deviation \code{Std.Mean.SI}, minimum \code{Min.Mean.SI} and maximum \code{Max.Mean.SI}),
+#' and then sampling the standard deviation \eqn{\sigma^{(k)}} from its truncated normal distribution
+#' (with mean \code{Std.SI}, standard deviation \code{Std.Std.SI}, minimum \code{Min.Std.SI} and maximum \code{Max.Std.SI}), but imposing that \eqn{\sigma^{(k)}<\mu^{(k)}}.
+#' This constraint ensures that the Gamma probability density function of the serial interval is null at \eqn{t=0}.
+#' Warnings are produced when the truncated normal distributions are not symmetric around the mean.
+#' For each pair \eqn{(\mu^{(k)},\sigma^{(k)})}, we then draw a sample of size \code{n2} in the posterior distribution of the reproduction number over each time window, conditionnally on this serial interval distribution.
+#' After pooling, a sample of size \eqn{\code{n1}\times\code{n2}} of the joint posterior distribution of the reproduction number over each time window is obtained.
+#' The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window are obtained from this sample.
+#'
+#' If \code{plot} is \code{TRUE}, 4 plots are produced.
+#' The first one shows the epidemic curve.
+#' The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window.
+#' The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
+#' The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval.
+#' @author Anne Cori \email{a.cori@imperial.ac.uk}, Simon Cauchemez, Elisabeth Dahlqwist, Shikun Li, Alex Demarsh, Robin Thomson, Isabel Rodriguez, Rolina Van Gaalen
+#' @seealso \code{\link{OverallInfectivity}}, \code{\link{DiscrSI}
+#' @references Cori, A. et al. A new tool to estimate time-varying reproduction numbers during epidemics. (submitted)
+#' @examples
+#' ## load data on pandemic flu in a school in 2009
+#' data("Flu2009")
+#'
+#' ## estimate the reproduction number (method "NonParametricSI")
+#' EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI",
+#'           SI.Distr=Flu2009$SI.Distr, plot=TRUE, leg.pos=xy.coords(1,3))
+#' # the second plot produced shows, at each each day,
+#' # the estimate of the reproduction number over the 7-day window finishing on that day.
+#'
+#' ## estimate the reproduction number (method "ParametricSI")
+#' EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI",
+#'           Mean.SI=2.6, Std.SI=1.5, plot=TRUE)
+#' # the second plot produced shows, at each each day,
+#' # the estimate of the reproduction number over the 7-day window finishing on that day.
+#'
+#' ## estimate the reproduction number (method "UncertainSI")
+#' EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="UncertainSI",
+#'           Mean.SI=2.6, Std.Mean.SI=1, Min.Mean.SI=1, Max.Mean.SI=4.2,
+#'           Std.SI=1.5, Std.Std.SI=0.5, Min.Std.SI=0.5, Max.Std.SI=2.5,
+#'           n1=100, n2=100, plot=TRUE)
+#' # the bottom left plot produced shows, at each each day,
+#' # the estimate of the reproduction number over the 7-day window finishing on that day.
+#'
+#' @export
 EstimateR <- function(..., CDT = NULL) {
   if (!is.null(CDT)) {
     # Warning if the CDT object is not of the S4 class "cd.fit.mcmc"
