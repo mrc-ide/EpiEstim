@@ -3,3 +3,9 @@
 
 # Export all names
 exportPattern(".")
+
+importFrom("graphics", "hist", "legend", "lines", "par", "polygon",
+             "title")
+importFrom("stats", "median", "pgamma", "qgamma", "quantile", "rgamma",
+             "rnorm", "sd")
+          

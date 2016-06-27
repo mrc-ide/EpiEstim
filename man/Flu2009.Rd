@@ -31,10 +31,13 @@
 		data("Flu2009")
 
 		## estimate the reproduction number (method "NonParametricSI")
-		EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-			SI.Distr=Flu2009$SI.Distr, plot=TRUE, leg.pos=xy.coords(1,3))
+		EstimateR(Flu2009$Incidence, 
+		  T.Start=2:26, T.End=8:32, 
+		  method="NonParametricSI", SI.Distr=Flu2009$SI.Distr, 
+	  	plot=TRUE, leg.pos=xy.coords(1,3))
 		# the second plot produced shows, at each each day, 
-		# the estimate of the reproduction number over the 7-day window finishing on that day.
+		# the estimate of the reproduction number 
+		# over the 7-day window finishing on that day.
 
 	}
      \keyword{datasets}
