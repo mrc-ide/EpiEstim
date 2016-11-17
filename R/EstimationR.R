@@ -660,7 +660,14 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
             {
                 if(length(possibleAncesTime[[t]])>0)
                 {
-                    res[which(Onset==t)] <- possibleAncesTime[[t]][which(rmultinom(length(which(Onset==t)),size=1,prob=SI.Distr[t-possibleAncesTime[[t]]+1]*I[possibleAncesTime[[t]]])==TRUE,arr.ind=TRUE)[,1]]
+                	prob <- SI.Distr[t-possibleAncesTime[[t]]+1]*I[possibleAncesTime[[t]]]
+                	if(any(prob>0))
+                	{
+                    		res[which(Onset==t)] <- possibleAncesTime[[t]][which(rmultinom(length(which(Onset==t)),size=1,prob=prob)==TRUE,arr.ind=TRUE)[,1]]
+                    }else
+                    {
+                    		res[which(Onset==t)] <- NA
+                    }
                 }else
                 res[which(Onset==t)] <- NA
             }
