@@ -19,7 +19,7 @@ EstimateR(I, T.Start, T.End,
 \arguments{
   \item{I}{vector of non-negative integers containing the incidence time series.}
   \item{T.Start,T.End}{vectors of positive integers giving the starting end ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.}
-  \item{method}{one of "NonParametricSI", "ParametricSI" or "UncertainSI" (see details).}
+  \item{method}{one of "NonParametricSI", "ParametricSI", "UncertainSI" or "NonParametricUncertainSI" (see details).}
   \item{n1}{for method "UncertainSI" ; positive integer giving the size of the sample of pairs (Mean SI (serial interval), Std SI) to be drawn (see details).}
   \item{n2}{for method "UncertainSI" ; positive integer giving the size of the sample drawn from each posterior distribution conditional to a pair (Mean SI, Std SI) (see details).}
   \item{Mean.SI}{for method "ParametricSI" and "UncertainSI" ; positive real giving the mean serial interval (method "ParametricSI") or the average mean serial interval (method "UncertainSI", see details).}
@@ -37,7 +37,7 @@ EstimateR(I, T.Start, T.End,
   \item{plot}{logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
   \item{leg.pos}{one of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
   This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.}
-  \item{CDT}{for method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which will be used to describe the model used to estimate the SI distribution.}
+  \item{CDT}{for method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which describe the model used to estimate the SI distribution.}
 }
 \value{
 	a list with components: 
@@ -47,13 +47,13 @@ EstimateR(I, T.Start, T.End,
 	\item{SIDistr}{a dataframe containing: 
 		for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
 		for method "ParametricSI", the discrete serial interval distribution;
-		for method "UncertainSI", the means and standard deviations of the serial interval are sampled from truncated normal distributions to account for uncertainty on the serial interval distribution (see details);
-		for method "NonParametricUncertainSI", the distribution of the serial interval is sampled directly from the posterior distribution obtained by Bayesian estimation of the serial interval distribution from doubly censored data (relying on the R package coarseDataTools) to account for uncertainty on the serial interval distribution (see details).}
+		for method "UncertainSI", the means and standard deviations of the serial interval sampled from truncated normal distributions to account for uncertainty on the serial interval distribution (see details);
+		for method "NonParametricUncertainSI", the means and standard deviations of the serial interval sampled from the posterior disrtribution obtained by Bayesian estimation from doubly censored data (see details).}
 }
 \seealso{\code{\link{OverallInfectivity}}, \code{\link{DiscrSI}}
 }
 \references{
-  Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013) .
+  Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 }
 \details{
   Analytical estimates of the reproduction number for an epidemic over predefined time windows can be obtained within a Bayesian framework, 

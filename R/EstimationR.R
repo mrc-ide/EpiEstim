@@ -624,11 +624,15 @@ coarse2estim <- function(object, n_samples=1000){
 #########################################################################################################################
 
 EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
-                                                    "UncertainSI","NonParametricUncertainSI"), n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
+                                                    "UncertainSI","NonParametricUncertainSI"), 
+                      n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                       Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
                       Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
                       SI.Distr = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
                       plot = FALSE, leg.pos = "topright", CDT = NULL) {
+  
+  ### Need to add warnings if method="NonParametricUncertainSI" and CDT is not null 
+  
   if (!is.null(CDT)) {
     # Warning if the CDT object is not of the S4 class "cd.fit.mcmc"
     if (class(CDT)[1]!="cd.fit.mcmc")
@@ -646,7 +650,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = method, n1=n1 , n2=n2 , Mean.SI=Mean.SI , Std.SI=Std.SI ,
                    Std.Mean.SI=Std.Mean.SI , Min.Mean.SI=Min.Mean.SI , Max.Mean.SI=Max.Mean.SI ,
                    Std.Std.SI=Std.Std.SI , Min.Std.SI=Min.Std.SI , Max.Std.SI=Max.Std.SI ,
-                   SI.Distr=SI.Distr , SI.Dist.Matrix= SI.Dist.Matrix, Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
+                   SI.Distr=SI.Distr , SI.Dist.Matrix= NULL, Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
                    plot=plot , leg.pos=leg.pos)
   }
 }
