@@ -46,12 +46,13 @@ EstimateR(I, T.Start, T.End,
 	\item{SIDistr}{a dataframe containing: 
 		for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
 		for method "ParametricSI", the discrete serial interval distribution;
-		for method "UncertainSI", the means and standard deviations of the serial interval sampled to account for uncertainty on the serial interval distribution (see details).}
+		for method "UncertainSI", the means and standard deviations of the serial interval sampled to account for uncertainty on the serial interval distribution (see details);
+		for method "NonParametricUncertainSI", the means and standard deviations of the serial interval sampled from the posterior disrtribution obtained by Bayesian estimation from doubly censored data (see details).}
 }
 \seealso{\code{\link{OverallInfectivity}}, \code{\link{DiscrSI}}
 }
 \references{
-  Cori, A. et al. A new tool to estimate time-varying reproduction numbers during epidemics. (submitted) 
+  Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 }
 \details{
   Analytical estimates of the reproduction number for an epidemic over predefined time windows can be obtained within a Bayesian framework, 
@@ -98,6 +99,10 @@ EstimateR(I, T.Start, T.End,
   The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
   The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
   The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval. 
+  
+  ----------------------- \code{method "NonParametricUncertainSI"} -----------------------
+  
+  Details to come...
 }
 \author{ Anne Cori \email{a.cori@imperial.ac.uk} }
 \examples{
@@ -124,5 +129,7 @@ EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="UncertainSI",
 # the bottom left plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
 
+## estimate the reproduction number (method "NonParametricUncertainSI")
+## Example to come
 }
 \keyword{distribution}
