@@ -627,7 +627,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                                                     "UncertainSI","NonParametricUncertainSI"), n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                       Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
                       Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
-                      SI.Distr = NULL, SI.Dist.Matrix = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
+                      SI.Distr = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
                       plot = FALSE, leg.pos = "topright", CDT = NULL) {
   if (!is.null(CDT)) {
     # Warning if the CDT object is not of the S4 class "cd.fit.mcmc"
