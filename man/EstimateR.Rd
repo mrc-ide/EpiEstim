@@ -37,6 +37,7 @@ EstimateR(I, T.Start, T.End,
   \item{plot}{logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
   \item{leg.pos}{one of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
   This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.}
+  \item{CDT}{for method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which will be used to describe the model used to estimate the SI distribution.}
 }
 \value{
 	a list with components: 
@@ -46,12 +47,13 @@ EstimateR(I, T.Start, T.End,
 	\item{SIDistr}{a dataframe containing: 
 		for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
 		for method "ParametricSI", the discrete serial interval distribution;
-		for method "UncertainSI", the means and standard deviations of the serial interval sampled to account for uncertainty on the serial interval distribution (see details).}
+		for method "UncertainSI", the means and standard deviations of the serial interval are sampled from truncated normal distributions to account for uncertainty on the serial interval distribution (see details);
+		for method "NonParametricUncertainSI", the distribution of the serial interval is sampled directly from the posterior distribution obtained by Bayesian estimation of the serial interval distribution from doubly censored data (relying on the R package coarseDataTools) to account for uncertainty on the serial interval distribution (see details).}
 }
 \seealso{\code{\link{OverallInfectivity}}, \code{\link{DiscrSI}}
 }
 \references{
-  Cori, A. et al. A new tool to estimate time-varying reproduction numbers during epidemics. (submitted) 
+  Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013) .
 }
 \details{
   Analytical estimates of the reproduction number for an epidemic over predefined time windows can be obtained within a Bayesian framework, 
@@ -98,6 +100,11 @@ EstimateR(I, T.Start, T.End,
   The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
   The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
   The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval. 
+  
+  ----------------------- \code{method "NonParametricUncertainSI"} -----------------------
+  
+  Details to come...
+  
 }
 \author{ Anne Cori \email{a.cori@imperial.ac.uk} }
 \examples{
@@ -123,6 +130,9 @@ EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="UncertainSI",
     n1=100, n2=100, plot=TRUE)
 # the bottom left plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
+
+## estimate the reproduction number (method "NonParametricUncertainSI")
+## Example to come
 
 }
 \keyword{distribution}

@@ -6,7 +6,7 @@ Title: EpiEstim: a package to estimate time varying reproduction
 Author: Anne Cori <a.cori@imperial.ac.uk>
 Maintainer: Anne Cori <a.cori@imperial.ac.uk>
 Description: This package provides tools to quantify transmissibility throughout an epidemic from the analysis of time series of incidence. 
-Imports: stats
+Imports: stats, graphics, coarseDataTools
 License: GPL (>=2)
 LazyLoad: yes
 Packaged: 2012-05-30 10:35:03 UTC; acori
