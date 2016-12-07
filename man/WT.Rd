@@ -37,7 +37,7 @@ WT(I, T.Start, T.End,
 }
 \seealso{\code{\link{DiscrSI}}, \code{\link{EstimateR}}}
 \references{
-  Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics. (submitted) 
+  Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
   Wallinga, J. and P. Teunis (2004). Different epidemic curves for severe acute respiratory syndrome reveal similar impacts of control measures. Am J Epidemiol 160(6): 509-516.
 }
 \details{
