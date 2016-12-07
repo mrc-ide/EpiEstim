@@ -82,28 +82,28 @@ OverallInfectivity <-function (I,SI.Distr)
 #########################################################
 
 EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
-                                                         "UncertainSI","NonParametricUncertainSI"), n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
-                           Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
-                           Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
-                           SI.Distr = NULL, SI.Dist.Matrix = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
-                           plot = FALSE, leg.pos = "topright")
+                                                          "UncertainSI","NonParametricUncertainSI"), n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
+                            Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
+                            Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
+                            SI.Distr = NULL, SI.Dist.Matrix = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
+                            plot = FALSE, leg.pos = "topright")
 {
- 
+  
   #########################################################
   # Calculates the cumulative incidence over time steps   #
   #########################################################
   
-   CalculIncidencePerTimeStep <- function(I, T.Start, T.End) {
+  CalculIncidencePerTimeStep <- function(I, T.Start, T.End) {
     NbTimePeriods <- length(T.Start)
     IncidencePerTimeStep <- sapply(1:NbTimePeriods, function(i) sum(I[T.Start[i]:T.End[i]]))
     return(IncidencePerTimeStep)
-   }
-   
-   #########################################################
-   # Calculates the parameters of the Gamma posterior      #
-   # distribution from the discrete SI distribution        #
-   #########################################################
-   
+  }
+  
+  #########################################################
+  # Calculates the parameters of the Gamma posterior      #
+  # distribution from the discrete SI distribution        #
+  #########################################################
+  
   PosteriorFromSIDistr <- function(I, SI.Distr, a.Prior, b.Prior,
                                    T.Start, T.End) {
     NbTimePeriods <- length(T.Start)
@@ -128,7 +128,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     })
     return(list(a.Posterior, b.Posterior))
   }
-
+  
   #########################################################
   # Samples from the Gamma posterior distribution for a   #
   # given mean SI and std SI                              #
@@ -170,7 +170,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   SampleFromPosterior2 <- function(SampleSize, I,  SI.Distr,
                                    a.Prior, b.Prior, T.Start, T.End) {
     NbTimePeriods <- length(T.Start)
-
+    
     FinalMean.SI <- sum(SI.Distr * (0:(length(SI.Distr) -
                                          1)))
     lambda <- OverallInfectivity(I, SI.Distr)
@@ -455,8 +455,8 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
                                         0.975, na.rm = TRUE)
     }
   }
-
-
+  
+  
   else{
     # CertainSI
     if (ParametricSI == "Y") {
@@ -630,6 +630,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
                       SI.Distr = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
                       plot = FALSE, leg.pos = "topright", CDT = NULL) {
+  
   ### Need to add warnings if method="NonParametricUncertainSI" and CDT is not null 
   
   if (!is.null(CDT)) {

@@ -1,12 +1,11 @@
-# Default NAMESPACE created by R
 # Remove the previous line if you edit this file
 
-# Export all names
-exportPattern(".")
+export(EstimateR)
+export(DiscrSI)
+export(coarse2estim)
+export(WT)
+export(OverallInfectivity)
 
-importFrom("graphics", "hist", "legend", "lines", "par", "polygon",
-             "title", "points", "segments")
-importFrom("stats", "median", "pgamma", "qgamma", "quantile", "rgamma",
-             "rnorm", "sd", "dgamma", "dlnorm", "dweibull", "rmultinom")
-
+import(graphics)
+import(stats)
           
