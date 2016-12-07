@@ -8,12 +8,12 @@
 }
 \usage{
 EstimateR(I, T.Start, T.End, 
-    method=c("NonParametricSI","ParametricSI","UncertainSI"), 
+    method=c("NonParametricSI","ParametricSI","UncertainSI", "NonParametricUncertainSI"), 
     n1=NULL, n2=NULL, Mean.SI=NULL, Std.SI=NULL,
     Std.Mean.SI=NULL, Min.Mean.SI=NULL, Max.Mean.SI=NULL, 
     Std.Std.SI=NULL, Min.Std.SI=NULL, Max.Std.SI=NULL,
     SI.Distr=NULL, Mean.Prior=5, Std.Prior=5, CV.Posterior=0.3, 
-    plot=FALSE, leg.pos="topright")
+    plot=FALSE, leg.pos="topright", CDT=NULL)
 }
 \arguments{
   \item{I}{vector of non-negative integers containing the incidence time series.}
@@ -36,6 +36,7 @@ EstimateR(I, T.Start, T.End,
   \item{plot}{logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
   \item{leg.pos}{one of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
   This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.}
+  \item{CDT}{for method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which describe the model used to estimate the SI distribution.}
 }
 \value{
 	a list with components: 
