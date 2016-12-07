@@ -5,7 +5,8 @@
 exportPattern(".")
 
 importFrom("graphics", "hist", "legend", "lines", "par", "polygon",
-             "title")
+             "title", "points", "segments")
 importFrom("stats", "median", "pgamma", "qgamma", "quantile", "rgamma",
-             "rnorm", "sd")
+             "rnorm", "sd", "dgamma", "dlnorm", "dweibull", "rmultinom")
+
           
