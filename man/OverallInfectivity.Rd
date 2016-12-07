@@ -18,7 +18,7 @@ OverallInfectivity(I, SI.Distr)
 \seealso{\code{\link{DiscrSI}}, \code{\link{EstimateR}}
 }
 \references{
-  Cori, A. et al. A new tool to estimate time-varying reproduction numbers during epidemics. (submitted) 
+  Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 }
 \details{
   The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is equal to the sum of the previously infected individuals (given by the incidence vector \eqn{I}), 
