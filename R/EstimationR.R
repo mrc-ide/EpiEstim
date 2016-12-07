@@ -81,7 +81,7 @@ OverallInfectivity <-function (I,SI.Distr)
 # EstimateR_func: Doing the heavy work in EstimateR     #
 #########################################################
 
-EstimateR_func<- function (I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
+EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
                                                          "UncertainSI","NonParametricUncertainSI"), n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                            Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
                            Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
@@ -371,10 +371,11 @@ EstimateR_func<- function (I, T.Start, T.End, method = c("NonParametricSI", "Par
   }
   if (method == "UncertainSI") {
     SIUncertainty <- "Y"
+    ParametricSI <- "Y"
   }
   if (method == "NonParametricUncertainSI") {
-    ParametricSI <- "N"
     SIUncertainty <- "Y"
+    ParametricSI <- "N"
   }
   if (SIUncertainty == "Y") {
     if  (ParametricSI == "Y") {
