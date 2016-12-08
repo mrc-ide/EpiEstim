@@ -8,7 +8,6 @@
 \describe{
   \item{Incidence}{a vector containing 107 days of observation,}
   \item{SI.Distr}{a vector containing a set of 25 probabilities.}
-  ...
 }}
 \source{
 Cori A. et al. (2009) Temporal variability and social heterogeneity in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): e1000471.
@@ -17,11 +16,8 @@ Cori A. et al. (2009) Temporal variability and social heterogeneity in disease t
 SARS2003
 }
 \description{
-This data set gives
-}
-\details{
+This data set gives:
 1/ the daily incidence of onset of symptoms in Hong Kong during the 2003 severe acute respiratory syndrome (SARS) epidemic (see source and references),
-
 2/ the discrete daily distribution of the serial interval for SARS, assuming a shifted Gamma distribution with mean 8.4 days, standard deviation 3.8 days and shift 1 day (see references).
 }
 \examples{

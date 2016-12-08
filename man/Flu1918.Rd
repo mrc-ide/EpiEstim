@@ -8,7 +8,6 @@
 \describe{
   \item{Incidence}{a vector containing 92 days of observation,}
   \item{SI.Distr}{a vector containing a set of 12 probabilities.}
-  ...
 }}
 \source{
 Frost W. and E. Sydenstricker (1919) Influenza in Maryland: preliminary statistics of certain localities. Public Health Rep.(34): 491-504.
@@ -17,11 +16,8 @@ Frost W. and E. Sydenstricker (1919) Influenza in Maryland: preliminary statisti
 Flu1918
 }
 \description{
-This data set gives
-}
-\details{
+This data set gives:
 1/ the daily incidence of onset of disease in Baltimore during the 1918 H1N1 influenza pandemic (see source and references),
-
 2/ the discrete daily distribution of the serial interval for influenza, assuming a shifted Gamma distribution with mean 2.6 days, standard deviation 1.5 days and shift 1 day (see references).
 }
 \examples{

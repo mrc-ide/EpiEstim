@@ -1,17 +1,13 @@
 #' Data on the 1918 H1N1 influenza pandemic in Baltimore.
 #'
-#' This data set gives 
-#' 
+#' This data set gives:
 #' 1/ the daily incidence of onset of disease in Baltimore during the 1918 H1N1 influenza pandemic (see source and references),
-#' 
 #' 2/ the discrete daily distribution of the serial interval for influenza, assuming a shifted Gamma distribution with mean 2.6 days, standard deviation 1.5 days and shift 1 day (see references).
 #' 
-#'
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 92 days of observation,}
 #'   \item{SI.Distr}{a vector containing a set of 12 probabilities.}
-#'   ...
 #' }
 #' @source Frost W. and E. Sydenstricker (1919) Influenza in Maryland: preliminary statistics of certain localities. Public Health Rep.(34): 491-504.
 #' @references 
@@ -46,19 +42,15 @@
 
 #' Data on the 2009 H1N1 influenza pandemic in a school in Pennsylvania.
 #'
-#' This data set gives 
-#' 
+#' This data set gives:
 #' 1/ the daily incidence of onset of acute respiratory illness 
 #' (ARI, defined as at least two symptoms among fever, cough, sore throat, and runny nose)
 #' amongst children in a school in Pennsylvania during the 2009 H1N1 influenza pandemic (see source and references),
-#' 
 #' 2/ the discrete daily distribution of the serial interval for influenza, assuming a shifted Gamma distribution with mean 2.6 days, standard deviation 1.5 days and shift 1 day (see references).
-#'
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 32 days of observation,}
 #'   \item{SI.Distr}{a vector containing a set of 12 probabilities.}
-#'   ...
 #' }
 #' @source Cauchemez S. et al. (2011) Role of social networks in shaping disease transmission during a community outbreak of 2009 H1N1 pandemic influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
 #' @references 
@@ -86,17 +78,13 @@
 
 #' Data on the 1861 measles epidemic in Hagelloch, Germany.
 #'
-#' This data set gives 
-#' 
+#' This data set gives:
 #' 1/ the daily incidence of onset of symptoms in Hallegoch (Germany) during the 1861 measles epidemic (see source and references),
-#' 
 #' 2/ the discrete daily distribution of the serial interval for measles, assuming a shifted Gamma distribution with mean 14.9 days, standard deviation 3.9 days and shift 1 day (see references).
-#' 
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 48 days of observation,}
 #'   \item{SI.Distr}{a vector containing a set of 38 probabilities.}
-#'   ...
 #' }
 #' @source Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 #' @references Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
@@ -118,17 +106,13 @@
 
 #' Data on the 2003 SARS epidemic in Hong Kong.
 #'
-#' This data set gives 
-#' 
+#' This data set gives:
 #' 1/ the daily incidence of onset of symptoms in Hong Kong during the 2003 severe acute respiratory syndrome (SARS) epidemic (see source and references),
-#' 
 #' 2/ the discrete daily distribution of the serial interval for SARS, assuming a shifted Gamma distribution with mean 8.4 days, standard deviation 3.8 days and shift 1 day (see references).
-#'
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 107 days of observation,}
 #'   \item{SI.Distr}{a vector containing a set of 25 probabilities.}
-#'   ...
 #' }
 #' @source Cori A. et al. (2009) Temporal variability and social heterogeneity in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): e1000471.
 #' @references 
@@ -155,17 +139,13 @@
 
 #' Data on the 1972 smallpox epidemic in Kosovo
 #'
-#' This data set gives 
-#' 
+#' This data set gives:
 #' 1/ the daily incidence of onset of symptoms in Kosovo during the 1972 smallpox epidemic (see source and references),
-#' 
 #' 2/ the discrete daily distribution of the serial interval for smallpox, assuming a shifted Gamma distribution with mean 22.4 days, standard deviation 6.1 days and shift 1 day (see references).
-#'
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 57 days of observation,}
 #'   \item{SI.Distr}{a vector containing a set of 46 probabilities.}
-#'   ...
 #' }
 #' @source Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health Organization.
 #' @references 

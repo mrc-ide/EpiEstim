@@ -8,7 +8,6 @@
 \describe{
   \item{Incidence}{a vector containing 57 days of observation,}
   \item{SI.Distr}{a vector containing a set of 46 probabilities.}
-  ...
 }}
 \source{
 Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health Organization.
@@ -17,11 +16,8 @@ Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health Organ
 Smallpox1972
 }
 \description{
-This data set gives
-}
-\details{
+This data set gives:
 1/ the daily incidence of onset of symptoms in Kosovo during the 1972 smallpox epidemic (see source and references),
-
 2/ the discrete daily distribution of the serial interval for smallpox, assuming a shifted Gamma distribution with mean 22.4 days, standard deviation 6.1 days and shift 1 day (see references).
 }
 \examples{
