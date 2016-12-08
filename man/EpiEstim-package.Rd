@@ -15,7 +15,8 @@
   \itemize{
          \item \code{\link{DiscrSI}}, which computes the discrete distribution of the serial interval with a given mean and standard deviation;
          \item \code{\link{OverallInfectivity}}, which calculates, at each time step, the overall infectivity due to previously infected individuals;
-         \item \code{\link{EstimateR}}, which estimates, for each time step, the reproduction number, given the incidence time series and the serial interval distribution. 
+         \item \code{\link{EstimateR}}, which estimates, for each time step, the instantaneous reproduction number, given the incidence time series and the serial interval distribution. 
+         \item \code{\link{WT}}, which estimates, for each time step, the case reproduction number, given the incidence time series and the serial interval distribution. 
        }
   
   Together with the package a few datasets are provided that contain time series of incidence and serial interval distribution for the following epidemics:
@@ -29,7 +30,7 @@
   
 }
 \references{
-  Cori, A. et al. A new tool to estimate time-varying reproduction numbers during epidemics. (submitted) 
+  Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 }
 \details{
   Package: EpiEstim
