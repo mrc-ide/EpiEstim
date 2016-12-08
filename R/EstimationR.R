@@ -6,27 +6,28 @@
 #' 
 #' \code{EstimateR} estimates the reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
 #' 
-#' @param {I}{vector of non-negative integers containing the incidence time series.}
-#' @param {T.Start,T.End}{vectors of positive integers giving the starting end ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.}
-#' @param {method}{one of "NonParametricSI", "ParametricSI" or "UncertainSI" (see details).}
-#' @param {n1}{for method "UncertainSI" ; positive integer giving the size of the sample of pairs (Mean SI (serial interval), Std SI) to be drawn (see details).}
-#' @param {n2}{for method "UncertainSI" ; positive integer giving the size of the sample drawn from each posterior distribution conditional to a pair (Mean SI, Std SI) (see details).}
-#' @param {Mean.SI}{for method "ParametricSI" and "UncertainSI" ; positive real giving the mean serial interval (method "ParametricSI") or the average mean serial interval (method "UncertainSI", see details).}
-#' @param {Std.SI}{for method "ParametricSI" and "UncertainSI" ; non negative real giving the stadard deviation of the serial interval (method "ParametricSI") or the average standard deviation of the serial interval (method "UncertainSI", see details).}
-#' @param {Std.Mean.SI}{for method "UncertainSI" ; standard deviation of the distribution from which mean serial intervals are drawn (see details).}
-#' @param {Min.Mean.SI}{for method "UncertainSI" ; lower bound of the distribution from which mean serial intervals are drawn (see details).}
-#' @param {Max.Mean.SI}{for method "UncertainSI" ; upper bound of the distribution from which mean serial intervals are drawn (see details).}
-#' @param {Std.Std.SI}{for method "UncertainSI" ; standard deviation of the distribution from which standard deviations of the serial interval are drawn (see details).}
-#' @param {Min.Std.SI}{for method "UncertainSI" ; lower bound of the distribution from which standard deviations of the serial interval are drawn (see details).}
-#' @param {Max.Std.SI}{for method "UncertainSI" ; upper bound of the distribution from which standard deviations of the serial interval are drawn (see details).}
-#' @param {SI.Distr}{for method "NonParametricSI" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{SI.Distr[1]} (probability that the serial interval is zero), which should be zero.}
-#' @param {Mean.Prior}{a positive number giving the mean of the common prior distribution for all reproduction numbers (see details).}
-#' @param {Std.Prior}{a positive number giving the standard deviation of the common prior distribution for all reproduction numbers (see details).}
-#' @param {CV.Posterior}{a positive number giving the aimed posterior coefficient of variation (see details).}
-#' @param {plot}{logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
-#' @param {leg.pos}{one of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
-#  This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.}
-#' @param {CDT}{for method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which describe the model used to estimate the SI distribution.}
+#' @param I Vector of non-negative integers containing the incidence time series.
+#' @param T.Start Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.
+#' @param T.End Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. 
+#' @param method Oone of "NonParametricSI", "ParametricSI" or "UncertainSI" (see details).
+#' @param n1 For method "UncertainSI" ; positive integer giving the size of the sample of pairs (Mean SI (serial interval), Std SI) to be drawn (see details).
+#' @param n2 For method "UncertainSI" ; positive integer giving the size of the sample drawn from each posterior distribution conditional to a pair (Mean SI, Std SI) (see details).
+#' @param Mean.SI For method "ParametricSI" and "UncertainSI" ; positive real giving the mean serial interval (method "ParametricSI") or the average mean serial interval (method "UncertainSI", see details).
+#' @param Std.SI For method "ParametricSI" and "UncertainSI" ; non negative real giving the stadard deviation of the serial interval (method "ParametricSI") or the average standard deviation of the serial interval (method "UncertainSI", see details).
+#' @param Std.Mean.SI For method "UncertainSI" ; standard deviation of the distribution from which mean serial intervals are drawn (see details).
+#' @param Min.Mean.SI For method "UncertainSI" ; lower bound of the distribution from which mean serial intervals are drawn (see details).
+#' @param Max.Mean.SI For method "UncertainSI" ; upper bound of the distribution from which mean serial intervals are drawn (see details).
+#' @param Std.Std.SI For method "UncertainSI" ; standard deviation of the distribution from which standard deviations of the serial interval are drawn (see details).
+#' @param Min.Std.SI For method "UncertainSI" ; lower bound of the distribution from which standard deviations of the serial interval are drawn (see details).
+#' @param Max.Std.SI For method "UncertainSI" ; upper bound of the distribution from which standard deviations of the serial interval are drawn (see details).
+#' @param SI.Distr For method "NonParametricSI" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{SI.Distr[1]} (probability that the serial interval is zero), which should be zero.
+#' @param Mean.Prior A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).
+#' @param Std.Prior A positive number giving the standard deviation of the common prior distribution for all reproduction numbers (see details).
+#' @param CV.Posterior A positive number giving the aimed posterior coefficient of variation (see details).
+#' @param plot Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).
+#' @param leg.pos One of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
+#  This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.
+#' @param CDT For method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which describe the model used to estimate the SI distribution.
 #' @return {
 #' a list with components: 
 #' \item{R}{a dataframe containing: 
@@ -155,6 +156,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
 # EstimateR_func: Doing the heavy work in EstimateR     #
 #########################################################
 
+#' @import graphics
 EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
                                                           "UncertainSI","NonParametricUncertainSI"), n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                             Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,

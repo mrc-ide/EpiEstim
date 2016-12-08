@@ -7,15 +7,16 @@
 #' \code{WT} estimates the case reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
 #' 
 #' @param I Vector of non-negative integers containing an incidence time series.
-#' @param {T.Start,T.End} {vectors of positive integers giving the starting end ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.}
-#' @param {method}{one of "NonParametricSI" or "ParametricSI" (see details).}
-#' @param {Mean.SI}{for method "ParametricSI" ; positive real giving the mean serial interval.}
-#' @param {Std.SI}{for method "ParametricSI" ; non negative real giving the stadard deviation of the serial interval.}
-#' @param {SI.Distr}{for method "NonParametricSI" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{SI.Distr[1]} (probability that the serial interval is zero), which should be zero.}
-#' @param {nSim}{a positive integer giving the number of simulated epidemic trees used for computation of the confidence intervals of the case reproduction number (see details).}
-#' @param {plot}{logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
-#' @param {leg.pos}{one of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
-#' This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.}
+#' @param T.Start Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.
+#' @param T.End Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}.
+#' @param method One of "NonParametricSI" or "ParametricSI" (see details).
+#' @param Mean.SI For method "ParametricSI" ; positive real giving the mean serial interval.
+#' @param Std.SI For method "ParametricSI" ; non negative real giving the stadard deviation of the serial interval.
+#' @param SI.Distr For method "NonParametricSI" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{SI.Distr[1]} (probability that the serial interval is zero), which should be zero.
+#' @param nSim A positive integer giving the number of simulated epidemic trees used for computation of the confidence intervals of the case reproduction number (see details).
+#' @param plot Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).
+#' @param leg.pos One of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
+#' This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.
 #' @return {
 #' 	a list with components: 
 #' 	\item{R}{a dataframe containing: 
@@ -56,6 +57,7 @@
 #' Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respiratory syndrome reveal similar impacts of control measures (AJE 2004).
 #' }
 #' @export
+#' @import graphics
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
 #' data("Flu2009")

@@ -19,7 +19,7 @@
 #' \cr 
 #' where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma distribution with mean \eqn{\mu} and standard deviation \eqn{\sigma}.
 #' }
-#' @seealso \code{\link{OverallInfectivity}}, \code{\link{EstimateR}
+#' @seealso \code{\link{OverallInfectivity}}, \code{\link{EstimateR}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk} 
 #' @references Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 #' @import stats
