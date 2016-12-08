@@ -210,43 +210,13 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   # given mean SI and std SI                              #
   #########################################################
   
-  SampleFromPosterior <- function(SampleSize, I, Mean.SI, Std.SI,
+  SampleFromPosterior <- function(SampleSize, I, Mean.SI, Std.SI, SI.Distr=NULL, 
                                   a.Prior, b.Prior, T.Start, T.End) {
     NbTimePeriods <- length(T.Start)
-    SI.Distr <- sapply(1:T, function(t) DiscrSI(t - 1, Mean.SI,
-                                                Std.SI))
-    FinalMean.SI <- sum(SI.Distr * (0:(length(SI.Distr) -
-                                         1)))
-    lambda <- OverallInfectivity(I, SI.Distr)
-    a.Posterior <- vector()
-    b.Posterior <- vector()
-    a.Posterior <- sapply(1:(NbTimePeriods), function(t) if (T.End[t] >
-                                                             FinalMean.SI) {
-      a.Prior + sum(I[T.Start[t]:T.End[t]])
-    }
-    else {
-      NA
-    })
-    b.Posterior <- sapply(1:(NbTimePeriods), function(t) if (T.End[t] >
-                                                             FinalMean.SI) {
-      1/(1/b.Prior + sum(lambda[T.Start[t]:T.End[t]], na.rm = TRUE))
-    }
-    else {
-      NA
-    })
-    SampleR.Posterior <- sapply(1:(NbTimePeriods), function(t) if (!is.na(a.Posterior[t])) {
-      rgamma(SampleSize, shape = unlist(a.Posterior[t]),
-             scale = unlist(b.Posterior[t]))
-    }
-    else {
-      rep(NA, SampleSize)
-    })
-    return(list(SampleR.Posterior, SI.Distr))
-  }
-  SampleFromPosterior2 <- function(SampleSize, I,  SI.Distr,
-                                   a.Prior, b.Prior, T.Start, T.End) {
-    NbTimePeriods <- length(T.Start)
     
+    if(is.null(SI.Distr))
+       SI.Distr <- sapply(1:T, function(t) DiscrSI(t - 1, Mean.SI, Std.SI))
+       
     FinalMean.SI <- sum(SI.Distr * (0:(length(SI.Distr) -
                                          1)))
     lambda <- OverallInfectivity(I, SI.Distr)
@@ -469,7 +439,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
         }
       }
       temp <- lapply(1:n1, function(k) SampleFromPosterior(n2,
-                                                           I, Mean.SI.sample[k], Std.SI.sample[k], a.Prior,
+                                                           I, Mean.SI.sample[k], Std.SI.sample[k], SI.Distr=NULL, a.Prior,
                                                            b.Prior, T.Start, T.End))
       SI.Distr <- cbind(t(sapply(1:n1, function(k) (temp[[k]])[[2]])),
                         rep(0, n1))
@@ -503,8 +473,8 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
         Mean.SI.sample[k] <- sum((1:dim(SI.Dist.Matrix)[1]-1)*SI.Dist.Matrix[,k])
         Std.SI.sample[k] <- sqrt(sum(SI.Dist.Matrix[,k]*((1:dim(SI.Dist.Matrix)[1]-1) - Mean.SI.sample[k])^2))
       }
-      temp <- lapply(1:n1, function(k) SampleFromPosterior2(n2,
-                                                            I, SI.Dist.Matrix[,k], a.Prior,
+      temp <- lapply(1:n1, function(k) SampleFromPosterior(n2,
+                                                            I, Mean.SI=NULL, Std.SI=NULL, SI.Dist.Matrix[,k], a.Prior,
                                                             b.Prior, T.Start, T.End))
       SI.Distr <- cbind(t(sapply(1:n1, function(k) (temp[[k]])[[2]])),
                         rep(0, n1))

@@ -9,13 +9,13 @@ coarse2estim(object, n_samples = 1000)
 \arguments{
 \item{object}{XXXXXXX.}
 
-\item{n_samples}{XXXXXXX..}
+\item{n_samples}{XXXXXXX.}
 }
 \value{
 XXXXXXX.
 }
 \description{
-\code{coarse2estim} DESCRIPTIOPN.
+\code{coarse2estim} DESCRIPTION TO COME.
 }
 \details{
 {

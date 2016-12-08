@@ -4,10 +4,10 @@
 
 #' coarse2estim TITLE
 #' 
-#' \code{coarse2estim} DESCRIPTIOPN. 
+#' \code{coarse2estim} DESCRIPTION TO COME. 
 #' 
 #' @param object XXXXXXX.
-#' @param n_samples XXXXXXX..
+#' @param n_samples XXXXXXX.
 #' @return XXXXXXX.
 #' @details{
 #' XXXXXXX. 
