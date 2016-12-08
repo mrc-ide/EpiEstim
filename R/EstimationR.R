@@ -30,14 +30,17 @@
 #' @param CDT For method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which describe the model used to estimate the SI distribution.
 #' @return {
 #' a list with components: 
-#' \item{R}{a dataframe containing: 
+#' \itemize
+#' {
+#' \item{R}{: a dataframe containing: 
 #' the times of start and end of each time window considered ; 
 #' the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window.}
-#' \item{SIDistr}{a dataframe containing: 
+#' \item{SIDistr}{: a dataframe containing: 
 #' for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
 #' for method "ParametricSI", the discrete serial interval distribution;
 #' for method "UncertainSI", the means and standard deviations of the serial interval sampled to account for uncertainty on the serial interval distribution (see details);
 #' for method "NonParametricUncertainSI", the means and standard deviations of the serial interval sampled from the posterior disrtribution obtained by Bayesian estimation from doubly censored data (see details).}
+#' 	}
 #' 	}
 #' @details{
 #' Analytical estimates of the reproduction number for an epidemic over predefined time windows can be obtained within a Bayesian framework, 
@@ -89,7 +92,7 @@
 #'   
 #' Details to come...
 #' }
-#' @seealso \code{\link{DiscrSI}}, \code{\link{EstimateR}}
+#' @seealso \code{\link{DiscrSI}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk} 
 #' @references {
 #' Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).

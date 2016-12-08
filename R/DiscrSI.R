@@ -5,7 +5,7 @@
 
 #' Discretized Generation Time Distribution Assuming A Shifted Gamma Distribution
 #' 
-#' code{DiscrSI} computes the discrete distribution of the serial interval, assuming that the serial interval is shifted Gamma distributed, with shift 1. 
+#' \code{DiscrSI} computes the discrete distribution of the serial interval, assuming that the serial interval is shifted Gamma distributed, with shift 1. 
 #' 
 #' @param k Positive integer for which the discrete distribution is desired.
 #' @param mu A positive real giving the mean of the Gamma distribution.

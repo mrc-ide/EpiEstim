@@ -17,7 +17,7 @@ DiscrSI(k, mu, sigma)
 Gives the discrete probability \eqn{w_k} that the serial interval is equal to \eqn{k}.
 }
 \description{
-code{DiscrSI} computes the discrete distribution of the serial interval, assuming that the serial interval is shifted Gamma distributed, with shift 1.
+\code{DiscrSI} computes the discrete distribution of the serial interval, assuming that the serial interval is shifted Gamma distributed, with shift 1.
 }
 \details{
 {

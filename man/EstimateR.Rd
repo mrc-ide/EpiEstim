@@ -57,14 +57,17 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 \value{
 {
 a list with components: 
-\item{R}{a dataframe containing: 
+\itemize
+{
+\item{R}{: a dataframe containing: 
 the times of start and end of each time window considered ; 
 the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window.}
-\item{SIDistr}{a dataframe containing: 
+\item{SIDistr}{: a dataframe containing: 
 for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
 for method "ParametricSI", the discrete serial interval distribution;
 for method "UncertainSI", the means and standard deviations of the serial interval sampled to account for uncertainty on the serial interval distribution (see details);
 for method "NonParametricUncertainSI", the means and standard deviations of the serial interval sampled from the posterior disrtribution obtained by Bayesian estimation from doubly censored data (see details).}
+	}
 	}
 }
 \description{
@@ -159,6 +162,6 @@ Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respirato
 }
 }
 \seealso{
-\code{\link{DiscrSI}}, \code{\link{EstimateR}}
+\code{\link{DiscrSI}}
 }
 
