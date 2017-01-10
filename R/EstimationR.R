@@ -644,7 +644,8 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
       
     }
   }
-  return(list(results=results,I=I))
+  results$I <- I
+  return(results)
 }
 
 #' @export
