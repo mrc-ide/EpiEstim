@@ -10,7 +10,13 @@ Description: This package provides tools to quantify transmissibility throughout
 Depends: R (>= 2.10)
 Imports:
     stats,
-    graphics
+    graphics,
+    reshape2,
+    ggplot2,
+    plyr,
+    grid,
+    gridExtra,
+    plotly
 License: GPL (>=2)
 LazyLoad: yes
 Packaged: 2012-05-30 10:35:03 UTC; acori

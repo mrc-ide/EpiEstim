@@ -27,7 +27,7 @@
 #' @param plot Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).
 #' @param leg.pos One of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
 #  This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.
-#' @param CDT For method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which describe the model used to estimate the SI distribution.
+#' @param CDT For method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which describes the model used to estimate the SI distribution.
 #' @return {
 #' a list with components: 
 #' \itemize{
@@ -158,7 +158,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
 # EstimateR_func: Doing the heavy work in EstimateR     #
 #########################################################
 
-#' @import graphics
+#' @import graphics reshape2 ggplot2 plyr grid gridExtra plotly
 EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
                                                           "UncertainSI","NonParametricUncertainSI"), n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                             Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
@@ -217,8 +217,8 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     NbTimePeriods <- length(T.Start)
     
     if(is.null(SI.Distr))
-       SI.Distr <- sapply(1:T, function(t) DiscrSI(t - 1, Mean.SI, Std.SI))
-       
+      SI.Distr <- sapply(1:T, function(t) DiscrSI(t - 1, Mean.SI, Std.SI))
+    
     FinalMean.SI <- sum(SI.Distr * (0:(length(SI.Distr) -
                                          1)))
     lambda <- OverallInfectivity(I, SI.Distr)
@@ -476,8 +476,8 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
         Std.SI.sample[k] <- sqrt(sum(SI.Dist.Matrix[,k]*((1:dim(SI.Dist.Matrix)[1]-1) - Mean.SI.sample[k])^2))
       }
       temp <- lapply(1:n1, function(k) SampleFromPosterior(n2,
-                                                            I, Mean.SI=NULL, Std.SI=NULL, SI.Dist.Matrix[,k], a.Prior,
-                                                            b.Prior, T.Start, T.End))
+                                                           I, Mean.SI=NULL, Std.SI=NULL, SI.Dist.Matrix[,k], a.Prior,
+                                                           b.Prior, T.Start, T.End))
       SI.Distr <- cbind(t(sapply(1:n1, function(k) (temp[[k]])[[2]])),
                         rep(0, n1))
       Rsample <- matrix(NA, n2 * n1, NbTimePeriods)
@@ -502,10 +502,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
       Quantile.0.975.Posterior <- apply(Rsample, 2, quantile,
                                         0.975, na.rm = TRUE)
     }
-  }
-  
-  
-  else{
+  }else{
     # CertainSI
     if (ParametricSI == "Y") {
       SI.Distr <- sapply(1:T, function(t) DiscrSI(t - 1,
@@ -551,78 +548,214 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   if (SIUncertainty == "Y") {
     results$SIDistr <- as.data.frame(cbind(Mean.SI.sample,
                                            Std.SI.sample))
-  }
-  else {
+  }else {
     if (ParametricSI == "Y") {
       if (length(which(abs(cumsum(SI.Distr) - 1) < 0.01)) ==
           0) {
         warning("The serial interval distribution you have chosen is very wide compared to the duration of the epidemic.\nEstimation will be performed anyway but restults should be interpreted with care.")
         MaxT <- length(cumsum(SI.Distr))
-      }
-      else {
+      }else {
         MaxT <- min(which(abs(cumsum(SI.Distr) - 1) <
                             0.01))
       }
       results$SIDistr <- as.data.frame(cbind(0:(MaxT -
                                                   1), SI.Distr[1:MaxT]))
       names(results$SIDistr) <- c("k", "w[k]")
-    }
-    else {
+    }else {
       results$SIDistr <- as.data.frame(cbind(FinalMean.SI,
                                              FinalStd.SI))
       names(results$SIDistr) <- c("Mean Discrete SI", "Std Discrete SI")
     }
   }
+  
+  results$method <- method
+  results$SI.Distr <- SI.Distr
+  
   if (plot == TRUE) {
-    grey <- "#999999"
-    if (SIUncertainty == "Y") {
-      par(mfcol = c(2, 2), las = 1, cex.main = 1.5, cex.lab = 1.2,
-          cex.axis = 1, mar = c(4.8, 4.8, 2.4, 0.8), mgp = c(4,
-                                                             1, 0))
-      plot(I, type = "s", bty = "n", xlab = "", ylab = "",
-           main = "Epidemic curve")
-      title(xlab = "Time", ylab = "Incidence", line = 3)
-      plot(T.End, Median.Posterior, type = "l", bty = "n",
-           xlab = "", ylab = "", main = "Estimated R", ylim = c(0,
-                                                                max(Quantile.0.975.Posterior, na.rm = TRUE)),
-           xlim = c(1, T))
-      title(xlab = "Time", ylab = "R", line = 3)
-      polygon(c(T.End, rev(T.End)), c(Quantile.0.025.Posterior,
-                                      rev(Quantile.0.975.Posterior)), col = grey, border = FALSE)
-      lines(T.End, Median.Posterior)
-      lines(0:T, rep(1, T + 1), lty = 2)
-      legend(leg.pos, c("Median", "95%CrI"), col = c("Black",
-                                                     grey), lwd = c(1, 10), bty = "n", cex = 1.2)
-      hist(Mean.SI.sample, xlab = "", ylab = "", main = "Explored \n mean serial intervals",
-           freq = FALSE)
-      title(xlab = "Mean serial interval", ylab = "Density",
-            line = 3)
-      hist(Std.SI.sample, xlab = "", ylab = "", main = "Explored \n std serial intervals",
-           freq = FALSE)
-      title(xlab = "Std serial interval", ylab = "Density",
-            line = 3)
+    
+    p1 <- ggplot(data.frame(Time=1:length(I), Incidence=I), aes(x=Time, y=Incidence)) +
+      geom_step() +
+      ggtitle("Epidemic curve")
+    p1ly <- ggplotly(p1)
+    
+    # test if intervals overlap 
+    time.points <- apply(results$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 
+    if (length(time.points) == length(unique(matrix(time.points,ncol=1)))) { 
+      
+      df <- melt(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+                            upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
+      df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
+      
+      p2 <- ggplot(df, aes(x=as.numeric(value), y=as.numeric(meanR), group=as.factor(group))) +
+        geom_ribbon(aes(ymin=lower, ymax=upper), colour=NA, fill="black", alpha=0.2) +
+        geom_line() +
+        xlab("Time") +
+        ylab("R") +
+        xlim(c(1,max(T.End))) +
+        ggtitle("Estimated R")
+      p2ly <- ggplotly(p2)
+      
+    } else { 
+      
+      p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+                              upper=Quantile.0.975.Posterior), aes(end, meanR)) +
+        geom_ribbon(aes(ymin=lower, ymax=upper), fill="grey") +
+        geom_line() +
+        geom_hline(yintercept=1, linetype="dotted") +
+        xlab("Time") +
+        ylab("R") +
+        xlim(c(1,max(T.End))) +
+        ylim(c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))) +
+        ggtitle("Estimated R") 
+      p2ly <- ggplotly(p2)
+      #+
+      #legend(leg.pos, c("Median", "95%CrI"), col = c("Black", 
+      #               grey), lwd = c(1, 10), bty = "n", cex = 1.2)
     }
-    else {
-      par(mfrow = c(3, 1), las = 1, cex.main = 1.8, cex.lab = 1.5,
-          cex.axis = 1.2, mar = c(6, 6, 3, 1), mgp = c(4,
-                                                       1, 0))
-      plot(I, type = "s", bty = "n", xlab = "Time", ylab = "Incidence",
-           main = "Epidemic curve")
-      plot(T.End, Median.Posterior, type = "l", bty = "n",
-           xlab = "Time", ylab = "R", main = "Estimated R",
-           ylim = c(0, max(Quantile.0.975.Posterior, na.rm = TRUE)),
-           xlim = c(1, T))
-      polygon(c(T.End, rev(T.End)), c(Quantile.0.025.Posterior,
-                                      rev(Quantile.0.975.Posterior)), col = grey, border = FALSE)
-      lines(T.End, Median.Posterior)
-      lines(0:T, rep(1, T + 1), lty = 2)
-      legend(leg.pos, c("Median", "95%CrI"), col = c("Black",
-                                                     grey), lwd = c(1, 10), bty = "n", cex = 1.2)
-      plot(0:(length(SI.Distr) - 1), SI.Distr, type = "h",
-           lwd = 10, lend = 1, bty = "n", xlab = "Time",
-           ylab = "Frequency", main = "Serial interval distribution",
-           xlim = c(0, FinalMean.SI + 6 * FinalStd.SI))
+    
+    if (SIUncertainty == "Y") {
+      p3 <- ggplot(data.frame(Mean.SI.sample), aes(Mean.SI.sample)) +
+        geom_histogram(bins=30) +
+        xlab("Mean serial interval") +
+        ylab("Density") + 
+        ggtitle("Explored \n mean serial intervals")
+      
+      p4 <- ggplot(data.frame(Std.SI.sample), aes(Std.SI.sample)) +
+        geom_histogram(bins=30) +
+        xlab("Std serial interval") +
+        ggtitle("Explored \n std serial intervals")
+      
+      grid.arrange(p1,p2,p3,p4,ncol=2)
+      
+    } else {
+      SI.Distr.times <- unlist(apply(data.frame(0:(length(SI.Distr) - 1), SI.Distr), 1,
+                                     function(x) {if (x[2]!=0) unlist(rep(x[1],round(x[2]*1000)),use.names=FALSE)}))
+      names(SI.Distr.times) <- NULL
+      
+      p3 <- ggplot(data.frame(Times=SI.Distr.times), aes(0.5+Times)) +
+        geom_histogram(binwidth=1, aes(y=..density..)) +
+        xlab("Time") + 
+        xlim(c(0,0.5+max(SI.Distr.times))) + 
+        ylab("Frequency") + 
+        ggtitle("Serial interval distribution") 
+      p3ly <- ggplotly(p3)
+      
+      grid.arrange(p1,p3,p2,ncol=1)
+      
     }
   }
-  return(results)
+  return(list(results=results,I=I))
+}
+
+#' @export
+#' @import graphics reshape2 ggplot2 plyr grid gridExtra plotly
+plots <- function(results=NULL, I=NULL, plot=c("incidence", "R", "serial.interval")) {
+  
+  if (is.null(results)) {
+    stop("plot incidence requires results input.")
+  }
+  
+  T.Start <- results$R$T.Start 
+  T.End <- results$R$T.End
+  Mean.Posterior <- results$R[, "Mean(R)"]
+  Quantile.0.025.Posterior <- results$R[, "Quantile.0.025(R)"]
+  Quantile.0.975.Posterior <- results$R[, "Quantile.0.975(R)"]
+  method <- results$method
+  SI.Distr <- results$SI.Distr
+  
+  if (method == "UncertainSI") {
+    Mean.SI.sample <- results$SIDistr["Mean.SI.sample"]
+    Std.SI.sample <- results$SIDistr["Std.SI.sample"]
+  }
+  if (length(plot)==0) {
+    stop("plot incidence requires plot input.")
+  }
+  
+  if (plot == "incidence") {
+    
+    if (is.null(I)) {
+      stop("plot incidence requires I input.")
+    }
+    
+    p1 <- ggplot(data.frame(Time=1:length(I), Incidence=I), aes(x=Time, y=Incidence)) +
+      geom_step() +
+      ggtitle("Epidemic curve")
+    p1ly <- ggplotly(p1)
+    print(p1ly)
+  }
+  
+  if (plot == "R") {
+    
+    time.points <- apply(results$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 
+    if (length(time.points) == length(unique(matrix(time.points,ncol=1)))) { 
+      
+      df <- melt(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+                            upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
+      df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
+      
+      p2 <- ggplot(df, aes(x=as.numeric(value), y=as.numeric(meanR), group=as.factor(group))) +
+        geom_ribbon(aes(ymin=lower, ymax=upper), colour=NA, fill="black", alpha=0.2) +
+        geom_line() +
+        xlab("Time") +
+        ylab("R") +
+        xlim(c(1,max(T.End))) +
+        ggtitle("Estimated R")
+      p2ly <- ggplotly(p2)
+      
+      print(p2ly)
+      
+    } else { 
+      
+      p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+                              upper=Quantile.0.975.Posterior), aes(end, meanR)) +
+        geom_ribbon(aes(ymin=lower, ymax=upper), fill="grey") +
+        geom_line() +
+        geom_hline(yintercept=1, linetype="dotted") +
+        xlab("Time") +
+        ylab("R") +
+        xlim(c(1,max(T.End))) +
+        ylim(c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))) +
+        ggtitle("Estimated R") 
+      p2ly <- ggplotly(p2)
+      
+      print(p2ly)
+    }
+    
+  }
+  if (plot == "serial.interval") {
+    
+    if (method == "UncertainSI") {
+      
+      p3 <- ggplot(data.frame(Mean.SI.sample), aes(Mean.SI.sample)) +
+        geom_histogram(bins=30) +
+        xlab("Mean serial interval") +
+        ylab("Density") + 
+        ggtitle("Explored \n mean serial intervals")
+      
+      p4 <- ggplot(data.frame(Std.SI.sample), aes(Std.SI.sample)) +
+        geom_histogram(bins=30) +
+        xlab("Std serial interval") +
+        ggtitle("Explored \n std serial intervals")
+      
+      grid.arrange(p3,p4,ncol=2)
+      
+    } else {
+      
+      SI.Distr.times <- unlist(apply(data.frame(0:(length(SI.Distr) - 1), SI.Distr), 1,
+                                     function(x) {if (x[2]!=0) unlist(rep(x[1],round(x[2]*1000)),use.names=FALSE)}))
+      names(SI.Distr.times) <- NULL
+      
+      p3 <- ggplot(data.frame(Times=SI.Distr.times), aes(0.5+Times)) +
+        geom_histogram(binwidth=1, aes(y=..density..)) +
+        xlab("Time") + 
+        xlim(c(0,0.5+max(SI.Distr.times))) + 
+        ylab("Frequency") + 
+        ggtitle("Serial interval distribution") 
+      p3ly <- ggplotly(p3)
+      
+      print(p3ly)
+      
+    }
+  }
+  
 }

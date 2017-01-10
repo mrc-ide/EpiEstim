@@ -28,27 +28,27 @@ coarse2estim <- function(object, n_samples=1000){
   
   ##  Probability matrix that will be used in EpiEstim based on which distribution is specified by the user
   if (dist == "G"){
-    max_interval <- c(10^(-4), 1:ceiling(qgamma(0.999, shape=object@ests[1,1], scale=object@ests[2,1])))
-    prob_matrix <- apply(samples, 1, function(x) dgamma(max_interval, shape=x[1], scale=x[2]))
-    
+    max_interval <- 1:ceiling(qgamma(0.999, shape=object@ests[1,1], scale=object@ests[2,1]))
+    prob_matrix <- apply(samples, 1, function(x) pgamma(max_interval+0.5, shape=x[1], scale=x[2]) - pgamma(max_interval-0.5, shape=x[1], scale=x[2]))
   } else if (dist == "off1G"){
     # offset gamma distribution with shifted min and max value of max serial interval
-    max_interval <- c(10^(-4), 1:ceiling(qgamma(0.999, shape=object@ests[1,1], scale=object@ests[2,1])))
-    prob_matrix <- apply(samples, 1, function(x) dgamma(max_interval, shape=x[1], scale=x[2]))
+    max_interval <- 0:ceiling(qgamma(0.999, shape=object@ests[1,1], scale=object@ests[2,1]))
+    prob_matrix <- apply(samples, 1, function(x) pgamma(max_interval+0.5, shape=x[1], scale=x[2]) - pgamma(max_interval-0.5, shape=x[1], scale=x[2]))
   }
   else if (dist == "W"){
-    max_interval <- c(10^(-4), 1:ceiling(qgamma(0.999, shape=object@ests[1,1], scale=object@ests[2,1])))
-    prob_matrix <- apply(samples, 1, function(x) dweibull(max_interval, shape=x[1], scale=x[2]))
-    
+    max_interval <- 1:ceiling(qweibull(0.999, shape=object@ests[1,1], scale=object@ests[2,1]))
+    prob_matrix <- apply(samples, 1, function(x) pweibull(max_interval+0.5, shape=x[1], scale=x[2]) - pweibull(max_interval-0.5, shape=x[1], scale=x[2]))
   } else if (dist == "L"){
-    max_interval <- c(10^(-4), 1:ceiling(qgamma(0.999, shape=object@ests[1,1], scale=object@ests[2,1])))
-    prob_matrix <- apply(samples, 1, function(x) dlnorm(max_interval, meanlog=x[1], sdlog=x[2]))
+    max_interval <- 1:ceiling(qlnorm(0.999, meanlog=object@ests[1,1], sdlog=object@ests[2,1]))
+    prob_matrix <- apply(samples, 1, function(x) plnorm(max_interval+0.5, meanlog=x[1], sdlog=x[2]) - plnorm(max_interval-0.5, meanlog=x[1], sdlog=x[2]))
   } else {
     stop(sprintf("Distribtion (%s) not supported",dist))
   }
+  # adding initial 0 for P(SI=0)
+  prob_matrix <- rbind(rep(0, n_samples), prob_matrix)
+  # renormalising
   prob_matrix <- apply(prob_matrix, 2, function(x) x/sum(x))
   
-  prob_matrix <- rbind(rep(0, ncol(prob_matrix)), prob_matrix)
   out <- list(prob_matrix = prob_matrix, dist = dist)
   
   return(out)

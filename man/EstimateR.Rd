@@ -52,7 +52,7 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 
 \item{leg.pos}{One of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers.}
 
-\item{CDT}{For method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which describe the model used to estimate the SI distribution.}
+\item{CDT}{For method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which describes the model used to estimate the SI distribution.}
 }
 \value{
 {
