@@ -502,10 +502,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
       Quantile.0.975.Posterior <- apply(Rsample, 2, quantile,
                                         0.975, na.rm = TRUE)
     }
-  }
-  
-  
-  else{
+  }else{
     # CertainSI
     if (ParametricSI == "Y") {
       SI.Distr <- sapply(1:T, function(t) DiscrSI(t - 1,
@@ -551,23 +548,20 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   if (SIUncertainty == "Y") {
     results$SIDistr <- as.data.frame(cbind(Mean.SI.sample,
                                            Std.SI.sample))
-  }
-  else {
+  }else {
     if (ParametricSI == "Y") {
       if (length(which(abs(cumsum(SI.Distr) - 1) < 0.01)) ==
           0) {
         warning("The serial interval distribution you have chosen is very wide compared to the duration of the epidemic.\nEstimation will be performed anyway but restults should be interpreted with care.")
         MaxT <- length(cumsum(SI.Distr))
-      }
-      else {
+      }else {
         MaxT <- min(which(abs(cumsum(SI.Distr) - 1) <
                             0.01))
       }
       results$SIDistr <- as.data.frame(cbind(0:(MaxT -
                                                   1), SI.Distr[1:MaxT]))
       names(results$SIDistr) <- c("k", "w[k]")
-    }
-    else {
+    }else {
       results$SIDistr <- as.data.frame(cbind(FinalMean.SI,
                                              FinalStd.SI))
       names(results$SIDistr) <- c("Mean Discrete SI", "Std Discrete SI")
