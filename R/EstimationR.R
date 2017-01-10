@@ -1,5 +1,5 @@
 #########################################################################################################################
-# EstimareR is a wraper which replace the old EstimateR with EstimateR_func and accepts an object of class "cd.fit.mcmc"#
+# EstimateR is a wraper which replace the old EstimateR with EstimateR_func and accepts an object of class "cd.fit.mcmc"#
 #########################################################################################################################
 
 #' Estimated Instantaneous Reproduction Number
