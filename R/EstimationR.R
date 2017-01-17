@@ -177,7 +177,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   
   CalculIncidencePerTimeStep <- function(I, T.Start, T.End) {
     NbTimePeriods <- length(T.Start)
-    IncidencePerTimeStep <- sapply(1:NbTimePeriods, function(i) sum(I[T.Start[i]:T.End[i]]))
+    IncidencePerTimeStep <- sapply(1:NbTimePeriods, function(i) sum(I[T.Start[i]:T.End[i],]))
     return(IncidencePerTimeStep)
   }
   
@@ -194,14 +194,14 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
                                          1)))
     a.Posterior <- vector()
     b.Posterior <- vector()
-    a.Posterior <- lapply(1:(NbTimePeriods), function(t) if (T.End[t] >
+    a.Posterior <- sapply(1:(NbTimePeriods), function(t) if (T.End[t] >
                                                              FinalMean.SI) {
-      a.Prior + sum(I[T.Start[t]:T.End[t]])
+      a.Prior + sum(I[T.Start[t]:T.End[t],])
     }
     else {
       NA
     })
-    b.Posterior <- lapply(1:(NbTimePeriods), function(t) if (T.End[t] >
+    b.Posterior <- sapply(1:(NbTimePeriods), function(t) if (T.End[t] >
                                                              FinalMean.SI) {
       1/(1/b.Prior + sum(lambda[T.Start[t]:T.End[t]]))
     }
@@ -230,7 +230,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     b.Posterior <- vector()
     a.Posterior <- sapply(1:(NbTimePeriods), function(t) if (T.End[t] >
                                                              FinalMean.SI) {
-      a.Prior + sum(I[T.Start[t]:T.End[t]])
+      a.Prior + sum(I[T.Start[t]:T.End[t],])
     }
     else {
       NA
@@ -252,14 +252,21 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     return(list(SampleR.Posterior, SI.Distr))
   }
   method <- match.arg(method)
-  if (is.vector(I) == FALSE) {
-    stop("I must be a vector.")
-  }
-  T <- length(I)
-  for (i in 1:T) {
-    if (I[i] < 0) {
-      stop("I must be a positive vector.")
+  if(is.vector(I))
+  {
+    I_tmp <- I
+    I <- data.frame(local=I_tmp, imported=rep(0, length(I_tmp)))
+  }else
+  {
+    if(!is.data.frame(I) | !all(c("local","imported") %in% names(I)) ) 
+    {
+      stop("I must be a vector or a dataframe with 2 columns called 'local' and 'imported'.")
     }
+  }
+  T<-nrow(I)
+  if(any(I<0))
+  {
+    stop("I must contain only non negative integer values.")
   }
   if (Mean.Prior <= 0) {
     stop("Mean.Prior must be >0.")
@@ -269,97 +276,91 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   }
   a.Prior <- (Mean.Prior/Std.Prior)^2
   b.Prior <- Std.Prior^2/Mean.Prior
-  if (is.vector(T.Start) == FALSE) {
+  if (!is.vector(T.Start)) {
     stop("T.Start must be a vector.")
   }
-  if (is.vector(T.End) == FALSE) {
+  if (!is.vector(T.End)) {
     stop("T.End must be a vector.")
   }
   if (length(T.Start) != length(T.End)) {
     stop("T.Start and T.End must have the same length.")
   }
   NbTimePeriods <- length(T.Start)
-  for (i in 1:NbTimePeriods) {
-    if (T.Start[i] > T.End[i]) {
-      stop("T.Start[i] must be <= T.End[i] for all i.")
-    }
-    if (T.Start[i] < 1 || T.Start[i]%%1 != 0) {
-      stop("T.Start must be a vector of >0 integers.")
-    }
-    if (T.End[i] < 1 || T.End[i]%%1 != 0) {
-      stop("T.End must be a vector of >0 integers.")
-    }
+  if (any(T.Start > T.End)) {
+    stop("T.Start[i] must be <= T.End[i] for all i.")
+  }
+  if (any(T.Start < 1 || T.Start%%1 != 0)) {
+    stop("T.Start must be a vector of >0 integers.")
+  }
+  if (any(T.End < 1 || T.End%%1 != 0)) {
+    stop("T.End must be a vector of >0 integers.")
   }
   if (method == "NonParametricSI") {
-    if (is.null(SI.Distr) == TRUE) {
+    if (is.null(SI.Distr)) {
       stop("method NonParametricSI requires to specify the SI.Distr argument.")
     }
-    if (is.vector(SI.Distr) == FALSE) {
+    if (!is.vector(SI.Distr)) {
       stop("method NonParametricSI requires that SI.Distr must be a vector.")
     }
     if (SI.Distr[1] != 0) {
       stop("method NonParametricSI requires that SI.Distr[1] = 0.")
     }
-    if (length(SI.Distr) > 1) {
-      for (i in 2:length(SI.Distr)) {
-        if (SI.Distr[i] < 0) {
-          stop("method NonParametricSI requires that SI.Distr must be a positive vector.")
-        }
-      }
+    if (any(SI.Distr < 0)) {
+      stop("method NonParametricSI requires that SI.Distr must be a positive vector.")
     }
     if (abs(sum(SI.Distr) - 1) > 0.01) {
       stop("method NonParametricSI requires that SI.Distr must sum to 1.")
     }
   }
   if (method == "ParametricSI") {
-    if (is.null(Mean.SI) == TRUE) {
+    if (is.null(Mean.SI)) {
       stop("method NonParametricSI requires to specify the Mean.SI argument.")
     }
-    if (is.null(Std.SI) == TRUE) {
+    if (is.null(Std.SI)) {
       stop("method NonParametricSI requires to specify the Std.SI argument.")
     }
-    if (Mean.SI < 1) {
+    if (Mean.SI <= 1) {
       stop("method ParametricSI requires a value >1 for Mean.SI.")
     }
-    if (Std.SI < 0) {
+    if (Std.SI <= 0) {
       stop("method ParametricSI requires a >0 value for Std.SI.")
     }
   }
   if (method == "UncertainSI") {
-    if (is.null(Mean.SI) == TRUE) {
+    if (is.null(Mean.SI)) {
       stop("method UncertainSI requires to specify the Mean.SI argument.")
     }
-    if (is.null(Std.SI) == TRUE) {
+    if (is.null(Std.SI)) {
       stop("method UncertainSI requires to specify the Std.SI argument.")
     }
-    if (is.null(n1) == TRUE) {
+    if (is.null(n1)) {
       stop("method UncertainSI requires to specify the n1 argument.")
     }
-    if (is.null(n2) == TRUE) {
+    if (is.null(n2)) {
       stop("method UncertainSI requires to specify the n2 argument.")
     }
-    if (is.null(Std.Mean.SI) == TRUE) {
+    if (is.null(Std.Mean.SI)) {
       stop("method UncertainSI requires to specify the Std.Mean.SI argument.")
     }
-    if (is.null(Min.Mean.SI) == TRUE) {
+    if (is.null(Min.Mean.SI)) {
       stop("method UncertainSI requires to specify the Min.Mean.SI argument.")
     }
-    if (is.null(Max.Mean.SI) == TRUE) {
+    if (is.null(Max.Mean.SI)) {
       stop("method UncertainSI requires to specify the Max.Mean.SI argument.")
     }
-    if (is.null(Std.Std.SI) == TRUE) {
+    if (is.null(Std.Std.SI)) {
       stop("method UncertainSI requires to specify the Std.Std.SI argument.")
     }
-    if (is.null(Min.Std.SI) == TRUE) {
+    if (is.null(Min.Std.SI)) {
       stop("method UncertainSI requires to specify the Min.Std.SI argument.")
     }
-    if (is.null(Max.Std.SI) == TRUE) {
+    if (is.null(Max.Std.SI)) {
       stop("method UncertainSI requires to specify the Max.Std.SI argument.")
     }
-    if (Mean.SI < 0) {
+    if (Mean.SI <= 0) {
       stop("method UncertainSI requires a >0 value for Mean.SI.")
     }
-    if (Std.SI < 0) {
+    if (Std.SI <= 0) {
       stop("method UncertainSI requires a >0 value for Std.SI.")
     }
     if (n2 <= 0 || n2%%1 != 0) {
@@ -368,7 +369,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     if (n1 <= 0 || n1%%1 != 0) {
       stop("method UncertainSI requires a >0 integer value for n1.")
     }
-    if (Std.Mean.SI < 0) {
+    if (Std.Mean.SI <= 0) {
       stop("method UncertainSI requires a >0 value for Std.Mean.SI.")
     }
     if (Min.Mean.SI < 1) {
@@ -384,16 +385,16 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
                                                    Min.Mean.SI, 3)) {
       warning("The distribution you chose for the mean SI is not centered around the mean.")
     }
-    if (Std.Std.SI < 0) {
+    if (Std.Std.SI <= 0) {
       stop("method UncertainSI requires a >0 value for Std.Std.SI.")
     }
-    if (Min.Std.SI < 0) {
+    if (Min.Std.SI <= 0) {
       stop("method UncertainSI requires a >0 value for Min.Std.SI.")
     }
     if (Max.Std.SI < Std.SI) {
       stop("method UncertainSI requires that Max.Std.SI >= Std.SI.")
     }
-    if (Std.SI <= Min.Std.SI) {
+    if (Std.SI < Min.Std.SI) {
       stop("method UncertainSI requires that Std.SI >= Min.Std.SI.")
     }
     if (signif(Max.Std.SI - Std.SI, 3) != signif(Std.SI -
@@ -575,9 +576,9 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   results$method <- method
   results$SI.Distr <- SI.Distr
   
-  if (plot == TRUE) {
+  if (plot) {
     
-    p1 <- ggplot(data.frame(Time=1:length(I), Incidence=I), aes(x=Time, y=Incidence)) +
+    p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I)), aes(x=Time, y=Incidence)) +
       geom_step() +
       ggtitle("Epidemic curve")
     p1ly <- ggplotly(p1)
@@ -682,7 +683,7 @@ plots <- function(results=NULL, I=NULL, plot=c("incidence", "R", "serial.interva
       stop("plot incidence requires I input.")
     }
     
-    p1 <- ggplot(data.frame(Time=1:length(I), Incidence=I), aes(x=Time, y=Incidence)) +
+    p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I)), aes(x=Time, y=Incidence)) +
       geom_step() +
       ggtitle("Epidemic curve")
     p1ly <- ggplotly(p1)

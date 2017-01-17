@@ -7,7 +7,11 @@
 OverallInfectivity(I, SI.Distr)
 }
 \arguments{
-\item{I}{Vector of non-negative integers containing an incidence time series.}
+\item{I}{One of the following
+\itemize{
+\item{A vector of non-negative integers containing an incidence time series}
+\item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
+}}
 
 \item{SI.Distr}{Vector of probabilities giving the discrete distribution of the serial interval.}
 }
@@ -20,7 +24,7 @@ A vector which contains the overall infectivity \eqn{\lambda_t} at each time ste
 \details{
 {
 The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is equal to the sum of the previously infected individuals 
-(given by the incidence vector \eqn{I}), 
+(given by the incidence vector \eqn{I}, with \code{I=I$local + I$imported} if \eqn{I} is a matrix), 
 weigthed by their infectivity at time \eqn{t} (given by the discrete serial interval distribution \eqn{w_k}). 
 In mathematical terms:   
 \cr

@@ -64,12 +64,9 @@ OverallInfectivity <-function (I,SI.Distr)
   {
     stop("SI.Distr[1] needs to be 0.")
   }
-  if(length(SI.Distr)>1)
+  if(any(SI.Distr<0))
   {
-    if(any(SI.Distr<0))
-    {
-      stop("SI.Distr must be a positive vector.")
-    }
+    stop("SI.Distr must be a positive vector.")
   }
   if(abs(sum(SI.Distr)-1)>0.01)
   {
