@@ -119,6 +119,7 @@
 #' Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 #' Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respiratory syndrome reveal similar impacts of control measures (AJE 2004).
 #' }
+#' @importFrom coarseDataTools dic.fit.mcmc
 #' @export
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
@@ -144,8 +145,30 @@
 #' # the bottom left plot produced shows, at each each day, 
 #' # the estimate of the reproduction number over the 7-day window finishing on that day.
 #' 
+#' ## load data on rotavirus
+#' data("MockRotavirus")
+#' 
 #' ## estimate the reproduction number (method "NonParametricUncertainSI")
-#' ## EXAMPLE TO COME
+#' R_NonParametricUncertainSI <- EstimateR(MockRotavirus$Incidence, 
+#'                                         T.Start=2:47, T.End=8:53, 
+#'                                         method="NonParametricUncertainSI", 
+#'                                         SI.Data=MockRotavirus$SI.Data, 
+#'                                         SI.parametricDistr = "G", MCMC.burnin = 5000, 
+#'                                         n1 = 1000, n2 = 50,
+#'                                         plot=TRUE, leg.pos=xy.coords(1,3))
+#' ## compare with version with no uncertainty
+#' R_Parametric <- EstimateR(MockRotavirus$Incidence, 
+#'                           T.Start=2:47, T.End=8:53, 
+#'                           method="ParametricSI", 
+#'                           Mean.SI = mean(R_NonParametricUncertainSI$SIDistr$Mean.SI.sample), 
+#'                           Std.SI = mean(R_NonParametricUncertainSI$SIDistr$Std.SI.sample), 
+#'                           plot=TRUE)
+#' ## generate plots
+#' p_uncertainty <- plots(R_NonParametricUncertainSI, "R")
+#' p_no_uncertainty <- plots(R_Parametric, "R")
+#' gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
+#' # the left hand side graph is with uncertainty in the SI distribution, the right hand side without. 
+#' # The credible intervals are wider when accounting for uncertainty in the SI distribution. 
 EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
                                                     "UncertainSI","NonParametricUncertainSI"), 
                       n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,

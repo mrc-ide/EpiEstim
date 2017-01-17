@@ -170,5 +170,39 @@
 #' # over the 7-day window finishing on that day.
 "Smallpox1972"
 
+##################################################################################################
+
+#' Mock data on a rotavirus epidemic.
+#'
+#' This data set gives:
+#' 1/ the daily incidence of onset of symptoms in a mock outbreak of rotavirus ,
+#' 2/ mock observations of symptom onset dates for 19 pairs of infector/infected individuals.
+#' @format A list of two elements: 
+#' \describe{
+#'   \item{Incidence}{a vector containing 53 days of observation,}
+#'   \item{SI.Distr}{a dataframe containing a set of 19 observations; each observation corresponds to a pair of infector/infected individuals. EL and ER columns contain the lower an upper bounds of the dates of symptoms onset in the infectors. SL and SR columns contain the lower an upper bounds of the dates of symptoms onset in the infected indiviuals. The type column corresponds to XXX TO BE COMPLETED XXX}
+#' }
+#' @source XXX TO BE COMPLETED XXX
+#' @references 
+#' {
+#' XXX TO BE COMPLETED XXX
+#' }
+#' @examples 
+#' ## load data 
+#' data("MockRotavirus")
+#' 
+#' ## estimate the reproduction number (method "NonParametricUncertainSI")
+#' EstimateR(MockRotavirus$Incidence, 
+#'           T.Start=2:47, T.End=8:53, 
+#'           method="NonParametricUncertainSI", 
+#'           SI.Data=MockRotavirus$SI.Data, 
+#'           SI.parametricDistr = "G", MCMC.burnin = 5000, 
+#'           n1 = 1000, n2 = 50,
+#'           plot=TRUE, leg.pos=xy.coords(1,3))
+#' # the second plot produced shows, at each each day, 
+#' # the estimate of the reproduction number 
+#' # over the 7-day window finishing on that day.
+"MockRotavirus"
+
 
 

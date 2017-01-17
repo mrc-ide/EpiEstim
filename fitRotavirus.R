@@ -1,7 +1,5 @@
 rm(list=ls())
 
-library(coarseDataTools)
-
 devtools::document()
 devtools::check() 
 devtools::build()
@@ -34,12 +32,6 @@ R_Parametric <- EstimateR(MockRotavirus$Incidence,
                           method="ParametricSI", 
                           Mean.SI = mean(R_NonParametricUncertainSI$SIDistr$Mean.SI.sample), Std.SI = mean(R_NonParametricUncertainSI$SIDistr$Std.SI.sample), 
                           plot=TRUE)
-  
-R_NonParametricUncertainSI$R$`Mean(R)`
-R_Parametric$R$`Mean(R)`
-
-R_NonParametricUncertainSI$R$`Quantile.0.975(R)`
-R_Parametric$R$`Quantile.0.975(R)`
 
 p_uncertainty <- plots(R_NonParametricUncertainSI, "R")
 p_no_uncertainty <- plots(R_Parametric, "R")
