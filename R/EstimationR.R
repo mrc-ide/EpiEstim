@@ -578,6 +578,19 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   
   if (plot) {
     
+    ########################################################################
+    ### these few lines are to make CRAN checks happy with ggplot2... ###
+    Time <- NULL
+    Incidence <- NULL
+    value <- NULL
+    meanR <- NULL
+    group <- NULL
+    lower <- NULL
+    upper <- NULL
+    Times <- NULL
+    ..density.. <- NULL
+    ########################################################################
+    
     p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I)), aes(x=Time, y=Incidence)) +
       geom_step() +
       ggtitle("Epidemic curve")
@@ -668,6 +681,19 @@ plots <- function(results=NULL, I=NULL, plot=c("incidence", "R", "serial.interva
   Quantile.0.975.Posterior <- results$R[, "Quantile.0.975(R)"]
   method <- results$method
   SI.Distr <- results$SI.Distr
+  
+  ########################################################################
+  ### these few lines are to make CRAN checks happy with ggplot2... ###
+  Time <- NULL
+  Incidence <- NULL
+  value <- NULL
+  meanR <- NULL
+  group <- NULL
+  lower <- NULL
+  upper <- NULL
+  Times <- NULL
+  ..density.. <- NULL
+  ########################################################################
   
   if (method == "UncertainSI") {
     Mean.SI.sample <- results$SIDistr["Mean.SI.sample"]
