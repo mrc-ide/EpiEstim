@@ -12,7 +12,11 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   CV.Posterior = 0.3, plot = FALSE, leg.pos = "topright", CDT = NULL)
 }
 \arguments{
-\item{I}{Vector of non-negative integers containing the incidence time series.}
+\item{I}{One of the following
+\itemize{
+\item{A vector of non-negative integers containing the incidence time series}
+\item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
+}}
 
 \item{T.Start}{Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.}
 

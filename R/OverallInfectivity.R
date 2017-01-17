@@ -7,12 +7,16 @@
 #' 
 #' \code{OverallInfectivity} computes the overall infectivity due to previously infected individuals. 
 #' 
-#' @param I Vector of non-negative integers containing an incidence time series.
+#' @param I One of the following
+#' \itemize{
+#' \item{A vector of non-negative integers containing an incidence time series}
+#' \item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
+#' } 
 #' @param SI.Distr Vector of probabilities giving the discrete distribution of the serial interval.
 #' @return A vector which contains the overall infectivity \eqn{\lambda_t} at each time step
 #' @details{
 #' The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is equal to the sum of the previously infected individuals 
-#' (given by the incidence vector \eqn{I}), 
+#' (given by the incidence vector \eqn{I}, with \code{I=I$local + I$imported} if \eqn{I} is a matrix), 
 #' weigthed by their infectivity at time \eqn{t} (given by the discrete serial interval distribution \eqn{w_k}). 
 #' In mathematical terms:   
 #' \cr
@@ -36,17 +40,21 @@
 #' title(main="Overall infectivity")
 OverallInfectivity <-function (I,SI.Distr)
 {
-  if(is.vector(I)==FALSE)
+  if(is.vector(I))
   {
-    stop("Incidence must be a vector.")
-  }
-  T<-length(I)
-  for(i in 1:T)
+    I_tmp <- I
+    I <- data.frame(local=I_tmp, imported=rep(0, length(I_tmp)))
+  }else
   {
-    if(I[i]<0)
+    if(!is.data.frame(I) | !all(c("local","imported") %in% names(I)) ) 
     {
-      stop("Incidence must be a positive vector.")
+      stop("I must be a vector or a dataframe with 2 columns called 'local' and 'imported'.")
     }
+  }
+  T<-nrow(I)
+  if(any(I<0))
+  {
+    stop("I must contain only non negative integer values.")
   }
   if(is.vector(SI.Distr)==FALSE)
   {
@@ -58,12 +66,9 @@ OverallInfectivity <-function (I,SI.Distr)
   }
   if(length(SI.Distr)>1)
   {
-    for(i in 2:length(SI.Distr))
+    if(any(SI.Distr<0))
     {
-      if(SI.Distr[i]<0)
-      {
-        stop("SI.Distr must be a positive vector.")
-      }
+      stop("SI.Distr must be a positive vector.")
     }
   }
   if(abs(sum(SI.Distr)-1)>0.01)
@@ -72,9 +77,9 @@ OverallInfectivity <-function (I,SI.Distr)
   }
   lambda <- vector()
   lambda[1]<-NA
-  for (t in 2:length(I))
+  for (t in 2:T)
   {
-    lambda[t] <- sum(SI.Distr[1:t]*I[t:1],na.rm=TRUE)
+    lambda[t] <- sum(SI.Distr[1:t]*rowSums(I[t:1, c("local","imported")]),na.rm=TRUE)
   }
   return(lambda)
 }
