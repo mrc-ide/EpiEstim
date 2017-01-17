@@ -14,8 +14,8 @@
 #' @param T.Start Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.
 #' @param T.End Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. 
 #' @param method Oone of "NonParametricSI", "ParametricSI" or "UncertainSI" (see details).
-#' @param n1 For method "UncertainSI" ; positive integer giving the size of the sample of pairs (Mean SI (serial interval), Std SI) to be drawn (see details).
-#' @param n2 For method "UncertainSI" ; positive integer giving the size of the sample drawn from each posterior distribution conditional to a pair (Mean SI, Std SI) (see details).
+#' @param n1 For method "UncertainSI" and "NonParametricUncertainSI"; positive integer giving the size of the sample of SI distributions to be drawn (see details).
+#' @param n2 For methods "UncertainSI" and "NonParametricUncertainSI" ; positive integer giving the size of the sample drawn from each posterior distribution (see details). 
 #' @param Mean.SI For method "ParametricSI" and "UncertainSI" ; positive real giving the mean serial interval (method "ParametricSI") or the average mean serial interval (method "UncertainSI", see details).
 #' @param Std.SI For method "ParametricSI" and "UncertainSI" ; non negative real giving the stadard deviation of the serial interval (method "ParametricSI") or the average standard deviation of the serial interval (method "UncertainSI", see details).
 #' @param Std.Mean.SI For method "UncertainSI" ; standard deviation of the distribution from which mean serial intervals are drawn (see details).
@@ -25,13 +25,16 @@
 #' @param Min.Std.SI For method "UncertainSI" ; lower bound of the distribution from which standard deviations of the serial interval are drawn (see details).
 #' @param Max.Std.SI For method "UncertainSI" ; upper bound of the distribution from which standard deviations of the serial interval are drawn (see details).
 #' @param SI.Distr For method "NonParametricSI" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{SI.Distr[1]} (probability that the serial interval is zero), which should be zero.
+#' @param SI.Data For method "NonParametricUncertainSI" ; the data on dates of symptoms of pairs of infector/infected individuals to be used to estimate the serial interval distribution (see details). 
+#' @param SI.parametricDistr For method "NonParametricUncertainSI" ; the parametric distribution to use when estimating the serial interval from data on dates of symptoms of pairs of infector/infected individuals (see details). 
+#' Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (Weibull), or "L" (Lognormal). 
+#' @param MCMC.burnin For method "NonParametricUncertainSI" ; the burnin used in the MCMC when estimating the serial interval distribution (see details). 
 #' @param Mean.Prior A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).
 #' @param Std.Prior A positive number giving the standard deviation of the common prior distribution for all reproduction numbers (see details).
 #' @param CV.Posterior A positive number giving the aimed posterior coefficient of variation (see details).
 #' @param plot Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).
 #' @param leg.pos One of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
 #  This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.
-#' @param CDT For method "NonParametricUncertainSI" ; an object of the S4 class \code{coarseDataTools::cd.fit.mcmc} which describes the model used to estimate the SI distribution.
 #' @return {
 #' a list with components: 
 #' \itemize{
@@ -73,7 +76,7 @@
 #' 
 #' ----------------------- \code{method "UncertainSI"} -----------------------
 #'    
-#' \code{Method "UncertainSI"} allows accounting for uncertainty on the serial interval distribution (see references). 
+#' \code{Method "UncertainSI"} allows accounting for uncertainty on the serial interval distribution (see Cori et al. AJE 2013). 
 #' We allow the mean \eqn{\mu} and standard deviation \eqn{\sigma} of the serial interval to vary according to truncated normal distributions. 
 #' We sample \code{n1} pairs of mean and standard deviations, \eqn{(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_2)},\sigma^{(n_2)})}, by first sampling the mean \eqn{\mu^{(k)}} 
 #' from its truncated normal distribution (with mean \code{Mean.SI}, standard deviation \code{Std.Mean.SI}, minimum \code{Min.Mean.SI} and maximum \code{Max.Mean.SI}), 
@@ -93,7 +96,22 @@
 #' 
 #' ----------------------- \code{method "NonParametricUncertainSI"} -----------------------
 #'   
-#' Details to come...
+#' \code{Method "NonParametricUncertainSI"} allows accounting for uncertainty on the serial interval distribution. 
+#' Unlike method "UncertainSI", where we arbitrarily vary the mean and std of the SI in truncated normal distributions, 
+#' here, the scope of serial interval distributions considered is directly informed by data
+#' on the (potentially censored) dates of symptoms of pairs of infector/infected individuals (specified in XXX TO BE COMPLETED XXXX). 
+#' Assuming a given parametric distribution for the serial interval distribution (specified in XXX TO BE COMPLETED XXXX), 
+#' the posterior distribution of the serial interval is estimated directly fom these data using MCMC methods implemented in the package \code{coarsedatatools}. 
+#' XXX NEED TO ADD SOME OPTIONS FOR THE MCMC SUCH AS BURNIN, NUMBER OF ITERATIONS AND HENCE POSTERIOR SAMPLE SIZE ETC. XXX
+#' For each element in the posterior sample of serial interval distribution, we draw a sample of size \code{n2} in the posterior distribution of the reproduction number over each time window, conditionnally on this serial interval distribution. 
+#' After pooling, a sample of size \eqn{\code{XXX TO BE COMPLETED XXX}\times\code{n2}} of the joint posterior distribution of the reproduction number over each time window is obtained.
+#' The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window are obtained from this sample.
+#' 
+#' If \code{plot} is \code{TRUE}, 4 plots are produced.
+#' The first one shows the epidemic curve. 
+#' The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
+#' The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
+#' The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval. 
 #' }
 #' @seealso \code{\link{DiscrSI}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk} 
@@ -133,21 +151,38 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                       Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
                       Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
-                      SI.Distr = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
-                      plot = FALSE, leg.pos = "topright", CDT = NULL) {
+                      SI.Distr = NULL, 
+                      SI.Data = NULL, SI.parametricDistr = c("G", "E", "off1G", "W", "L"),  MCMC.burnin = 3000, 
+                      Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
+                      plot = FALSE, leg.pos = "topright") {
   
   ### Need to add warnings if method="NonParametricUncertainSI" and CDT is not null 
   
-  if (!is.null(CDT)) {
-    # Warning if the CDT object is not of the S4 class "cd.fit.mcmc"
-    
-    if (class(CDT)[1]!="cd.fit.mcmc")
-      warning("CDT needs to be defined as an object of the S4 class 'cd.fit.mcmc??")
-    c2e <- coarse2estim(CDT)
-    EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = "NonParametricUncertainSI", n1=n1 , n2=n2 , Mean.SI=Mean.SI , Std.SI=Std.SI ,
-                   Std.Mean.SI=Std.Mean.SI , Min.Mean.SI=Min.Mean.SI , Max.Mean.SI=Max.Mean.SI ,
-                   Std.Std.SI=Std.Std.SI , Min.Std.SI=Min.Std.SI , Max.Std.SI=Max.Std.SI ,
-                   SI.Distr=SI.Distr , SI.Dist.Matrix= c2e$prob_matrix , Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
+  if (method=="NonParametricUncertainSI") {
+    # Warning if the expected set of parameters is not adequate
+    if(is.null(SI.Data))
+    {
+      stop("Method NonParametricUncertainSI requires non NULL argument SI.Data") 
+    }
+    SI.parametricDistr <- match.arg(SI.parametricDistr)
+    if (is.null(n1)) {
+      stop("method UncertainSI requires to specify the n1 argument.")
+    }
+    if (is.null(n2)) {
+      stop("method UncertainSI requires to specify the n2 argument.")
+    }
+    if (n2 <= 0 || n2%%1 != 0) {
+      stop("method UncertainSI requires a >0 integer value for n2.")
+    }
+    if (n1 <= 0 || n1%%1 != 0) {
+      stop("method UncertainSI requires a >0 integer value for n1.")
+    }
+    CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.burnin, n.samples = n1)
+    c2e <- coarse2estim(CDT, n2)
+    EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = "NonParametricUncertainSI", n1=n1 , n2=n2 , Mean.SI=NULL , Std.SI=NULL ,
+                   Std.Mean.SI=NULL , Min.Mean.SI=NULL , Max.Mean.SI=NULL ,
+                   Std.Std.SI=NULL , Min.Std.SI=NULL , Max.Std.SI=NULL ,
+                   SI.Distr=NULL , SI.Dist.Matrix= c2e$prob_matrix , Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
                    plot=plot , leg.pos=leg.pos)
   } else {
     EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = method, n1=n1 , n2=n2 , Mean.SI=Mean.SI , Std.SI=Std.SI ,
@@ -170,7 +205,9 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
                                                           "UncertainSI","NonParametricUncertainSI"), n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                             Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
                             Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
-                            SI.Distr = NULL, SI.Dist.Matrix = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
+                            SI.Distr = NULL, 
+                            SI.Dist.Matrix = NULL, 
+                            Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
                             plot = FALSE, leg.pos = "topright")
 {
   
