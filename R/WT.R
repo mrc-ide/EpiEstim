@@ -59,7 +59,7 @@
 #' Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respiratory syndrome reveal similar impacts of control measures (AJE 2004).
 #' }
 #' @export
-#' @import graphics
+#' @importFrom graphics legend lines par points segments
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
 #' data("Flu2009")

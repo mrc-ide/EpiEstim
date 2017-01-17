@@ -15,7 +15,7 @@
 #' @seealso XXXXXXX.
 #' @author XXXXXXX.
 #' @references XXXXXXX.
-#' @import stats
+# #' @import 
 #' @export
 #' @examples
 #' ## XXXXXXX.

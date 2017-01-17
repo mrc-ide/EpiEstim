@@ -162,7 +162,10 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
 # EstimateR_func: Doing the heavy work in EstimateR     #
 #########################################################
 
-#' @import graphics reshape2 ggplot2 plyr grid gridExtra plotly
+#' @import reshape2 grid gridExtra
+#' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
+#' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
+#' @importFrom stats median pgamma plnorm pweibull qgamma qlnorm quantile qweibull rgamma rmultinom rnorm sd
 EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
                                                           "UncertainSI","NonParametricUncertainSI"), n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                             Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
@@ -589,6 +592,8 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     upper <- NULL
     Times <- NULL
     ..density.. <- NULL
+    start <- NULL
+    end <- NULL
     ########################################################################
     
     p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I)), aes(x=Time, y=Incidence)) +
@@ -667,7 +672,9 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
 }
 
 #' @export
-#' @import graphics reshape2 ggplot2 plyr grid gridExtra plotly
+#' @import reshape2 grid gridExtra
+#' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
+#' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
 plots <- function(results=NULL, I=NULL, plot=c("incidence", "R", "serial.interval")) {
   
   if (is.null(results)) {
@@ -693,6 +700,8 @@ plots <- function(results=NULL, I=NULL, plot=c("incidence", "R", "serial.interva
   upper <- NULL
   Times <- NULL
   ..density.. <- NULL
+  start <- NULL
+  end <- NULL
   ########################################################################
   
   if (method == "UncertainSI") {
