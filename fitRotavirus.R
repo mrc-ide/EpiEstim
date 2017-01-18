@@ -16,10 +16,10 @@ R
 
 data("MockRotavirus")
 
-## estimate the reproduction number (method "NonParametricUncertainSI")
-R_NonParametricUncertainSI <- EstimateR(MockRotavirus$Incidence, 
+## estimate the reproduction number (method "SIFromData")
+R_SIFromData <- EstimateR(MockRotavirus$Incidence, 
           T.Start=2:47, T.End=8:53, 
-          method="NonParametricUncertainSI", SI.Data=MockRotavirus$SI.Data, SI.parametricDistr = "G", MCMC.burnin = 5000, 
+          method="SIFromData", SI.Data=MockRotavirus$SI.Data, SI.parametricDistr = "G", MCMC.burnin = 5000, 
           n1 = 1000, n2 = 50,
           plot=TRUE, leg.pos=xy.coords(1,3))
 
@@ -30,10 +30,10 @@ R_NonParametricUncertainSI <- EstimateR(MockRotavirus$Incidence,
 R_Parametric <- EstimateR(MockRotavirus$Incidence, 
                           T.Start=2:47, T.End=8:53, 
                           method="ParametricSI", 
-                          Mean.SI = mean(R_NonParametricUncertainSI$SIDistr$Mean.SI.sample), Std.SI = mean(R_NonParametricUncertainSI$SIDistr$Std.SI.sample), 
+                          Mean.SI = mean(R_SIFromData$SIDistr$Mean.SI.sample), Std.SI = mean(R_SIFromData$SIDistr$Std.SI.sample), 
                           plot=TRUE)
 
-p_uncertainty <- plots(R_NonParametricUncertainSI, "R")
+p_uncertainty <- plots(R_SIFromData, "R")
 p_no_uncertainty <- plots(R_Parametric, "R")
 gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
 

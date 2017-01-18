@@ -5,8 +5,8 @@
 \title{Estimated Instantaneous Reproduction Number}
 \usage{
 EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
-  "UncertainSI", "NonParametricUncertainSI"), n1 = NULL, n2 = NULL,
-  Mean.SI = NULL, Std.SI = NULL, Std.Mean.SI = NULL, Min.Mean.SI = NULL,
+  "UncertainSI", "SIFromData"), n1 = NULL, n2 = NULL, Mean.SI = NULL,
+  Std.SI = NULL, Std.Mean.SI = NULL, Min.Mean.SI = NULL,
   Max.Mean.SI = NULL, Std.Std.SI = NULL, Min.Std.SI = NULL,
   Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
   SI.parametricDistr = c("G", "E", "off1G", "W", "L"), MCMC.burnin = 3000,
@@ -26,9 +26,9 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 
 \item{method}{Oone of "NonParametricSI", "ParametricSI" or "UncertainSI" (see details).}
 
-\item{n1}{For method "UncertainSI" and "NonParametricUncertainSI"; positive integer giving the size of the sample of SI distributions to be drawn (see details).}
+\item{n1}{For method "UncertainSI" and "SIFromData"; positive integer giving the size of the sample of SI distributions to be drawn (see details).}
 
-\item{n2}{For methods "UncertainSI" and "NonParametricUncertainSI" ; positive integer giving the size of the sample drawn from each posterior distribution (see details).}
+\item{n2}{For methods "UncertainSI" and "SIFromData" ; positive integer giving the size of the sample drawn from each posterior distribution (see details).}
 
 \item{Mean.SI}{For method "ParametricSI" and "UncertainSI" ; positive real giving the mean serial interval (method "ParametricSI") or the average mean serial interval (method "UncertainSI", see details).}
 
@@ -48,12 +48,12 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 
 \item{SI.Distr}{For method "NonParametricSI" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{SI.Distr[1]} (probability that the serial interval is zero), which should be zero.}
 
-\item{SI.Data}{For method "NonParametricUncertainSI" ; the data on dates of symptoms of pairs of infector/infected individuals to be used to estimate the serial interval distribution (see details).}
+\item{SI.Data}{For method "SIFromData" ; the data on dates of symptoms of pairs of infector/infected individuals to be used to estimate the serial interval distribution (see details).}
 
-\item{SI.parametricDistr}{For method "NonParametricUncertainSI" ; the parametric distribution to use when estimating the serial interval from data on dates of symptoms of pairs of infector/infected individuals (see details). 
+\item{SI.parametricDistr}{For method "SIFromData" ; the parametric distribution to use when estimating the serial interval from data on dates of symptoms of pairs of infector/infected individuals (see details). 
 Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (Weibull), or "L" (Lognormal).}
 
-\item{MCMC.burnin}{For method "NonParametricUncertainSI" ; the burnin used in the MCMC when estimating the serial interval distribution (see details).}
+\item{MCMC.burnin}{For method "SIFromData" ; the burnin used in the MCMC when estimating the serial interval distribution (see details).}
 
 \item{Mean.Prior}{A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).}
 
@@ -76,7 +76,7 @@ the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles
 for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
 for method "ParametricSI", the discrete serial interval distribution;
 for method "UncertainSI", the means and standard deviations of the serial interval sampled to account for uncertainty on the serial interval distribution (see details);
-for method "NonParametricUncertainSI", the means and standard deviations of the serial interval sampled from the posterior disrtribution obtained by Bayesian estimation from doubly censored data (see details).}
+for method "SIFromData", the means and standard deviations of the serial interval sampled from the posterior disrtribution obtained by Bayesian estimation from doubly censored data (see details).}
 	}
 	}
 }
@@ -130,9 +130,9 @@ The second one shows the posterior median and 95\% credible interval of the repr
 The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
 The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval. 
 
------------------------ \code{method "NonParametricUncertainSI"} -----------------------
+----------------------- \code{method "SIFromData"} -----------------------
   
-\code{Method "NonParametricUncertainSI"} allows accounting for uncertainty on the serial interval distribution. 
+\code{Method "SIFromData"} allows accounting for uncertainty on the serial interval distribution. 
 Unlike method "UncertainSI", where we arbitrarily vary the mean and std of the SI in truncated normal distributions, 
 here, the scope of serial interval distributions considered is directly informed by data
 on the (potentially censored) dates of symptoms of pairs of infector/infected individuals (specified in XXX TO BE COMPLETED XXXX). 
@@ -177,10 +177,10 @@ EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="UncertainSI",
 ## load data on rotavirus
 data("MockRotavirus")
 
-## estimate the reproduction number (method "NonParametricUncertainSI")
-R_NonParametricUncertainSI <- EstimateR(MockRotavirus$Incidence, 
+## estimate the reproduction number (method "SIFromData")
+R_SIFromData <- EstimateR(MockRotavirus$Incidence, 
                                         T.Start=2:47, T.End=8:53, 
-                                        method="NonParametricUncertainSI", 
+                                        method="SIFromData", 
                                         SI.Data=MockRotavirus$SI.Data, 
                                         SI.parametricDistr = "G", MCMC.burnin = 5000, 
                                         n1 = 1000, n2 = 50,
@@ -189,11 +189,11 @@ R_NonParametricUncertainSI <- EstimateR(MockRotavirus$Incidence,
 R_Parametric <- EstimateR(MockRotavirus$Incidence, 
                           T.Start=2:47, T.End=8:53, 
                           method="ParametricSI", 
-                          Mean.SI = mean(R_NonParametricUncertainSI$SIDistr$Mean.SI.sample), 
-                          Std.SI = mean(R_NonParametricUncertainSI$SIDistr$Std.SI.sample), 
+                          Mean.SI = mean(R_SIFromData$SIDistr$Mean.SI.sample), 
+                          Std.SI = mean(R_SIFromData$SIDistr$Std.SI.sample), 
                           plot=TRUE)
 ## generate plots
-p_uncertainty <- plots(R_NonParametricUncertainSI, "R")
+p_uncertainty <- plots(R_SIFromData, "R")
 p_no_uncertainty <- plots(R_Parametric, "R")
 gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
 # the left hand side graph is with uncertainty in the SI distribution, the right hand side without. 

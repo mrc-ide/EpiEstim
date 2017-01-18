@@ -24,10 +24,10 @@ This data set gives:
 ## load data 
 data("MockRotavirus")
 
-## estimate the reproduction number (method "NonParametricUncertainSI")
+## estimate the reproduction number (method "SIFromData")
 EstimateR(MockRotavirus$Incidence, 
           T.Start=2:47, T.End=8:53, 
-          method="NonParametricUncertainSI", 
+          method="SIFromData", 
           SI.Data=MockRotavirus$SI.Data, 
           SI.parametricDistr = "G", MCMC.burnin = 5000, 
           n1 = 1000, n2 = 50,
