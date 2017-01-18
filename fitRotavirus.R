@@ -26,6 +26,7 @@ R_SIFromData <- EstimateR(MockRotavirus$Incidence,
                           plot=TRUE, leg.pos=xy.coords(1,3))
 
 # check convergence of MCMC
+# graphically
 # par(mfrow=c(2,1))
 # plot(R_SIFromData$SIDistr[,"Mean.SI.sample"], type="l", xlab="Iterations", ylab="Mean SI")
 # plot(R_SIFromData$SIDistr[,"Std.SI.sample"], type="l", xlab="Iterations", ylab="Std SI")

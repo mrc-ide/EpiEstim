@@ -54,7 +54,7 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 \item{SI.parametricDistr}{For method "SIFromData" ; the parametric distribution to use when estimating the serial interval from data on dates of symptoms of pairs of infector/infected individuals (see details). 
 Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (Weibull), or "L" (Lognormal).}
 
-\item{init.pars.MCMC}{For method "SIFromData" ; a vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically.}
+\item{init.pars.MCMC}{For method "SIFromData" ; a vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically using function \code{\link{init_MCMC_params}}.}
 
 \item{MCMC.burnin}{For method "SIFromData" ; the burnin used in the MCMC when estimating the serial interval distribution (see details).}
 
@@ -196,7 +196,7 @@ R_SIFromData <- EstimateR(MockRotavirus$Incidence,
                                         T.Start=2:47, T.End=8:53, 
                                         method="SIFromData", 
                                         SI.Data=MockRotavirus$SI.Data, 
-                                        SI.parametricDistr = "G", MCMC.burnin = 5000, 
+                                        SI.parametricDistr = "G", MCMC.burnin = 1000, 
                                         n1 = 1000, n2 = 50,
                                         plot=TRUE, leg.pos=xy.coords(1,3))
 ## compare with version with no uncertainty
@@ -217,7 +217,8 @@ gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
 set.seed(1)
 SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$SI.Data, 
                              dist="G", 
-                             burnin = 5000, 
+                             init.pars=init_MCMC_params(MockRotavirus$SI.Data, "G")
+                             burnin = 1000, 
                              n.samples = 1000)
 SI.Sample <- coarse2estim(SI.fit, nrow(SI.fit@samples))$prob_matrix
 R_SIFromSample <- EstimateR(MockRotavirus$Incidence, 

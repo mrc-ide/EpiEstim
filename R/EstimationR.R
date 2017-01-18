@@ -28,7 +28,7 @@
 #' @param SI.Data For method "SIFromData" ; the data on dates of symptoms of pairs of infector/infected individuals to be used to estimate the serial interval distribution (see details).
 #' @param SI.parametricDistr For method "SIFromData" ; the parametric distribution to use when estimating the serial interval from data on dates of symptoms of pairs of infector/infected individuals (see details). 
 #' Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (Weibull), or "L" (Lognormal). 
-#' @param init.pars.MCMC For method "SIFromData" ; a vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically. 
+#' @param init.pars.MCMC For method "SIFromData" ; a vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically using function \code{\link{init_MCMC_params}}. 
 #' @param MCMC.burnin For method "SIFromData" ; the burnin used in the MCMC when estimating the serial interval distribution (see details). 
 #' @param SI.Sample For method "SIFromSample" ; a matrix where each column gives one distribution of the serial interval to be explored (see details).
 #' @param Mean.Prior A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).
@@ -125,6 +125,7 @@
 #' Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respiratory syndrome reveal similar impacts of control measures (AJE 2004).
 #' }
 #' @importFrom coarseDataTools dic.fit.mcmc
+#' @importFrom coda gelman.diag as.mcmc.list as.mcmc
 #' @export
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
@@ -244,6 +245,29 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
       stop("You cannot fit a Gamma distribution with offset 1 to this SI dataset, because for some data points the maximum serial interval is <=1.\nChoose a different distribution")
     }
     CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.burnin, n.samples = n1, init.pars=init.pars.MCMC)
+    
+    #############################################################################################################################
+    # checking convergence of the MCMC by using the Gelman-Rubin algorithm between the first and second half of the MCMC sample
+    spl1 <- CDT@samples[1:floor(nrow(CDT@samples)/2),]
+    spl2 <- CDT@samples[(floor(nrow(CDT@samples)/2)+1):nrow(CDT@samples),]
+    GRD <- gelman.diag(as.mcmc.list(list(as.mcmc(spl1), as.mcmc(spl2))))
+    # Is any of the potential scale reduction factors >1.1 (looking at the upper CI)? 
+    # If so this would suggest that the MCMC has not converged well. 
+    if(any(GRD$psrf[,"Upper C.I."]>1.1))
+    {
+      warning("The Gelman-Rubin algorithm suggests the MCMC may not have converged within the number of iterations (MCMC.burnin + n1) specified. 
+                    You can visualise the full MCMC chain using: \n
+                    > par(mfrow=c(2,1))
+                    > plot(res$SIDistr[,'Mean.SI.sample''], type='l', xlab='Iterations', ylab='Mean SI') 
+                    > plot(res$SIDistr[,'Std.SI.sample'], type='l', xlab='Iterations', ylab='Std SI'),
+                    where res is the output of EstimateR
+                    and decide whether to rerun for longer.")
+    }else
+    {
+      print("Gelman-Rubin MCMC convergence diagnostic was successful.")
+    }
+    #############################################################################################################################
+    
     c2e <- coarse2estim(CDT, n1)
     EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = "SIFromData", n1=n1 , n2=n2 , Mean.SI=NULL , Std.SI=NULL ,
                    Std.Mean.SI=NULL , Min.Mean.SI=NULL , Max.Mean.SI=NULL ,

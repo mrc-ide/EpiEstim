@@ -18,7 +18,8 @@ Imports:
     grid,
     gridExtra,
     plotly,
-    fitdistrplus
+    fitdistrplus,
+    coda
 License: GPL (>=2)
 LazyLoad: yes
 Packaged: 2012-05-30 10:35:03 UTC; acori
