@@ -1,7 +1,7 @@
 rm(list=ls())
 
-install_github("nickreich/coarseDataTools", ref = "hackout3")
-
+#devtools::install_github("nickreich/coarseDataTools", ref = "hackout3", force=TRUE)
+library(coarseDataTools)
 devtools::document()
 devtools::check() 
 devtools::build()
@@ -28,10 +28,99 @@ R_SIFromData <- EstimateR(MockRotavirus$Incidence,
 
 SI.Data <- MockRotavirus$SI.Data
 SI.parametricDistr <- "off1G"
+n1 <- 1000
+MCMC.burnin <- 1000
 dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.burnin, n.samples = n1, init.pars=init_MCMC_params(SI.Data, SI.parametricDistr))
+dist.optim.untransform(SI.parametricDistr, init_MCMC_params(SI.Data, SI.parametricDistr))
 
 ### WHERE IS THIS FUNCTION???
 ### dist.optim.untransform
+dist.optim.untransform <- function(dist,pars){
+  if (dist == "G" || dist=="off1G"){
+    return(exp(pars)) # for shape and scale
+  } else if (dist == "W"){
+    return(exp(pars)) # for shape and scale
+  } else if (dist == "E"){
+    #shape identity, scale logged in estimation scale        
+    return(c(pars[1],exp(pars[2])))
+  } else if (dist == "L"){
+    return(c(pars[1],exp(pars[2]))) # for meanlog, sdlog
+  } else {
+    stop(sprintf("Distribtion (%s) not supported",dist))
+  }
+}
+
+dist.optim.transform <- function(dist,pars){
+  if (dist == "G" || dist == "off1G"){
+    return(log(pars)) # for shape and scale
+  } else if (dist == "W"){
+    return(log(pars)) # for shape and scale
+  } else if (dist == "E"){
+    #shape not transformed, logged
+    return(c(pars[1],log(pars[2])))
+  } else if (dist == "L"){
+    return(c(pars[1],log(pars[2]))) # for meanlog, sdlog
+  } else {
+    stop(sprintf("Distribtion (%s) not supported",dist))
+  }
+}
+
+mcmcpack.ll <- function(pars,
+                        dat,
+                        prior.par1,
+                        prior.par2,
+                        dist) {
+  
+  
+  
+  ## get parameters on untransformed scale
+  pars.untrans <- dist.optim.untransform(dist,pars)
+  
+  
+  
+  if (dist == "L"){
+    ## default gamma on scale param and (inproper) uniform on location
+    ll <- tryCatch(-loglikhd(pars,dat,dist) +
+                     ## dgamma(pars.untrans[2],shape=par.prior.param1[2],
+                     ## rate=par.prior.param2[2],log=T),
+                     sum(dnorm(pars,
+                               prior.par1,
+                               prior.par2,log=T)),
+                   error=function(e) {
+                     warning("Loglik failure, returning -Inf")
+                     return(-Inf)
+                   })
+    
+  } else if (dist == "W"){
+    ## using normal prior on the log-shape param and gamma on scale
+    ll <- tryCatch(
+      -loglikhd(pars,dat,dist) +
+        dnorm(pars[1],
+              prior.par1[1],
+              prior.par2[1],log=T) +
+        dgamma(pars.untrans[2],
+               shape=prior.par1[2],
+               rate=prior.par2[2],log=T),
+      error=function(e) {
+        warning("Loglik failure, returning -Inf")
+        return(-Inf)
+      })
+  } else if (dist == "G" || dist=="off1G"){
+    ## using Jeffery's prior
+    ll <- tryCatch(-loglikhd(pars,dat,dist)
+                   +
+                     log(1/pars.untrans[2]*sqrt(pars.untrans[1]*trigamma(pars.untrans[1])-1))
+                   ,
+                   error=function(e) {
+                     warning("Loglik failure, returning -Inf")
+                     return(-Inf)
+                   })
+    
+  } else {
+    stop("Sorry, unknown distribution type. Check the 'dist' option.")
+  }
+  return(ll)
+}
 
 # check convergence of MCMC
 # par(mfrow=c(2,1))
