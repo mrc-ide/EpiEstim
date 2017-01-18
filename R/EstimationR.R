@@ -28,6 +28,7 @@
 #' @param SI.Data For method "SIFromData" ; the data on dates of symptoms of pairs of infector/infected individuals to be used to estimate the serial interval distribution (see details).
 #' @param SI.parametricDistr For method "SIFromData" ; the parametric distribution to use when estimating the serial interval from data on dates of symptoms of pairs of infector/infected individuals (see details). 
 #' Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (Weibull), or "L" (Lognormal). 
+#' @param init.pars.MCMC For method "SIFromData" ; a vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically. 
 #' @param MCMC.burnin For method "SIFromData" ; the burnin used in the MCMC when estimating the serial interval distribution (see details). 
 #' @param SI.Sample For method "SIFromSample" ; a matrix where each column gives one distribution of the serial interval to be explored (see details).
 #' @param Mean.Prior A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).
@@ -163,7 +164,7 @@
 #'                                         T.Start=2:47, T.End=8:53, 
 #'                                         method="SIFromData", 
 #'                                         SI.Data=MockRotavirus$SI.Data, 
-#'                                         SI.parametricDistr = "G", MCMC.burnin = 5000, 
+#'                                         SI.parametricDistr = "G", MCMC.burnin = 1000, 
 #'                                         n1 = 1000, n2 = 50,
 #'                                         plot=TRUE, leg.pos=xy.coords(1,3))
 #' ## compare with version with no uncertainty
@@ -184,7 +185,8 @@
 #' set.seed(1)
 #' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$SI.Data, 
 #'                              dist="G", 
-#'                              burnin = 5000, 
+#'                              init.pars=init_MCMC_params(MockRotavirus$SI.Data, "G")
+#'                              burnin = 1000, 
 #'                              n.samples = 1000)
 #' SI.Sample <- coarse2estim(SI.fit, nrow(SI.fit@samples))$prob_matrix
 #' R_SIFromSample <- EstimateR(MockRotavirus$Incidence, 
@@ -205,7 +207,8 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
                       Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
                       SI.Distr = NULL, 
-                      SI.Data = NULL, SI.parametricDistr = c("G", "E", "off1G", "W", "L"),  MCMC.burnin = 3000, 
+                      SI.Data = NULL, SI.parametricDistr = c("G", "E", "off1G", "W", "L"),  
+                      init.pars.MCMC = NULL, MCMC.burnin = 3000, 
                       SI.Sample = NULL, 
                       Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
                       plot = FALSE, leg.pos = "topright") {
@@ -231,7 +234,16 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     if (n1 <= 0 || n1%%1 != 0) {
       stop("method UncertainSI requires a >0 integer value for n1.")
     }
-    CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.burnin, n.samples = n1, init.pars=init_MCMC_params(SI.Data, SI.parametricDistr))
+    if(is.null(init.pars.MCMC)) init.pars.MCMC <- init_MCMC_params(SI.Data, SI.parametricDistr)
+    if(any(SI.Data$SR-SI.Data$EL<=0))
+    {
+      stop("You cannot fit any of the supported distributions to this SI dataset, because for some data points the maximum serial interval is <=0.")
+    }
+    if(SI.parametricDistr=="off1G" & any(SI.Data$SR-SI.Data$EL<=1))
+    {
+      stop("You cannot fit a Gamma distribution with offset 1 to this SI dataset, because for some data points the maximum serial interval is <=1.\nChoose a different distribution")
+    }
+    CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.burnin, n.samples = n1, init.pars=init.pars.MCMC)
     c2e <- coarse2estim(CDT, n1)
     EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = "SIFromData", n1=n1 , n2=n2 , Mean.SI=NULL , Std.SI=NULL ,
                    Std.Mean.SI=NULL , Min.Mean.SI=NULL , Max.Mean.SI=NULL ,

@@ -9,9 +9,10 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   Mean.SI = NULL, Std.SI = NULL, Std.Mean.SI = NULL, Min.Mean.SI = NULL,
   Max.Mean.SI = NULL, Std.Std.SI = NULL, Min.Std.SI = NULL,
   Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
-  SI.parametricDistr = c("G", "E", "off1G", "W", "L"), MCMC.burnin = 3000,
-  SI.Sample = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
-  plot = FALSE, leg.pos = "topright")
+  SI.parametricDistr = c("G", "E", "off1G", "W", "L"),
+  init.pars.MCMC = NULL, MCMC.burnin = 3000, SI.Sample = NULL,
+  Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3, plot = FALSE,
+  leg.pos = "topright")
 }
 \arguments{
 \item{I}{One of the following
@@ -52,6 +53,8 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 
 \item{SI.parametricDistr}{For method "SIFromData" ; the parametric distribution to use when estimating the serial interval from data on dates of symptoms of pairs of infector/infected individuals (see details). 
 Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (Weibull), or "L" (Lognormal).}
+
+\item{init.pars.MCMC}{For method "SIFromData" ; a vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically.}
 
 \item{MCMC.burnin}{For method "SIFromData" ; the burnin used in the MCMC when estimating the serial interval distribution (see details).}
 
