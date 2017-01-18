@@ -231,7 +231,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     if (n1 <= 0 || n1%%1 != 0) {
       stop("method UncertainSI requires a >0 integer value for n1.")
     }
-    CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.burnin, n.samples = n1)
+    CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.burnin, n.samples = n1, init.pars=init_MCMC_params(SI.Data, SI.parametricDistr))
     c2e <- coarse2estim(CDT, n1)
     EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = "SIFromData", n1=n1 , n2=n2 , Mean.SI=NULL , Std.SI=NULL ,
                    Std.Mean.SI=NULL , Min.Mean.SI=NULL , Max.Mean.SI=NULL ,
