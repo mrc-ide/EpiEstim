@@ -22,8 +22,14 @@
 coarse2estim <- function(object, n_samples=1000){
   
   samples0 <- as.matrix(object@samples)
-  index <- sample(1:nrow(samples0), size= n_samples)
-  samples <- samples0[index, ]
+  if(n_samples<nrow(samples0))
+  {
+    index <- sample(1:nrow(samples0), size= n_samples)
+    samples <- samples0[index, ]
+  }else
+  {
+    samples <- samples0
+  }
   dist <- object@dist
   
   ##  Probability matrix that will be used in EpiEstim based on which distribution is specified by the user

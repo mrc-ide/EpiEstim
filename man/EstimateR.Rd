@@ -5,13 +5,13 @@
 \title{Estimated Instantaneous Reproduction Number}
 \usage{
 EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
-  "UncertainSI", "SIFromData"), n1 = NULL, n2 = NULL, Mean.SI = NULL,
-  Std.SI = NULL, Std.Mean.SI = NULL, Min.Mean.SI = NULL,
+  "UncertainSI", "SIFromData", "SIFromSample"), n1 = NULL, n2 = NULL,
+  Mean.SI = NULL, Std.SI = NULL, Std.Mean.SI = NULL, Min.Mean.SI = NULL,
   Max.Mean.SI = NULL, Std.Std.SI = NULL, Min.Std.SI = NULL,
   Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
   SI.parametricDistr = c("G", "E", "off1G", "W", "L"), MCMC.burnin = 3000,
-  Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3, plot = FALSE,
-  leg.pos = "topright")
+  SI.Sample = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
+  plot = FALSE, leg.pos = "topright")
 }
 \arguments{
 \item{I}{One of the following
@@ -24,11 +24,11 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 
 \item{T.End}{Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}.}
 
-\item{method}{Oone of "NonParametricSI", "ParametricSI" or "UncertainSI" (see details).}
+\item{method}{Oone of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample" (see details).}
 
 \item{n1}{For method "UncertainSI" and "SIFromData"; positive integer giving the size of the sample of SI distributions to be drawn (see details).}
 
-\item{n2}{For methods "UncertainSI" and "SIFromData" ; positive integer giving the size of the sample drawn from each posterior distribution (see details).}
+\item{n2}{For methods "UncertainSI", "SIFromData" and "SIFromSample"; positive integer giving the size of the sample drawn from the posterior distribution of R for each serial interval distribution considered (see details).}
 
 \item{Mean.SI}{For method "ParametricSI" and "UncertainSI" ; positive real giving the mean serial interval (method "ParametricSI") or the average mean serial interval (method "UncertainSI", see details).}
 
@@ -54,6 +54,8 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (Weibull), or "L" (Lognormal).}
 
 \item{MCMC.burnin}{For method "SIFromData" ; the burnin used in the MCMC when estimating the serial interval distribution (see details).}
+
+\item{SI.Sample}{For method "SIFromSample" ; a matrix where each column gives one distribution of the serial interval to be explored (see details).}
 
 \item{Mean.Prior}{A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).}
 
@@ -148,6 +150,9 @@ The first one shows the epidemic curve.
 The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
 The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
 The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval. 
+
+#' ----------------------- \code{method "SIFromSample"} -----------------------
+XXX TO BE COMPLETED XXX
 }
 }
 \examples{
@@ -174,10 +179,16 @@ EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="UncertainSI",
 # the bottom left plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
 
+\dontrun{
+## Note the following examples use an MCMC routine 
+## to estimate the serial interval distribution from data, 
+## so they may take a few minutes to run
+
 ## load data on rotavirus
 data("MockRotavirus")
 
 ## estimate the reproduction number (method "SIFromData")
+set.seed(1)
 R_SIFromData <- EstimateR(MockRotavirus$Incidence, 
                                         T.Start=2:47, T.End=8:53, 
                                         method="SIFromData", 
@@ -198,6 +209,26 @@ p_no_uncertainty <- plots(R_Parametric, "R")
 gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
 # the left hand side graph is with uncertainty in the SI distribution, the right hand side without. 
 # The credible intervals are wider when accounting for uncertainty in the SI distribution. 
+
+#' ## estimate the reproduction number (method "SIFromSample")
+set.seed(1)
+SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$SI.Data, 
+                             dist="G", 
+                             burnin = 5000, 
+                             n.samples = 1000)
+SI.Sample <- coarse2estim(SI.fit, nrow(SI.fit@samples))$prob_matrix
+R_SIFromSample <- EstimateR(MockRotavirus$Incidence, 
+                            T.Start=2:47, T.End=8:53, 
+                            method="SIFromSample", SI.Sample=SI.Sample,
+                            n2 = 50,
+                            plot=TRUE, leg.pos=xy.coords(1,3))
+
+# check that R_SIFromSample is the same as R_SIFromData 
+# since they were generated using the same MCMC algorithm to generate the SI sample
+# (either internally to EpiEstim or externally)
+all(R_SIFromSample$R$`Mean(R)` == R_SIFromData$R$`Mean(R)`) 
+}
+
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}

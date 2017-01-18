@@ -188,6 +188,11 @@
 #' XXX TO BE COMPLETED XXX
 #' }
 #' @examples 
+#' \dontrun{
+#' ## Note the following example uses an MCMC routine 
+#' ## to estimate the serial interval distribution from data, 
+#' ## so may take a few minutes to run
+#' 
 #' ## load data 
 #' data("MockRotavirus")
 #' 
@@ -196,12 +201,13 @@
 #'           T.Start=2:47, T.End=8:53, 
 #'           method="SIFromData", 
 #'           SI.Data=MockRotavirus$SI.Data, 
-#'           SI.parametricDistr = "G", MCMC.burnin = 5000, 
+#'           SI.parametricDistr = "G", MCMC.burnin = 3000, 
 #'           n1 = 1000, n2 = 50,
 #'           plot=TRUE, leg.pos=xy.coords(1,3))
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
+#' }
 "MockRotavirus"
 
 
