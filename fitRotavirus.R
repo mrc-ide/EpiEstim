@@ -1,5 +1,7 @@
 rm(list=ls())
 
+install_github("nickreich/coarseDataTools", ref = "hackout3")
+
 devtools::document()
 devtools::check() 
 devtools::build()
@@ -9,7 +11,7 @@ devtools::install()
 
 data("Flu2009")
 R <- EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-                        SI.Distr=Flu2009$SI.Distr, plot=TRUE, leg.pos=xy.coords(1,3))
+               SI.Distr=Flu2009$SI.Distr, plot=TRUE, leg.pos=xy.coords(1,3))
 R
 
 # now check the new SIFromData method using the mock rotavirus data 
@@ -19,15 +21,17 @@ data("MockRotavirus")
 ## estimate the reproduction number (method "SIFromData")
 set.seed(1)
 R_SIFromData <- EstimateR(MockRotavirus$Incidence, 
-          T.Start=2:47, T.End=8:53, 
-          method="SIFromData", SI.Data=MockRotavirus$SI.Data, SI.parametricDistr = "G", MCMC.burnin = 1000, 
-          n1 = 1000, n2 = 50,
-          plot=TRUE, leg.pos=xy.coords(1,3))
+                          T.Start=2:47, T.End=8:53, 
+                          method="SIFromData", SI.Data=MockRotavirus$SI.Data, SI.parametricDistr = "G", MCMC.burnin = 1000, 
+                          n1 = 1000, n2 = 50,
+                          plot=TRUE, leg.pos=xy.coords(1,3))
 
 SI.Data <- MockRotavirus$SI.Data
 SI.parametricDistr <- "off1G"
 dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.burnin, n.samples = n1, init.pars=init_MCMC_params(SI.Data, SI.parametricDistr))
 
+### WHERE IS THIS FUNCTION???
+### dist.optim.untransform
 
 # check convergence of MCMC
 # par(mfrow=c(2,1))
@@ -61,10 +65,10 @@ SI.fit2 <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$SI.Data, dist="G",i
 SI.Sample <- coarse2estim(SI.fit, nrow(SI.fit@samples))$prob_matrix
 
 R_SIFromSample <- EstimateR(MockRotavirus$Incidence, 
-                          T.Start=2:47, T.End=8:53, 
-                          method="SIFromSample", SI.Sample=SI.Sample,
-                          n2 = 50,
-                          plot=TRUE, leg.pos=xy.coords(1,3))
+                            T.Start=2:47, T.End=8:53, 
+                            method="SIFromSample", SI.Sample=SI.Sample,
+                            n2 = 50,
+                            plot=TRUE, leg.pos=xy.coords(1,3))
 
 # check that R_SIFromSample is the same as R_SIFromData 
 # since they were generated using the same MCMC algorithm to generate the SI sample
