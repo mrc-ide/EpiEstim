@@ -847,7 +847,9 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
       
     }
   }
-  results$I <- I
+  results$I <- rowSums(I)
+  results$I_local <- I$local
+  results$I_imported <- I$imported
   return(results)
 }
 
