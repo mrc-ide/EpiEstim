@@ -92,7 +92,7 @@
 #' 
 #' ----------------------- \code{method "UncertainSI"} -----------------------
 #'    
-#' \code{Method "UncertainSI"} allows accounting for uncertainty on the serial interval distribution (see Cori et al. AJE 2013). 
+#' \code{Method "UncertainSI"} allows accounting for uncertainty on the serial interval distribution as described in Cori et al. AJE 2013.
 #' We allow the mean \eqn{\mu} and standard deviation \eqn{\sigma} of the serial interval to vary according to truncated normal distributions. 
 #' We sample \code{n1} pairs of mean and standard deviations, \eqn{(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_2)},\sigma^{(n_2)})}, by first sampling the mean \eqn{\mu^{(k)}} 
 #' from its truncated normal distribution (with mean \code{Mean.SI}, standard deviation \code{Std.Mean.SI}, minimum \code{Min.Mean.SI} and maximum \code{Max.Mean.SI}), 
@@ -122,7 +122,7 @@
 #' \item{EL: the upper bound of the symptom onset date of the infector}
 #' \item{EL: the lower bound of the symptom onset date of the infected indivdiual}
 #' \item{EL: the upper bound of the symptom onset date of the infected indivdiual}
-#' \item{type: can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively.}
+#' \item{type: can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively, see Reich et al. Statist. Med. 2009}
 #' }
 #' Assuming a given parametric distribution for the serial interval distribution (specified in SI.parametricDistr), 
 #' the posterior distribution of the serial interval is estimated directly fom these data using MCMC methods implemented in the package \code{coarsedatatools}. 
@@ -144,13 +144,15 @@
 #' The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval. 
 #' 
 #' #' ----------------------- \code{method "SIFromSample"} -----------------------
-#' XXX TO BE COMPLETED XXX
+#' \code{Method "SIFromSample"} also allows accounting for uncertainty on the serial interval distribution. 
+#' Unlike methods "UncertainSI" and "SIFromData", the user directly provides (in argument \code{SI.Sample}) a sample of serial interval distribution to be explored. 
 #' }
 #' @seealso \code{\link{DiscrSI}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk} 
 #' @references {
 #' Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 #' Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respiratory syndrome reveal similar impacts of control measures (AJE 2004).
+#' Reich, N.G. et al. Estimating incubation period distributions with coarse data (Statis. Med. 2009)
 #' }
 #' @importFrom coarseDataTools dic.fit.mcmc
 #' @importFrom coda gelman.diag as.mcmc.list as.mcmc
