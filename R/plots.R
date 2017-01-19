@@ -5,7 +5,7 @@
 #' @param x The output of function \code{\link{EstimateR}} or function \code{\link{WT}}
 #' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), or the serial interval distribution (\code{what='SI'}). 
 #' @param add_imported_cases A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases. 
-#' @param ... If add_imported_cases is TRUE, additional arguments to pass to function \code{geom_step} for plotting the incidence of imported cases.
+#' @param ylim For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis
 #' @return a plot or a list of plots (if \code{what == "SI"} and \code{x$method == "UncertainSI"})
 # #' @details
 #' @seealso \code{\link{EstimateR}} and \code{\link{WT}}
@@ -28,16 +28,16 @@
 #'        ## (with, on top of total incidence, the incidence of imported cases), 
 #'        ## estimated instantaneous and case reproduction numbers 
 #'        ## and serial interval distribution used
-#' p_I <- plots(R_i, "I", add_imported_cases=TRUE, col="blue", lty=2) # plots the incidence 
+#' p_I <- plots(R_i, "I", add_imported_cases=TRUE) # plots the incidence 
 #' p_SI <- plots(R_i, "SI") # plots the serial interval distribution
-#' p_Ri <- plots(R_i, "R") # plots the estimated instantaneous reproduction number
-#' p_Rc <- plots(R_c, "R") # plots the estimated case reproduction number
+#' p_Ri <- plots(R_i, "R", ylim=c(0,4)) # plots the estimated instantaneous reproduction number
+#' p_Rc <- plots(R_c, "R", ylim=c(0,4)) # plots the estimated case reproduction number
 #' gridExtra::grid.arrange(p_I,p_SI,p_Ri,p_Rc,ncol=2)
 #' 
 #' @import reshape2 grid gridExtra
-#' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
+#' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram scale_colour_manual scale_fill_manual scale_linetype_manual lims
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
-plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ...) {
+plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL) {
   
   if (is.null(x)) {
     stop("plots requires non NULL x input.")
@@ -96,12 +96,23 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ...)
   what <- match.arg(what)
   if (what == "I") {
     p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I), Incidence_imported=I$imported)) +
-      geom_step(aes(x=Time, y=Incidence)) +
+      geom_step(aes(x=Time, y=Incidence, colour="All", linetype="All")) +
       ggtitle("Epidemic curve")
     if(add_imported_cases)
-      p1 <- p1 + geom_step(aes(x=Time, y=Incidence_imported), ...)
-        
-  p1ly <- ggplotly(p1)
+    {
+      p1 <- p1 + 
+        geom_step(aes(x=Time, y=Incidence_imported, colour="Imported", linetype="Imported")) +
+        scale_colour_manual("Incidence", 
+                            breaks = c("All", "Imported"),
+                            values = c("black", "blue"))  +
+        scale_linetype_manual("Incidence", 
+                              breaks = c("All", "Imported"),
+                              values = c("solid", "dashed"))
+    }
+    if(!is.null(ylim))
+      p1 <- p1 + lims(y=ylim)
+    
+    p1ly <- ggplotly(p1)
     print(p1ly)
     return(p1)
   }else if (what == "R") {
@@ -113,29 +124,38 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ...)
                             upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
       df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
       
+      if(is.null(ylim))
+        ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
+      
       p2 <- ggplot(df, aes(x=as.numeric(value), y=as.numeric(meanR), group=as.factor(group))) +
         geom_ribbon(aes(ymin=lower, ymax=upper), colour=NA, fill="black", alpha=0.2) +
         geom_line() +
         xlab("Time") +
         ylab("R") +
         xlim(c(1,max(T.End))) +
+        ylim(ylim)
         ggtitle("Estimated R")
+      
       p2ly <- ggplotly(p2)
       
       print(p2ly)
       return(p2)
     } else { 
-      
+      if(is.null(ylim))
+        ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
       p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                               upper=Quantile.0.975.Posterior), aes(end, meanR)) +
-        geom_ribbon(aes(ymin=lower, ymax=upper), fill="grey") +
-        geom_line() +
+        geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
+        geom_line(aes(colour="Mean")) +
         geom_hline(yintercept=1, linetype="dotted") +
         xlab("Time") +
         ylab("R") +
         xlim(c(1,max(T.End))) +
-        ylim(c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))) +
-        ggtitle("Estimated R") 
+        ylim(ylim) +
+        ggtitle("Estimated R") +
+        scale_colour_manual("",values="black")+
+        scale_fill_manual("",values="grey")
+        
       p2ly <- ggplotly(p2)
       
       print(p2ly)

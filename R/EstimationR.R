@@ -821,18 +821,17 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
       
       p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                               upper=Quantile.0.975.Posterior), aes(end, meanR)) +
-        geom_ribbon(aes(ymin=lower, ymax=upper), fill="grey") +
-        geom_line() +
+        geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
+        geom_line(aes(colour="Mean")) +
         geom_hline(yintercept=1, linetype="dotted") +
         xlab("Time") +
         ylab("R") +
         xlim(c(1,max(T.End))) +
         ylim(c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))) +
-        ggtitle("Estimated R") 
-      p2ly <- ggplotly(p2)
-      #+
-      #legend(leg.pos, c("Median", "95%CrI"), col = c("Black", 
-      #               grey), lwd = c(1, 10), bty = "n", cex = 1.2)
+        ggtitle("Estimated R") +
+        scale_colour_manual("",values="black")+
+        scale_fill_manual("",values="grey")
+      p2ly <- ggplotly(p2) 
     }
     
     if (SIUncertainty == "Y") {

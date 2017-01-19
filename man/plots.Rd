@@ -4,7 +4,8 @@
 \alias{plots}
 \title{Plotting the outputs of functions estimating the reproduction number from incidence time series and assumptions regarding the serial interval distribution}
 \usage{
-plots(x = NULL, what = c("I", "R", "SI"), add_imported_cases = FALSE, ...)
+plots(x = NULL, what = c("I", "R", "SI"), add_imported_cases = FALSE,
+  ylim = NULL)
 }
 \arguments{
 \item{x}{The output of function \code{\link{EstimateR}} or function \code{\link{WT}}}
@@ -13,7 +14,7 @@ plots(x = NULL, what = c("I", "R", "SI"), add_imported_cases = FALSE, ...)
 
 \item{add_imported_cases}{A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases.}
 
-\item{...}{If add_imported_cases is TRUE, additional arguments to pass to function \code{geom_step} for plotting the incidence of imported cases.}
+\item{ylim}{For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
 }
 \value{
 a plot or a list of plots (if \code{what == "SI"} and \code{x$method == "UncertainSI"})
@@ -33,13 +34,14 @@ R_i <- EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParamet
 R_c <- WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
           SI.Distr=Flu2009$SI.Distr, plot=FALSE)
 
-## produce plot of the incidence, 
+## produce plot of the incidence 
+       ## (with, on top of total incidence, the incidence of imported cases), 
        ## estimated instantaneous and case reproduction numbers 
        ## and serial interval distribution used
-p_I <- plots(R_i, "I") # plots the incidence 
+p_I <- plots(R_i, "I", add_imported_cases=TRUE) # plots the incidence 
 p_SI <- plots(R_i, "SI") # plots the serial interval distribution
-p_Ri <- plots(R_i, "R") # plots the estimated instantaneous reproduction number
-p_Rc <- plots(R_c, "R") # plots the estimated case reproduction number
+p_Ri <- plots(R_i, "R", ylim=c(0,4)) # plots the estimated instantaneous reproduction number
+p_Rc <- plots(R_c, "R", ylim=c(0,4)) # plots the estimated case reproduction number
 gridExtra::grid.arrange(p_I,p_SI,p_Ri,p_Rc,ncol=2)
 
 }
