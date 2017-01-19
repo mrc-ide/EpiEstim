@@ -209,8 +209,8 @@
 #'                           Std.SI = mean(R_SIFromData$SI.Moments$Std), 
 #'                           plot=TRUE)
 #' ## generate plots
-#' p_uncertainty <- plots(R_SIFromData, "R")
-#' p_no_uncertainty <- plots(R_Parametric, "R")
+#' p_uncertainty <- plots(R_SIFromData, "R", ylim=c(0, 1.5))
+#' p_no_uncertainty <- plots(R_Parametric, "R", ylim=c(0, 1.5))
 #' gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
 #' # the left hand side graph is with uncertainty in the SI distribution, the right hand side without. 
 #' # The credible intervals are wider when accounting for uncertainty in the SI distribution. 

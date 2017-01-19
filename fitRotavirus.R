@@ -40,11 +40,11 @@ R_SIFromData <- EstimateR(MockRotavirus$Incidence,
 R_Parametric <- EstimateR(MockRotavirus$Incidence, 
                           T.Start=2:47, T.End=8:53, 
                           method="ParametricSI", 
-                          Mean.SI = mean(R_SIFromData$SIDistr$Mean.SI.sample), Std.SI = mean(R_SIFromData$SIDistr$Std.SI.sample), 
+                          Mean.SI = mean(R_SIFromData$SI.Moments$Mean), Std.SI = mean(R_SIFromData$SI.Moments$Std), 
                           plot=TRUE)
 
-p_uncertainty <- plots(R_SIFromData, "R")
-p_no_uncertainty <- plots(R_Parametric, "R")
+p_uncertainty <- plots(R_SIFromData, "R", ylim=c(0,1.5))
+p_no_uncertainty <- plots(R_Parametric, "R", ylim=c(0,1.5))
 gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
 
 # now check the new SIFromSample method using the mock rotavirus data 
