@@ -4,6 +4,8 @@
 #' 
 #' @param x The output of function \code{\link{EstimateR}} or function \code{\link{WT}}
 #' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), or the serial interval distribution (\code{what='SI'}). 
+#' @param add_imported_cases A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases. 
+#' @param ... If add_imported_cases is TRUE, additional arguments to pass to function \code{geom_step} for plotting the incidence of imported cases.
 #' @return a plot or a list of plots (if \code{what == "SI"} and \code{x$method == "UncertainSI"})
 # #' @details
 #' @seealso \code{\link{EstimateR}} and \code{\link{WT}}
@@ -34,7 +36,7 @@
 #' @import reshape2 grid gridExtra
 #' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
-plots <- function(x=NULL, what=c("I", "R", "SI")) {
+plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ...) {
   
   if (is.null(x)) {
     stop("plots requires non NULL x input.")
@@ -53,11 +55,19 @@ plots <- function(x=NULL, what=c("I", "R", "SI")) {
   {
     I_tmp <- I
     I <- data.frame(local=I_tmp, imported=rep(0, length(I_tmp)))
+    I_init <- sum(I[1,])
+    I[1,] <- c(0, I_init)
   }else
   {
     if(!is.data.frame(I) | !all(c("local","imported") %in% names(I)) ) 
     {
       stop("I must be a vector or a dataframe with 2 columns called 'local' and 'imported'.")
+    }
+    if(I$local[1]>0)
+    {
+      warning("I$local[1] is >0 but must be 0, as all cases on the first time step are assumed imported. This is corrected automatically by cases being transferred to I$imported.")
+      I_init <- sum(I[1,])
+      I[1,] <- c(0, I_init)
     }
   }
   T<-nrow(I)
@@ -66,6 +76,7 @@ plots <- function(x=NULL, what=c("I", "R", "SI")) {
   ### these few lines are to make CRAN checks happy with ggplot2... ###
   Time <- NULL
   Incidence <- NULL
+  Incidence_imported <- NULL
   value <- NULL
   meanR <- NULL
   group <- NULL
@@ -78,15 +89,18 @@ plots <- function(x=NULL, what=c("I", "R", "SI")) {
   ########################################################################
   
   if (method == "UncertainSI") {
-    Mean.SI.sample <- x$SIDistr["Mean.SI.sample"]
-    Std.SI.sample <- x$SIDistr["Std.SI.sample"]
+    Mean.SI.sample <- x$SI.Moments["Mean"]
+    Std.SI.sample <- x$SI.Moments["Std"]
   }
   what <- match.arg(what)
   if (what == "I") {
-    p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I)), aes(x=Time, y=Incidence)) +
-      geom_step() +
+    p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I), Incidence_imported=I$imported)) +
+      geom_step(aes(x=Time, y=Incidence)) +
       ggtitle("Epidemic curve")
-    p1ly <- ggplotly(p1)
+    if(add_imported_cases)
+      p1 <- p1 + geom_step(aes(x=Time, y=Incidence_imported), ...)
+        
+  p1ly <- ggplotly(p1)
     print(p1ly)
     return(p1)
   }else if (what == "R") {

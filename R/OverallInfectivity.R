@@ -12,6 +12,7 @@
 #' \item{A vector of non-negative integers containing an incidence time series}
 #' \item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
 #' } 
+#' Note that the cases from the first time step are always all assumed to be imported cases. 
 #' @param SI.Distr Vector of probabilities giving the discrete distribution of the serial interval.
 #' @return A vector which contains the overall infectivity \eqn{\lambda_t} at each time step
 #' @details{
@@ -44,11 +45,19 @@ OverallInfectivity <-function (I,SI.Distr)
   {
     I_tmp <- I
     I <- data.frame(local=I_tmp, imported=rep(0, length(I_tmp)))
+    I_init <- sum(I[1,])
+    I[1,] <- c(0, I_init)
   }else
   {
     if(!is.data.frame(I) | !all(c("local","imported") %in% names(I)) ) 
     {
       stop("I must be a vector or a dataframe with 2 columns called 'local' and 'imported'.")
+    }
+    if(I$local[1]>0)
+    {
+      warning("I$local[1] is >0 but must be 0, as all cases on the first time step are assumed imported. This is corrected automatically by cases being transferred to I$imported.")
+      I_init <- sum(I[1,])
+      I[1,] <- c(0, I_init)
     }
   }
   T<-nrow(I)

@@ -4,12 +4,16 @@
 \alias{plots}
 \title{Plotting the outputs of functions estimating the reproduction number from incidence time series and assumptions regarding the serial interval distribution}
 \usage{
-plots(x = NULL, what = c("I", "R", "SI"))
+plots(x = NULL, what = c("I", "R", "SI"), add_imported_cases = FALSE, ...)
 }
 \arguments{
 \item{x}{The output of function \code{\link{EstimateR}} or function \code{\link{WT}}}
 
 \item{what}{A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), or the serial interval distribution (\code{what='SI'}).}
+
+\item{add_imported_cases}{A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases.}
+
+\item{...}{If add_imported_cases is TRUE, additional arguments to pass to function \code{geom_step} for plotting the incidence of imported cases.}
 }
 \value{
 a plot or a list of plots (if \code{what == "SI"} and \code{x$method == "UncertainSI"})

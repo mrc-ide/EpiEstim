@@ -11,6 +11,7 @@
 #' \item{A vector of non-negative integers containing the incidence time series}
 #' \item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
 #' } 
+#' Note that the cases from the first time step are always all assumed to be imported cases. 
 #' @param T.Start Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.
 #' @param T.End Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. 
 #' @param method One of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample" (see details).
@@ -441,11 +442,19 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   {
     I_tmp <- I
     I <- data.frame(local=I_tmp, imported=rep(0, length(I_tmp)))
+    I_init <- sum(I[1,])
+    I[1,] <- c(0, I_init)
   }else
   {
     if(!is.data.frame(I) | !all(c("local","imported") %in% names(I)) ) 
     {
       stop("I must be a vector or a dataframe with 2 columns called 'local' and 'imported'.")
+    }
+    if(I$local[1]>0)
+    {
+      warning("I$local[1] is >0 but must be 0, as all cases on the first time step are assumed imported. This is corrected automatically by cases being transferred to I$imported.")
+      I_init <- sum(I[1,])
+      I[1,] <- c(0, I_init)
     }
   }
   T<-nrow(I)

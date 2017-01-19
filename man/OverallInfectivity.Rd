@@ -11,7 +11,8 @@ OverallInfectivity(I, SI.Distr)
 \itemize{
 \item{A vector of non-negative integers containing an incidence time series}
 \item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
-}}
+} 
+Note that the cases from the first time step are always all assumed to be imported cases.}
 
 \item{SI.Distr}{Vector of probabilities giving the discrete distribution of the serial interval.}
 }
