@@ -221,7 +221,7 @@
 #'                              init.pars=init_MCMC_params(MockRotavirus$SI.Data, "G")
 #'                              burnin = 1000, 
 #'                              n.samples = 5000)
-#' SI.Sample <- coarse2estim(SI.fit, thin=10)$prob_matrix
+#' SI.Sample <- coarse2estim(SI.fit, thin=10)$SI.Sample
 #' R_SIFromSample <- EstimateR(MockRotavirus$Incidence, 
 #'                             T.Start=2:47, T.End=8:53, 
 #'                             method="SIFromSample", SI.Sample=SI.Sample,
