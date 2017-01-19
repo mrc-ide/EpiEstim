@@ -201,7 +201,8 @@
 #'           T.Start=2:47, T.End=8:53, 
 #'           method="SIFromData", 
 #'           SI.Data=MockRotavirus$SI.Data, 
-#'           SI.parametricDistr = "G", MCMC.burnin = 3000, 
+#'           SI.parametricDistr = "G", 
+#'           MCMC.control = list(burnin = 3000), 
 #'           n1 = 1000, n2 = 50,
 #'           plot=TRUE, leg.pos=xy.coords(1,3))
 #' # the second plot produced shows, at each each day, 

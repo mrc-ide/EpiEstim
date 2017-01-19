@@ -21,7 +21,9 @@ data("MockRotavirus")
 set.seed(1)
 R_SIFromData <- EstimateR(MockRotavirus$Incidence, 
                           T.Start=2:47, T.End=8:53, 
-                          method="SIFromData", SI.Data=MockRotavirus$SI.Data, SI.parametricDistr = "G", MCMC.burnin = 1000, 
+                          method="SIFromData", SI.Data=MockRotavirus$SI.Data, 
+                          SI.parametricDistr = "G", 
+                          MCMC.control = list(burnin = 1000), 
                           n1 = 1000, n2 = 50,
                           plot=TRUE, leg.pos=xy.coords(1,3))
 
