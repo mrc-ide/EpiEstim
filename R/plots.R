@@ -24,10 +24,11 @@
 #' R_c <- WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
 #'           SI.Distr=Flu2009$SI.Distr, plot=FALSE)
 #'
-#' ## produce plot of the incidence, 
+#' ## produce plot of the incidence 
+#'        ## (with, on top of total incidence, the incidence of imported cases), 
 #'        ## estimated instantaneous and case reproduction numbers 
 #'        ## and serial interval distribution used
-#' p_I <- plots(R_i, "I") # plots the incidence 
+#' p_I <- plots(R_i, "I", add_imported_cases=TRUE, col="blue", lty=2) # plots the incidence 
 #' p_SI <- plots(R_i, "SI") # plots the serial interval distribution
 #' p_Ri <- plots(R_i, "R") # plots the estimated instantaneous reproduction number
 #' p_Rc <- plots(R_c, "R") # plots the estimated case reproduction number
