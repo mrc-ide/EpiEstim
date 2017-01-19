@@ -126,7 +126,7 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   
   method <- match.arg(method)
   
-  if(is.vector(I)==FALSE)
+  if(!is.vector(I))
   {
     stop("I must be a vector.")
   }
@@ -140,11 +140,11 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   }
   I[which(is.na(I))] <- 0
   
-  if(is.vector(T.Start)==FALSE)
+  if(!is.vector(T.Start))
   {
     stop("T.Start must be a vector.")
   }
-  if(is.vector(T.End)==FALSE)
+  if(!is.vector(T.End))
   {
     stop("T.End must be a vector.")
   }
@@ -171,11 +171,11 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   
   if(method=="NonParametricSI")
   {
-    if(is.null(SI.Distr)==TRUE)
+    if(is.null(SI.Distr))
     {
       stop("method NonParametricSI requires to specify the SI.Distr argument.")
     }
-    if(is.vector(SI.Distr)==FALSE)
+    if(!is.vector(SI.Distr))
     {
       stop("method NonParametricSI requires that SI.Distr must be a vector.")
     }
@@ -202,11 +202,11 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   
   if(method=="ParametricSI")
   {
-    if(is.null(Mean.SI)==TRUE)
+    if(is.null(Mean.SI))
     {
       stop("method NonParametricSI requires to specify the Mean.SI argument.")
     }
-    if(is.null(Std.SI)==TRUE)
+    if(is.null(Std.SI))
     {
       stop("method NonParametricSI requires to specify the Std.SI argument.")
     }
@@ -225,7 +225,7 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
     stop("plot must be TRUE or FALSE.")
   }
   
-  if(is.numeric(nSim)==FALSE)
+  if(!is.numeric(nSim))
   {
     stop("nSim must be a positive integer.")
   }
