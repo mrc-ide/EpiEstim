@@ -63,6 +63,16 @@
 #' 
 #' The methods vary in the way the serial interval distribution is specified. The plots are also different according to the method used.
 #' 
+#' In short there are five methods to specify the serial interval distribution (see below for more detail on each method). 
+#' In the first two methods, a unique serial interval distribution is considered, whereas in the last three, a range of serial interval distributions are integrated over:
+#' \itemize{
+#' \item{In method "NonParametricSI" the user specifies the discrete distribution of the serial interval}
+#' \item{In method "ParametricSI" the user specifies the mean and sd of the serial interval}
+#' \item{In method "UncertainSI" the mean and sd of the serial interval are each drawn from truncated normal distributions, with parameters specified by the user}
+#' \item{In method "SIFromData", the serial interval distribution is directly estimated, using MCMC, from interval censored exposure data, with data provided by the user together with a choice of parametric distribution for the serial interval}
+#' \item{In method "SIFromSample", the user directly provides the sample of serial interval distribution to use for estimation of R. This can be a useful alternative to the previous method, where the MCMC estimation of the serial interval distribution could be run once, and the same estimated SI distribution then used in EstimateR in different contexts, e.g. with different time windows, hence avoiding to rerun the MCMC everytime EstimateR is called.}
+#' }
+#' 
 #' ----------------------- \code{method "NonParametricSI"} -----------------------
 #'   
 #' The discrete distribution of the serial interval is directly specified in the argument \code{SI.Distr}.
@@ -105,12 +115,26 @@
 #' \code{Method "SIFromData"} allows accounting for uncertainty on the serial interval distribution. 
 #' Unlike method "UncertainSI", where we arbitrarily vary the mean and std of the SI in truncated normal distributions, 
 #' here, the scope of serial interval distributions considered is directly informed by data
-#' on the (potentially censored) dates of symptoms of pairs of infector/infected individuals (specified in XXX TO BE COMPLETED XXXX). 
-#' Assuming a given parametric distribution for the serial interval distribution (specified in XXX TO BE COMPLETED XXXX), 
+#' on the (potentially censored) dates of symptoms of pairs of infector/infected individuals. 
+#' This data, specified in argument \code{SI.Data}, should be a dataframe with 5 columns:
+#' \itemize{
+#' \item{EL: the lower bound of the symptom onset date of the infector}
+#' \item{EL: the upper bound of the symptom onset date of the infector}
+#' \item{EL: the lower bound of the symptom onset date of the infected indivdiual}
+#' \item{EL: the upper bound of the symptom onset date of the infected indivdiual}
+#' \item{type: can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively.}
+#' }
+#' Assuming a given parametric distribution for the serial interval distribution (specified in SI.parametricDistr), 
 #' the posterior distribution of the serial interval is estimated directly fom these data using MCMC methods implemented in the package \code{coarsedatatools}. 
-#' XXX NEED TO ADD SOME OPTIONS FOR THE MCMC SUCH AS BURNIN, NUMBER OF ITERATIONS AND HENCE POSTERIOR SAMPLE SIZE ETC. XXX
-#' For each element in the posterior sample of serial interval distribution, we draw a sample of size \code{n2} in the posterior distribution of the reproduction number over each time window, conditionnally on this serial interval distribution. 
-#' After pooling, a sample of size \eqn{\code{XXX TO BE COMPLETED XXX}\times\code{n2}} of the joint posterior distribution of the reproduction number over each time window is obtained.
+#' The argument \code{MCMC.control} is a list of characteristics which control the MCMC. 
+#' The MCMC is run for a total number of iterations of \code{MCMC.control$burnin + n1*MCMC.control$thin};
+#' but the output is only recorded after the burnin, and only 1 in every \code{MCMC.control$thin} iterations, 
+#' so that the posterior sample size is \code{n1}.
+#' For each element in the posterior sample of serial interval distribution, 
+#' we then draw a sample of size \code{n2} in the posterior distribution of the reproduction number over each time window, 
+#' conditionnally on this serial interval distribution. 
+#' After pooling, a sample of size \eqn{\code{n1}\times\code{n2}} of the joint posterior distribution of 
+#' the reproduction number over each time window is obtained.
 #' The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window are obtained from this sample.
 #' 
 #' If \code{plot} is \code{TRUE}, 4 plots are produced.
