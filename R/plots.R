@@ -112,8 +112,8 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
     if(!is.null(ylim))
       p1 <- p1 + lims(y=ylim)
     
-    p1ly <- ggplotly(p1)
-    print(p1ly)
+    #p1ly <- ggplotly(p1)
+    print(p1)
     return(p1)
   }else if (what == "R") {
     
@@ -136,9 +136,8 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
         ylim(ylim)
         ggtitle("Estimated R")
       
-      p2ly <- ggplotly(p2)
-      
-      print(p2ly)
+      #p2ly <- ggplotly(p2)
+      print(p2)
       return(p2)
     } else { 
       if(is.null(ylim))
@@ -156,9 +155,8 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
         scale_colour_manual("",values="black")+
         scale_fill_manual("",values="grey")
         
-      p2ly <- ggplotly(p2)
-      
-      print(p2ly)
+      #p2ly <- ggplotly(p2)
+      print(p2)
       return(p2)
     }
     
@@ -192,9 +190,8 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
         xlim(c(0,0.5+max(SI.Distr.times))) + 
         ylab("Frequency") + 
         ggtitle("Serial interval distribution") 
-      p3ly <- ggplotly(p3)
-      
-      print(p3ly)
+      #p3ly <- ggplotly(p3)
+      print(p3)
       return(p3)
       
     }

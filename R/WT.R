@@ -335,7 +335,7 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
     p1 <- ggplot(data.frame(Time=1:T, Incidence=I), aes(x=Time, y=Incidence)) +
       geom_step() +
       ggtitle("Epidemic curve")
-    p1ly <- ggplotly(p1)
+    #p1ly <- ggplotly(p1)
     
     # test if intervals overlap 
     time.points <- apply(results$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 
@@ -346,30 +346,32 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
       df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
       
       p2 <- ggplot(df, aes(x=as.numeric(value), y=as.numeric(meanR), group=as.factor(group))) +
-        geom_ribbon(aes(ymin=lower, ymax=upper), colour=NA, fill="black", alpha=0.2) +
-        geom_line() +
+        geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CI")) +
+        geom_line(aes(colour="Mean")) +
         xlab("Time") +
         ylab("R") +
         xlim(c(1,max(T.End))) +
-        ggtitle("Estimated Rc")
-      p2ly <- ggplotly(p2)
+        ggtitle("Estimated Rc") +
+        scale_colour_manual("",values="black")+
+        scale_fill_manual("",values="grey")
+      #p2ly <- ggplotly(p2)
       
     } else { 
       
       p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=MeanRperDate.WT, lower=R025.WT,
                               upper=R975.WT), aes(end, meanR)) +
-        geom_ribbon(aes(ymin=lower, ymax=upper), fill="grey") +
-        geom_line() +
+        geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CI")) +
+        geom_line(aes(colour="Mean")) +
         geom_hline(yintercept=1, linetype="dotted") +
         xlab("Time") +
         ylab("R") +
         xlim(c(1,max(T.End))) +
         ylim(c(0,max(R975.WT, na.rm = TRUE))) +
-        ggtitle("Estimated Rc") 
-      p2ly <- ggplotly(p2)
-      #+
-      #legend(leg.pos, c("Median", "95%CrI"), col = c("Black", 
-      #               grey), lwd = c(1, 10), bty = "n", cex = 1.2)
+        ggtitle("Estimated Rc") +
+        scale_colour_manual("",values="black")+
+        scale_fill_manual("",values="grey")
+      #p2ly <- ggplotly(p2)
+      
     }
     
     SI.Distr.times <- unlist(apply(data.frame(0:(length(SI.Distr) - 1), SI.Distr), 1,
@@ -382,7 +384,7 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
       xlim(c(0,0.5+max(SI.Distr.times))) + 
       ylab("Frequency") + 
       ggtitle("Serial interval distribution") 
-    p3ly <- ggplotly(p3)
+    #p3ly <- ggplotly(p3)
     
     grid.arrange(p1,p3,p2,ncol=1)
   }

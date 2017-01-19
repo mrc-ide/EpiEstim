@@ -798,7 +798,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I)), aes(x=Time, y=Incidence)) +
       geom_step() +
       ggtitle("Epidemic curve")
-    p1ly <- ggplotly(p1)
+    #p1ly <- ggplotly(p1)
     
     # test if intervals overlap 
     time.points <- apply(results$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 
@@ -815,7 +815,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
         ylab("R") +
         xlim(c(1,max(T.End))) +
         ggtitle("Estimated R")
-      p2ly <- ggplotly(p2)
+      #p2ly <- ggplotly(p2)
       
     } else { 
       
@@ -831,7 +831,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
         ggtitle("Estimated R") +
         scale_colour_manual("",values="black")+
         scale_fill_manual("",values="grey")
-      p2ly <- ggplotly(p2) 
+      #p2ly <- ggplotly(p2) 
     }
     
     if (SIUncertainty == "Y") {
@@ -859,7 +859,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
         xlim(c(0,0.5+max(SI.Distr.times))) + 
         ylab("Frequency") + 
         ggtitle("Serial interval distribution") 
-      p3ly <- ggplotly(p3)
+      #p3ly <- ggplotly(p3)
       
       grid.arrange(p1,p3,p2,ncol=1)
       
