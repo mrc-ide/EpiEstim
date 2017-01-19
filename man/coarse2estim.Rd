@@ -4,12 +4,12 @@
 \alias{coarse2estim}
 \title{coarse2estim TITLE}
 \usage{
-coarse2estim(object, n_samples = 1000)
+coarse2estim(object, thin = 10)
 }
 \arguments{
 \item{object}{XXXXXXX.}
 
-\item{n_samples}{XXXXXXX.}
+\item{thin}{XXXX.}
 }
 \value{
 XXXXXXX.

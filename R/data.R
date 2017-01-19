@@ -202,8 +202,8 @@
 #'           method="SIFromData", 
 #'           SI.Data=MockRotavirus$SI.Data, 
 #'           SI.parametricDistr = "G", 
-#'           MCMC.control = list(burnin = 3000), 
-#'           n1 = 1000, n2 = 50,
+#'           MCMC.control = list(burnin = 3000, thin=10), 
+#'           n1 = 500, n2 = 50,
 #'           plot=TRUE, leg.pos=xy.coords(1,3))
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 

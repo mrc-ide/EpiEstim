@@ -10,9 +10,9 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   Max.Mean.SI = NULL, Std.Std.SI = NULL, Min.Std.SI = NULL,
   Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
   SI.parametricDistr = c("G", "E", "off1G", "W", "L"),
-  MCMC.control = list(init.pars = NULL, burnin = 3000), SI.Sample = NULL,
-  Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3, plot = FALSE,
-  leg.pos = "topright")
+  MCMC.control = list(init.pars = NULL, burnin = 3000, thin = 10),
+  SI.Sample = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
+  plot = FALSE, leg.pos = "topright")
 }
 \arguments{
 \item{I}{One of the following
@@ -58,6 +58,7 @@ Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (W
 \describe{
   \item{init.pars}{vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically using function \code{\link{init_MCMC_params}}.}
   \item{burnin}{a positive integer giving the burnin used in the MCMC when estimating the serial interval distribution.}
+  \item{thin}{a positive integer corresponding to thinning parameter; the MCMC will be run for \code{burnin+n1*thin iterations}; 1 in \code{thin} iterations will be recorded, after the burnin phase, so the posterior sample size is n1.}
 }}
 
 \item{SI.Sample}{For method "SIFromSample" ; a matrix where each column gives one distribution of the serial interval to be explored (see details).}

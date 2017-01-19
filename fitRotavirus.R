@@ -23,12 +23,11 @@ R_SIFromData <- EstimateR(MockRotavirus$Incidence,
                           T.Start=2:47, T.End=8:53, 
                           method="SIFromData", SI.Data=MockRotavirus$SI.Data, 
                           SI.parametricDistr = "G", 
-                          MCMC.control = list(burnin = 1000), 
-                          n1 = 1000, n2 = 50,
+                          MCMC.control = list(burnin = 1000, thin=10), 
+                          n1 = 500, n2 = 50,
                           plot=TRUE, leg.pos=xy.coords(1,3))
 
-# check convergence of MCMC
-# graphically
+# graphically check convergence of MCMC
 # par(mfrow=c(2,1))
 # plot(R_SIFromData$SIDistr[,"Mean.SI.sample"], type="l", xlab="Iterations", ylab="Mean SI")
 # plot(R_SIFromData$SIDistr[,"Std.SI.sample"], type="l", xlab="Iterations", ylab="Std SI")
@@ -48,8 +47,8 @@ gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
 # now check the new SIFromSample method using the mock rotavirus data 
 
 set.seed(1)
-SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$SI.Data, dist="G", burnin = 1000, n.samples = 1000, init.pars=init_MCMC_params(MockRotavirus$SI.Data, "G")) # may take a few minutes
-SI.Sample <- coarse2estim(SI.fit, nrow(SI.fit@samples))$prob_matrix
+SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$SI.Data, dist="G", burnin = 1000, n.samples = 5000, init.pars=init_MCMC_params(MockRotavirus$SI.Data, "G")) # may take a few minutes
+SI.Sample <- coarse2estim(SI.fit, thin=10)$prob_matrix
 
 R_SIFromSample <- EstimateR(MockRotavirus$Incidence, 
                             T.Start=2:47, T.End=8:53, 

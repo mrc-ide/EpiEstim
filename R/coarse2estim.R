@@ -7,7 +7,7 @@
 #' \code{coarse2estim} DESCRIPTION TO COME. 
 #' 
 #' @param object XXXXXXX.
-#' @param n_samples XXXXXXX.
+#' @param thin XXXX.
 #' @return XXXXXXX.
 #' @details{
 #' XXXXXXX. 
@@ -19,18 +19,19 @@
 #' @export
 #' @examples
 #' ## XXXXXXX.
-coarse2estim <- function(object, n_samples=1000){
+coarse2estim <- function(object, thin=10){
   
   samples0 <- as.matrix(object@samples)
-  if(n_samples<nrow(samples0))
+  if(thin>1)
   {
-    index <- sample(1:nrow(samples0), size= n_samples)
+    index <- seq(1, nrow(samples0), thin)
     samples <- samples0[index, ]
   }else
   {
     samples <- samples0
   }
   dist <- object@dist
+  n_samples <- nrow(samples)
   
   ##  Probability matrix that will be used in EpiEstim based on which distribution is specified by the user
   if (dist == "G" | dist == "E"){
