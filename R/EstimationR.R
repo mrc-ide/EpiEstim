@@ -120,10 +120,10 @@
 #' This data, specified in argument \code{SI.Data}, should be a dataframe with 5 columns:
 #' \itemize{
 #' \item{EL: the lower bound of the symptom onset date of the infector}
-#' \item{EL: the upper bound of the symptom onset date of the infector}
-#' \item{EL: the lower bound of the symptom onset date of the infected indivdiual}
-#' \item{EL: the upper bound of the symptom onset date of the infected indivdiual}
-#' \item{type: can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively, see Reich et al. Statist. Med. 2009}
+#' \item{ER: the upper bound of the symptom onset date of the infector. Should be such that ER>=EL}
+#' \item{SL: the lower bound of the symptom onset date of the infected indivdiual}
+#' \item{SR: the upper bound of the symptom onset date of the infected indivdiual. Should be such that SR>=SL}
+#' \item{type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates}
 #' }
 #' Assuming a given parametric distribution for the serial interval distribution (specified in SI.parametricDistr), 
 #' the posterior distribution of the serial interval is estimated directly fom these data using MCMC methods implemented in the package \code{coarsedatatools}. 
@@ -254,6 +254,14 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     {
       stop("Method SIFromData requires non NULL argument SI.Data") 
     }
+    if(any(SI.Data$ER-SI.Data$EL<0))
+    {
+      stop("SI.Data has entries for which ER<EL.")
+    }
+    if(any(SI.Data$SR-SI.Data$SL<0))
+    {
+      stop("SI.Data has entries for which SR<SL.")
+    }
     SI.parametricDistr <- match.arg(SI.parametricDistr)
     if (is.null(n1)) {
       stop("method UncertainSI requires to specify the n1 argument.")
@@ -275,6 +283,17 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     if(SI.parametricDistr=="off1G" & any(SI.Data$SR-SI.Data$EL<=1))
     {
       stop("You cannot fit a Gamma distribution with offset 1 to this SI dataset, because for some data points the maximum serial interval is <=1.\nChoose a different distribution")
+    }
+    # check that the types [0: double censored, 1; single censored, 2: exact observation] are correctly specified, and if not present put them in.
+    tmp_type <- 2 - rowSums(cbind(SI.Data$ER-SI.Data$EL!=0, SI.Data$SR-SI.Data$SL!=0))
+    if(!("type" %in% names(SI.Data)))
+    {
+      warning("SI.Data contains no 'type' column. This is inferred automatically from the other columns.")
+      SI.Data$type <- tmp_type
+    }else if(any(is.na(SI.Data$type)) | !all(SI.Data$type == tmp_type))
+    {
+      warning("SI.Data contains unexpected entries in the 'type' column. This is inferred automatically from the other columns.")
+      SI.Data$type <- tmp_type
     }
     CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.control$burnin, n.samples = n1*MCMC.control$thin, init.pars=MCMC.control$init.pars)
     
@@ -307,7 +326,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = "SIFromData", n1=n1 , n2=n2 , Mean.SI=NULL , Std.SI=NULL ,
                    Std.Mean.SI=NULL , Min.Mean.SI=NULL , Max.Mean.SI=NULL ,
                    Std.Std.SI=NULL , Min.Std.SI=NULL , Max.Std.SI=NULL ,
-                   SI.Distr=NULL , SI.Sample= c2e$prob_matrix , Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
+                   SI.Distr=NULL , SI.Sample= c2e$SI.Sample , Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
                    plot=plot , leg.pos=leg.pos)
   } else {
     EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = method, n1=n1 , n2=n2 , Mean.SI=Mean.SI , Std.SI=Std.SI ,

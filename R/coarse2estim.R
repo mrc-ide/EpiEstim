@@ -2,7 +2,7 @@
 # coarse2estim integates CoarseDataTools with EpiEstim using the amended version of EstimateR called EstimateR_func #
 #######################################################################################################################
 
-#' coarse2estim TITLE
+#' Link coarseDataTools and EpiEstim
 #' 
 #' \code{coarse2estim} Transorms outputs of \code{coarseDataTools::dic.fit.mcmc} to right format for input into \code{EstimateR}
 #' 

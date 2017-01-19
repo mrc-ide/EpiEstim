@@ -2,7 +2,7 @@
 % Please edit documentation in R/coarse2estim.R
 \name{coarse2estim}
 \alias{coarse2estim}
-\title{coarse2estim TITLE}
+\title{Link coarseDataTools and EpiEstim}
 \usage{
 coarse2estim(x, thin = 10)
 }

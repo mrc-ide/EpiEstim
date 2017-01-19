@@ -158,10 +158,10 @@ on the (potentially censored) dates of symptoms of pairs of infector/infected in
 This data, specified in argument \code{SI.Data}, should be a dataframe with 5 columns:
 \itemize{
 \item{EL: the lower bound of the symptom onset date of the infector}
-\item{EL: the upper bound of the symptom onset date of the infector}
-\item{EL: the lower bound of the symptom onset date of the infected indivdiual}
-\item{EL: the upper bound of the symptom onset date of the infected indivdiual}
-\item{type: can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively, see Reich et al. Statist. Med. 2009}
+\item{ER: the upper bound of the symptom onset date of the infector. Should be such that ER>=EL}
+\item{SL: the lower bound of the symptom onset date of the infected indivdiual}
+\item{SR: the upper bound of the symptom onset date of the infected indivdiual. Should be such that SR>=SL}
+\item{type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates}
 }
 Assuming a given parametric distribution for the serial interval distribution (specified in SI.parametricDistr), 
 the posterior distribution of the serial interval is estimated directly fom these data using MCMC methods implemented in the package \code{coarsedatatools}. 
