@@ -22,10 +22,10 @@
 #' 	\itemize{
 #' 	\item{R}{: a dataframe containing: 
 #' 	    the times of start and end of each time window considered ; 
-#' 	  the estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction number for each time window.}
-#' 	\item{SIDistr}{: a dataframe containing: 
-#' 	    for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
-#' 	for method "ParametricSI", the discrete serial interval distribution.}
+#' 	    the estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction number for each time window.}
+#' 	\item{method}{: the method used to estimate R, one of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample"}
+#' 	\item{SI.Distr}{: a vector containing the discrete serial interval distribution used for estimation}
+#' 	\item{SI.Moments}{: a vector containing the mean and std of the discrete serial interval distribution(s) used for estimation}
 #' 	}
 #' 	}
 #' @details{
@@ -307,23 +307,13 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   results$R<-as.data.frame(cbind(T.Start,T.End,MeanRperDate.WT,std.WT,R025.WT,R975.WT))
   names(results$R)<-c("T.Start","T.End","Mean(R)","Std(R)","Quantile.0.025(R)","Quantile.0.975(R)")
   
-  if(ParametricSI=="Y") # method "ParametricSI"
-  {
-    if(length(which(abs(cumsum(SI.Distr)-1)<0.01))==0)
-    {
-      warning("The serial interval distribution you have chosen is very wide compared to the duration of the epidemic.\nEstimation will be performed anyway but restults should be interpreted with care.")
-      MaxT <- length(cumsum(SI.Distr))
-    }else
-    {
-      MaxT<-min(which(abs(cumsum(SI.Distr)-1)<0.01))
-    }
-    results$SIDistr<-as.data.frame(cbind(0:(MaxT-1),SI.Distr[1:MaxT]))
-    names(results$SIDistr)<-c("k","w[k]")
-  }else # method "NonParametricSI"
-  {
-    results$SIDistr<-as.data.frame(cbind(FinalMean.SI,FinalStd.SI))
-    names(results$SIDistr)<-c("Mean Discrete SI","Std Discrete SI")
-  }
+  results$method <- method
+  results$SI.Distr <- SI.Distr
+  
+  results$SI.Moments<-as.data.frame(cbind(FinalMean.SI,FinalStd.SI))
+  names(results$SI.Moments)<-c("Mean","Std")
+  
+  results$I <- I
   
   if(plot)
   {
@@ -397,9 +387,6 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
     grid.arrange(p1,p3,p2,ncol=1)
   }
   
-  results$method <- method
-  results$SI.Distr <- SI.Distr
-  results$I <- I
   return(results)
   
 }

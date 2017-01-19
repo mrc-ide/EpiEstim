@@ -25,7 +25,7 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 
 \item{T.End}{Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}.}
 
-\item{method}{Oone of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample" (see details).}
+\item{method}{One of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample" (see details).}
 
 \item{n1}{For method "UncertainSI" and "SIFromData"; positive integer giving the size of the sample of SI distributions to be drawn (see details).}
 
@@ -80,13 +80,14 @@ a list with components:
 \item{R}{: a dataframe containing: 
 the times of start and end of each time window considered ; 
 the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window.}
-\item{SIDistr}{: a dataframe containing: 
-for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
-for method "ParametricSI", the discrete serial interval distribution;
-for method "UncertainSI", the means and standard deviations of the serial interval sampled to account for uncertainty on the serial interval distribution (see details);
-for method "SIFromData", the means and standard deviations of the serial interval sampled from the posterior disrtribution obtained by Bayesian estimation from doubly censored data (see details).}
-	}
-	}
+	\item{method}{: the method used to estimate R, one of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample"}
+	\item{SI.Distr}{: a vector or dataframe (depending on the method) containing the discrete serial interval distribution(s) used for estimation}
+	\item{SI.Moments}{: a vector or dataframe (depending on the method) containing the mean and std of the discrete serial interval distribution(s) used for estimation}
+	\item{I}{: the time series of total incidence}
+	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
+	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
+}
+}
 }
 \description{
 \code{EstimateR} estimates the reproduction number of an epidemic, given the incidence time series and the serial interval distribution.
@@ -232,8 +233,8 @@ R_SIFromData <- EstimateR(MockRotavirus$Incidence,
 R_Parametric <- EstimateR(MockRotavirus$Incidence, 
                           T.Start=2:47, T.End=8:53, 
                           method="ParametricSI", 
-                          Mean.SI = mean(R_SIFromData$SIDistr$Mean.SI.sample), 
-                          Std.SI = mean(R_SIFromData$SIDistr$Std.SI.sample), 
+                          Mean.SI = mean(R_SIFromData$SI.Moments$Mean), 
+                          Std.SI = mean(R_SIFromData$SI.Moments$Std), 
                           plot=TRUE)
 ## generate plots
 p_uncertainty <- plots(R_SIFromData, "R")

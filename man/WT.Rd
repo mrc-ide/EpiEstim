@@ -36,10 +36,10 @@ This specifies the position of the legend in the plot. Alternatively, \code{loca
 	\itemize{
 	\item{R}{: a dataframe containing: 
 	    the times of start and end of each time window considered ; 
-	  the estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction number for each time window.}
-	\item{SIDistr}{: a dataframe containing: 
-	    for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
-	for method "ParametricSI", the discrete serial interval distribution.}
+	    the estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction number for each time window.}
+	\item{method}{: the method used to estimate R, one of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample"}
+	\item{SI.Distr}{: a vector containing the discrete serial interval distribution used for estimation}
+	\item{SI.Moments}{: a vector containing the mean and std of the discrete serial interval distribution(s) used for estimation}
 	}
 	}
 }

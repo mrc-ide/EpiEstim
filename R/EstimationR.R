@@ -13,7 +13,7 @@
 #' } 
 #' @param T.Start Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.
 #' @param T.End Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. 
-#' @param method Oone of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample" (see details).
+#' @param method One of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample" (see details).
 #' @param n1 For method "UncertainSI" and "SIFromData"; positive integer giving the size of the sample of SI distributions to be drawn (see details).
 #' @param n2 For methods "UncertainSI", "SIFromData" and "SIFromSample"; positive integer giving the size of the sample drawn from the posterior distribution of R for each serial interval distribution considered (see details). 
 #' @param Mean.SI For method "ParametricSI" and "UncertainSI" ; positive real giving the mean serial interval (method "ParametricSI") or the average mean serial interval (method "UncertainSI", see details).
@@ -47,13 +47,14 @@
 #' \item{R}{: a dataframe containing: 
 #' the times of start and end of each time window considered ; 
 #' the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window.}
-#' \item{SIDistr}{: a dataframe containing: 
-#' for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
-#' for method "ParametricSI", the discrete serial interval distribution;
-#' for method "UncertainSI", the means and standard deviations of the serial interval sampled to account for uncertainty on the serial interval distribution (see details);
-#' for method "SIFromData", the means and standard deviations of the serial interval sampled from the posterior disrtribution obtained by Bayesian estimation from doubly censored data (see details).}
-#' 	}
-#' 	}
+#' 	\item{method}{: the method used to estimate R, one of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample"}
+#' 	\item{SI.Distr}{: a vector or dataframe (depending on the method) containing the discrete serial interval distribution(s) used for estimation}
+#' 	\item{SI.Moments}{: a vector or dataframe (depending on the method) containing the mean and std of the discrete serial interval distribution(s) used for estimation}
+#' 	\item{I}{: the time series of total incidence}
+#' 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
+#' 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
+#' }
+#' }
 #' @details{
 #' Analytical estimates of the reproduction number for an epidemic over predefined time windows can be obtained within a Bayesian framework, 
 #' for a given discrete distribution of the serial interval (see references). 
@@ -203,8 +204,8 @@
 #' R_Parametric <- EstimateR(MockRotavirus$Incidence, 
 #'                           T.Start=2:47, T.End=8:53, 
 #'                           method="ParametricSI", 
-#'                           Mean.SI = mean(R_SIFromData$SIDistr$Mean.SI.sample), 
-#'                           Std.SI = mean(R_SIFromData$SIDistr$Std.SI.sample), 
+#'                           Mean.SI = mean(R_SIFromData$SI.Moments$Mean), 
+#'                           Std.SI = mean(R_SIFromData$SI.Moments$Std), 
 #'                           plot=TRUE)
 #' ## generate plots
 #' p_uncertainty <- plots(R_SIFromData, "R")
@@ -289,8 +290,8 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
       warning("The Gelman-Rubin algorithm suggests the MCMC may not have converged within the number of iterations (MCMC.burnin + n1) specified. 
                     You can visualise the full MCMC chain using: \n
                     > par(mfrow=c(2,1))
-                    > plot(res$SIDistr[,'Mean.SI.sample''], type='l', xlab='Iterations', ylab='Mean SI') 
-                    > plot(res$SIDistr[,'Std.SI.sample'], type='l', xlab='Iterations', ylab='Std SI'),
+                    > plot(res$SI.Moments[,'Mean'], type='l', xlab='Iterations', ylab='Mean SI') 
+                    > plot(res$SI.Moments[,'Std'], type='l', xlab='Iterations', ylab='Std SI'),
                     where res is the output of EstimateR
                     and decide whether to rerun for longer.")
     }else
@@ -733,31 +734,21 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
                         "Quantile.0.025(R)", "Quantile.0.05(R)", "Quantile.0.25(R)",
                         "Median(R)", "Quantile.0.75(R)", "Quantile.0.95(R)",
                         "Quantile.0.975(R)")
-  if (SIUncertainty == "Y") {
-    results$SIDistr <- as.data.frame(cbind(Mean.SI.sample,
-                                           Std.SI.sample))
-  }else {
-    if (ParametricSI == "Y") {
-      if (length(which(abs(cumsum(SI.Distr) - 1) < 0.01)) ==
-          0) {
-        warning("The serial interval distribution you have chosen is very wide compared to the duration of the epidemic.\nEstimation will be performed anyway but restults should be interpreted with care.")
-        MaxT <- length(cumsum(SI.Distr))
-      }else {
-        MaxT <- min(which(abs(cumsum(SI.Distr) - 1) <
-                            0.01))
-      }
-      results$SIDistr <- as.data.frame(cbind(0:(MaxT -
-                                                  1), SI.Distr[1:MaxT]))
-      names(results$SIDistr) <- c("k", "w[k]")
-    }else {
-      results$SIDistr <- as.data.frame(cbind(FinalMean.SI,
-                                             FinalStd.SI))
-      names(results$SIDistr) <- c("Mean Discrete SI", "Std Discrete SI")
-    }
-  }
-  
   results$method <- method
   results$SI.Distr <- SI.Distr
+  if (SIUncertainty == "Y") {
+    results$SI.Moments <- as.data.frame(cbind(Mean.SI.sample,
+                                           Std.SI.sample))
+    names(results$SI.Moments) <- c("Mean","Std")
+  }else {
+      results$SI.Moments <- as.data.frame(cbind(FinalMean.SI,
+                                             FinalStd.SI))
+      names(results$SI.Moments) <- c("Mean", "Std")
+  }
+  
+  results$I <- rowSums(I)
+  results$I_local <- I$local
+  results$I_imported <- I$imported
   
   if (plot) {
     
@@ -847,9 +838,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
       
     }
   }
-  results$I <- rowSums(I)
-  results$I_local <- I$local
-  results$I_imported <- I$imported
+  
   return(results)
 }
 
