@@ -59,7 +59,9 @@
 #' Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respiratory syndrome reveal similar impacts of control measures (AJE 2004).
 #' }
 #' @export
-#' @importFrom graphics legend lines par points segments
+#' @import reshape2 grid gridExtra
+#' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
+#' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
 #' data("Flu2009")
@@ -323,24 +325,78 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
     names(results$SIDistr)<-c("Mean Discrete SI","Std Discrete SI")
   }
   
-  if(plot==TRUE)
+  if(plot)
   {
-    grey <- "#999999"
+    ########################################################################
+    ### these few lines are to make CRAN checks happy with ggplot2... ###
+    Time <- NULL
+    Incidence <- NULL
+    value <- NULL
+    meanR <- NULL
+    group <- NULL
+    lower <- NULL
+    upper <- NULL
+    Times <- NULL
+    ..density.. <- NULL
+    start <- NULL
+    end <- NULL
+    ########################################################################
     
-    par(mfrow=c(3,1),las=1,cex.main=1.8,cex.lab=1.5,cex.axis=1.2,mar=c(6,6,3,1),mgp=c(4,1,0))
-    plot(I,type="s",bty="n",xlab="Time",ylab="Incidence",main="Epidemic curve")		
-    plot(T.End,MeanRperDate.WT,type="p",bty="n",xlab="Time",ylab=expression(R^c),main=expression(paste("Estimated ",R^c,sep="")),ylim=c(0,max(R975.WT,na.rm=TRUE)),xlim=c(1,T),pch=20)
-    for(i in 1:length(T.End))
-    {
-      segments(T.End[i],R025.WT[i],T.End[i],R975.WT[i],col=grey)
+    p1 <- ggplot(data.frame(Time=1:T, Incidence=I), aes(x=Time, y=Incidence)) +
+      geom_step() +
+      ggtitle("Epidemic curve")
+    p1ly <- ggplotly(p1)
+    
+    # test if intervals overlap 
+    time.points <- apply(results$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 
+    if (length(time.points) == length(unique(matrix(time.points,ncol=1)))) { 
+      
+      df <- melt(data.frame(start=T.Start, end=T.End, meanR=MeanRperDate.WT, lower=R025.WT,
+                            upper=R975.WT), id=c("meanR", "lower", "upper")) 
+      df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
+      
+      p2 <- ggplot(df, aes(x=as.numeric(value), y=as.numeric(meanR), group=as.factor(group))) +
+        geom_ribbon(aes(ymin=lower, ymax=upper), colour=NA, fill="black", alpha=0.2) +
+        geom_line() +
+        xlab("Time") +
+        ylab("R") +
+        xlim(c(1,max(T.End))) +
+        ggtitle("Estimated Rc")
+      p2ly <- ggplotly(p2)
+      
+    } else { 
+      
+      p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=MeanRperDate.WT, lower=R025.WT,
+                              upper=R975.WT), aes(end, meanR)) +
+        geom_ribbon(aes(ymin=lower, ymax=upper), fill="grey") +
+        geom_line() +
+        geom_hline(yintercept=1, linetype="dotted") +
+        xlab("Time") +
+        ylab("R") +
+        xlim(c(1,max(T.End))) +
+        ylim(c(0,max(R975.WT, na.rm = TRUE))) +
+        ggtitle("Estimated Rc") 
+      p2ly <- ggplotly(p2)
+      #+
+      #legend(leg.pos, c("Median", "95%CrI"), col = c("Black", 
+      #               grey), lwd = c(1, 10), bty = "n", cex = 1.2)
     }
-    points(T.End,MeanRperDate.WT,pch=20)
-    lines(0:T,rep(1,T+1),lty=2)
-    legend(leg.pos,c("Mean","95% CI"),col=c("Black",grey),lwd=c(0,1.5),pch=c(19,19),pt.cex=c(1,0),bty="n",cex=1.2)
     
-    plot(0:(length(SI.Distr)-1),SI.Distr,type="h",lwd=10,lend=1,bty="n",xlab="Time",ylab="Frequency",main="Serial interval distribution",xlim=c(0,FinalMean.SI+6*FinalStd.SI))
+    SI.Distr.times <- unlist(apply(data.frame(0:(length(SI.Distr) - 1), SI.Distr), 1,
+                                   function(x) {if (x[2]!=0) unlist(rep(x[1],round(x[2]*1000)),use.names=FALSE)}))
+    names(SI.Distr.times) <- NULL
     
+    p3 <- ggplot(data.frame(Times=SI.Distr.times), aes(0.5+Times)) +
+      geom_histogram(binwidth=1, aes(y=..density..)) +
+      xlab("Time") + 
+      xlim(c(0,0.5+max(SI.Distr.times))) + 
+      ylab("Frequency") + 
+      ggtitle("Serial interval distribution") 
+    p3ly <- ggplotly(p3)
+    
+    grid.arrange(p1,p3,p2,ncol=1)
   }
+  
   results$method <- method
   results$SI.Distr <- SI.Distr
   results$I <- I

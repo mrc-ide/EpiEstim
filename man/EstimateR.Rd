@@ -101,6 +101,16 @@ An aimed CV can be specified in the argument \code{CV.Posterior} (default is \co
 
 The methods vary in the way the serial interval distribution is specified. The plots are also different according to the method used.
 
+In short there are five methods to specify the serial interval distribution (see below for more detail on each method). 
+In the first two methods, a unique serial interval distribution is considered, whereas in the last three, a range of serial interval distributions are integrated over:
+\itemize{
+\item{In method "NonParametricSI" the user specifies the discrete distribution of the serial interval}
+\item{In method "ParametricSI" the user specifies the mean and sd of the serial interval}
+\item{In method "UncertainSI" the mean and sd of the serial interval are each drawn from truncated normal distributions, with parameters specified by the user}
+\item{In method "SIFromData", the serial interval distribution is directly estimated, using MCMC, from interval censored exposure data, with data provided by the user together with a choice of parametric distribution for the serial interval}
+\item{In method "SIFromSample", the user directly provides the sample of serial interval distribution to use for estimation of R. This can be a useful alternative to the previous method, where the MCMC estimation of the serial interval distribution could be run once, and the same estimated SI distribution then used in EstimateR in different contexts, e.g. with different time windows, hence avoiding to rerun the MCMC everytime EstimateR is called.}
+}
+
 ----------------------- \code{method "NonParametricSI"} -----------------------
   
 The discrete distribution of the serial interval is directly specified in the argument \code{SI.Distr}.
@@ -120,7 +130,7 @@ If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the 
 
 ----------------------- \code{method "UncertainSI"} -----------------------
    
-\code{Method "UncertainSI"} allows accounting for uncertainty on the serial interval distribution (see Cori et al. AJE 2013). 
+\code{Method "UncertainSI"} allows accounting for uncertainty on the serial interval distribution as described in Cori et al. AJE 2013.
 We allow the mean \eqn{\mu} and standard deviation \eqn{\sigma} of the serial interval to vary according to truncated normal distributions. 
 We sample \code{n1} pairs of mean and standard deviations, \eqn{(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_2)},\sigma^{(n_2)})}, by first sampling the mean \eqn{\mu^{(k)}} 
 from its truncated normal distribution (with mean \code{Mean.SI}, standard deviation \code{Std.Mean.SI}, minimum \code{Min.Mean.SI} and maximum \code{Max.Mean.SI}), 
@@ -143,12 +153,26 @@ The third and fourth plots show histograms of the sampled means and standard dev
 \code{Method "SIFromData"} allows accounting for uncertainty on the serial interval distribution. 
 Unlike method "UncertainSI", where we arbitrarily vary the mean and std of the SI in truncated normal distributions, 
 here, the scope of serial interval distributions considered is directly informed by data
-on the (potentially censored) dates of symptoms of pairs of infector/infected individuals (specified in XXX TO BE COMPLETED XXXX). 
-Assuming a given parametric distribution for the serial interval distribution (specified in XXX TO BE COMPLETED XXXX), 
+on the (potentially censored) dates of symptoms of pairs of infector/infected individuals. 
+This data, specified in argument \code{SI.Data}, should be a dataframe with 5 columns:
+\itemize{
+\item{EL: the lower bound of the symptom onset date of the infector}
+\item{EL: the upper bound of the symptom onset date of the infector}
+\item{EL: the lower bound of the symptom onset date of the infected indivdiual}
+\item{EL: the upper bound of the symptom onset date of the infected indivdiual}
+\item{type: can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively, see Reich et al. Statist. Med. 2009}
+}
+Assuming a given parametric distribution for the serial interval distribution (specified in SI.parametricDistr), 
 the posterior distribution of the serial interval is estimated directly fom these data using MCMC methods implemented in the package \code{coarsedatatools}. 
-XXX NEED TO ADD SOME OPTIONS FOR THE MCMC SUCH AS BURNIN, NUMBER OF ITERATIONS AND HENCE POSTERIOR SAMPLE SIZE ETC. XXX
-For each element in the posterior sample of serial interval distribution, we draw a sample of size \code{n2} in the posterior distribution of the reproduction number over each time window, conditionnally on this serial interval distribution. 
-After pooling, a sample of size \eqn{\code{XXX TO BE COMPLETED XXX}\times\code{n2}} of the joint posterior distribution of the reproduction number over each time window is obtained.
+The argument \code{MCMC.control} is a list of characteristics which control the MCMC. 
+The MCMC is run for a total number of iterations of \code{MCMC.control$burnin + n1*MCMC.control$thin};
+but the output is only recorded after the burnin, and only 1 in every \code{MCMC.control$thin} iterations, 
+so that the posterior sample size is \code{n1}.
+For each element in the posterior sample of serial interval distribution, 
+we then draw a sample of size \code{n2} in the posterior distribution of the reproduction number over each time window, 
+conditionnally on this serial interval distribution. 
+After pooling, a sample of size \eqn{\code{n1}\times\code{n2}} of the joint posterior distribution of 
+the reproduction number over each time window is obtained.
 The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window are obtained from this sample.
 
 If \code{plot} is \code{TRUE}, 4 plots are produced.
@@ -158,7 +182,8 @@ The position of the legend on that graph can be monitored by the argument \code{
 The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval. 
 
 #' ----------------------- \code{method "SIFromSample"} -----------------------
-XXX TO BE COMPLETED XXX
+\code{Method "SIFromSample"} also allows accounting for uncertainty on the serial interval distribution. 
+Unlike methods "UncertainSI" and "SIFromData", the user directly provides (in argument \code{SI.Sample}) a sample of serial interval distribution to be explored. 
 }
 }
 \examples{
@@ -200,8 +225,8 @@ R_SIFromData <- EstimateR(MockRotavirus$Incidence,
                                         method="SIFromData", 
                                         SI.Data=MockRotavirus$SI.Data, 
                                         SI.parametricDistr = "G", 
-                                        MCMC.control = list(burnin = 1000), 
-                                        n1 = 1000, n2 = 50,
+                                        MCMC.control = list(burnin = 1000, thin=10), 
+                                        n1 = 500, n2 = 50,
                                         plot=TRUE, leg.pos=xy.coords(1,3))
 ## compare with version with no uncertainty
 R_Parametric <- EstimateR(MockRotavirus$Incidence, 
@@ -223,8 +248,8 @@ SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$SI.Data,
                              dist="G", 
                              init.pars=init_MCMC_params(MockRotavirus$SI.Data, "G")
                              burnin = 1000, 
-                             n.samples = 1000)
-SI.Sample <- coarse2estim(SI.fit, nrow(SI.fit@samples))$prob_matrix
+                             n.samples = 5000)
+SI.Sample <- coarse2estim(SI.fit, thin=10)$prob_matrix
 R_SIFromSample <- EstimateR(MockRotavirus$Incidence, 
                             T.Start=2:47, T.End=8:53, 
                             method="SIFromSample", SI.Sample=SI.Sample,
@@ -245,6 +270,7 @@ Anne Cori \email{a.cori@imperial.ac.uk}
 {
 Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respiratory syndrome reveal similar impacts of control measures (AJE 2004).
+Reich, N.G. et al. Estimating incubation period distributions with coarse data (Statis. Med. 2009)
 }
 }
 \seealso{
