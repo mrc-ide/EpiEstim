@@ -47,6 +47,18 @@
 #' 
 coarse2estim <- function(x=NULL, dist=x@dist, samples=x@samples, thin=10){
   
+  if(is.null(x)) # then check that dist and samples are what we expect
+  {
+    if(!(dist %in% c("G", "E", "off1G", "W", "L")))
+    {
+      stop("The supported distributions are 'G' (Gamma), 'E' (Erlang), 'off1G' (Gamma shifted by 1), 'W' (Weibull), or 'L' (Lognormal). ")
+    }
+    if(!is.data.frame(samples))
+    {
+      stop("samples should be a dataframe, e.g. as produced in x@samples, where x is the output of coarseDataTools::dic.fit.mcmc.")
+    }
+  }
+  
   if(thin>1)
   {
     index <- seq(1, nrow(samples), thin)
