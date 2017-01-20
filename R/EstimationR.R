@@ -219,7 +219,7 @@
 #' set.seed(1)
 #' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$SI.Data, 
 #'                              dist="G", 
-#'                              init.pars=init_MCMC_params(MockRotavirus$SI.Data, "G")
+#'                              init.pars=init_MCMC_params(MockRotavirus$SI.Data, "G"),
 #'                              burnin = 1000, 
 #'                              n.samples = 5000)
 #' SI.Sample <- coarse2estim(SI.fit, thin=10)$SI.Sample
