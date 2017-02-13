@@ -320,7 +320,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     }
     #############################################################################################################################
     
-    c2e <- coarse2estim(CDT, MCMC.control$thin)
+    c2e <- coarse2estim(CDT, thin=MCMC.control$thin)
     
     cat("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nEstimating the reproduction number for these serial interval estimates...\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     
