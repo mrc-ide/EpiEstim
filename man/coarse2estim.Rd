@@ -23,7 +23,7 @@ A list with two elements:
 }
 }
 \description{
-\code{coarse2estim} Transorms outputs of \code{coarseDataTools::dic.fit.mcmc} to right format for input into \code{EstimateR}
+\code{coarse2estim} Transforms outputs of \code{coarseDataTools::dic.fit.mcmc} to right format for input into \code{EstimateR}
 }
 \examples{
 \dontrun{

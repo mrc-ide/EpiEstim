@@ -17,7 +17,7 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 \arguments{
 \item{I}{One of the following
 \itemize{
-\item{A vector of non-negative integers containing the incidence time series}
+\item{A vector (or a dataframe with a single column) of non-negative integers containing the incidence time series}
 \item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
 } 
 Note that the cases from the first time step are always all assumed to be imported cases.}

@@ -8,7 +8,7 @@
 #' 
 #' @param I One of the following
 #' \itemize{
-#' \item{A vector of non-negative integers containing the incidence time series}
+#' \item{A vector (or a dataframe with a single column) of non-negative integers containing the incidence time series}
 #' \item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
 #' } 
 #' Note that the cases from the first time step are always all assumed to be imported cases. 
@@ -438,9 +438,27 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     return(list(SampleR.Posterior, SI.Distr))
   }
   method <- match.arg(method)
-  if(is.vector(I))
+  vector_I <- FALSE
+  single_col_df_I <- FALSE
+  if(is.vector(I)) 
+    {
+    vector_I <- TRUE
+  }else if(is.data.frame(I))
   {
-    I_tmp <- I
+    if(ncol(I)==1)
+    {
+      single_col_df_I <- TRUE
+    }
+  }
+  if(vector_I | single_col_df_I)
+  {
+    if(single_col_df_I)
+    {
+      I_tmp <- as.vector(I[,1])
+    }else
+    {
+      I_tmp <- I
+    }
     I <- data.frame(local=I_tmp, imported=rep(0, length(I_tmp)))
     I_init <- sum(I[1,])
     I[1,] <- c(0, I_init)
@@ -448,7 +466,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   {
     if(!is.data.frame(I) | !all(c("local","imported") %in% names(I)) ) 
     {
-      stop("I must be a vector or a dataframe with 2 columns called 'local' and 'imported'.")
+      stop("I must be a vector or a dataframe with a single column; or a dataframe with 2 columns called 'local' and 'imported'.")
     }
     if(I$local[1]>0)
     {

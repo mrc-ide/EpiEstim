@@ -9,7 +9,7 @@ WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
   plot = FALSE, leg.pos = "topright")
 }
 \arguments{
-\item{I}{Vector of non-negative integers containing an incidence time series.}
+\item{I}{Vector (or a dataframe with a single column)of non-negative integers containing an incidence time series.}
 
 \item{T.Start}{Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.}
 

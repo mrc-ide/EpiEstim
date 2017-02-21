@@ -6,7 +6,7 @@
 #' 
 #' \code{WT} estimates the case reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
 #' 
-#' @param I Vector of non-negative integers containing an incidence time series.
+#' @param I Vector (or a dataframe with a single column)of non-negative integers containing an incidence time series.
 #' @param T.Start Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.
 #' @param T.End Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}.
 #' @param method One of "NonParametricSI" or "ParametricSI" (see details).
@@ -130,7 +130,20 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   
   if(!is.vector(I))
   {
-    stop("I must be a vector.")
+    if(is.data.frame(I))
+    {
+      if(ncol(I)==1)
+      {
+        I <- as.vector(I[,1])
+      }
+      else
+      {
+        stop("I must be a vector or a dataframe with a single column.")
+      }
+    }else
+    {
+      stop("I must be a vector or a dataframe with a single column.")
+    }
   }
   T<-length(I)
   for(i in 1:T)
