@@ -73,9 +73,11 @@ ebola.Incid.Data.early <- ebola.Incid.Data[ebola.Incid.Data$Date<=as.Date("2014-
 ebola <- list(Incidence = ebola.Incid.Data$Incid, SI.Data = ebola.SI.Data)
 ebola_early <- list(Incidence = ebola.Incid.Data.early$Incid, SI.Data = ebola.SI.Data.early)
 
+## estimates from whole incidence but with early SI estimates
+
 set.seed(1)
-R_ebola_SIFromData_early <- EstimateR(ebola_early$Incidence, 
-                          T.Start=2:90, T.End=8:96, 
+R_ebola_SIFromData_early <- EstimateR(ebola$Incidence, 
+                          T.Start=2:477, T.End=8:483, 
                           method="SIFromData", SI.Data=ebola_early$SI.Data, 
                           SI.parametricDistr = "G", 
                           MCMC.control = list(burnin = 1000, thin=10), 
@@ -87,8 +89,8 @@ tmp <- ebola.SI.Data.early[ebola.SI.Data.early$type==2,]
 meanSI_notype1 <- mean(tmp$SL-tmp$EL) # compare with ebola_SI_moments_early['Mean']
 stdSI_notype1 <- sd(tmp$SL-tmp$EL) # compare with ebola_SI_moments_early['Std']
 
-R_ebola_ParametricSI_early_notype1 <- EstimateR(ebola_early$Incidence, 
-                                      T.Start=2:90, T.End=8:96, 
+R_ebola_ParametricSI_early_notype1 <- EstimateR(ebola$Incidence, 
+                                      T.Start=2:477, T.End=8:483, 
                                       method="ParametricSI", Mean.SI = meanSI_notype1, Std.SI = stdSI_notype1, 
                                       plot=TRUE, leg.pos=xy.coords(1,3))
 
@@ -98,11 +100,76 @@ tmp$Emid <- (tmp$EL+tmp$ER)/2
 meanSI_midpoint <- mean(tmp$SL-tmp$Emid) # compare with ebola_SI_moments_early['Mean']
 stdSI_midpoint <- sd(tmp$SL-tmp$Emid) # compare with ebola_SI_moments_early['Std']
 
-R_ebola_ParametricSI_early_midpoint <- EstimateR(ebola_early$Incidence, 
-                                                T.Start=2:90, T.End=8:96, 
+R_ebola_ParametricSI_early_midpoint <- EstimateR(ebola$Incidence, 
+                                                T.Start=2:477, T.End=8:483, 
                                                 method="ParametricSI", Mean.SI = meanSI_midpoint, Std.SI = stdSI_midpoint, 
                                                 plot=TRUE, leg.pos=xy.coords(1,3))
 
-plots(R_ebola_SIFromData_early, "R", ylim=c(0, 11))
-plots(R_ebola_ParametricSI_early_notype1, "R", ylim=c(0, 11))
-plots(R_ebola_ParametricSI_early_midpoint, "R", ylim=c(0, 11))
+p1 <- plots(R_ebola_SIFromData_early, "R", ylim=c(0, 11))
+p2 <- plots(R_ebola_ParametricSI_early_notype1, "R", ylim=c(0, 11))
+p3 <- plots(R_ebola_ParametricSI_early_midpoint, "R", ylim=c(0, 11))
+gridExtra::grid.arrange(p1, p2, p3, ncol=1)
+
+rel_error_std_notype1 <- (R_ebola_ParametricSI_early_notype1$R$`Std(R)` / R_ebola_SIFromData_early$R$`Std(R)`)
+rel_error_std_midpoint <- (R_ebola_ParametricSI_early_midpoint$R$`Std(R)` / R_ebola_SIFromData_early$R$`Std(R)`)
+
+plot(rel_error_std_notype1, type="l")
+lines(rel_error_std_midpoint, col="blue")
+
+plot(R_ebola_SIFromData_early$R$`Quantile.0.975(R)`, type="l", ylim=c(0,11))
+lines(R_ebola_SIFromData_early$R$`Quantile.0.025(R)`)
+lines(R_ebola_ParametricSI_early_notype1$R$`Quantile.0.975(R)`, col="blue")
+lines(R_ebola_ParametricSI_early_notype1$R$`Quantile.0.025(R)`, col="blue")
+abline(h=1,col="red")
+lines(rel_error_std_notype1, col="green")
+
+## estimates from whole incidence but with late SI estimates
+
+set.seed(1)
+R_ebola_SIFromData <- EstimateR(ebola$Incidence, 
+                                      T.Start=2:477, T.End=8:483, 
+                                      method="SIFromData", SI.Data=ebola$SI.Data, 
+                                      SI.parametricDistr = "G", 
+                                      MCMC.control = list(burnin = 1000, thin=10), 
+                                      n1 = 500, n2 = 50,
+                                      plot=TRUE, leg.pos=xy.coords(1,3))
+
+# what if instead we had neglected the uncertain point? 
+tmp <- ebola.SI.Data[ebola.SI.Data$type==2,]
+meanSI_notype1 <- mean(tmp$SL-tmp$EL) # compare with ebola_SI_moments['Mean']
+stdSI_notype1 <- sd(tmp$SL-tmp$EL) # compare with ebola_SI_moments['Std']
+
+R_ebola_ParametricSI_notype1 <- EstimateR(ebola$Incidence, 
+                                                T.Start=2:477, T.End=8:483, 
+                                                method="ParametricSI", Mean.SI = meanSI_notype1, Std.SI = stdSI_notype1, 
+                                                plot=TRUE, leg.pos=xy.coords(1,3))
+
+# what if instead we had taken the midpoint of the uncertain points?
+tmp <- ebola.SI.Data
+tmp$Emid <- (tmp$EL+tmp$ER)/2
+meanSI_midpoint <- mean(tmp$SL-tmp$Emid) # compare with ebola_SI_moments['Mean']
+stdSI_midpoint <- sd(tmp$SL-tmp$Emid) # compare with ebola_SI_moments['Std']
+
+R_ebola_ParametricSI_midpoint <- EstimateR(ebola$Incidence, 
+                                                 T.Start=2:477, T.End=8:483, 
+                                                 method="ParametricSI", Mean.SI = meanSI_midpoint, Std.SI = stdSI_midpoint, 
+                                                 plot=TRUE, leg.pos=xy.coords(1,3))
+
+p1 <- plots(R_ebola_SIFromData, "R", ylim=c(0, 11))
+p2 <- plots(R_ebola_ParametricSI_notype1, "R", ylim=c(0, 11))
+p3 <- plots(R_ebola_ParametricSI_midpoint, "R", ylim=c(0, 11))
+gridExtra::grid.arrange(p1, p2, p3, ncol=1)
+
+rel_error_std_notype1 <- (R_ebola_ParametricSI_notype1$R$`Std(R)` / R_ebola_SIFromData$R$`Std(R)`)
+rel_error_std_midpoint <- (R_ebola_ParametricSI_midpoint$R$`Std(R)` / R_ebola_SIFromData$R$`Std(R)`)
+
+plot(rel_error_std_notype1, type="l")
+lines(rel_error_std_midpoint, col="blue")
+
+
+p1 <- plots(R_ebola_SIFromData_early, "R", ylim=c(0, 5))
+p2 <- plots(R_ebola_SIFromData, "R", ylim=c(0, 5))
+gridExtra::grid.arrange(p1, p2,ncol=1)
+
+
+
