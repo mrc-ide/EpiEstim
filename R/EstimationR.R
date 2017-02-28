@@ -157,7 +157,7 @@
 #' Reich, N.G. et al. Estimating incubation period distributions with coarse data (Statis. Med. 2009)
 #' }
 #' @importFrom coarseDataTools dic.fit.mcmc
-#' @importFrom coda gelman.diag as.mcmc.list as.mcmc
+#' @importFrom coda as.mcmc.list as.mcmc
 #' @export
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
@@ -298,28 +298,10 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     }
     CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.control$burnin, n.samples = n1*MCMC.control$thin, init.pars=MCMC.control$init.pars)
     
-    #############################################################################################################################
-    # checking convergence of the MCMC by using the Gelman-Rubin algorithm between the first and second half of the MCMC sample
-    spl1 <- CDT@samples[1:floor(nrow(CDT@samples)/2),]
-    spl2 <- CDT@samples[(floor(nrow(CDT@samples)/2)+1):nrow(CDT@samples),]
-    GRD <- gelman.diag(as.mcmc.list(list(as.mcmc(spl1), as.mcmc(spl2))))
-    # Is any of the potential scale reduction factors >1.1 (looking at the upper CI)? 
-    # If so this would suggest that the MCMC has not converged well. 
-    if(any(GRD$psrf[,"Upper C.I."]>1.1))
-    {
-      warning("The Gelman-Rubin algorithm suggests the MCMC may not have converged within the number of iterations (MCMC.burnin + n1) specified. 
-                    You can visualise the full MCMC chain using: \n
-                    > par(mfrow=c(2,1))
-                    > plot(res$SI.Moments[,'Mean'], type='l', xlab='Iterations', ylab='Mean SI') 
-                    > plot(res$SI.Moments[,'Std'], type='l', xlab='Iterations', ylab='Std SI'),
-                    where res is the output of EstimateR
-                    and decide whether to rerun for longer.")
-    }else
-    {
-      cat("\nGelman-Rubin MCMC convergence diagnostic was successful.")
-    }
-    #############################################################################################################################
+    # check convergence of the MCMC and print warning if not converged
+    check_CDT_convergence(CDT)
     
+    # thin the chain, and turn the two parameters of the SI distribution into a whole discrete distribution
     c2e <- coarse2estim(CDT, thin=MCMC.control$thin)
     
     cat("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nEstimating the reproduction number for these serial interval estimates...\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
@@ -441,7 +423,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   vector_I <- FALSE
   single_col_df_I <- FALSE
   if(is.vector(I)) 
-    {
+  {
     vector_I <- TRUE
   }else if(is.data.frame(I))
   {
@@ -784,12 +766,12 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   results$SI.Distr <- SI.Distr
   if (SIUncertainty == "Y") {
     results$SI.Moments <- as.data.frame(cbind(Mean.SI.sample,
-                                           Std.SI.sample))
+                                              Std.SI.sample))
     names(results$SI.Moments) <- c("Mean","Std")
   }else {
-      results$SI.Moments <- as.data.frame(cbind(FinalMean.SI,
-                                             FinalStd.SI))
-      names(results$SI.Moments) <- c("Mean", "Std")
+    results$SI.Moments <- as.data.frame(cbind(FinalMean.SI,
+                                              FinalStd.SI))
+    names(results$SI.Moments) <- c("Mean", "Std")
   }
   
   results$I <- rowSums(I)
