@@ -300,7 +300,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.control$burnin, n.samples = n1*MCMC.control$thin, init.pars=MCMC.control$init.pars)
     
     # check convergence of the MCMC and print warning if not converged
-    MCMC_conv <- check_CDT_convergence(CDT)
+    MCMC_conv <- check_CDTsamples_convergence(CDT@samples)
     
     # thin the chain, and turn the two parameters of the SI distribution into a whole discrete distribution
     c2e <- coarse2estim(CDT, thin=MCMC.control$thin)
