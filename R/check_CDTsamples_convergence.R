@@ -1,10 +1,10 @@
 #######################################################################################################################
-# check_CDT_convergence runs a Gelman Rubin test to check convergence of the MCMC chain in coarseDataTools #
+# check_CDTsamples_convergence runs a Gelman Rubin test to check convergence of the MCMC chain in coarseDataTools #
 #######################################################################################################################
 
-#' check_CDT_convergence TITLE
+#' check_CDTsamples_convergence TITLE
 #' 
-#' \code{check_CDT_convergence} DESCRIPTION TO COME. 
+#' \code{check_CDTsamples_convergence} DESCRIPTION TO COME.
 #' 
 #' @param CDTsamples XXXXXXX.
 #' @return TRUE if the Gelman Rubin test for convergence was successful, FALSE otherwise
