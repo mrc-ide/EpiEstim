@@ -87,6 +87,7 @@ the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles
 	\item{I}{: the time series of total incidence}
 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
+	\item{MCMC_converged}{ (only for method \code{SIFromData}): a boolean showing whether the Gelman-Rubin MCMC convergence diagnostic was successful (\code{TRUE}) or not (\code{FALSE})}
 }
 }
 }

@@ -54,6 +54,7 @@
 #' 	\item{I}{: the time series of total incidence}
 #' 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
 #' 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
+#' 	\item{MCMC_converged}{ (only for method \code{SIFromData}): a boolean showing whether the Gelman-Rubin MCMC convergence diagnostic was successful (\code{TRUE}) or not (\code{FALSE})}
 #' }
 #' }
 #' @details{
@@ -299,25 +300,27 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.control$burnin, n.samples = n1*MCMC.control$thin, init.pars=MCMC.control$init.pars)
     
     # check convergence of the MCMC and print warning if not converged
-    check_CDT_convergence(CDT)
+    MCMC_conv <- check_CDT_convergence(CDT)
     
     # thin the chain, and turn the two parameters of the SI distribution into a whole discrete distribution
     c2e <- coarse2estim(CDT, thin=MCMC.control$thin)
     
     cat("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nEstimating the reproduction number for these serial interval estimates...\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     
-    EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = "SIFromData", n1=n1 , n2=n2 , Mean.SI=NULL , Std.SI=NULL ,
+    out <- EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = "SIFromData", n1=n1 , n2=n2 , Mean.SI=NULL , Std.SI=NULL ,
                    Std.Mean.SI=NULL , Min.Mean.SI=NULL , Max.Mean.SI=NULL ,
                    Std.Std.SI=NULL , Min.Std.SI=NULL , Max.Std.SI=NULL ,
                    SI.Distr=NULL , SI.Sample= c2e$SI.Sample , Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
                    plot=plot , leg.pos=leg.pos)
+    out[["MCMC_converged"]] <- MCMC_conv
   } else {
-    EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = method, n1=n1 , n2=n2 , Mean.SI=Mean.SI , Std.SI=Std.SI ,
+    out <- EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = method, n1=n1 , n2=n2 , Mean.SI=Mean.SI , Std.SI=Std.SI ,
                    Std.Mean.SI=Std.Mean.SI , Min.Mean.SI=Min.Mean.SI , Max.Mean.SI=Max.Mean.SI ,
                    Std.Std.SI=Std.Std.SI , Min.Std.SI=Min.Std.SI , Max.Std.SI=Max.Std.SI ,
                    SI.Distr=SI.Distr , SI.Sample= SI.Sample, Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
                    plot=plot , leg.pos=leg.pos)
   }
+  return(out)
 }
 
 #########################################################
