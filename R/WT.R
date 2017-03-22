@@ -128,32 +128,8 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   
   method <- match.arg(method)
   
-  if(!is.vector(I))
-  {
-    if(is.data.frame(I))
-    {
-      if(ncol(I)==1)
-      {
-        I <- as.vector(I[,1])
-      }
-      else
-      {
-        stop("I must be a vector or a dataframe with a single column.")
-      }
-    }else
-    {
-      stop("I must be a vector or a dataframe with a single column.")
-    }
-  }
+  I <- process_I_vector(I)
   T<-length(I)
-  for(i in 1:T)
-  {
-    if(I[i]<0)
-    {
-      stop("I must be a positive vector.")
-    }
-  }
-  I[which(is.na(I))] <- 0
   
   if(!is.vector(T.Start))
   {

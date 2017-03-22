@@ -57,3 +57,80 @@ process_SI.Data <- function(SI.Data)
   
   return(SI.Data)
 }
+
+
+process_I <- function(I)
+{
+  vector_I <- FALSE
+  single_col_df_I <- FALSE
+  if(is.vector(I)) 
+  {
+    vector_I <- TRUE
+  }else if(is.data.frame(I))
+  {
+    if(ncol(I)==1)
+    {
+      single_col_df_I <- TRUE
+    }
+  }
+  if(vector_I | single_col_df_I)
+  {
+    if(single_col_df_I)
+    {
+      I_tmp <- as.vector(I[,1])
+    }else
+    {
+      I_tmp <- I
+    }
+    I <- data.frame(local=I_tmp, imported=rep(0, length(I_tmp)))
+    I_init <- sum(I[1,])
+    I[1,] <- c(0, I_init)
+  }else
+  {
+    if(!is.data.frame(I) | !all(c("local","imported") %in% names(I)) ) 
+    {
+      stop("I must be a vector or a dataframe with a single column; or a dataframe with 2 columns called 'local' and 'imported'.")
+    }
+    if(I$local[1]>0)
+    {
+      warning("I$local[1] is >0 but must be 0, as all cases on the first time step are assumed imported. This is corrected automatically by cases being transferred to I$imported.")
+      I_init <- sum(I[1,])
+      I[1,] <- c(0, I_init)
+    }
+  }
+  
+  if(any(I<0))
+  {
+    stop("I must contain only non negative integer values.")
+  }
+  
+  return(I)
+}
+
+process_I_vector <- function(I)
+{
+  if(!is.vector(I))
+  {
+    if(is.data.frame(I))
+    {
+      if(ncol(I)==1)
+      {
+        I <- as.vector(I[,1])
+      }
+      else
+      {
+        stop("I must be a vector or a dataframe with a single column.")
+      }
+    }else
+    {
+      stop("I must be a vector or a dataframe with a single column.")
+    }
+  }
+  I[which(is.na(I))] <- 0
+  if(any(I<0))
+  {
+    stop("I must contain only non negative integer values.")
+  }
+  
+  return(I)
+}
