@@ -6,10 +6,19 @@ process_SI.Data <- function(SI.Data)
     stop("Method SIFromData requires non NULL argument SI.Data") 
   }
   
+  # wrong number of columns
+  SI.Data <- as.data.frame(SI.Data)
+  num_cols = dim(SI.Data)[2]
+  if (num_cols < 4 || num_cols > 5) {
+    stop("SI.Data should have 4 or 5 columns")
+  }
+  
   # entries with incorrect column names
   if(!all(c("EL", "ER", "SL", "SR") %in% names(SI.Data)))
   {
-    stop("SI.Data should be a dataframe with column names 'EL', 'ER', 'SL', 'SR', and 'type' (the last one is optional)") 
+    names <- c("EL", "ER", "SL", "SR", "type")
+    names(SI.Data) <- names[1:num_cols]
+    warning("column names for SI.Data were not as expected; they were automatically interpreted as 'EL', 'ER', 'SL', 'SR', and 'type' (the last one only if SI.Data had five columns). ") 
   }
   
   # non integer entries in date columns
