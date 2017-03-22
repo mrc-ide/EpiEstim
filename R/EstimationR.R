@@ -539,21 +539,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   }
   if(method == "SIFromSample")
   {
-    if (is.null(SI.Sample)) {
-      stop("method SIFromSample requires to specify the SI.Sample argument.")
-    }
-    if (!is.matrix(SI.Sample)) {
-      stop("method SIFromSample requires that SI.Sample must be a is.matrix")
-    }
-    if (any(SI.Sample[1,] != 0)) {
-      stop("method SIFromSample requires that SI.Sample[1,] contains only 0.")
-    }
-    if (any(SI.Sample < 0)) {
-      stop("method SIFromSample requires that SI.Sample must contain only non negtaive values.")
-    }
-    if (any(abs(colSums(SI.Sample) - 1) > 0.01)) {
-      stop("method SIFromSample requires the sum of each column in SI.Sample to be 1.")
-    }
+    SI.Sample <- process_SI.Sample(SI.Sample)
   }
   if (CV.Posterior < 0) {
     stop("CV.Posterior must be >0.")
