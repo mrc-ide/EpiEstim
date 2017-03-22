@@ -177,3 +177,22 @@ check_times <- function(T.Start, T.End) # this only produces warnings and errors
     stop("T.End must be a vector of >0 integers.")
   }
 }
+
+check_SI.Distr <- function(SI.Distr) # this only produces warnings and errors, does not return anything
+{
+  if (is.null(SI.Distr)) {
+    stop("SI.Distr argument missing.")
+  }
+  if (!is.vector(SI.Distr)) {
+    stop("SI.Distr must be a vector.")
+  }
+  if (SI.Distr[1] != 0) {
+    stop("SI.Distr should be so that SI.Distr[1] = 0.")
+  }
+  if (any(SI.Distr < 0)) {
+    stop("SI.Distr must be a positive vector.")
+  }
+  if (abs(sum(SI.Distr) - 1) > 0.01) {
+    stop("SI.Distr must sum to 1.")
+  }
+}

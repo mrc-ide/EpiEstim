@@ -416,21 +416,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   NbTimePeriods <- length(T.Start)
   
   if (method == "NonParametricSI") {
-    if (is.null(SI.Distr)) {
-      stop("method NonParametricSI requires to specify the SI.Distr argument.")
-    }
-    if (!is.vector(SI.Distr)) {
-      stop("method NonParametricSI requires that SI.Distr must be a vector.")
-    }
-    if (SI.Distr[1] != 0) {
-      stop("method NonParametricSI requires that SI.Distr[1] = 0.")
-    }
-    if (any(SI.Distr < 0)) {
-      stop("method NonParametricSI requires that SI.Distr must be a positive vector.")
-    }
-    if (abs(sum(SI.Distr) - 1) > 0.01) {
-      stop("method NonParametricSI requires that SI.Distr must sum to 1.")
-    }
+    check_SI.Distr(SI.Distr)
   }
   if (method == "ParametricSI") {
     if (is.null(Mean.SI)) {

@@ -43,22 +43,7 @@ OverallInfectivity <-function (I,SI.Distr)
 {
   I <- process_I(I)
   T<-nrow(I)
-  if(is.vector(SI.Distr)==FALSE)
-  {
-    stop("SI.Distr must be a vector.")
-  }
-  if(SI.Distr[1]!=0)
-  {
-    stop("SI.Distr[1] needs to be 0.")
-  }
-  if(any(SI.Distr<0))
-  {
-    stop("SI.Distr must be a positive vector.")
-  }
-  if(abs(sum(SI.Distr)-1)>0.01)
-  {
-    stop("SI.Distr must sum to 1.")
-  }
+  check_SI.Distr(SI.Distr)
   lambda <- vector()
   lambda[1]<-NA
   for (t in 2:T)
