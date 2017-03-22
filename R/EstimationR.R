@@ -411,25 +411,10 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   }
   a.Prior <- (Mean.Prior/Std.Prior)^2
   b.Prior <- Std.Prior^2/Mean.Prior
-  if (!is.vector(T.Start)) {
-    stop("T.Start must be a vector.")
-  }
-  if (!is.vector(T.End)) {
-    stop("T.End must be a vector.")
-  }
-  if (length(T.Start) != length(T.End)) {
-    stop("T.Start and T.End must have the same length.")
-  }
+  
+  check_times(T.Start, T.End)
   NbTimePeriods <- length(T.Start)
-  if (any(T.Start > T.End)) {
-    stop("T.Start[i] must be <= T.End[i] for all i.")
-  }
-  if (any(T.Start < 1 || T.Start%%1 != 0)) {
-    stop("T.Start must be a vector of >0 integers.")
-  }
-  if (any(T.End < 1 || T.End%%1 != 0)) {
-    stop("T.End must be a vector of >0 integers.")
-  }
+  
   if (method == "NonParametricSI") {
     if (is.null(SI.Distr)) {
       stop("method NonParametricSI requires to specify the SI.Distr argument.")

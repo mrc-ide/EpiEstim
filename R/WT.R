@@ -131,34 +131,8 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   I <- process_I_vector(I)
   T<-length(I)
   
-  if(!is.vector(T.Start))
-  {
-    stop("T.Start must be a vector.")
-  }
-  if(!is.vector(T.End))
-  {
-    stop("T.End must be a vector.")
-  }
-  if(length(T.Start)!=length(T.End))
-  {
-    stop("T.Start and T.End must have the same length.")
-  }
-  NbTimePeriods<-length(T.Start)
-  for(i in 1:NbTimePeriods)
-  {
-    if(T.Start[i]>T.End[i])
-    {
-      stop("T.Start[i] must be <= T.End[i] for all i.")
-    }
-    if(T.Start[i]<1 || T.Start[i]%%1!=0)
-    {
-      stop("T.Start must be a vector of >0 integers.")
-    }
-    if(T.End[i]<1 || T.End[i]%%1!=0)
-    {
-      stop("T.End must be a vector of >0 integers.")
-    }
-  }
+  check_times(T.Start, T.End)
+  NbTimePeriods <- length(T.Start)
   
   if(method=="NonParametricSI")
   {

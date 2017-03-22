@@ -155,3 +155,25 @@ process_SI.Sample <- function(SI.Sample)
   
   return(SI.Sample)
 }
+
+check_times <- function(T.Start, T.End) # this only produces warnings and errors, does not return anything
+{
+  if (!is.vector(T.Start)) {
+    stop("T.Start must be a vector.")
+  }
+  if (!is.vector(T.End)) {
+    stop("T.End must be a vector.")
+  }
+  if (length(T.Start) != length(T.End)) {
+    stop("T.Start and T.End must have the same length.")
+  }
+  if (any(T.Start > T.End)) {
+    stop("T.Start[i] must be <= T.End[i] for all i.")
+  }
+  if (any(T.Start < 1 || T.Start%%1 != 0)) {
+    stop("T.Start must be a vector of >0 integers.")
+  }
+  if (any(T.End < 1 || T.End%%1 != 0)) {
+    stop("T.End must be a vector of >0 integers.")
+  }
+}
