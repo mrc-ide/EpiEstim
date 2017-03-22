@@ -30,12 +30,24 @@ R_SIFromData <- EstimateR(MockRotavirus$Incidence,
                           n1 = 500, n2 = 50,
                           plot=TRUE, leg.pos=xy.coords(1,3))
 
+
+
 # check convergence of MCMC
 # R_SIFromData$MCMC_converged
 # graphically check convergence of MCMC
 # par(mfrow=c(2,1))
 # plot(R_SIFromData$SI.Moments[,"Mean"], type="l", xlab="Iterations", ylab="Mean SI")
 # plot(R_SIFromData$SI.Moments[,"Std"], type="l", xlab="Iterations", ylab="Std SI")
+
+# just checking that with a too short chain the convergence check fails
+#R_SIFromData_shortMCMC <- EstimateR(MockRotavirus$Incidence, 
+#                          T.Start=2:47, T.End=8:53, 
+#                          method="SIFromData", SI.Data=MockRotavirus$SI.Data, 
+#                          SI.parametricDistr = "G", 
+#                          MCMC.control = list(burnin = 10, thin=2), 
+#                          n1 = 15, n2 = 15,
+#                          plot=TRUE, leg.pos=xy.coords(1,3))
+#R_SIFromData_shortMCMC$MCMC_converged
 
 # compare with version with no uncertainty
 
