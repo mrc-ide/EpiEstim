@@ -22,7 +22,6 @@ data("MockRotavirus")
 
 ## estimate the reproduction number (method "SIFromData")
 set.seed(1)
-R_SIFromData <- EstimateR(MockRotavirus$Incidence, 
                           T.Start=2:47, T.End=8:53, 
                           method="SIFromData", SI.Data=MockRotavirus$SI.Data, 
                           SI.parametricDistr = "G", 
@@ -40,14 +39,14 @@ R_SIFromData <- EstimateR(MockRotavirus$Incidence,
 # plot(R_SIFromData$SI.Moments[,"Std"], type="l", xlab="Iterations", ylab="Std SI")
 
 # just checking that with a too short chain the convergence check fails
-#R_SIFromData_shortMCMC <- EstimateR(MockRotavirus$Incidence, 
-#                          T.Start=2:47, T.End=8:53, 
-#                          method="SIFromData", SI.Data=MockRotavirus$SI.Data, 
-#                          SI.parametricDistr = "G", 
-#                          MCMC.control = list(burnin = 10, thin=2), 
+# R_SIFromData_shortMCMC <- EstimateR(MockRotavirus$Incidence,
+#                          T.Start=2:47, T.End=8:53,
+#                          method="SIFromData", SI.Data=MockRotavirus$SI.Data,
+#                          SI.parametricDistr = "G",
+#                          MCMC.control = list(burnin = 10, thin=2),
 #                          n1 = 15, n2 = 15,
 #                          plot=TRUE, leg.pos=xy.coords(1,3))
-#R_SIFromData_shortMCMC$MCMC_converged
+# R_SIFromData_shortMCMC$MCMC_converged
 
 # compare with version with no uncertainty
 
@@ -120,11 +119,12 @@ R_ebola_ParametricSI_early_midpoint <- EstimateR(ebola$Incidence,
                                                 plot=TRUE, leg.pos=xy.coords(1,3))
 
 p1 <- plots(R_ebola_SIFromData_early, "R", ylim=c(0, 11))
-p2 <- plots(R_ebola_ParametricSI_early_notype1, "R", ylim=c(0, 11))
+#p2 <- plots(R_ebola_ParametricSI_early_notype1, "R", ylim=c(0, 11))
 p3 <- plots(R_ebola_ParametricSI_early_midpoint, "R", ylim=c(0, 11))
-gridExtra::grid.arrange(p1, p2, p3, ncol=1)
+#gridExtra::grid.arrange(p1, p2, p3, ncol=1)
+gridExtra::grid.arrange(p1, p3, ncol=1)
 
-rel_error_std_notype1 <- (R_ebola_ParametricSI_early_notype1$R$`Std(R)` / R_ebola_SIFromData_early$R$`Std(R)`)
+#rel_error_std_notype1 <- (R_ebola_ParametricSI_early_notype1$R$`Std(R)` / R_ebola_SIFromData_early$R$`Std(R)`)
 rel_error_std_midpoint <- (R_ebola_ParametricSI_early_midpoint$R$`Std(R)` / R_ebola_SIFromData_early$R$`Std(R)`)
 
 plot(rel_error_std_notype1, type="l")
@@ -132,10 +132,10 @@ lines(rel_error_std_midpoint, col="blue")
 
 plot(R_ebola_SIFromData_early$R$`Quantile.0.975(R)`, type="l", ylim=c(0,11))
 lines(R_ebola_SIFromData_early$R$`Quantile.0.025(R)`)
-lines(R_ebola_ParametricSI_early_notype1$R$`Quantile.0.975(R)`, col="blue")
-lines(R_ebola_ParametricSI_early_notype1$R$`Quantile.0.025(R)`, col="blue")
+#lines(R_ebola_ParametricSI_early_notype1$R$`Quantile.0.975(R)`, col="blue")
+#lines(R_ebola_ParametricSI_early_notype1$R$`Quantile.0.025(R)`, col="blue")
 abline(h=1,col="red")
-lines(rel_error_std_notype1, col="green")
+#lines(rel_error_std_notype1, col="green")
 
 ## estimates from whole incidence but with late SI estimates
 
@@ -184,6 +184,13 @@ lines(rel_error_std_midpoint, col="blue")
 p1 <- plots(R_ebola_SIFromData_early, "R", ylim=c(0, 5))
 p2 <- plots(R_ebola_SIFromData, "R", ylim=c(0, 5))
 gridExtra::grid.arrange(p1, p2,ncol=1)
+
+# Robin's data which seem to break the app as of 29 March 2017...
+
+Ipb <- read.csv("../TransmissibilityEstimator/datasets/fromRobin/simulatedCasesDataToApp.csv", header=FALSE)
+SIpb <- read.csv("../TransmissibilityEstimator/datasets/fromRobin/SITimeIntervals.csv", header=FALSE)
+SIpb <- EpiEstim:::process_SI.Data(SIpb)
+init_MCMC_params(SIpb, "G")
 
 
 
