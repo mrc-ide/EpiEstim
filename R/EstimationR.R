@@ -34,9 +34,10 @@
 #'   \item{init.pars}{vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically using function \code{\link{init_MCMC_params}}.}
 #'   \item{burnin}{a positive integer giving the burnin used in the MCMC when estimating the serial interval distribution.}
 #'   \item{thin}{a positive integer corresponding to thinning parameter; the MCMC will be run for \code{burnin+n1*thin iterations}; 1 in \code{thin} iterations will be recorded, after the burnin phase, so the posterior sample size is n1.}
+#'   \item{seed}{An integer used as the seed for the random number generator at the start of the MCMC estimation; useful to get reproducible results.} 
 #' }
 #' @param SI.Sample For method "SIFromSample" ; a matrix where each column gives one distribution of the serial interval to be explored (see details).
-#' @param seed An integer used as the seed for the random number generator at the start of the function; useful to get reproducible results. 
+#' @param seed An integer used as the seed for the random number generator at the start of the function (then potentially reset within the MCMC for method \code{SIFromData}); useful to get reproducible results.
 #' @param Mean.Prior A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).
 #' @param Std.Prior A positive number giving the standard deviation of the common prior distribution for all reproduction numbers (see details).
 #' @param CV.Posterior A positive number giving the aimed posterior coefficient of variation (see details).
@@ -194,14 +195,17 @@
 #' data("MockRotavirus")
 #' 
 #' ## estimate the reproduction number (method "SIFromData")
-#' set.seed(1)
+#' MCMC_seed <- 1
+#' overall_seed <- 2
 #' R_SIFromData <- EstimateR(MockRotavirus$Incidence, 
 #'                                         T.Start=2:47, T.End=8:53, 
 #'                                         method="SIFromData", 
 #'                                         SI.Data=MockRotavirus$SI.Data, 
 #'                                         SI.parametricDistr = "G", 
-#'                                         MCMC.control = list(burnin = 1000, thin=10), 
+#'                                         MCMC.control = list(burnin = 1000, 
+#'                                         thin=10, seed = MCMC_seed), 
 #'                                         n1 = 500, n2 = 50,
+#'                                         seed = overall_seed,
 #'                                         plot=TRUE, leg.pos=xy.coords(1,3))
 #' ## compare with version with no uncertainty
 #' R_Parametric <- EstimateR(MockRotavirus$Incidence, 
@@ -218,17 +222,20 @@
 #' # The credible intervals are wider when accounting for uncertainty in the SI distribution. 
 #' 
 #' #' ## estimate the reproduction number (method "SIFromSample")
-#' set.seed(1)
+#' MCMC_seed <- 1
+#' overall_seed <- 2
 #' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$SI.Data, 
 #'                              dist="G", 
 #'                              init.pars=init_MCMC_params(MockRotavirus$SI.Data, "G"),
 #'                              burnin = 1000, 
-#'                              n.samples = 5000)
+#'                              n.samples = 5000, 
+#'                              seed = MCMC_seed)
 #' SI.Sample <- coarse2estim(SI.fit, thin=10)$SI.Sample
 #' R_SIFromSample <- EstimateR(MockRotavirus$Incidence, 
 #'                             T.Start=2:47, T.End=8:53, 
 #'                             method="SIFromSample", SI.Sample=SI.Sample,
 #'                             n2 = 50,
+#'                             seed = overall_seed,
 #'                             plot=TRUE, leg.pos=xy.coords(1,3))
 #' 
 #' # check that R_SIFromSample is the same as R_SIFromData 
@@ -244,16 +251,11 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
                       SI.Distr = NULL, 
                       SI.Data = NULL, SI.parametricDistr = c("G", "E", "off1G", "W", "L"),  
-                      MCMC.control = list(init.pars = NULL, burnin = 3000, thin=10), 
+                      MCMC.control = list(init.pars = NULL, burnin = 3000, thin=10, seed = NULL), 
                       SI.Sample = NULL, 
                       seed = NULL,
                       Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
                       plot = FALSE, leg.pos = "topright") {
-  
-  if(is.null(seed))
-  {
-    seed <- .Random.seed
-  }
   
   ### Need to add warnings if method="SIFromData" and CDT is not null 
   
@@ -280,7 +282,12 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
       stop("You cannot fit a Gamma distribution with offset 1 to this SI dataset, because for some data points the maximum serial interval is <=1.\nChoose a different distribution")
     }
     
-    CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.control$burnin, n.samples = n1*MCMC.control$thin, init.pars=MCMC.control$init.pars, seed = seed)
+    if(is.null(MCMC.control$seed))
+    {
+      MCMC.control$seed <- .Random.seed
+    }
+    
+    CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.control$burnin, n.samples = n1*MCMC.control$thin, init.pars=MCMC.control$init.pars, seed = MCMC.control$seed)
     
     # check convergence of the MCMC and print warning if not converged
     MCMC_conv <- check_CDTsamples_convergence(CDT@samples)
@@ -290,6 +297,11 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     
     cat("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nEstimating the reproduction number for these serial interval estimates...\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     
+    if(!is.null(seed))
+    {
+      set.seed(seed)
+    }
+    
     out <- EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = "SIFromData", n1=n1 , n2=n2 , Mean.SI=NULL , Std.SI=NULL ,
                    Std.Mean.SI=NULL , Min.Mean.SI=NULL , Max.Mean.SI=NULL ,
                    Std.Std.SI=NULL , Min.Std.SI=NULL , Max.Std.SI=NULL ,
@@ -297,6 +309,12 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                    plot=plot , leg.pos=leg.pos)
     out[["MCMC_converged"]] <- MCMC_conv
   } else {
+    
+    if(!is.null(seed))
+    {
+      set.seed(seed)
+    }
+    
     out <- EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = method, n1=n1 , n2=n2 , Mean.SI=Mean.SI , Std.SI=Std.SI ,
                    Std.Mean.SI=Std.Mean.SI , Min.Mean.SI=Min.Mean.SI , Max.Mean.SI=Max.Mean.SI ,
                    Std.Std.SI=Std.Std.SI , Min.Std.SI=Min.Std.SI , Max.Std.SI=Max.Std.SI ,
