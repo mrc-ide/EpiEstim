@@ -148,11 +148,11 @@ For each pair \eqn{(\mu^{(k)},\sigma^{(k)})}, we then draw a sample of size \cod
 After pooling, a sample of size \eqn{\code{n1}\times\code{n2}} of the joint posterior distribution of the reproduction number over each time window is obtained.
 The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window are obtained from this sample.
 
-If \code{plot} is \code{TRUE}, 4 plots are produced.
+If \code{plot} is \code{TRUE}, 3 plots are produced.
 The first one shows the epidemic curve. 
 The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
 The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
-The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval. 
+The third plot shows the sampled discrete distributions of the serial interval. 
 
 ----------------------- \code{method "SIFromData"} -----------------------
   
@@ -181,15 +181,13 @@ After pooling, a sample of size \eqn{\code{n1}\times\code{n2}} of the joint post
 the reproduction number over each time window is obtained.
 The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window are obtained from this sample.
 
-If \code{plot} is \code{TRUE}, 4 plots are produced.
-The first one shows the epidemic curve. 
-The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
-The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval. 
+If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "UncertaintySI"} .
 
 #' ----------------------- \code{method "SIFromSample"} -----------------------
 \code{Method "SIFromSample"} also allows accounting for uncertainty on the serial interval distribution. 
 Unlike methods "UncertainSI" and "SIFromData", the user directly provides (in argument \code{SI.Sample}) a sample of serial interval distribution to be explored. 
+
+If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "UncertaintySI"} . 
 }
 }
 \examples{

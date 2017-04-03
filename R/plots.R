@@ -6,11 +6,17 @@
 #' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), or the serial interval distribution (\code{what='SI'}). 
 #' @param add_imported_cases A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases. 
 #' @param ylim For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis
+#' @param options_SI For what = "SI". A list of graphical options: 
+#'  \describe{
+#' \item{prob_min}{A numeric value between 0 and 1. The SI distributions explored are only shown from time 0 up to the time t so that each distribution explored has probability < \code{prob_min} to be on any time step after t. Defaults to 0.001.}
+#' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the lines. Defaults to 0.25}
+#' } 
 #' @return a plot or a list of plots (if \code{what == "SI"} and \code{x$method == "UncertainSI"})
 # #' @details
 #' @seealso \code{\link{EstimateR}} and \code{\link{WT}}
 #' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori \email{a.cori@imperial.ac.uk} 
 # #' @references 
+#' @importFrom ggplot2 aes aes_string
 #' @export
 #' @examples 
 #' ## load data on pandemic flu in a school in 2009
@@ -37,7 +43,8 @@
 #' @import reshape2 grid gridExtra
 #' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram scale_colour_manual scale_fill_manual scale_linetype_manual lims
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
-plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL) {
+plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL, 
+                  options_SI = list(prob_min = 0.001, transp = 0.25)) {
   
   if (is.null(x)) {
     stop("plots requires non NULL x input.")
@@ -87,9 +94,10 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
   ..density.. <- NULL
   start <- NULL
   end <- NULL
+  SI.Distr.1 <- NULL
   ########################################################################
   
-  if (method == "UncertainSI") {
+  if (method == "UncertainSI" | method == "SIFromData" | method == "SIFromSample") {
     Mean.SI.sample <- x$SI.Moments["Mean"]
     Std.SI.sample <- x$SI.Moments["Std"]
   }
@@ -98,6 +106,7 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
     p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I), Incidence_imported=I$imported)) +
       geom_step(aes(x=Time, y=Incidence, colour="All", linetype="All")) +
       ggtitle("Epidemic curve")
+    
     if(add_imported_cases)
     {
       p1 <- p1 + 
@@ -162,21 +171,29 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
     
   } else if (what == "SI") {
     
-    if (method == "UncertainSI") {
+    if (method == "UncertainSI" | method == "SIFromData" | method == "SIFromSample") {
       
-      p3 <- ggplot(data.frame(Mean.SI.sample), aes(Mean.SI.sample)) +
-        geom_histogram(bins=30) +
-        xlab("Mean serial interval") +
-        ylab("Density") + 
-        ggtitle("Explored \n mean serial intervals")
+      df <- data.frame(Time=0:T, SI.Distr=t(SI.Distr))
       
-      p4 <- ggplot(data.frame(Std.SI.sample), aes(Std.SI.sample)) +
-        geom_histogram(bins=30) +
-        xlab("Std serial interval") +
-        ggtitle("Explored \n std serial intervals")
+      tmp <- cumsum(apply(SI.Distr,2,max) >= options_SI$prob_min)
+      stop_at <- min(which(tmp ==tmp[length(tmp)]))
       
-      grid.arrange(p3,p4,ncol=2)
-      return(list(p3, p4))
+      df <- df[1:stop_at,]
+      
+      p3 <- ggplot(df) +
+        geom_line(aes(x=Time, y=SI.Distr.1),  colour="black", alpha=options_SI$transp) +
+        ggtitle("Explored SI distributions") + 
+        xlab("Time") +
+        ylab("Frequency") 
+      
+      for(i in 2:nrow(SI.Distr))
+      {
+        p3 <- p3 + 
+          geom_line(aes_string(x="Time", y=paste0("SI.Distr.",i)), colour="black", alpha=options_SI$transp)
+      }
+      
+      print(p3)
+      return(p3)
       
     } else {
       

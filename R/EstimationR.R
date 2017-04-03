@@ -109,11 +109,11 @@
 #' After pooling, a sample of size \eqn{\code{n1}\times\code{n2}} of the joint posterior distribution of the reproduction number over each time window is obtained.
 #' The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window are obtained from this sample.
 #' 
-#' If \code{plot} is \code{TRUE}, 4 plots are produced.
+#' If \code{plot} is \code{TRUE}, 3 plots are produced.
 #' The first one shows the epidemic curve. 
 #' The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
 #' The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
-#' The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval. 
+#' The third plot shows the sampled discrete distributions of the serial interval. 
 #' 
 #' ----------------------- \code{method "SIFromData"} -----------------------
 #'   
@@ -142,15 +142,13 @@
 #' the reproduction number over each time window is obtained.
 #' The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window are obtained from this sample.
 #' 
-#' If \code{plot} is \code{TRUE}, 4 plots are produced.
-#' The first one shows the epidemic curve. 
-#' The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-#' The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
-#' The third and fourth plots show histograms of the sampled means and standard deviations of the serial interval. 
+#' If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "UncertaintySI"} .
 #' 
 #' #' ----------------------- \code{method "SIFromSample"} -----------------------
 #' \code{Method "SIFromSample"} also allows accounting for uncertainty on the serial interval distribution. 
 #' Unlike methods "UncertainSI" and "SIFromData", the user directly provides (in argument \code{SI.Sample}) a sample of serial interval distribution to be explored. 
+#' 
+#' If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "UncertaintySI"} . 
 #' }
 #' @seealso \code{\link{DiscrSI}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk} 
@@ -716,6 +714,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     ..density.. <- NULL
     start <- NULL
     end <- NULL
+    SI.Distr.1 <- NULL
     ########################################################################
     
     p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I)), aes(x=Time, y=Incidence)) +
@@ -758,18 +757,30 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     }
     
     if (SIUncertainty == "Y") {
-      p3 <- ggplot(data.frame(Mean.SI.sample), aes(Mean.SI.sample)) +
-        geom_histogram(bins=30) +
-        xlab("Mean serial interval") +
-        ylab("Density") + 
-        ggtitle("Explored \n mean serial intervals")
       
-      p4 <- ggplot(data.frame(Std.SI.sample), aes(Std.SI.sample)) +
-        geom_histogram(bins=30) +
-        xlab("Std serial interval") +
-        ggtitle("Explored \n std serial intervals")
+      transp <- 0.25
+      prob_min <- 0.001
       
-      grid.arrange(p1,p2,p3,p4,ncol=2)
+      df <- data.frame(Time=0:T, SI.Distr=t(SI.Distr))
+      
+      tmp <- cumsum(apply(SI.Distr,2,max) >= prob_min)
+      stop_at <- min(which(tmp ==tmp[length(tmp)]))
+      
+      df <- df[1:stop_at,]
+      
+      p3 <- ggplot(df) +
+        geom_line(aes(x=Time, y=SI.Distr.1),  colour="black", alpha=transp) +
+        ggtitle("Explored SI distributions") + 
+        xlab("Time") +
+        ylab("Frequency") 
+      
+      for(i in 2:nrow(SI.Distr))
+      {
+        p3 <- p3 + 
+          geom_line(aes_string(x="Time", y=paste0("SI.Distr.",i)), colour="black", alpha=transp)
+      }
+      
+      grid.arrange(p1,p3,p2,ncol=1)
       
     } else {
       SI.Distr.times <- unlist(apply(data.frame(0:(length(SI.Distr) - 1), SI.Distr), 1,

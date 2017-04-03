@@ -5,7 +5,7 @@
 \title{Plotting the outputs of functions estimating the reproduction number from incidence time series and assumptions regarding the serial interval distribution}
 \usage{
 plots(x = NULL, what = c("I", "R", "SI"), add_imported_cases = FALSE,
-  ylim = NULL)
+  ylim = NULL, options_SI = list(prob_min = 0.001, transp = 0.25))
 }
 \arguments{
 \item{x}{The output of function \code{\link{EstimateR}} or function \code{\link{WT}}}
@@ -15,6 +15,12 @@ plots(x = NULL, what = c("I", "R", "SI"), add_imported_cases = FALSE,
 \item{add_imported_cases}{A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases.}
 
 \item{ylim}{For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
+
+\item{options_SI}{For what = "SI". A list of graphical options: 
+ \describe{
+\item{prob_min}{A numeric value between 0 and 1. The SI distributions explored are only shown from time 0 up to the time t so that each distribution explored has probability < \code{prob_min} to be on any time step after t. Defaults to 0.001.}
+\item{transp}{A numeric value between 0 and 1 used to monitor transparency of the lines. Defaults to 0.25}
+}}
 }
 \value{
 a plot or a list of plots (if \code{what == "SI"} and \code{x$method == "UncertainSI"})
