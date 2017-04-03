@@ -327,9 +327,10 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
 #########################################################
 
 #' @import reshape2 grid gridExtra
-#' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
+#' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
 #' @importFrom stats median pgamma plnorm pweibull qgamma qlnorm quantile qweibull rgamma rmultinom rnorm sd
+#' @importFrom incidence as.incidence 
 EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
                                                           "UncertainSI", "SIFromData", "SIFromSample"), 
                             n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
@@ -717,10 +718,15 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     SI.Distr.1 <- NULL
     ########################################################################
     
-    p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I)), aes(x=Time, y=Incidence)) +
-      geom_step() +
-      ggtitle("Epidemic curve")
-    #p1ly <- ggplotly(p1)
+    if(sum(I$imported)>1) # more than the first cases are imported
+    {
+      p1 <- plot(as.incidence(I), ylab="Incidence", xlab = "Time") +
+        ggtitle("Epidemic curve")
+    }else
+    {
+      p1 <- plot(as.incidence(rowSums(I)), ylab="Incidence", xlab = "Time") +
+        ggtitle("Epidemic curve")
+    }
     
     # test if intervals overlap 
     time.points <- apply(results$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 

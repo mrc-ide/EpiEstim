@@ -41,8 +41,9 @@
 #' gridExtra::grid.arrange(p_I,p_SI,p_Ri,p_Rc,ncol=2)
 #' 
 #' @import reshape2 grid gridExtra
-#' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram scale_colour_manual scale_fill_manual scale_linetype_manual lims
+#' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram scale_colour_manual scale_fill_manual scale_linetype_manual lims
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
+#' @importFrom incidence as.incidence 
 plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL, 
                   options_SI = list(prob_min = 0.001, transp = 0.25)) {
   
@@ -103,21 +104,16 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
   }
   what <- match.arg(what)
   if (what == "I") {
-    p1 <- ggplot(data.frame(Time=1:T, Incidence=rowSums(I), Incidence_imported=I$imported)) +
-      geom_step(aes(x=Time, y=Incidence, colour="All", linetype="All")) +
-      ggtitle("Epidemic curve")
-    
     if(add_imported_cases)
     {
-      p1 <- p1 + 
-        geom_step(aes(x=Time, y=Incidence_imported, colour="Imported", linetype="Imported")) +
-        scale_colour_manual("Incidence", 
-                            breaks = c("All", "Imported"),
-                            values = c("black", "blue"))  +
-        scale_linetype_manual("Incidence", 
-                              breaks = c("All", "Imported"),
-                              values = c("solid", "dashed"))
+    p1 <- plot(as.incidence(I), ylab="Incidence", xlab = "Time") +
+      ggtitle("Epidemic curve")
+    }else
+    {
+      p1 <- plot(as.incidence(rowSums(I)), ylab="Incidence", xlab = "Time") +
+        ggtitle("Epidemic curve")
     }
+    
     if(!is.null(ylim))
       p1 <- p1 + lims(y=ylim)
     
