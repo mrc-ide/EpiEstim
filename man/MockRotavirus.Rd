@@ -12,9 +12,6 @@
 \source{
 XXX TO BE COMPLETED XXX
 }
-\usage{
-MockRotavirus
-}
 \description{
 This data set gives:
 1/ the daily incidence of onset of symptoms in a mock outbreak of rotavirus ,
@@ -48,5 +45,4 @@ EstimateR(MockRotavirus$Incidence,
 XXX TO BE COMPLETED XXX
 }
 }
-\keyword{datasets}
 

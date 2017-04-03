@@ -12,9 +12,6 @@
 \source{
 Cauchemez S. et al. (2011) Role of social networks in shaping disease transmission during a community outbreak of 2009 H1N1 pandemic influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
 }
-\usage{
-Flu2009
-}
 \description{
 This data set gives:
 1/ the daily incidence of onset of acute respiratory illness 
@@ -42,5 +39,4 @@ Cauchemez S. et al. (2011) Role of social networks in shaping disease transmissi
 Ferguson N.M. et al. (2005) Strategies for containing an emerging influenza pandemic in Southeast Asia. Nature 437(7056), 209-214.
 }
 }
-\keyword{datasets}
 

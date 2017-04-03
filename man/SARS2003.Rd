@@ -12,9 +12,6 @@
 \source{
 Cori A. et al. (2009) Temporal variability and social heterogeneity in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): e1000471.
 }
-\usage{
-SARS2003
-}
 \description{
 This data set gives:
 1/ the daily incidence of onset of symptoms in Hong Kong during the 2003 severe acute respiratory syndrome (SARS) epidemic (see source and references),
@@ -40,5 +37,4 @@ Cori A. et al. (2009) Temporal variability and social heterogeneity in disease t
 Lipsitch M. et al. (2003) Transmission dynamics and control of severe acute respiratory syndrome. Science 300(5627): 1966-1970.
 }
 }
-\keyword{datasets}
 

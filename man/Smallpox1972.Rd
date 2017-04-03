@@ -12,9 +12,6 @@
 \source{
 Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health Organization.
 }
-\usage{
-Smallpox1972
-}
 \description{
 This data set gives:
 1/ the daily incidence of onset of symptoms in Kosovo during the 1972 smallpox epidemic (see source and references),
@@ -42,5 +39,4 @@ Gani R. and S. Leach (2001) Transmission potential of smallpox in contemporary p
 Riley S. and N. M. Ferguson (2006) Smallpox transmission and control: spatial dynamics in Great Britain. Proc Natl Acad Sci U S A 103(33): 12637-12642.
 }
 }
-\keyword{datasets}
 

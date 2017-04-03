@@ -36,6 +36,7 @@
 #'   \item{thin}{a positive integer corresponding to thinning parameter; the MCMC will be run for \code{burnin+n1*thin iterations}; 1 in \code{thin} iterations will be recorded, after the burnin phase, so the posterior sample size is n1.}
 #' }
 #' @param SI.Sample For method "SIFromSample" ; a matrix where each column gives one distribution of the serial interval to be explored (see details).
+#' @param seed An integer used as the seed for the random number generator at the start of the function; useful to get reproducible results. 
 #' @param Mean.Prior A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).
 #' @param Std.Prior A positive number giving the standard deviation of the common prior distribution for all reproduction numbers (see details).
 #' @param CV.Posterior A positive number giving the aimed posterior coefficient of variation (see details).
@@ -245,8 +246,14 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       SI.Data = NULL, SI.parametricDistr = c("G", "E", "off1G", "W", "L"),  
                       MCMC.control = list(init.pars = NULL, burnin = 3000, thin=10), 
                       SI.Sample = NULL, 
+                      seed = NULL,
                       Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
                       plot = FALSE, leg.pos = "topright") {
+  
+  if(is.null(seed))
+  {
+    seed <- .Random.seed
+  }
   
   ### Need to add warnings if method="SIFromData" and CDT is not null 
   
@@ -273,7 +280,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
       stop("You cannot fit a Gamma distribution with offset 1 to this SI dataset, because for some data points the maximum serial interval is <=1.\nChoose a different distribution")
     }
     
-    CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.control$burnin, n.samples = n1*MCMC.control$thin, init.pars=MCMC.control$init.pars)
+    CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.control$burnin, n.samples = n1*MCMC.control$thin, init.pars=MCMC.control$init.pars, seed = seed)
     
     # check convergence of the MCMC and print warning if not converged
     MCMC_conv <- check_CDTsamples_convergence(CDT@samples)

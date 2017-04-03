@@ -4,6 +4,8 @@
 #' 1/ the daily incidence of onset of disease in Baltimore during the 1918 H1N1 influenza pandemic (see source and references),
 #' 2/ the discrete daily distribution of the serial interval for influenza, assuming a shifted Gamma distribution with mean 2.6 days, standard deviation 1.5 days and shift 1 day (see references).
 #' 
+#' @name Flu1918
+#' @docType data
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 92 days of observation,}
@@ -36,7 +38,7 @@
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
-"Flu1918"
+NULL
 
 ##################################################################################################
 
@@ -47,6 +49,9 @@
 #' (ARI, defined as at least two symptoms among fever, cough, sore throat, and runny nose)
 #' amongst children in a school in Pennsylvania during the 2009 H1N1 influenza pandemic (see source and references),
 #' 2/ the discrete daily distribution of the serial interval for influenza, assuming a shifted Gamma distribution with mean 2.6 days, standard deviation 1.5 days and shift 1 day (see references).
+#' 
+#' @name Flu2009
+#' @docType data
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 32 days of observation,}
@@ -71,8 +76,7 @@
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
-"Flu2009"
-
+NULL
 
 ##################################################################################################
 
@@ -81,6 +85,9 @@
 #' This data set gives:
 #' 1/ the daily incidence of onset of symptoms in Hallegoch (Germany) during the 1861 measles epidemic (see source and references),
 #' 2/ the discrete daily distribution of the serial interval for measles, assuming a shifted Gamma distribution with mean 14.9 days, standard deviation 3.9 days and shift 1 day (see references).
+#' 
+#' @name Measles1861
+#' @docType data
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 48 days of observation,}
@@ -100,7 +107,7 @@
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
-"Measles1861"
+NULL
 
 ##################################################################################################
 
@@ -109,6 +116,9 @@
 #' This data set gives:
 #' 1/ the daily incidence of onset of symptoms in Hong Kong during the 2003 severe acute respiratory syndrome (SARS) epidemic (see source and references),
 #' 2/ the discrete daily distribution of the serial interval for SARS, assuming a shifted Gamma distribution with mean 8.4 days, standard deviation 3.8 days and shift 1 day (see references).
+#' 
+#' @name SARS2003
+#' @docType data
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 107 days of observation,}
@@ -133,7 +143,7 @@
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
-"SARS2003"
+NULL
 
 ##################################################################################################
 
@@ -142,6 +152,9 @@
 #' This data set gives:
 #' 1/ the daily incidence of onset of symptoms in Kosovo during the 1972 smallpox epidemic (see source and references),
 #' 2/ the discrete daily distribution of the serial interval for smallpox, assuming a shifted Gamma distribution with mean 22.4 days, standard deviation 6.1 days and shift 1 day (see references).
+#' 
+#' @name Smallpox1972
+#' @docType data
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 57 days of observation,}
@@ -168,7 +181,7 @@
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
-"Smallpox1972"
+NULL
 
 ##################################################################################################
 
@@ -177,6 +190,9 @@
 #' This data set gives:
 #' 1/ the daily incidence of onset of symptoms in a mock outbreak of rotavirus ,
 #' 2/ mock observations of symptom onset dates for 19 pairs of infector/infected individuals.
+#' 
+#' @name MockRotavirus
+#' @docType data
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 53 days of observation,}
@@ -209,7 +225,6 @@
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
 #' }
-"MockRotavirus"
-
+NULL
 
 

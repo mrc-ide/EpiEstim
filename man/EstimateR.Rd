@@ -11,8 +11,8 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
   SI.parametricDistr = c("G", "E", "off1G", "W", "L"),
   MCMC.control = list(init.pars = NULL, burnin = 3000, thin = 10),
-  SI.Sample = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
-  plot = FALSE, leg.pos = "topright")
+  SI.Sample = NULL, seed = NULL, Mean.Prior = 5, Std.Prior = 5,
+  CV.Posterior = 0.3, plot = FALSE, leg.pos = "topright")
 }
 \arguments{
 \item{I}{One of the following
@@ -63,6 +63,8 @@ Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (W
 }}
 
 \item{SI.Sample}{For method "SIFromSample" ; a matrix where each column gives one distribution of the serial interval to be explored (see details).}
+
+\item{seed}{An integer used as the seed for the random number generator at the start of the function; useful to get reproducible results.}
 
 \item{Mean.Prior}{A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).}
 
@@ -159,10 +161,10 @@ here, the scope of serial interval distributions considered is directly informed
 on the (potentially censored) dates of symptoms of pairs of infector/infected individuals. 
 This data, specified in argument \code{SI.Data}, should be a dataframe with 5 columns:
 \itemize{
-\item{EL: the lower bound of the symptom onset date of the infector}
-\item{ER: the upper bound of the symptom onset date of the infector. Should be such that ER>=EL}
-\item{SL: the lower bound of the symptom onset date of the infected indivdiual}
-\item{SR: the upper bound of the symptom onset date of the infected indivdiual. Should be such that SR>=SL}
+\item{EL: the lower bound of the symptom onset date of the infector (given as an integer)}
+\item{ER: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that ER>=EL}
+\item{SL: the lower bound of the symptom onset date of the infected indivdiual (given as an integer)}
+\item{SR: the upper bound of the symptom onset date of the infected indivdiual (given as an integer). Should be such that SR>=SL}
 \item{type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates}
 }
 Assuming a given parametric distribution for the serial interval distribution (specified in SI.parametricDistr), 

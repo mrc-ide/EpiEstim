@@ -12,9 +12,6 @@
 \source{
 Frost W. and E. Sydenstricker (1919) Influenza in Maryland: preliminary statistics of certain localities. Public Health Rep.(34): 491-504.
 }
-\usage{
-Flu1918
-}
 \description{
 This data set gives:
 1/ the daily incidence of onset of disease in Baltimore during the 1918 H1N1 influenza pandemic (see source and references),
@@ -48,5 +45,4 @@ Vynnycky E. et al. (2007) Estimates of the reproduction numbers of Spanish influ
 White L.F. and M. Pagano (2008) Transmissibility of the influenza virus in the 1918 pandemic. PLoS One 3(1): e1498.
 }
 }
-\keyword{datasets}
 

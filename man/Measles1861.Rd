@@ -12,9 +12,6 @@
 \source{
 Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 }
-\usage{
-Measles1861
-}
 \description{
 This data set gives:
 1/ the daily incidence of onset of symptoms in Hallegoch (Germany) during the 1861 measles epidemic (see source and references),
@@ -36,5 +33,4 @@ EstimateR(Measles1861$Incidence,
 \references{
 Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 }
-\keyword{datasets}
 

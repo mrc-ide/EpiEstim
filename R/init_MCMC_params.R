@@ -63,7 +63,7 @@ init_MCMC_params <- function(SI.Data, dist)
   }
   if(any(is.na(param)))
   {
-    error("NA result. Check that SI.Data is in the right format. ")
+    stop("NA result. Check that SI.Data is in the right format. ")
   }  
   return(param)
 }
