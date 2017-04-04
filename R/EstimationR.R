@@ -770,7 +770,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
       transp <- 0.25
       prob_min <- 0.001
       
-      df <- data.frame(Time=0:T, SI.Distr=t(SI.Distr))
+      df <- data.frame(Time=0:(ncol(SI.Distr)-1), SI.Distr=t(SI.Distr))
       
       tmp <- cumsum(apply(SI.Distr,2,max) >= prob_min)
       stop_at <- min(which(tmp ==tmp[length(tmp)]))

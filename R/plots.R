@@ -170,7 +170,7 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
     
     if (method == "UncertainSI" | method == "SIFromData" | method == "SIFromSample") {
       
-      df <- data.frame(Time=0:T, SI.Distr=t(SI.Distr))
+      df <- data.frame(Time=0:(ncol(SI.Distr)-1), SI.Distr=t(SI.Distr))
       
       tmp <- cumsum(apply(SI.Distr,2,max) >= options_SI$prob_min)
       stop_at <- min(which(tmp ==tmp[length(tmp)]))
