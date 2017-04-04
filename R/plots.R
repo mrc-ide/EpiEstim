@@ -43,7 +43,8 @@
 #' @import reshape2 grid gridExtra
 #' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram scale_colour_manual scale_fill_manual scale_linetype_manual lims
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
-#' @importFrom incidence as.incidence 
+#' @importFrom graphics plot
+#' @importFrom incidence as.incidence
 plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL, 
                   options_SI = list(prob_min = 0.001, transp = 0.25)) {
   

@@ -330,6 +330,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
 #' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
 #' @importFrom stats median pgamma plnorm pweibull qgamma qlnorm quantile qweibull rgamma rmultinom rnorm sd
+#' @importFrom graphics plot
 #' @importFrom incidence as.incidence 
 EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
                                                           "UncertainSI", "SIFromData", "SIFromSample"), 
