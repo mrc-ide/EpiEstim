@@ -24,7 +24,7 @@ check_CDTsamples_convergence <- function(CDTsamples)
   #############################################################################################################################
   # checking convergence of the MCMC by using the Gelman-Rubin algorithm between the first and second half of the MCMC sample
   spl1 <- CDTsamples[1:floor(nrow(CDTsamples)/2),]
-  spl2 <- CDTsamples[(floor(nrow(CDTsamples)/2)+1):nrow(CDTsamples),]
+  spl2 <- CDTsamples[(ceiling(nrow(CDTsamples)/2)+1):nrow(CDTsamples),]
   GRD <- gelman.diag(as.mcmc.list(list(as.mcmc(spl1), as.mcmc(spl2))))
   # Is any of the potential scale reduction factors >1.1 (looking at the upper CI)? 
   # If so this would suggest that the MCMC has not converged well. 
