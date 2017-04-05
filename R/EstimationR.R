@@ -42,8 +42,6 @@
 #' @param Std.Prior A positive number giving the standard deviation of the common prior distribution for all reproduction numbers (see details).
 #' @param CV.Posterior A positive number giving the aimed posterior coefficient of variation (see details).
 #' @param plot Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).
-#' @param leg.pos One of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
-#  This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.
 #' @return {
 #' a list with components: 
 #' \itemize{
@@ -85,7 +83,6 @@
 #' If \code{plot} is \code{TRUE}, 3 plots are produced. 
 #' The first one shows the epidemic curve. 
 #' The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-#' The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
 #' The third plot shows the discrete distribution of the serial interval. 
 #' 
 #' ----------------------- \code{method "ParametricSI"} -----------------------
@@ -112,7 +109,6 @@
 #' If \code{plot} is \code{TRUE}, 3 plots are produced.
 #' The first one shows the epidemic curve. 
 #' The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-#' The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
 #' The third plot shows the sampled discrete distributions of the serial interval. 
 #' 
 #' ----------------------- \code{method "SIFromData"} -----------------------
@@ -166,7 +162,7 @@
 #' 
 #' ## estimate the reproduction number (method "NonParametricSI")
 #' EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-#'           SI.Distr=Flu2009$SI.Distr, plot=TRUE, leg.pos=xy.coords(1,3))
+#'           SI.Distr=Flu2009$SI.Distr, plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number over the 7-day window finishing on that day.
 #' 
@@ -204,7 +200,7 @@
 #'                                         thin=10, seed = MCMC_seed), 
 #'                                         n1 = 500, n2 = 50,
 #'                                         seed = overall_seed,
-#'                                         plot=TRUE, leg.pos=xy.coords(1,3))
+#'                                         plot=TRUE)
 #' ## compare with version with no uncertainty
 #' R_Parametric <- EstimateR(MockRotavirus$Incidence, 
 #'                           T.Start=2:47, T.End=8:53, 
@@ -234,7 +230,7 @@
 #'                             method="SIFromSample", SI.Sample=SI.Sample,
 #'                             n2 = 50,
 #'                             seed = overall_seed,
-#'                             plot=TRUE, leg.pos=xy.coords(1,3))
+#'                             plot=TRUE)
 #' 
 #' # check that R_SIFromSample is the same as R_SIFromData 
 #' # since they were generated using the same MCMC algorithm to generate the SI sample
@@ -253,7 +249,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       SI.Sample = NULL, 
                       seed = NULL,
                       Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
-                      plot = FALSE, leg.pos = "topright") {
+                      plot = FALSE) {
   
   method <- match.arg(method)
   
@@ -304,7 +300,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                    Std.Mean.SI=NULL , Min.Mean.SI=NULL , Max.Mean.SI=NULL ,
                    Std.Std.SI=NULL , Min.Std.SI=NULL , Max.Std.SI=NULL ,
                    SI.Distr=NULL , SI.Sample= c2e$SI.Sample , Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
-                   plot=plot , leg.pos=leg.pos)
+                   plot=plot)
     out[["MCMC_converged"]] <- MCMC_conv
   } else {
     
@@ -317,7 +313,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                    Std.Mean.SI=Std.Mean.SI , Min.Mean.SI=Min.Mean.SI , Max.Mean.SI=Max.Mean.SI ,
                    Std.Std.SI=Std.Std.SI , Min.Std.SI=Min.Std.SI , Max.Std.SI=Max.Std.SI ,
                    SI.Distr=SI.Distr , SI.Sample= SI.Sample, Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
-                   plot=plot , leg.pos=leg.pos)
+                   plot=plot)
   }
   return(out)
 }
@@ -340,7 +336,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
                             SI.Distr = NULL, 
                             SI.Sample = NULL, 
                             Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
-                            plot = FALSE, leg.pos = "topright")
+                            plot = FALSE)
 {
   
   #########################################################

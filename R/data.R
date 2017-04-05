@@ -34,7 +34,7 @@
 #' EstimateR(Flu1918$Incidence, 
 #'           T.Start=2:86, T.End=8:92, 
 #'           method="NonParametricSI", SI.Distr=Flu1918$SI.Distr, 
-#'           plot=TRUE, leg.pos=xy.coords(1,3))
+#'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
@@ -72,7 +72,7 @@ NULL
 #' EstimateR(Flu2009$Incidence, 
 #'           T.Start=2:26, T.End=8:32, 
 #'           method="NonParametricSI", SI.Distr=Flu2009$SI.Distr, 
-#'           plot=TRUE, leg.pos=xy.coords(1,3))
+#'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
@@ -103,7 +103,7 @@ NULL
 #' EstimateR(Measles1861$Incidence, 
 #'           T.Start=17:42, T.End=23:48, 
 #'           method="NonParametricSI", SI.Distr=Measles1861$SI.Distr, 
-#'           plot=TRUE, leg.pos=xy.coords(1,7))
+#'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
@@ -139,7 +139,7 @@ NULL
 #' EstimateR(SARS2003$Incidence, 
 #'           T.Start=14:101, T.End=20:107, 
 #'           method="NonParametricSI", SI.Distr=SARS2003$SI.Distr, 
-#'           plot=TRUE, leg.pos=xy.coords(1,7))
+#'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
@@ -177,7 +177,7 @@ NULL
 #' EstimateR(Smallpox1972$Incidence, 
 #'           T.Start=27:51, T.End=33:57, 
 #'           method="NonParametricSI", SI.Distr=Smallpox1972$SI.Distr, 
-#'           plot=TRUE, leg.pos=xy.coords(1,15))
+#'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
@@ -220,7 +220,7 @@ NULL
 #'           SI.parametricDistr = "G", 
 #'           MCMC.control = list(burnin = 3000, thin=10), 
 #'           n1 = 500, n2 = 50,
-#'           plot=TRUE, leg.pos=xy.coords(1,3))
+#'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.

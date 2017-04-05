@@ -25,7 +25,7 @@ data("Measles1861")
 EstimateR(Measles1861$Incidence, 
           T.Start=17:42, T.End=23:48, 
           method="NonParametricSI", SI.Distr=Measles1861$SI.Distr, 
-          plot=TRUE, leg.pos=xy.coords(1,7))
+          plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.

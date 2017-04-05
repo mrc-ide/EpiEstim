@@ -25,7 +25,7 @@ data("Smallpox1972")
 EstimateR(Smallpox1972$Incidence, 
           T.Start=27:51, T.End=33:57, 
           method="NonParametricSI", SI.Distr=Smallpox1972$SI.Distr, 
-          plot=TRUE, leg.pos=xy.coords(1,15))
+          plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.

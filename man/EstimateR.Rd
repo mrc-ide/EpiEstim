@@ -12,7 +12,7 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   SI.parametricDistr = c("G", "E", "off1G", "W", "L"),
   MCMC.control = list(init.pars = NULL, burnin = 3000, thin = 10, seed =
   NULL), SI.Sample = NULL, seed = NULL, Mean.Prior = 5, Std.Prior = 5,
-  CV.Posterior = 0.3, plot = FALSE, leg.pos = "topright")
+  CV.Posterior = 0.3, plot = FALSE)
 }
 \arguments{
 \item{I}{One of the following
@@ -74,8 +74,6 @@ Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (W
 \item{CV.Posterior}{A positive number giving the aimed posterior coefficient of variation (see details).}
 
 \item{plot}{Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
-
-\item{leg.pos}{One of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers.}
 }
 \value{
 {
@@ -124,7 +122,6 @@ The discrete distribution of the serial interval is directly specified in the ar
 If \code{plot} is \code{TRUE}, 3 plots are produced. 
 The first one shows the epidemic curve. 
 The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
 The third plot shows the discrete distribution of the serial interval. 
 
 ----------------------- \code{method "ParametricSI"} -----------------------
@@ -151,7 +148,6 @@ The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 
 If \code{plot} is \code{TRUE}, 3 plots are produced.
 The first one shows the epidemic curve. 
 The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
 The third plot shows the sampled discrete distributions of the serial interval. 
 
 ----------------------- \code{method "SIFromData"} -----------------------
@@ -196,7 +192,7 @@ data("Flu2009")
 
 ## estimate the reproduction number (method "NonParametricSI")
 EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-          SI.Distr=Flu2009$SI.Distr, plot=TRUE, leg.pos=xy.coords(1,3))
+          SI.Distr=Flu2009$SI.Distr, plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
 
@@ -234,7 +230,7 @@ R_SIFromData <- EstimateR(MockRotavirus$Incidence,
                                         thin=10, seed = MCMC_seed), 
                                         n1 = 500, n2 = 50,
                                         seed = overall_seed,
-                                        plot=TRUE, leg.pos=xy.coords(1,3))
+                                        plot=TRUE)
 ## compare with version with no uncertainty
 R_Parametric <- EstimateR(MockRotavirus$Incidence, 
                           T.Start=2:47, T.End=8:53, 
@@ -264,7 +260,7 @@ R_SIFromSample <- EstimateR(MockRotavirus$Incidence,
                             method="SIFromSample", SI.Sample=SI.Sample,
                             n2 = 50,
                             seed = overall_seed,
-                            plot=TRUE, leg.pos=xy.coords(1,3))
+                            plot=TRUE)
 
 # check that R_SIFromSample is the same as R_SIFromData 
 # since they were generated using the same MCMC algorithm to generate the SI sample

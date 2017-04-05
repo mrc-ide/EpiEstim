@@ -25,7 +25,7 @@ data("Flu1918")
 EstimateR(Flu1918$Incidence, 
           T.Start=2:86, T.End=8:92, 
           method="NonParametricSI", SI.Distr=Flu1918$SI.Distr, 
-          plot=TRUE, leg.pos=xy.coords(1,3))
+          plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.

@@ -34,7 +34,7 @@ EstimateR(MockRotavirus$Incidence,
           SI.parametricDistr = "G", 
           MCMC.control = list(burnin = 3000, thin=10), 
           n1 = 500, n2 = 50,
-          plot=TRUE, leg.pos=xy.coords(1,3))
+          plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.

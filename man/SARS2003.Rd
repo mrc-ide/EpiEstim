@@ -25,7 +25,7 @@ data("SARS2003")
 EstimateR(SARS2003$Incidence, 
           T.Start=14:101, T.End=20:107, 
           method="NonParametricSI", SI.Distr=SARS2003$SI.Distr, 
-          plot=TRUE, leg.pos=xy.coords(1,7))
+          plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.
