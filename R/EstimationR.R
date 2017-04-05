@@ -255,8 +255,6 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
                       plot = FALSE, leg.pos = "topright") {
   
-  ### Need to add warnings if method="SIFromData" and CDT is not null
-  
   method <- match.arg(method)
   
   if (method=="SIFromData") {
@@ -537,6 +535,9 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   }
   if(method == "SIFromSample")
   {
+    if (is.null(n2)) {
+      stop("method SIFromSample requires to specify the n2 argument.")
+    }
     SI.Sample <- process_SI.Sample(SI.Sample)
   }
   if (CV.Posterior < 0) {
