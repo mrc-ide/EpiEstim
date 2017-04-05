@@ -3,7 +3,7 @@
 #' \code{plots} allows plotting the outputs of functions \code{\link{EstimateR}} and \code{\link{WT}}
 #' 
 #' @param x The output of function \code{\link{EstimateR}} or function \code{\link{WT}}
-#' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), or the serial interval distribution (\code{what='SI'}). 
+#' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or all three (\code{what='all'})). 
 #' @param add_imported_cases A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases. 
 #' @param ylim For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis
 #' @param options_SI For what = "SI". A list of graphical options: 
@@ -11,7 +11,7 @@
 #' \item{prob_min}{A numeric value between 0 and 1. The SI distributions explored are only shown from time 0 up to the time t so that each distribution explored has probability < \code{prob_min} to be on any time step after t. Defaults to 0.001.}
 #' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the lines. Defaults to 0.25}
 #' } 
-#' @return a plot or a list of plots (if \code{what == "SI"} and \code{x$method == "UncertainSI"})
+#' @return a plot (if \code{what = "I"}, \code{"R"}, or \code{"SI"}) or a \code{\link{grob}} object (if \code{what = "all"}).
 # #' @details
 #' @seealso \code{\link{EstimateR}} and \code{\link{WT}}
 #' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori \email{a.cori@imperial.ac.uk} 
@@ -25,6 +25,9 @@
 #' ## estimate the instantaneous reproduction number (method "NonParametricSI")
 #' R_i <- EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
 #'           SI.Distr=Flu2009$SI.Distr, plot=FALSE)
+#'
+#' ## visualise results
+#' plots(R_i)
 #'
 #' ## estimate the instantaneous reproduction number (method "NonParametricSI")
 #' R_c <- WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
@@ -45,7 +48,7 @@
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
 #' @importFrom graphics plot
 #' @importFrom incidence as.incidence
-plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL, 
+plots <- function(x=NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL, 
                   options_SI = list(prob_min = 0.001, transp = 0.25)) {
   
   if (is.null(x)) {
@@ -104,11 +107,11 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
     Std.SI.sample <- x$SI.Moments["Std"]
   }
   what <- match.arg(what)
-  if (what == "I") {
+  if (what == "I" | what =="all") {
     if(add_imported_cases)
     {
-    p1 <- plot(as.incidence(I), ylab="Incidence", xlab = "Time") +
-      ggtitle("Epidemic curve")
+      p1 <- plot(as.incidence(I), ylab="Incidence", xlab = "Time") +
+        ggtitle("Epidemic curve")
     }else
     {
       p1 <- plot(as.incidence(rowSums(I)), ylab="Incidence", xlab = "Time") +
@@ -117,11 +120,8 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
     
     if(!is.null(ylim))
       p1 <- p1 + lims(y=ylim)
-    
-    #p1ly <- ggplotly(p1)
-    print(p1)
-    return(p1)
-  }else if (what == "R") {
+  }
+  if (what == "R" | what =="all") {
     
     time.points <- apply(x$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 
     if (length(time.points) == length(unique(matrix(time.points,ncol=1)))) { 
@@ -140,11 +140,8 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
         ylab("R") +
         xlim(c(1,max(T.End))) +
         ylim(ylim)
-        ggtitle("Estimated R")
+      ggtitle("Estimated R")
       
-      #p2ly <- ggplotly(p2)
-      print(p2)
-      return(p2)
     } else { 
       if(is.null(ylim))
         ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
@@ -160,13 +157,11 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
         ggtitle("Estimated R") +
         scale_colour_manual("",values="black")+
         scale_fill_manual("",values="grey")
-        
-      #p2ly <- ggplotly(p2)
-      print(p2)
-      return(p2)
+      
     }
     
-  } else if (what == "SI") {
+  }
+  if (what == "SI" | what == "all") {
     
     if (method == "UncertainSI" | method == "SIFromData" | method == "SIFromSample") {
       
@@ -189,9 +184,6 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
           geom_line(aes_string(x="Time", y=paste0("SI.Distr.",i)), colour="black", alpha=options_SI$transp)
       }
       
-      print(p3)
-      return(p3)
-      
     } else {
       
       SI.Distr.times <- unlist(apply(data.frame(0:(length(SI.Distr) - 1), SI.Distr), 1,
@@ -204,11 +196,28 @@ plots <- function(x=NULL, what=c("I", "R", "SI"), add_imported_cases=FALSE, ylim
         xlim(c(0,0.5+max(SI.Distr.times))) + 
         ylab("Frequency") + 
         ggtitle("Serial interval distribution") 
-      #p3ly <- ggplotly(p3)
-      print(p3)
-      return(p3)
       
     }
+  }
+  
+  if(what == "I")
+  {
+    return(p1)
+  }
+  if(what == "R")
+  {
+    return(p2)
+  }
+  if(what == "SI")
+  {
+    return(p3)
+  }
+  if(what == "all")
+  {
+    out <- list(I=p1, SI=p3, R=p2)
+    out.grid <- arrangeGrob(grobs=out, nrow = 3, ncol=1)
+    grid.arrange(out.grid, newpage = FALSE)
+    return(out.grid)
   }
   
 }
