@@ -11,8 +11,8 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
   SI.parametricDistr = c("G", "E", "off1G", "W", "L"),
   MCMC.control = list(init.pars = NULL, burnin = 3000, thin = 10, seed =
-  NULL), SI.Sample = NULL, seed = NULL, Mean.Prior = 5, Std.Prior = 5,
-  CV.Posterior = 0.3, plot = FALSE)
+  as.integer(Sys.time())), SI.Sample = NULL, seed = NULL, Mean.Prior = 5,
+  Std.Prior = 5, CV.Posterior = 0.3, plot = FALSE)
 }
 \arguments{
 \item{I}{One of the following
@@ -65,7 +65,7 @@ Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (W
 
 \item{SI.Sample}{For method "SIFromSample" ; a matrix where each column gives one distribution of the serial interval to be explored (see details).}
 
-\item{seed}{An integer used as the seed for the random number generator at the start of the function (then potentially reset within the MCMC for method \code{SIFromData}); useful to get reproducible results.}
+\item{seed}{An optional integer used as the seed for the random number generator at the start of the function (then potentially reset within the MCMC for method \code{SIFromData}); useful to get reproducible results.}
 
 \item{Mean.Prior}{A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).}
 

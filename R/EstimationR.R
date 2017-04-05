@@ -37,7 +37,7 @@
 #'   \item{seed}{An integer used as the seed for the random number generator at the start of the MCMC estimation; useful to get reproducible results.} 
 #' }
 #' @param SI.Sample For method "SIFromSample" ; a matrix where each column gives one distribution of the serial interval to be explored (see details).
-#' @param seed An integer used as the seed for the random number generator at the start of the function (then potentially reset within the MCMC for method \code{SIFromData}); useful to get reproducible results.
+#' @param seed An optional integer used as the seed for the random number generator at the start of the function (then potentially reset within the MCMC for method \code{SIFromData}); useful to get reproducible results.
 #' @param Mean.Prior A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).
 #' @param Std.Prior A positive number giving the standard deviation of the common prior distribution for all reproduction numbers (see details).
 #' @param CV.Posterior A positive number giving the aimed posterior coefficient of variation (see details).
@@ -245,7 +245,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
                       SI.Distr = NULL, 
                       SI.Data = NULL, SI.parametricDistr = c("G", "E", "off1G", "W", "L"),  
-                      MCMC.control = list(init.pars = NULL, burnin = 3000, thin=10, seed = NULL), 
+                      MCMC.control = list(init.pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time())), 
                       SI.Sample = NULL, 
                       seed = NULL,
                       Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
@@ -276,12 +276,13 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
       stop("You cannot fit a Gamma distribution with offset 1 to this SI dataset, because for some data points the maximum serial interval is <=1.\nChoose a different distribution")
     }
     
-    if(is.null(MCMC.control$seed))
+    if(!is.null(MCMC.control$seed))
     {
-      MCMC.control$seed <- .Random.seed
+      CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.control$burnin, n.samples = n1*MCMC.control$thin, init.pars=MCMC.control$init.pars, seed = MCMC.control$seed)
+    }else
+    {
+      CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.control$burnin, n.samples = n1*MCMC.control$thin, init.pars=MCMC.control$init.pars)
     }
-    
-    CDT <- dic.fit.mcmc(dat = SI.Data, dist=SI.parametricDistr, burnin = MCMC.control$burnin, n.samples = n1*MCMC.control$thin, init.pars=MCMC.control$init.pars, seed = MCMC.control$seed)
     
     # check convergence of the MCMC and print warning if not converged
     MCMC_conv <- check_CDTsamples_convergence(CDT@samples)
