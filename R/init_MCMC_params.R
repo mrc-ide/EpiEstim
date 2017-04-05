@@ -19,13 +19,13 @@
 #' @export
 #' @examples
 #' ## XXXXXXX.
-init_MCMC_params <- function(SI.Data, dist = c("G", "E", "W", "L", "off1G", "off1W", "off1L"))
+init_MCMC_params <- function(SI.Data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
 {
   dist <- match.arg(dist)
   naive_SI_obs <- (SI.Data$SR + SI.Data$SL ) / 2 - (SI.Data$ER + SI.Data$EL ) / 2
   mu <- mean(naive_SI_obs)
   sigma <- sd(naive_SI_obs)
-  if (dist == "G" | dist == "E"){
+  if (dist == "G"){
     shape <- (mu/sigma)^2
     scale <- sigma^2/mu
     # check this is what we want
