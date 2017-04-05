@@ -365,7 +365,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     b.Posterior <- vector()
     a.Posterior <- sapply(1:(NbTimePeriods), function(t) if (T.End[t] >
                                                              FinalMean.SI) {
-      a.Prior + sum(I[T.Start[t]:T.End[t],])
+      a.Prior + sum(I[T.Start[t]:T.End[t],"local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
@@ -399,7 +399,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     b.Posterior <- vector()
     a.Posterior <- sapply(1:(NbTimePeriods), function(t) if (T.End[t] >
                                                              FinalMean.SI) {
-      a.Prior + sum(I[T.Start[t]:T.End[t],])
+      a.Prior + sum(I[T.Start[t]:T.End[t],"local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
