@@ -4,7 +4,8 @@
 \alias{init_MCMC_params}
 \title{init_MCMC_params TITLE}
 \usage{
-init_MCMC_params(SI.Data, dist)
+init_MCMC_params(SI.Data, dist = c("G", "E", "W", "L", "off1G", "off1W",
+  "off1L"))
 }
 \arguments{
 \item{SI.Data}{XXXXXXX.}

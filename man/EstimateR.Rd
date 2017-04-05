@@ -9,7 +9,7 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   Mean.SI = NULL, Std.SI = NULL, Std.Mean.SI = NULL, Min.Mean.SI = NULL,
   Max.Mean.SI = NULL, Std.Std.SI = NULL, Min.Std.SI = NULL,
   Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
-  SI.parametricDistr = c("G", "E", "off1G", "W", "L"),
+  SI.parametricDistr = c("G", "E", "W", "L", "off1G", "off1W", "off1L"),
   MCMC.control = list(init.pars = NULL, burnin = 3000, thin = 10, seed =
   as.integer(Sys.time())), SI.Sample = NULL, seed = NULL, Mean.Prior = 5,
   Std.Prior = 5, CV.Posterior = 0.3, plot = FALSE)
@@ -53,7 +53,7 @@ Note that the cases from the first time step are always all assumed to be import
 \item{SI.Data}{For method "SIFromData" ; the data on dates of symptoms of pairs of infector/infected individuals to be used to estimate the serial interval distribution (see details).}
 
 \item{SI.parametricDistr}{For method "SIFromData" ; the parametric distribution to use when estimating the serial interval from data on dates of symptoms of pairs of infector/infected individuals (see details). 
-Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (Weibull), or "L" (Lognormal).}
+Should be one of "G" (Gamma), "E" (Erlang), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal shifted by 1).}
 
 \item{MCMC.control}{For method "SIFromData" ; a list containing the following (see details):
 \describe{

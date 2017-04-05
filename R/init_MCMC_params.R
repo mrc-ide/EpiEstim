@@ -19,8 +19,9 @@
 #' @export
 #' @examples
 #' ## XXXXXXX.
-init_MCMC_params <- function(SI.Data, dist)
+init_MCMC_params <- function(SI.Data, dist = c("G", "E", "W", "L", "off1G", "off1W", "off1L"))
 {
+  dist <- match.arg(dist)
   naive_SI_obs <- (SI.Data$SR + SI.Data$SL ) / 2 - (SI.Data$ER + SI.Data$EL ) / 2
   mu <- mean(naive_SI_obs)
   sigma <- sd(naive_SI_obs)
@@ -29,15 +30,6 @@ init_MCMC_params <- function(SI.Data, dist)
     scale <- sigma^2/mu
     # check this is what we want
     # tmp <- rgamma(10000, shape=shape, scale = scale)
-    # mean(tmp)
-    # sd(tmp)
-    param <- c(shape, scale)
-  } else if (dist == "off1G"){
-    shape <- ((mu-1)/sigma)^2
-    if(shape<=0) shape <- 0.001 # this is to avoid issues when the mean SI is <1
-    scale <- sigma^2/(mu-1)
-    # check this is what we want
-    # tmp <- 1+rgamma(10000, shape=shape, scale = scale)
     # mean(tmp)
     # sd(tmp)
     param <- c(shape, scale)
@@ -57,7 +49,33 @@ init_MCMC_params <- function(SI.Data, dist)
     # tmp <- rlnorm(10000, meanlog=meanlog, sdlog = sdlog)
     # mean(tmp)
     # sd(tmp)
-    param <- c(meanlog, param)
+    param <- c(meanlog, sdlog)
+  } else if (dist == "off1G"){
+    shape <- ((mu-1)/sigma)^2
+    if(shape<=0) shape <- 0.001 # this is to avoid issues when the mean SI is <1
+    scale <- sigma^2/(mu-1)
+    # check this is what we want
+    # tmp <- 1+rgamma(10000, shape=shape, scale = scale)
+    # mean(tmp)
+    # sd(tmp)
+    param <- c(shape, scale)
+  } else if (dist == "off1W"){
+    fit.w <- fitdist(naive_SI_obs-1+0.1, "weibull") # using +0.1 to avoid issues with zero
+    shape <- fit.w$estimate["shape"]
+    scale <- fit.w$estimate["scale"]
+    # check this is what we want
+    # tmp <- 1+rweibull(10000, shape=shape, scale = scale)
+    # mean(tmp)
+    # sd(tmp)
+    param <- c(shape, scale)
+  } else if (dist == "off1L"){
+    sdlog <- sqrt(log(sigma^2/((mu-1)^2)+1))
+    meanlog <- log(mu-1) - sdlog^2/2
+    # check this is what we want
+    # tmp <- 1+rlnorm(10000, meanlog=meanlog, sdlog = sdlog)
+    # mean(tmp)
+    # sd(tmp)
+    param <- c(meanlog, sdlog)
   } else {
     stop(sprintf("Distribtion (%s) not supported",dist))
   }

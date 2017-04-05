@@ -28,7 +28,7 @@
 #' @param SI.Distr For method "NonParametricSI" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{SI.Distr[1]} (probability that the serial interval is zero), which should be zero.
 #' @param SI.Data For method "SIFromData" ; the data on dates of symptoms of pairs of infector/infected individuals to be used to estimate the serial interval distribution (see details).
 #' @param SI.parametricDistr For method "SIFromData" ; the parametric distribution to use when estimating the serial interval from data on dates of symptoms of pairs of infector/infected individuals (see details). 
-#' Should be one of "G" (Gamma), "E" (Erlang), "off1G" (Gamma shifted by 1), "W" (Weibull), or "L" (Lognormal). 
+#' Should be one of "G" (Gamma), "E" (Erlang), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal shifted by 1). 
 #' @param MCMC.control For method "SIFromData" ; a list containing the following (see details):
 #' \describe{
 #'   \item{init.pars}{vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically using function \code{\link{init_MCMC_params}}.}
@@ -244,7 +244,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
                       Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
                       SI.Distr = NULL, 
-                      SI.Data = NULL, SI.parametricDistr = c("G", "E", "off1G", "W", "L"),  
+                      SI.Data = NULL, SI.parametricDistr = c("G", "E", "W", "L", "off1G", "off1W", "off1L"),  
                       MCMC.control = list(init.pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time())), 
                       SI.Sample = NULL, 
                       seed = NULL,
@@ -271,9 +271,9 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
       stop("method UncertainSI requires a >0 integer value for n1.")
     }
     if(is.null(MCMC.control$init.pars)) MCMC.control$init.pars <- init_MCMC_params(SI.Data, SI.parametricDistr)
-    if(SI.parametricDistr=="off1G" & any(SI.Data$SR-SI.Data$EL<=1))
+    if((SI.parametricDistr=="off1G" | SI.parametricDistr=="off1W" | SI.parametricDistr=="off1L") & any(SI.Data$SR-SI.Data$EL<=1))
     {
-      stop("You cannot fit a Gamma distribution with offset 1 to this SI dataset, because for some data points the maximum serial interval is <=1.\nChoose a different distribution")
+      stop("You cannot fit a distribution with offset 1 to this SI dataset, because for some data points the maximum serial interval is <=1.\nChoose a different distribution")
     }
     
     if(!is.null(MCMC.control$seed))
