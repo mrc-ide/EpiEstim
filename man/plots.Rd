@@ -37,6 +37,9 @@ data("Flu2009")
 R_i <- EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
           SI.Distr=Flu2009$SI.Distr, plot=FALSE)
 
+## visualise results
+plots(R_i)
+
 ## estimate the instantaneous reproduction number (method "NonParametricSI")
 R_c <- WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
           SI.Distr=Flu2009$SI.Distr, plot=FALSE)

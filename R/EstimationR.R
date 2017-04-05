@@ -703,108 +703,15 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   
   if (plot) {
     
-    ########################################################################
-    ### these few lines are to make CRAN checks happy with ggplot2... ###
-    Time <- NULL
-    Incidence <- NULL
-    value <- NULL
-    meanR <- NULL
-    group <- NULL
-    lower <- NULL
-    upper <- NULL
-    Times <- NULL
-    ..density.. <- NULL
-    start <- NULL
-    end <- NULL
-    SI.Distr.1 <- NULL
-    ########################################################################
-    
-    if(sum(I$imported)>1) # more than the first cases are imported
+    if(sum(I$imported[-1])>0) # more than the first cases are imported
     {
-      p1 <- plot(as.incidence(I), ylab="Incidence", xlab = "Time") +
-        ggtitle("Epidemic curve")
+      add_imported_cases <- TRUE
     }else
     {
-      p1 <- plot(as.incidence(rowSums(I)), ylab="Incidence", xlab = "Time") +
-        ggtitle("Epidemic curve")
+      add_imported_cases <- FALSE
     }
     
-    # test if intervals overlap 
-    time.points <- apply(results$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 
-    if (length(time.points) == length(unique(matrix(time.points,ncol=1)))) { 
-      
-      df <- melt(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
-                            upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
-      df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
-      
-      p2 <- ggplot(df, aes(x=as.numeric(value), y=as.numeric(meanR), group=as.factor(group))) +
-        geom_ribbon(aes(ymin=lower, ymax=upper), colour=NA, fill="black", alpha=0.2) +
-        geom_line() +
-        xlab("Time") +
-        ylab("R") +
-        xlim(c(1,max(T.End))) +
-        ggtitle("Estimated R")
-      #p2ly <- ggplotly(p2)
-      
-    } else { 
-      
-      p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
-                              upper=Quantile.0.975.Posterior), aes(end, meanR)) +
-        geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
-        geom_line(aes(colour="Mean")) +
-        geom_hline(yintercept=1, linetype="dotted") +
-        xlab("Time") +
-        ylab("R") +
-        xlim(c(1,max(T.End))) +
-        ylim(c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))) +
-        ggtitle("Estimated R") +
-        scale_colour_manual("",values="black")+
-        scale_fill_manual("",values="grey")
-      #p2ly <- ggplotly(p2) 
-    }
-    
-    if (SIUncertainty == "Y") {
-      
-      transp <- 0.25
-      prob_min <- 0.001
-      
-      df <- data.frame(Time=0:(ncol(SI.Distr)-1), SI.Distr=t(SI.Distr))
-      
-      tmp <- cumsum(apply(SI.Distr,2,max) >= prob_min)
-      stop_at <- min(which(tmp ==tmp[length(tmp)]))
-      
-      df <- df[1:stop_at,]
-      
-      p3 <- ggplot(df) +
-        geom_line(aes(x=Time, y=SI.Distr.1),  colour="black", alpha=transp) +
-        ggtitle("Explored SI distributions") + 
-        xlab("Time") +
-        ylab("Frequency") 
-      
-      for(i in 2:nrow(SI.Distr))
-      {
-        p3 <- p3 + 
-          geom_line(aes_string(x="Time", y=paste0("SI.Distr.",i)), colour="black", alpha=transp)
-      }
-      
-      grid.arrange(p1,p3,p2,ncol=1)
-      
-    } else {
-      SI.Distr.times <- unlist(apply(data.frame(0:(length(SI.Distr) - 1), SI.Distr), 1,
-                                     function(x) {if (x[2]!=0) unlist(rep(x[1],round(x[2]*1000)),use.names=FALSE)}))
-      names(SI.Distr.times) <- NULL
-      
-      p3 <- ggplot(data.frame(Times=SI.Distr.times), aes(0.5+Times)) +
-        geom_histogram(binwidth=1, aes(y=..density..)) +
-        xlab("Time") + 
-        xlim(c(0,0.5+max(SI.Distr.times))) + 
-        ylab("Frequency") + 
-        ggtitle("Serial interval distribution") 
-      #p3ly <- ggplotly(p3)
-      
-      grid.arrange(p1,p3,p2,ncol=1)
-      
-    }
+    plots(results, what="all", add_imported_cases = add_imported_cases)
   }
   
   return(results)
