@@ -20,7 +20,8 @@ Imports:
     plotly,
     fitdistrplus,
     coda,
-    incidence
+    incidence, 
+    scales
 Remotes: 
     reconhub/incidence,
     robin-thompson/coarseDataTools@hackout3

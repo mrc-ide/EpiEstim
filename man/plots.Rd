@@ -4,7 +4,7 @@
 \alias{plots}
 \title{Plotting the outputs of functions estimating the reproduction number from incidence time series and assumptions regarding the serial interval distribution}
 \usage{
-plots(x = NULL, what = c("all", "I", "R", "SI"),
+plots(x = NULL, what = c("all", "I", "R", "SI"), x2 = NULL,
   add_imported_cases = FALSE, ylim = NULL, options_SI = list(prob_min =
   0.001, transp = 0.25))
 }
@@ -12,6 +12,9 @@ plots(x = NULL, what = c("all", "I", "R", "SI"),
 \item{x}{The output of function \code{\link{EstimateR}} or function \code{\link{WT}}}
 
 \item{what}{A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or all three (\code{what='all'})).}
+
+\item{x2}{Optional, and only used if \code{what='R'} or \code{what='all'}. A second output of function \code{\link{EstimateR}} or function \code{\link{WT}}, 
+typically based on the same incidence, for which the Reproduction number plot will be overlayed on the other one}
 
 \item{add_imported_cases}{A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases.}
 

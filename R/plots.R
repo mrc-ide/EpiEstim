@@ -4,6 +4,8 @@
 #' 
 #' @param x The output of function \code{\link{EstimateR}} or function \code{\link{WT}}
 #' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or all three (\code{what='all'})). 
+#' @param x2 Optional, and only used if \code{what='R'} or \code{what='all'}. A second output of function \code{\link{EstimateR}} or function \code{\link{WT}}, 
+#' typically based on the same incidence, for which the Reproduction number plot will be overlayed on the other one
 #' @param add_imported_cases A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases. 
 #' @param ylim For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis
 #' @param options_SI For what = "SI". A list of graphical options: 
@@ -17,6 +19,7 @@
 #' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori \email{a.cori@imperial.ac.uk} 
 # #' @references 
 #' @importFrom ggplot2 aes aes_string
+#' @importFrom scales alpha
 #' @export
 #' @examples 
 #' ## load data on pandemic flu in a school in 2009
@@ -48,7 +51,7 @@
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
 #' @importFrom graphics plot
 #' @importFrom incidence as.incidence
-plots <- function(x=NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL, 
+plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_imported_cases=FALSE, ylim=NULL, 
                   options_SI = list(prob_min = 0.001, transp = 0.25)) {
   
   if (is.null(x)) {
@@ -72,9 +75,12 @@ plots <- function(x=NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALS
   Incidence_imported <- NULL
   value <- NULL
   meanR <- NULL
+  meanR2 <- NULL
   group <- NULL
+  lower2 <- NULL
   lower <- NULL
   upper <- NULL
+  upper2 <- NULL
   Times <- NULL
   ..density.. <- NULL
   start <- NULL
@@ -105,38 +111,97 @@ plots <- function(x=NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALS
     
     time.points <- apply(x$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 
     if (length(time.points) == length(unique(matrix(time.points,ncol=1)))) { 
-      
-      df <- melt(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
-                            upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
-      df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
-      
       if(is.null(ylim))
         ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
       
-      p2 <- ggplot(df, aes(x=as.numeric(value), y=as.numeric(meanR), group=as.factor(group))) +
-        geom_ribbon(aes(ymin=lower, ymax=upper), colour=NA, fill="black", alpha=0.2) +
-        geom_line() +
-        xlab("Time") +
-        ylab("R") +
-        xlim(c(1,max(T.End))) +
-        ylim(ylim)
-      ggtitle("Estimated R")
+      if(is.null(x2))
+      {
+        df <- melt(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+                              upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
+        df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
+        
+        p2 <- ggplot(df, aes(x=as.numeric(value), y=as.numeric(meanR), group=as.factor(group))) +
+          geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
+          geom_line(aes(y = meanR, colour="Mean")) +
+          xlab("Time") +
+          ylab("R") +
+          xlim(c(1,max(T.End))) +
+          ylim(ylim) +
+          scale_colour_manual("",values="black")+
+          scale_fill_manual("",values="grey")
+        ggtitle("Estimated R")
+      }else
+      {
+        T.Start2 <- x2$R$T.Start 
+        T.End2 <- x2$R$T.End
+        Mean.Posterior2 <- x2$R[, "Mean(R)"]
+        Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
+        Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
+        
+        df <- melt(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+                              upper=Quantile.0.975.Posterior,
+                              start2=T.Start2, end2=T.End2, meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
+                              upper2=Quantile.0.975.Posterior2), id=c("meanR", "lower", "upper", "meanR2", "lower2", "upper2")) 
+        df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
+        
+        p2 <- ggplot(df, aes(x=as.numeric(value), y=as.numeric(meanR), group=as.factor(group))) +
+          geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
+          geom_line(aes(y = meanR, colour="Mean")) +
+          geom_ribbon(aes(ymin=lower2, ymax=upper2, fill="95%CrI2")) +
+          geom_line(aes(y = meanR2, colour="Mean2")) +
+          xlab("Time") +
+          ylab("R") +
+          xlim(c(1,max(T.End))) +
+          ylim(ylim) +
+          scale_colour_manual("",values=c("black", "red"))+
+          scale_fill_manual("",values=c(alpha("black", 0.2), alpha("red", 0.2)))
+        ggtitle("Estimated R")
+        
+      }
       
     } else { 
       if(is.null(ylim))
         ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
-      p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
-                              upper=Quantile.0.975.Posterior), aes(end, meanR)) +
-        geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
-        geom_line(aes(colour="Mean")) +
-        geom_hline(yintercept=1, linetype="dotted") +
-        xlab("Time") +
-        ylab("R") +
-        xlim(c(1,max(T.End))) +
-        ylim(ylim) +
-        ggtitle("Estimated R") +
-        scale_colour_manual("",values="black")+
-        scale_fill_manual("",values="grey")
+      
+      if(is.null(x2))
+      {
+        p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+                                upper=Quantile.0.975.Posterior), aes(end, meanR)) +
+          geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
+          geom_line(aes(colour="Mean")) +
+          geom_hline(yintercept=1, linetype="dotted") +
+          xlab("Time") +
+          ylab("R") +
+          xlim(c(1,max(T.End))) +
+          ylim(ylim) +
+          ggtitle("Estimated R") +
+          scale_colour_manual("",values="black")+
+          scale_fill_manual("",values="grey")
+      }else
+      {
+        T.Start2 <- x2$R$T.Start 
+        T.End2 <- x2$R$T.End
+        Mean.Posterior2 <- x2$R[, "Mean(R)"]
+        Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
+        Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
+        
+        p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+                                upper=Quantile.0.975.Posterior,
+                                start2=T.Start2, end2=T.End2, meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
+                                upper2=Quantile.0.975.Posterior2), aes(end, meanR, meanR2)) +
+          geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
+          geom_line(aes(y = meanR, colour="Mean")) +
+          geom_ribbon(aes(ymin=lower2, ymax=upper2, fill="95%CrI2")) +
+          geom_line(aes(y = meanR2, colour="Mean2")) +
+          geom_hline(yintercept=1, linetype="dotted") +
+          xlab("Time") +
+          ylab("R") +
+          xlim(c(1,max(T.End))) +
+          ylim(ylim) +
+          ggtitle("Estimated R") +
+          scale_colour_manual("",values=c("black", "red"))+
+          scale_fill_manual("",values=c(alpha("black", 0.2), alpha("red", 0.2)))
+      }
       
     }
     
