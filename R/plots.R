@@ -111,11 +111,12 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
     
     time.points <- apply(x$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 
     if (length(time.points) == length(unique(matrix(time.points,ncol=1)))) { 
-      if(is.null(ylim))
-        ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
       
       if(is.null(x2))
       {
+        if(is.null(ylim))
+          ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
+        
         df <- melt(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                               upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
         df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
@@ -137,6 +138,9 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
         Mean.Posterior2 <- x2$R[, "Mean(R)"]
         Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
         Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
+        
+        if(is.null(ylim))
+          ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE), max(Quantile.0.975.Posterior2, na.rm = TRUE))
         
         df <- melt(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                               upper=Quantile.0.975.Posterior,
@@ -160,11 +164,13 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
       }
       
     } else { 
-      if(is.null(ylim))
-        ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
       
       if(is.null(x2))
       {
+        if(is.null(ylim))
+          ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
+        
+        
         p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                                 upper=Quantile.0.975.Posterior), aes(end, meanR)) +
           geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
@@ -184,6 +190,9 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
         Mean.Posterior2 <- x2$R[, "Mean(R)"]
         Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
         Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
+        
+        if(is.null(ylim))
+          ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE), max(Quantile.0.975.Posterior2, na.rm = TRUE))
         
         p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                                 upper=Quantile.0.975.Posterior,
