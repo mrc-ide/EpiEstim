@@ -62,27 +62,7 @@ plots <- function(x=NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALS
   Quantile.0.975.Posterior <- x$R[, "Quantile.0.975(R)"]
   method <- x$method
   SI.Distr <- x$SI.Distr
-  I <- x$I
-  
-  if(is.vector(I))
-  {
-    I_tmp <- I
-    I <- data.frame(local=I_tmp, imported=rep(0, length(I_tmp)))
-    I_init <- sum(I[1,])
-    I[1,] <- c(0, I_init)
-  }else
-  {
-    if(!is.data.frame(I) | !all(c("local","imported") %in% names(I)) ) 
-    {
-      stop("I must be a vector or a dataframe with 2 columns called 'local' and 'imported'.")
-    }
-    if(I$local[1]>0)
-    {
-      warning("I$local[1] is >0 but must be 0, as all cases on the first time step are assumed imported. This is corrected automatically by cases being transferred to I$imported.")
-      I_init <- sum(I[1,])
-      I[1,] <- c(0, I_init)
-    }
-  }
+  I <- data.frame(local=x$I_local, imported=x$I_imported)
   T<-nrow(I)
   
   ########################################################################
