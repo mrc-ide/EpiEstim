@@ -140,7 +140,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
         Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
         
         if(is.null(ylim))
-          ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE), max(Quantile.0.975.Posterior2, na.rm = TRUE))
+          ylim <- c(0,max(c(Quantile.0.975.Posterior, Quantile.0.975.Posterior2), na.rm = TRUE))
         
         df <- melt(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                               upper=Quantile.0.975.Posterior,
@@ -192,7 +192,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
         Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
         
         if(is.null(ylim))
-          ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE), max(Quantile.0.975.Posterior2, na.rm = TRUE))
+          ylim <- c(0,max(c(Quantile.0.975.Posterior, Quantile.0.975.Posterior2), na.rm = TRUE))
         
         p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                                 upper=Quantile.0.975.Posterior,
