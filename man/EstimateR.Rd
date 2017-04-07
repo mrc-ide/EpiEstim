@@ -6,9 +6,9 @@
 \usage{
 EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   "UncertainSI", "SIFromData", "SIFromSample"), n1 = NULL, n2 = NULL,
-  Mean.SI = NULL, Std.SI = NULL, Std.Mean.SI = NULL, Min.Mean.SI = NULL,
-  Max.Mean.SI = NULL, Std.Std.SI = NULL, Min.Std.SI = NULL,
-  Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
+  n3 = NULL, Mean.SI = NULL, Std.SI = NULL, Std.Mean.SI = NULL,
+  Min.Mean.SI = NULL, Max.Mean.SI = NULL, Std.Std.SI = NULL,
+  Min.Std.SI = NULL, Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
   SI.parametricDistr = c("G", "W", "L", "off1G", "off1W", "off1L"),
   MCMC.control = list(init.pars = NULL, burnin = 3000, thin = 10, seed =
   as.integer(Sys.time())), SI.Sample = NULL, seed = NULL, Mean.Prior = 5,
@@ -17,8 +17,11 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 \arguments{
 \item{I}{One of the following
 \itemize{
-\item{A vector (or a dataframe with a single column) of non-negative integers containing the incidence time series}
-\item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
+\item{a) A vector (or a dataframe with a single column) of non-negative integers containing the incidence time series}
+\item{b) A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
+\item{c) A list of vectors as in a). This can be used when there is uncertainty in incidence, several incidence time series are available, and one wants to provide estimates of R which fully account for this uncertainty }
+\item{d) A list of dataframes as in b)}
+Options c) and d) are currently only allowed in combination with methods "NonParametricSI" and "ParametricSI". 
 } 
 Note that the cases from the first time step are always all assumed to be imported cases.}
 
@@ -28,9 +31,11 @@ Note that the cases from the first time step are always all assumed to be import
 
 \item{method}{One of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample" (see details).}
 
-\item{n1}{For method "UncertainSI" and "SIFromData"; positive integer giving the size of the sample of SI distributions to be drawn (see details).}
+\item{n1}{For methods "UncertainSI" and "SIFromData"; positive integer giving the size of the sample of SI distributions to be drawn (see details).}
 
 \item{n2}{For methods "UncertainSI", "SIFromData" and "SIFromSample"; positive integer giving the size of the sample drawn from the posterior distribution of R for each serial interval distribution considered (see details).}
+
+\item{n3}{only used if \code{I} is a list; positive integer giving the size of the sample drawn from the posterior distribution of R for each incidence time series considered.}
 
 \item{Mean.SI}{For method "ParametricSI" and "UncertainSI" ; positive real giving the mean serial interval (method "ParametricSI") or the average mean serial interval (method "UncertainSI", see details).}
 
@@ -85,9 +90,9 @@ the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles
 	\item{method}{: the method used to estimate R, one of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample"}
 	\item{SI.Distr}{: a vector or dataframe (depending on the method) containing the discrete serial interval distribution(s) used for estimation}
 	\item{SI.Moments}{: a vector or dataframe (depending on the method) containing the mean and std of the discrete serial interval distribution(s) used for estimation}
-	\item{I}{: the time series of total incidence}
-	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
-	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
+	\item{I}{: the  (or a list of if argument I was a list) time series of total incidence }
+	\item{I_local}{: the  (or a list of if argument I was a list) time series of incidence of local cases (so that \code{I_local + I_imported = I})}
+	\item{I_imported}{: the  (or a list of if argument I was a list) time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
 	\item{MCMC_converged}{ (only for method \code{SIFromData}): a boolean showing whether the Gelman-Rubin MCMC convergence diagnostic was successful (\code{TRUE}) or not (\code{FALSE})}
 }
 }
@@ -208,6 +213,17 @@ EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="UncertainSI",
           Std.SI=1.5, Std.Std.SI=0.5, Min.Std.SI=0.5, Max.Std.SI=2.5, 
           n1=100, n2=100, plot=TRUE)
 # the bottom left plot produced shows, at each each day, 
+# the estimate of the reproduction number over the 7-day window finishing on that day.
+
+## estimate the reproduction number (method "ParametricSI") 
+## assuming uncertainty in the incidence curve
+alternative_Flu2009_Incidence <- Flu2009$Incidence + 
+               sample((-5):5, size = length(Flu2009$Incidence), replace = TRUE)
+alternative_Flu2009_Incidence[alternative_Flu2009_Incidence<0] <- 0
+I <- list(Flu2009$Incidence, alternative_Flu2009_Incidence)
+EstimateR(I, T.Start=2:26, T.End=8:32, method="ParametricSI", n3 = 100, 
+          Mean.SI=2.6, Std.SI=1.5, plot=TRUE)
+# the second plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
 
 \dontrun{

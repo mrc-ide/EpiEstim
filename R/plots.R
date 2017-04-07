@@ -65,8 +65,16 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
   Quantile.0.975.Posterior <- x$R[, "Quantile.0.975(R)"]
   method <- x$method
   SI.Distr <- x$SI.Distr
-  I <- data.frame(local=x$I_local, imported=x$I_imported)
-  T<-nrow(I)
+  
+  if(class(x$I) =="list" & length(x$I)>1)
+  {
+    I <- lapply(1:length(x$I_local), function(e) data.frame(local=x$I_local[[e]], imported=x$I_imported[[e]]))
+    T<-nrow(I[[1]])
+  }else
+  {
+    I <- data.frame(local=x$I_local, imported=x$I_imported)
+    T<-nrow(I)
+  }
   
   ########################################################################
   ### these few lines are to make CRAN checks happy with ggplot2... ###
@@ -86,6 +94,8 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
   start <- NULL
   end <- NULL
   SI.Distr.1 <- NULL
+  time <- NULL
+  series <- NULL
   ########################################################################
   
   if (method == "UncertainSI" | method == "SIFromData" | method == "SIFromSample") {
@@ -94,14 +104,31 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
   }
   what <- match.arg(what)
   if (what == "I" | what =="all") {
-    if(add_imported_cases)
+    
+    if(class(x$I) =="list" & length(x$I)>1)
     {
-      p1 <- plot(as.incidence(I), ylab="Incidence", xlab = "Time") +
+      if(add_imported_cases)
+      {
+        warning("Plotting of imported cases is not implemented when several incidence time series are provided.")
+      }
+      I_all <- as.data.frame(cbind(sapply(I, rowSums), 1:nrow(I[[1]])))
+      names(I_all)[ncol(I_all)] <- "time"
+      df <- melt(I_all , id.vars="time", variable.name = 'series')
+      p1 <- ggplot(df, aes(time,value)) + geom_step(aes(colour = series)) +
+        xlab("Time") +
+        ylab("Incidence") +
         ggtitle("Epidemic curve")
     }else
     {
-      p1 <- plot(as.incidence(rowSums(I)), ylab="Incidence", xlab = "Time") +
-        ggtitle("Epidemic curve")
+      if(add_imported_cases)
+      {
+        p1 <- plot(as.incidence(I), ylab="Incidence", xlab = "Time") +
+          ggtitle("Epidemic curve")
+      }else
+      {
+        p1 <- plot(as.incidence(rowSums(I)), ylab="Incidence", xlab = "Time") +
+          ggtitle("Epidemic curve")
+      }
     }
     
     if(!is.null(ylim))
