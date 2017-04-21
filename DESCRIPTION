@@ -21,7 +21,8 @@ Imports:
     fitdistrplus,
     coda,
     incidence, 
-    scales
+    scales,
+    grDevices
 Remotes: 
     reconhub/incidence,
     nickreich/coarseDataTools@hackout3

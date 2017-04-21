@@ -2,13 +2,16 @@
 #' 
 #' \code{plots} allows plotting the outputs of functions \code{\link{EstimateR}} and \code{\link{WT}}
 #' 
-#' @param x The output of function \code{\link{EstimateR}} or function \code{\link{WT}}
+#' @param x The output of function \code{\link{EstimateR}} or function \code{\link{WT}}, or a list of such outputs. If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph. 
 #' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or all three (\code{what='all'})). 
-#' @param x2 Optional, and only used if \code{what='R'} or \code{what='all'}. A second output of function \code{\link{EstimateR}} or function \code{\link{WT}}, 
-#' typically based on the same incidence, for which the Reproduction number plot will be overlayed on the other one
 #' @param add_imported_cases A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases. 
 #' @param ylim For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis
-#' @param options_SI For what = "SI". A list of graphical options: 
+#' @param options_R For what = "R" or "all". A list of graphical options: 
+#'  \describe{
+#' \item{col}{A colour or vector of colours used for plotting R. By default uses the default R colours.}
+#' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
+#' } 
+#' @param options_SI For what = "SI" or "all". A list of graphical options: 
 #'  \describe{
 #' \item{prob_min}{A numeric value between 0 and 1. The SI distributions explored are only shown from time 0 up to the time t so that each distribution explored has probability < \code{prob_min} to be on any time step after t. Defaults to 0.001.}
 #' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the lines. Defaults to 0.25}
@@ -20,6 +23,7 @@
 # #' @references 
 #' @importFrom ggplot2 aes aes_string
 #' @importFrom scales alpha
+#' @importFrom grDevices palette
 #' @export
 #' @examples 
 #' ## load data on pandemic flu in a school in 2009
@@ -51,11 +55,33 @@
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
 #' @importFrom graphics plot
 #' @importFrom incidence as.incidence
-plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_imported_cases=FALSE, ylim=NULL, 
+plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL, 
+                  options_R = list(col = palette(), transp = 0.2),
                   options_SI = list(prob_min = 0.001, transp = 0.25)) {
   
   if (is.null(x)) {
     stop("plots requires non NULL x input.")
+  }
+  
+  # check if x is a single output of EpiEstim or a list of such outputs
+  if(is.data.frame(x[[1]])) # x is a single output of EpiEstim
+  {
+    multiple_input <- FALSE
+    options_R$col <- options_R$col[1]
+  }else
+  {
+    multiple_input <- TRUE
+    x_list <- x
+    x <- x_list[[1]]
+    if(length(x_list)>length(col))
+    {
+      warnings("color vector too short, recycling colors.")
+      options_R$col <- rep(options_R$col, ceiling(length(x_list) / length(options_R$col)))
+      options_R$col <- options_R$col[1:length(x_list)]
+    }else
+    {
+      options_R$col <- options_R$col[1:length(x_list)]
+    }
   }
   
   T.Start <- x$R$T.Start 
@@ -112,7 +138,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
     time.points <- apply(x$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 
     if (length(time.points) == length(unique(matrix(time.points,ncol=1)))) { 
       
-      if(is.null(x2))
+      if(!multiple_input)
       {
         if(is.null(ylim))
           ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
@@ -128,44 +154,64 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
           ylab("R") +
           xlim(c(1,max(T.End))) +
           ylim(ylim) +
-          scale_colour_manual("",values="black")+
-          scale_fill_manual("",values="grey")
-        ggtitle("Estimated R")
+          scale_colour_manual("",values=options_R$col) +
+          scale_fill_manual("",values=alpha(options_R$col, options_R$transp)) +
+          ggtitle("Estimated R")
+        
       }else
       {
-        T.Start2 <- x2$R$T.Start 
-        T.End2 <- x2$R$T.End
-        Mean.Posterior2 <- x2$R[, "Mean(R)"]
-        Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
-        Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
+        df_tmp <- data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+                             upper=Quantile.0.975.Posterior)
+        df <- df_tmp
+        id_tmp <- c("meanR", "lower", "upper")
+        id <- id_tmp
+        
+        for(i in 2:length(x_list))
+        {
+          x2 <- x_list[[i]]
+          T.Start2 <- x2$R$T.Start 
+          T.End2 <- x2$R$T.End
+          Mean.Posterior2 <- x2$R[, "Mean(R)"]
+          Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
+          Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
+          df_tmp2 <- data.frame(start2=T.Start2, end2=T.End2, meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
+                                upper2=Quantile.0.975.Posterior2)
+          names(df_tmp2) <- paste0(names(df_tmp), i)
+          df <- cbind(df, df_tmp2)
+          id_tmp2 <- paste0(id, i)
+          id <- c(id, id_tmp2)
+        }
         
         if(is.null(ylim))
-          ylim <- c(0,max(c(Quantile.0.975.Posterior, Quantile.0.975.Posterior2), na.rm = TRUE))
+          ylim <- c(0,max(df[,grep("upper", names(df))], na.rm = TRUE))
         
-        df <- melt(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
-                              upper=Quantile.0.975.Posterior,
-                              start2=T.Start2, end2=T.End2, meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
-                              upper2=Quantile.0.975.Posterior2), id=c("meanR", "lower", "upper", "meanR2", "lower2", "upper2")) 
+        df <- melt(df, id=id) 
         df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
         
         p2 <- ggplot(df, aes(x=as.numeric(value), y=as.numeric(meanR), group=as.factor(group))) +
           geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
-          geom_line(aes(y = meanR, colour="Mean")) +
-          geom_ribbon(aes(ymin=lower2, ymax=upper2, fill="95%CrI2")) +
-          geom_line(aes(y = meanR2, colour="Mean2")) +
+          geom_line(aes(y = meanR, colour="Mean")) 
+        
+        for(i in 2:length(x_list))
+        {
+          p2 <- p2 + geom_ribbon(aes_string(ymin=paste0("lower",i), ymax=paste0("upper",i), fill=shQuote(paste0("95%CrI",i)))) +
+            geom_line(aes_string(y = paste0("meanR",i), colour=shQuote(paste0("Mean",i))))
+        }
+        
+        p2 <- p2 +
           xlab("Time") +
           ylab("R") +
           xlim(c(1,max(T.End))) +
           ylim(ylim) +
-          scale_colour_manual("",values=c("black", "red"))+
-          scale_fill_manual("",values=c(alpha("black", 0.2), alpha("red", 0.2)))
-        ggtitle("Estimated R")
+          scale_colour_manual("",values=options_R$col) +
+          scale_fill_manual("",values=alpha(options_R$col, options_R$transp)) +
+          ggtitle("Estimated R")
         
       }
       
     } else { 
       
-      if(is.null(x2))
+      if(!multiple_input)
       {
         if(is.null(ylim))
           ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
@@ -181,35 +227,55 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), x2 = NULL, add_import
           xlim(c(1,max(T.End))) +
           ylim(ylim) +
           ggtitle("Estimated R") +
-          scale_colour_manual("",values="black")+
-          scale_fill_manual("",values="grey")
+          scale_colour_manual("",values=options_R$col)+
+          scale_fill_manual("",values=alpha(options_R$col, options_R$transp))
       }else
       {
-        T.Start2 <- x2$R$T.Start 
-        T.End2 <- x2$R$T.End
-        Mean.Posterior2 <- x2$R[, "Mean(R)"]
-        Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
-        Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
+        ####
+        
+        df_tmp <- data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+                             upper=Quantile.0.975.Posterior)
+        df <- df_tmp
+        
+        for(i in 2:length(x_list))
+        {
+          x2 <- x_list[[i]]
+          T.Start2 <- x2$R$T.Start 
+          T.End2 <- x2$R$T.End
+          Mean.Posterior2 <- x2$R[, "Mean(R)"]
+          Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
+          Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
+          df_tmp2 <- data.frame(start2=T.Start2, end2=T.End2, meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
+                                upper2=Quantile.0.975.Posterior2)
+          names(df_tmp2) <- paste0(names(df_tmp), i)
+          df <- cbind(df, df_tmp2)
+          
+        }
         
         if(is.null(ylim))
-          ylim <- c(0,max(c(Quantile.0.975.Posterior, Quantile.0.975.Posterior2), na.rm = TRUE))
+          ylim <- c(0,max(df[,grep("upper", names(df))], na.rm = TRUE))
         
-        p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
-                                upper=Quantile.0.975.Posterior,
-                                start2=T.Start2, end2=T.End2, meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
-                                upper2=Quantile.0.975.Posterior2), aes(end, meanR, meanR2)) +
+        
+        p2 <- ggplot(df, aes(end, meanR)) +
           geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
-          geom_line(aes(y = meanR, colour="Mean")) +
-          geom_ribbon(aes(ymin=lower2, ymax=upper2, fill="95%CrI2")) +
-          geom_line(aes(y = meanR2, colour="Mean2")) +
+          geom_line(aes(y = meanR, colour="Mean")) 
+        
+        for(i in 2:length(x_list))
+        {
+          p2 <- p2 + 
+            geom_ribbon(aes_string(ymin=paste0("lower",i), ymax=paste0("upper",i), fill=shQuote(paste0("95%CrI",i)))) +
+            geom_line(aes_string(y = paste0("meanR",i), colour=shQuote(paste0("Mean",i))))
+        }
+        
+        p2 <- p2 +
           geom_hline(yintercept=1, linetype="dotted") +
           xlab("Time") +
           ylab("R") +
           xlim(c(1,max(T.End))) +
           ylim(ylim) +
           ggtitle("Estimated R") +
-          scale_colour_manual("",values=c("black", "red"))+
-          scale_fill_manual("",values=c(alpha("black", 0.2), alpha("red", 0.2)))
+          scale_colour_manual("",values=options_R$col)+
+          scale_fill_manual("",values=alpha(options_R$col, options_R$transp))
       }
       
     }

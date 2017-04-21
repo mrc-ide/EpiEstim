@@ -4,23 +4,27 @@
 \alias{plots}
 \title{Plotting the outputs of functions estimating the reproduction number from incidence time series and assumptions regarding the serial interval distribution}
 \usage{
-plots(x = NULL, what = c("all", "I", "R", "SI"), x2 = NULL,
-  add_imported_cases = FALSE, ylim = NULL, options_SI = list(prob_min =
-  0.001, transp = 0.25))
+plots(x = NULL, what = c("all", "I", "R", "SI"),
+  add_imported_cases = FALSE, ylim = NULL, options_R = list(col =
+  palette(), transp = 0.2), options_SI = list(prob_min = 0.001, transp =
+  0.25))
 }
 \arguments{
-\item{x}{The output of function \code{\link{EstimateR}} or function \code{\link{WT}}}
+\item{x}{The output of function \code{\link{EstimateR}} or function \code{\link{WT}}, or a list of such outputs. If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph.}
 
 \item{what}{A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or all three (\code{what='all'})).}
-
-\item{x2}{Optional, and only used if \code{what='R'} or \code{what='all'}. A second output of function \code{\link{EstimateR}} or function \code{\link{WT}}, 
-typically based on the same incidence, for which the Reproduction number plot will be overlayed on the other one}
 
 \item{add_imported_cases}{A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases.}
 
 \item{ylim}{For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
 
-\item{options_SI}{For what = "SI". A list of graphical options: 
+\item{options_R}{For what = "R" or "all". A list of graphical options: 
+ \describe{
+\item{col}{A colour or vector of colours used for plotting R. By default uses the default R colours.}
+\item{transp}{A numeric value between 0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
+}}
+
+\item{options_SI}{For what = "SI" or "all". A list of graphical options: 
  \describe{
 \item{prob_min}{A numeric value between 0 and 1. The SI distributions explored are only shown from time 0 up to the time t so that each distribution explored has probability < \code{prob_min} to be on any time step after t. Defaults to 0.001.}
 \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the lines. Defaults to 0.25}
