@@ -5,9 +5,9 @@
 \title{Plotting the outputs of functions estimating the reproduction number from incidence time series and assumptions regarding the serial interval distribution}
 \usage{
 plots(x = NULL, what = c("all", "I", "R", "SI"),
-  add_imported_cases = FALSE, ylim = NULL, options_R = list(col =
-  palette(), transp = 0.2), options_SI = list(prob_min = 0.001, transp =
-  0.25))
+  add_imported_cases = FALSE, ylim = NULL, options_I = list(col =
+  palette(), transp = 0.7), options_R = list(col = palette(), transp = 0.2),
+  options_SI = list(prob_min = 0.001, transp = 0.25))
 }
 \arguments{
 \item{x}{The output of function \code{\link{EstimateR}} or function \code{\link{WT}}, or a list of such outputs. If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph.}
@@ -17,6 +17,12 @@ plots(x = NULL, what = c("all", "I", "R", "SI"),
 \item{add_imported_cases}{A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases.}
 
 \item{ylim}{For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
+
+\item{options_I}{For what = "I" or "all". A list of graphical options: 
+ \describe{
+\item{col}{A colour or vector of colours used for plotting I. By default uses the default R colours.}
+\item{transp}{A numeric value between 0 and 1 used to monitor transparency of the bars plotted. Defaults to 0.7.}
+}}
 
 \item{options_R}{For what = "R" or "all". A list of graphical options: 
  \describe{

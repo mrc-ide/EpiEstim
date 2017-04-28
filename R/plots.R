@@ -6,6 +6,11 @@
 #' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or all three (\code{what='all'})). 
 #' @param add_imported_cases A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases. 
 #' @param ylim For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis
+#' @param options_I For what = "I" or "all". A list of graphical options: 
+#'  \describe{
+#' \item{col}{A colour or vector of colours used for plotting I. By default uses the default R colours.}
+#' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the bars plotted. Defaults to 0.7.}
+#' } 
 #' @param options_R For what = "R" or "all". A list of graphical options: 
 #'  \describe{
 #' \item{col}{A colour or vector of colours used for plotting R. By default uses the default R colours.}
@@ -56,6 +61,7 @@
 #' @importFrom graphics plot
 #' @importFrom incidence as.incidence
 plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL, 
+                  options_I = list(col = palette(), transp = 0.7),
                   options_R = list(col = palette(), transp = 0.2),
                   options_SI = list(prob_min = 0.001, transp = 0.25)) {
   
@@ -122,11 +128,11 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
   if (what == "I" | what =="all") {
     if(add_imported_cases)
     {
-      p1 <- plot(as.incidence(I), ylab="Incidence", xlab = "Time") +
+      p1 <- plot(as.incidence(I), ylab="Incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     }else
     {
-      p1 <- plot(as.incidence(rowSums(I)), ylab="Incidence", xlab = "Time") +
+      p1 <- plot(as.incidence(rowSums(I)), ylab="Incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     }
     
