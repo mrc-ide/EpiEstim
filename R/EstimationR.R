@@ -442,10 +442,10 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   }
   if (method == "ParametricSI") {
     if (is.null(Mean.SI)) {
-      stop("method NonParametricSI requires to specify the Mean.SI argument.")
+      stop("method ParametricSI requires to specify the Mean.SI argument.")
     }
     if (is.null(Std.SI)) {
-      stop("method NonParametricSI requires to specify the Std.SI argument.")
+      stop("method ParametricSI requires to specify the Std.SI argument.")
     }
     if (Mean.SI <= 1) {
       stop("method ParametricSI requires a value >1 for Mean.SI.")
