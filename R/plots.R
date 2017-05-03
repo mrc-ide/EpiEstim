@@ -21,12 +21,13 @@
 #' \item{prob_min}{A numeric value between 0 and 1. The SI distributions explored are only shown from time 0 up to the time t so that each distribution explored has probability < \code{prob_min} to be on any time step after t. Defaults to 0.001.}
 #' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the lines. Defaults to 0.25}
 #' } 
+#' @param legend A boolean (TRUE by default) governing the presence / absence of legends on the plots
 #' @return a plot (if \code{what = "I"}, \code{"R"}, or \code{"SI"}) or a \code{\link{grob}} object (if \code{what = "all"}).
 # #' @details
 #' @seealso \code{\link{EstimateR}} and \code{\link{WT}}
 #' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori \email{a.cori@imperial.ac.uk} 
 # #' @references 
-#' @importFrom ggplot2 aes aes_string
+#' @importFrom ggplot2 aes aes_string theme
 #' @importFrom scales alpha
 #' @importFrom grDevices palette
 #' @export
@@ -63,7 +64,8 @@
 plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL, 
                   options_I = list(col = palette(), transp = 0.7),
                   options_R = list(col = palette(), transp = 0.2),
-                  options_SI = list(prob_min = 0.001, transp = 0.25)) {
+                  options_SI = list(prob_min = 0.001, transp = 0.25), 
+                  legend = TRUE) {
   
   if (is.null(x)) {
     stop("plots requires non NULL x input.")
@@ -330,18 +332,28 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
   
   if(what == "I")
   {
+    if(!legend) p1 <- p1 + theme(legend.position="none")
     return(p1)
   }
   if(what == "R")
   {
+    if(!legend) p2 <- p2 + theme(legend.position="none")
     return(p2)
   }
   if(what == "SI")
   {
+    if(!legend) p3 <- p3 + theme(legend.position="none")
     return(p3)
   }
   if(what == "all")
   {
+    if(!legend) 
+    {
+      p1 <- p1 + theme(legend.position="none")
+      p2 <- p2 + theme(legend.position="none")
+      p3 <- p3 + theme(legend.position="none")
+    }
+    
     out <- list(I=p1, SI=p3, R=p2)
     out.grid <- arrangeGrob(grobs=out, nrow = 3, ncol=1)
     grid.arrange(out.grid, newpage = FALSE)
