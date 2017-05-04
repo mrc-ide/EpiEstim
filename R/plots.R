@@ -306,7 +306,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
         xlab("Time") +
         ylab("Frequency") 
       
-      options( expressions = nrow(SI.Distr)*10 )  # to avoid the error "evaluation nested too deeply: infinite recursion / options(expressions=)"
+      options( expressions = nrow(SI.Distr)*100 )  # to avoid the error "evaluation nested too deeply: infinite recursion / options(expressions=)"
       
       for(i in 2:nrow(SI.Distr))
       {
