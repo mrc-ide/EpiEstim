@@ -259,16 +259,16 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     
     SI.parametricDistr <- match.arg(SI.parametricDistr)
     if (is.null(n1)) {
-      stop("method UncertainSI requires to specify the n1 argument.")
+      stop("method SIFromData requires to specify the n1 argument.")
     }
     if (is.null(n2)) {
-      stop("method UncertainSI requires to specify the n2 argument.")
+      stop("method SIFromData requires to specify the n2 argument.")
     }
     if (n2 <= 0 || n2%%1 != 0) {
-      stop("method UncertainSI requires a >0 integer value for n2.")
+      stop("method SIFromData requires a >0 integer value for n2.")
     }
     if (n1 <= 0 || n1%%1 != 0) {
-      stop("method UncertainSI requires a >0 integer value for n1.")
+      stop("method SIFromData requires a >0 integer value for n1.")
     }
     if(is.null(MCMC.control$init.pars)) MCMC.control$init.pars <- init_MCMC_params(SI.Data, SI.parametricDistr)
     if((SI.parametricDistr=="off1G" | SI.parametricDistr=="off1W" | SI.parametricDistr=="off1L") & any(SI.Data$SR-SI.Data$EL<=1))
