@@ -293,26 +293,17 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
     
     if (method == "UncertainSI" | method == "SIFromData" | method == "SIFromSample") {
       
-      df <- data.frame(Time=0:(ncol(SI.Distr)-1), SI.Distr=t(SI.Distr))
-      
       tmp <- cumsum(apply(SI.Distr,2,max) >= options_SI$prob_min)
       stop_at <- min(which(tmp ==tmp[length(tmp)]))
       
-      df <- df[1:stop_at,]
+      SI.Distr_for_plot <- SI.Distr[,1:stop_at]
       
-      p3 <- ggplot(df) +
-        geom_line(aes(x=Time, y=SI.Distr.1),  colour="black", alpha=options_SI$transp) +
+      dataL = melt(t(SI.Distr_for_plot))
+      p3  <- ggplot(dataL, aes_string(x="Var1", y="value", group="Var2")) + 
+        geom_line(alpha=options_SI$transp) +
         ggtitle("Explored SI distributions") + 
         xlab("Time") +
         ylab("Frequency") 
-      
-      options( expressions = nrow(df) * ncol(df) )  # to avoid the error "evaluation nested too deeply: infinite recursion / options(expressions=)"
-      
-      for(i in 2:nrow(SI.Distr))
-      {
-        p3 <- p3 + 
-          geom_line(aes_string(x="Time", y=paste0("SI.Distr.",i)), colour="black", alpha=options_SI$transp)
-      }
       
     } else {
       
