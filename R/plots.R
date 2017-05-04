@@ -299,6 +299,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       SI.Distr_for_plot <- SI.Distr[,1:stop_at]
       
       dataL = melt(t(SI.Distr_for_plot))
+      dataL$Var1 <- 0:(ncol(SI.Distr_for_plot)-1)
       p3  <- ggplot(dataL, aes_string(x="Var1", y="value", group="Var2")) + 
         geom_line(alpha=options_SI$transp) +
         ggtitle("Explored SI distributions") + 
