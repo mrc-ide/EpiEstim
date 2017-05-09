@@ -5,10 +5,10 @@
 \title{Plotting the outputs of functions estimating the reproduction number from incidence time series and assumptions regarding the serial interval distribution}
 \usage{
 plots(x = NULL, what = c("all", "I", "R", "SI"),
-  add_imported_cases = FALSE, ylim = NULL, options_I = list(col =
-  palette(), transp = 0.7), options_R = list(col = palette(), transp = 0.2),
-  options_SI = list(prob_min = 0.001, col = "black", transp = 0.25),
-  legend = TRUE)
+  add_imported_cases = FALSE, options_I = list(col = palette(), transp =
+  0.7, xlim = NULL, ylim = NULL), options_R = list(col = palette(), transp =
+  0.2, xlim = NULL, ylim = NULL), options_SI = list(prob_min = 0.001, col =
+  "black", transp = 0.25, xlim = NULL, ylim = NULL), legend = TRUE)
 }
 \arguments{
 \item{x}{The output of function \code{\link{EstimateR}} or function \code{\link{WT}}, or a list of such outputs. If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph.}
@@ -17,18 +17,20 @@ plots(x = NULL, what = c("all", "I", "R", "SI"),
 
 \item{add_imported_cases}{A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases.}
 
-\item{ylim}{For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
-
 \item{options_I}{For what = "I" or "all". A list of graphical options: 
  \describe{
 \item{col}{A colour or vector of colours used for plotting I. By default uses the default R colours.}
 \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the bars plotted. Defaults to 0.7.}
+\item{xlim}{A parameter similar to that in \code{par}, to monitor the limits of the horizontal axis}
+\item{ylim}{A parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
 }}
 
 \item{options_R}{For what = "R" or "all". A list of graphical options: 
  \describe{
 \item{col}{A colour or vector of colours used for plotting R. By default uses the default R colours.}
 \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
+\item{xlim}{A parameter similar to that in \code{par}, to monitor the limits of the horizontal axis}
+\item{ylim}{A parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
 }}
 
 \item{options_SI}{For what = "SI" or "all". A list of graphical options: 
@@ -36,6 +38,8 @@ plots(x = NULL, what = c("all", "I", "R", "SI"),
 \item{prob_min}{A numeric value between 0 and 1. The SI distributions explored are only shown from time 0 up to the time t so that each distribution explored has probability < \code{prob_min} to be on any time step after t. Defaults to 0.001.}
 \item{col}{A colour or vector of colours used for plotting the SI. Defaults to black.}
 \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the lines. Defaults to 0.25}
+\item{xlim}{A parameter similar to that in \code{par}, to monitor the limits of the horizontal axis}
+\item{ylim}{A parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
 }}
 
 \item{legend}{A boolean (TRUE by default) governing the presence / absence of legends on the plots}
@@ -67,8 +71,12 @@ R_c <- WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI",
        ## and serial interval distribution used
 p_I <- plots(R_i, "I", add_imported_cases=TRUE) # plots the incidence 
 p_SI <- plots(R_i, "SI") # plots the serial interval distribution
-p_Ri <- plots(R_i, "R", ylim=c(0,4)) # plots the estimated instantaneous reproduction number
-p_Rc <- plots(R_c, "R", ylim=c(0,4)) # plots the estimated case reproduction number
+p_Ri <- plots(R_i, "R", 
+          options_R = list(ylim=c(0,4))) 
+          # plots the estimated instantaneous reproduction number
+p_Rc <- plots(R_c, "R", 
+          list(ylim=c(0,4))) 
+          # plots the estimated case reproduction number
 gridExtra::grid.arrange(p_I,p_SI,p_Ri,p_Rc,ncol=2)
 
 }

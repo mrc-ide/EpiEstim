@@ -5,22 +5,27 @@
 #' @param x The output of function \code{\link{EstimateR}} or function \code{\link{WT}}, or a list of such outputs. If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph. 
 #' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or all three (\code{what='all'})). 
 #' @param add_imported_cases A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases. 
-#' @param ylim For what = "I" or "R"; a parameter similar to that in \code{par}, to monitor the limits of the vertical axis
 #' @param options_I For what = "I" or "all". A list of graphical options: 
 #'  \describe{
 #' \item{col}{A colour or vector of colours used for plotting I. By default uses the default R colours.}
 #' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the bars plotted. Defaults to 0.7.}
+#' \item{xlim}{A parameter similar to that in \code{par}, to monitor the limits of the horizontal axis}
+#' \item{ylim}{A parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
 #' } 
 #' @param options_R For what = "R" or "all". A list of graphical options: 
 #'  \describe{
 #' \item{col}{A colour or vector of colours used for plotting R. By default uses the default R colours.}
 #' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
+#' \item{xlim}{A parameter similar to that in \code{par}, to monitor the limits of the horizontal axis}
+#' \item{ylim}{A parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
 #' } 
 #' @param options_SI For what = "SI" or "all". A list of graphical options: 
 #'  \describe{
 #' \item{prob_min}{A numeric value between 0 and 1. The SI distributions explored are only shown from time 0 up to the time t so that each distribution explored has probability < \code{prob_min} to be on any time step after t. Defaults to 0.001.}
 #' \item{col}{A colour or vector of colours used for plotting the SI. Defaults to black.}
 #' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the lines. Defaults to 0.25}
+#' \item{xlim}{A parameter similar to that in \code{par}, to monitor the limits of the horizontal axis}
+#' \item{ylim}{A parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
 #' } 
 #' @param legend A boolean (TRUE by default) governing the presence / absence of legends on the plots
 #' @return a plot (if \code{what = "I"}, \code{"R"}, or \code{"SI"}) or a \code{\link{grob}} object (if \code{what = "all"}).
@@ -53,8 +58,12 @@
 #'        ## and serial interval distribution used
 #' p_I <- plots(R_i, "I", add_imported_cases=TRUE) # plots the incidence 
 #' p_SI <- plots(R_i, "SI") # plots the serial interval distribution
-#' p_Ri <- plots(R_i, "R", ylim=c(0,4)) # plots the estimated instantaneous reproduction number
-#' p_Rc <- plots(R_c, "R", ylim=c(0,4)) # plots the estimated case reproduction number
+#' p_Ri <- plots(R_i, "R", 
+#'           options_R = list(ylim=c(0,4))) 
+#'           # plots the estimated instantaneous reproduction number
+#' p_Rc <- plots(R_c, "R", 
+#'           list(ylim=c(0,4))) 
+#'           # plots the estimated case reproduction number
 #' gridExtra::grid.arrange(p_I,p_SI,p_Ri,p_Rc,ncol=2)
 #' 
 #' @import reshape2 grid gridExtra
@@ -62,10 +71,10 @@
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
 #' @importFrom graphics plot
 #' @importFrom incidence as.incidence
-plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL, 
-                  options_I = list(col = palette(), transp = 0.7),
-                  options_R = list(col = palette(), transp = 0.2),
-                  options_SI = list(prob_min = 0.001, col = "black", transp = 0.25), 
+plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALSE, 
+                  options_I = list(col = palette(), transp = 0.7, xlim = NULL, ylim=NULL),
+                  options_R = list(col = palette(), transp = 0.2, xlim = NULL, ylim=NULL),
+                  options_SI = list(prob_min = 0.001, col = "black", transp = 0.25, xlim = NULL, ylim=NULL), 
                   legend = TRUE) {
   
   if (is.null(x)) {
@@ -150,8 +159,11 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
         ggtitle("Epidemic curve")
     }
     
-    if(!is.null(ylim))
-      p1 <- p1 + lims(y=ylim)
+    if(!is.null(options_I$xlim))
+      p1 <- p1 + lims(x=options_I$xlim)
+    
+    if(!is.null(options_I$ylim))
+      p1 <- p1 + lims(y=options_I$ylim)
   }
   if (what == "R" | what =="all") {
     
@@ -160,8 +172,11 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       
       if(!multiple_input)
       {
-        if(is.null(ylim))
-          ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
+        if(is.null(options_R$ylim))
+          options_R$ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
+        
+        if(is.null(options_R$xlim))
+          options_R$xlim <- c(1,max(T.End))
         
         df <- melt(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                               upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
@@ -172,8 +187,8 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           geom_line(aes(y = meanR, colour="Mean")) +
           xlab("Time") +
           ylab("R") +
-          xlim(c(1,max(T.End))) +
-          ylim(ylim) +
+          xlim(options_R$xlim) +
+          ylim(options_R$ylim) +
           scale_colour_manual("",values=options_R$col) +
           scale_fill_manual("",values=alpha(options_R$col, options_R$transp)) +
           ggtitle("Estimated R")
@@ -202,8 +217,11 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           id <- c(id, id_tmp2)
         }
         
-        if(is.null(ylim))
-          ylim <- c(0,max(df[,grep("upper", names(df))], na.rm = TRUE))
+        if(is.null(options_R$ylim))
+          options_R$ylim <- c(0,max(df[,grep("upper", names(df))], na.rm = TRUE))
+        
+        if(is.null(options_R$xlim))
+          options_R$xlim <- c(1,max(T.End))
         
         df <- melt(df, id=id) 
         df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
@@ -221,8 +239,8 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
         p2 <- p2 +
           xlab("Time") +
           ylab("R") +
-          xlim(c(1,max(T.End))) +
-          ylim(ylim) +
+          xlim(options_R$xlim) +
+          ylim(options_R$ylim) +
           scale_colour_manual("",values=options_R$col) +
           scale_fill_manual("",values=alpha(options_R$col, options_R$transp)) +
           ggtitle("Estimated R")
@@ -233,9 +251,11 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       
       if(!multiple_input)
       {
-        if(is.null(ylim))
-          ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
+        if(is.null(options_R$ylim))
+          options_R$ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
         
+        if(is.null(options_R$xlim))
+          options_R$xlim <- c(1,max(T.End))
         
         p2 <- ggplot(data.frame(start=T.Start, end=T.End, meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                                 upper=Quantile.0.975.Posterior), aes(end, meanR)) +
@@ -244,8 +264,8 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           geom_hline(yintercept=1, linetype="dotted") +
           xlab("Time") +
           ylab("R") +
-          xlim(c(1,max(T.End))) +
-          ylim(ylim) +
+          xlim(options_R$xlim) +
+          ylim(options_R$ylim) +
           ggtitle("Estimated R") +
           scale_colour_manual("",values=options_R$col)+
           scale_fill_manual("",values=alpha(options_R$col, options_R$transp))
@@ -272,8 +292,11 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           
         }
         
-        if(is.null(ylim))
-          ylim <- c(0,max(df[,grep("upper", names(df))], na.rm = TRUE))
+        if(is.null(options_R$ylim))
+          options_R$ylim <- c(0,max(df[,grep("upper", names(df))], na.rm = TRUE))
+        
+        if(is.null(options_R$xlim))
+          options_R$xlim <- c(1,max(T.End))
         
         
         p2 <- ggplot(df, aes(end, meanR)) +
@@ -291,8 +314,8 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           geom_hline(yintercept=1, linetype="dotted") +
           xlab("Time") +
           ylab("R") +
-          xlim(c(1,max(T.End))) +
-          ylim(ylim) +
+          xlim(options_R$xlim) +
+          ylim(options_R$ylim) +
           ggtitle("Estimated R") +
           scale_colour_manual("",values=options_R$col)+
           scale_fill_manual("",values=alpha(options_R$col, options_R$transp))
@@ -318,6 +341,13 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
         xlab("Time") +
         ylab("Frequency") 
       
+      if(!is.null(options_SI$xlim))
+        p3 <- p3 + lims(x=options_SI$xlim)
+      
+      if(!is.null(options_SI$ylim))
+        p3 <- p3 + lims(y=options_SI$ylim)
+      
+      
     } else {
       
       SI.Distr.times <- unlist(apply(data.frame(0:(length(SI.Distr) - 1), SI.Distr), 1,
@@ -330,6 +360,12 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
         xlim(c(0,0.5+max(SI.Distr.times))) + 
         ylab("Frequency") + 
         ggtitle("Serial interval distribution") 
+      
+      if(!is.null(options_SI$xlim))
+        p3 <- p3 + lims(x=options_SI$xlim)
+      
+      if(!is.null(options_SI$ylim))
+        p3 <- p3 + lims(y=options_SI$ylim)
       
     }
   }
