@@ -7,7 +7,8 @@
 plots(x = NULL, what = c("all", "I", "R", "SI"),
   add_imported_cases = FALSE, ylim = NULL, options_I = list(col =
   palette(), transp = 0.7), options_R = list(col = palette(), transp = 0.2),
-  options_SI = list(prob_min = 0.001, transp = 0.25), legend = TRUE)
+  options_SI = list(prob_min = 0.001, col = "black", transp = 0.25),
+  legend = TRUE)
 }
 \arguments{
 \item{x}{The output of function \code{\link{EstimateR}} or function \code{\link{WT}}, or a list of such outputs. If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph.}
@@ -33,6 +34,7 @@ plots(x = NULL, what = c("all", "I", "R", "SI"),
 \item{options_SI}{For what = "SI" or "all". A list of graphical options: 
  \describe{
 \item{prob_min}{A numeric value between 0 and 1. The SI distributions explored are only shown from time 0 up to the time t so that each distribution explored has probability < \code{prob_min} to be on any time step after t. Defaults to 0.001.}
+\item{col}{A colour or vector of colours used for plotting the SI. Defaults to black.}
 \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the lines. Defaults to 0.25}
 }}
 

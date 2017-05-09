@@ -19,6 +19,7 @@
 #' @param options_SI For what = "SI" or "all". A list of graphical options: 
 #'  \describe{
 #' \item{prob_min}{A numeric value between 0 and 1. The SI distributions explored are only shown from time 0 up to the time t so that each distribution explored has probability < \code{prob_min} to be on any time step after t. Defaults to 0.001.}
+#' \item{col}{A colour or vector of colours used for plotting the SI. Defaults to black.}
 #' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the lines. Defaults to 0.25}
 #' } 
 #' @param legend A boolean (TRUE by default) governing the presence / absence of legends on the plots
@@ -64,12 +65,23 @@
 plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALSE, ylim=NULL, 
                   options_I = list(col = palette(), transp = 0.7),
                   options_R = list(col = palette(), transp = 0.2),
-                  options_SI = list(prob_min = 0.001, transp = 0.25), 
+                  options_SI = list(prob_min = 0.001, col = "black", transp = 0.25), 
                   legend = TRUE) {
   
   if (is.null(x)) {
     stop("plots requires non NULL x input.")
   }
+  
+  # dealing with the fact that some options may be left to default but others may have been specified by user
+  if (is.null(options_I$col)) options_I$col <- palette()
+  if (is.null(options_I$transp)) options_I$transp <- 0.7
+  
+  if (is.null(options_R$col)) options_R$col <- palette()
+  if (is.null(options_R$transp)) options_R$transp <- 0.2
+  
+  if (is.null(options_SI$prob_min)) options_SI$prob_min <- 0.001
+  if (is.null(options_SI$col)) options_SI$col <- "black"
+  if (is.null(options_SI$transp)) options_SI$transp <- 0.25
   
   # check if x is a single output of EpiEstim or a list of such outputs
   if(is.data.frame(x[[1]])) # x is a single output of EpiEstim
@@ -301,7 +313,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       dataL = melt(t(SI.Distr_for_plot))
       dataL$Var1 <- 0:(ncol(SI.Distr_for_plot)-1)
       p3  <- ggplot(dataL, aes_string(x="Var1", y="value", group="Var2")) + 
-        geom_line(alpha=options_SI$transp) +
+        geom_line(col=options_SI$col, alpha=options_SI$transp) +
         ggtitle("Explored SI distributions") + 
         xlab("Time") +
         ylab("Frequency") 
@@ -313,7 +325,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       names(SI.Distr.times) <- NULL
       
       p3 <- ggplot(data.frame(Times=SI.Distr.times), aes(0.5+Times)) +
-        geom_histogram(binwidth=1, aes(y=..density..)) +
+        geom_histogram(binwidth=1, aes(y=..density..), fill=options_SI$col, alpha=options_SI$transp) +
         xlab("Time") + 
         xlim(c(0,0.5+max(SI.Distr.times))) + 
         ylab("Frequency") + 
