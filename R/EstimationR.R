@@ -298,10 +298,10 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     }
     
     out <- EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = "SIFromData", n1=n1 , n2=n2 , Mean.SI=NULL , Std.SI=NULL ,
-                   Std.Mean.SI=NULL , Min.Mean.SI=NULL , Max.Mean.SI=NULL ,
-                   Std.Std.SI=NULL , Min.Std.SI=NULL , Max.Std.SI=NULL ,
-                   SI.Distr=NULL , SI.Sample= c2e$SI.Sample , Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
-                   plot=plot)
+                          Std.Mean.SI=NULL , Min.Mean.SI=NULL , Max.Mean.SI=NULL ,
+                          Std.Std.SI=NULL , Min.Std.SI=NULL , Max.Std.SI=NULL ,
+                          SI.Distr=NULL , SI.Sample= c2e$SI.Sample , Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
+                          plot=plot)
     out[["MCMC_converged"]] <- MCMC_conv
   } else {
     
@@ -311,10 +311,10 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     }
     
     out <- EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = method, n1=n1 , n2=n2 , Mean.SI=Mean.SI , Std.SI=Std.SI ,
-                   Std.Mean.SI=Std.Mean.SI , Min.Mean.SI=Min.Mean.SI , Max.Mean.SI=Max.Mean.SI ,
-                   Std.Std.SI=Std.Std.SI , Min.Std.SI=Min.Std.SI , Max.Std.SI=Max.Std.SI ,
-                   SI.Distr=SI.Distr , SI.Sample= SI.Sample, Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
-                   plot=plot)
+                          Std.Mean.SI=Std.Mean.SI , Min.Mean.SI=Min.Mean.SI , Max.Mean.SI=Max.Mean.SI ,
+                          Std.Std.SI=Std.Std.SI , Min.Std.SI=Min.Std.SI , Max.Std.SI=Max.Std.SI ,
+                          SI.Distr=SI.Distr , SI.Sample= SI.Sample, Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
+                          plot=plot)
   }
   return(out)
 }
@@ -687,15 +687,21 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
                         "Quantile.0.975(R)")
   results$method <- method
   results$SI.Distr <- SI.Distr
+  if(is.matrix(results$SI.Distr)) 
+  {
+    colnames(results$SI.Distr) <- paste0("t",0:(ncol(results$SI.Distr)-1))
+  }else
+  {
+    names(results$SI.Distr) <- paste0("t",0:(length(results$SI.Distr)-1))
+  }
   if (SIUncertainty == "Y") {
     results$SI.Moments <- as.data.frame(cbind(Mean.SI.sample,
                                               Std.SI.sample))
-    names(results$SI.Moments) <- c("Mean","Std")
   }else {
     results$SI.Moments <- as.data.frame(cbind(FinalMean.SI,
                                               FinalStd.SI))
-    names(results$SI.Moments) <- c("Mean", "Std")
   }
+  names(results$SI.Moments) <- c("Mean", "Std")
   
   results$I <- rowSums(I)
   results$I_local <- I$local
