@@ -329,11 +329,11 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
     if (method == "UncertainSI" | method == "SIFromData" | method == "SIFromSample") {
       
       tmp <- cumsum(apply(SI.Distr,2,max) >= options_SI$prob_min)
-      stop_at <- min(which(tmp ==tmp[length(tmp)]))
+      stop_at <- min(which(tmp == tmp[length(tmp)]))
       
-      SI.Distr_for_plot <- SI.Distr[,1:stop_at]
+      SI.Distr_for_plot <- SI.Distr[,1:stop_at] 
       
-      dataL = melt(t(SI.Distr_for_plot))
+      dataL <-melt(t(SI.Distr_for_plot))
       dataL$Var1 <- 0:(ncol(SI.Distr_for_plot)-1)
       p3  <- ggplot(dataL, aes_string(x="Var1", y="value", group="Var2")) + 
         geom_line(col=options_SI$col, alpha=options_SI$transp) +
@@ -347,19 +347,19 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       if(!is.null(options_SI$ylim))
         p3 <- p3 + lims(y=options_SI$ylim)
       
-      
     } else {
       
-      SI.Distr.times <- unlist(apply(data.frame(0:(length(SI.Distr) - 1), SI.Distr), 1,
-                                     function(x) {if (x[2]!=0) unlist(rep(x[1],round(x[2]*1000)),use.names=FALSE)}))
-      names(SI.Distr.times) <- NULL
+      tmp <- cumsum(SI.Distr >= options_SI$prob_min)
+      stop_at <- min(which(tmp == tmp[length(tmp)]))
       
-      p3 <- ggplot(data.frame(Times=SI.Distr.times), aes(0.5+Times)) +
-        geom_histogram(binwidth=1, aes(y=..density..), fill=options_SI$col, alpha=options_SI$transp) +
-        xlab("Time") + 
-        xlim(c(0,0.5+max(SI.Distr.times))) + 
-        ylab("Frequency") + 
-        ggtitle("Serial interval distribution") 
+      SI.Distr_for_plot <- SI.Distr[1:stop_at]
+      
+      dataL <- data.frame(Times=0:(length(SI.Distr_for_plot)-1), SIDistr = SI.Distr_for_plot)
+      p3  <- ggplot(dataL, aes_string(x="Times", y="SIDistr")) + 
+        geom_line(col=options_SI$col, alpha=options_SI$transp) +
+        ggtitle("Explored SI distribution") + 
+        xlab("Time") +
+        ylab("Frequency") 
       
       if(!is.null(options_SI$xlim))
         p3 <- p3 + lims(x=options_SI$xlim)
