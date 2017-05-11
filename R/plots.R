@@ -183,9 +183,9 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           options_R$ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
         
         if(is.null(options_R$xlim))
-          options_R$xlim <- c(min(dates),max(dates))
+          options_R$xlim <- c(min(dates),max(dates)+1)
         
-        df <- melt(data.frame(start=T.Start, end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+        df <- melt(data.frame(start=dates[T.Start], end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                               upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
         df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
         
@@ -202,7 +202,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
         
       }else
       {
-        df_tmp <- data.frame(start=T.Start, end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+        df_tmp <- data.frame(start=dates[T.Start], end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                              upper=Quantile.0.975.Posterior)
         df <- df_tmp
         id_tmp <- c("meanR", "lower", "upper")
@@ -222,7 +222,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           Mean.Posterior2 <- x2$R[, "Mean(R)"]
           Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
           Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
-          df_tmp2 <- data.frame(start2=T.Start2, end2=dates2[T.End], meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
+          df_tmp2 <- data.frame(start2=dates2[T.Start2], end2=dates2[T.End], meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
                                 upper2=Quantile.0.975.Posterior2)
           names(df_tmp2) <- paste0(names(df_tmp), i)
           df <- cbind(df, df_tmp2)
@@ -234,7 +234,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           options_R$ylim <- c(0,max(df[,grep("upper", names(df))], na.rm = TRUE))
         
         if(is.null(options_R$xlim))
-          options_R$xlim <- c(min(dates),max(dates))
+          options_R$xlim <- c(min(dates),max(dates)+1)
         
         df <- melt(df, id=id) 
         df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
@@ -268,9 +268,9 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           options_R$ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
         
         if(is.null(options_R$xlim))
-          options_R$xlim <- c(min(dates),max(dates))
+          options_R$xlim <- c(min(dates),max(dates)+1)
         
-        p2 <- ggplot(data.frame(start=T.Start, end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+        p2 <- ggplot(data.frame(start=dates[T.Start], end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                                 upper=Quantile.0.975.Posterior), aes(end, meanR)) +
           geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
           geom_line(aes(colour="Mean")) +
@@ -286,7 +286,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       {
         ####
         
-        df_tmp <- data.frame(start=T.Start, end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+        df_tmp <- data.frame(start=dates[T.Start], end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                              upper=Quantile.0.975.Posterior)
         df <- df_tmp
         
@@ -304,7 +304,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           Mean.Posterior2 <- x2$R[, "Mean(R)"]
           Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
           Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
-          df_tmp2 <- data.frame(start2=T.Start2, end2=dates2[T.End], meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
+          df_tmp2 <- data.frame(start2=dates2[T.Start2], end2=dates2[T.End], meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
                                 upper2=Quantile.0.975.Posterior2)
           names(df_tmp2) <- paste0(names(df_tmp), i)
           df <- cbind(df, df_tmp2)
@@ -315,7 +315,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           options_R$ylim <- c(0,max(df[,grep("upper", names(df))], na.rm = TRUE))
         
         if(is.null(options_R$xlim))
-          options_R$xlim <- c(min(dates),max(dates))
+          options_R$xlim <- c(min(dates),max(dates)+1)
         
         p2 <- ggplot(df, aes(end, meanR)) +
           geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +

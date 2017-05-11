@@ -13,7 +13,7 @@ WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
 \itemize{
 \item{Vector (or a dataframe with a column named 'I') of non-negative integers containing an incidence time series.
  If the dataframe contains a column \code{I$dates}, this is used for plotting. 
- \code{I$dates} must be in date format, and the dates must be in a row.}
+ \code{I$dates} must contains only dates in a row.}
 \item{An object of class \code{\link[incidence]{incidence}}}
  }}
 
@@ -49,7 +49,7 @@ This specifies the position of the legend in the plot. Alternatively, \code{loca
 	\item{I}{: the time series of total incidence}
 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
-	\item{dates}{: if dates were specified in I, a vector of dates corresponding to the incidence time series}
+	\item{dates}{: a vector of dates corresponding to the incidence time series}
 	}
 	}
 }

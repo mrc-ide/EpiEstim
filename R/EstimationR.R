@@ -60,7 +60,7 @@
 #' 	\item{I}{: the time series of total incidence}
 #' 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
 #' 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
-#' 	\item{dates}{: if dates were specified in I, a vector of dates corresponding to the incidence time series}
+#' 	\item{dates}{: a vector of dates corresponding to the incidence time series}
 #' 	\item{MCMC_converged}{ (only for method \code{SIFromData}): a boolean showing whether the Gelman-Rubin MCMC convergence diagnostic was successful (\code{TRUE}) or not (\code{FALSE})}
 #' }
 #' }
@@ -162,6 +162,19 @@
 #'           SI.Distr=Flu2009$SI.Distr, plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number over the 7-day window finishing on that day.
+#' 
+#' ## example with an incidence object
+#' 
+#' # create fake data
+#' library(incidence)
+#' data <- c(0,1,1,2,1,3,4,5,5,5,5,4,4,26,6,7,9)
+#' location <- sample(c("local","imported"), length(data), replace=TRUE)
+#' location[1] <- "imported" # forcing the first case to be imported
+#' # get incidence per group (location)
+#' I <- incidence(data, groups = location)
+#' # Estimate R with assumptions on serial interval
+#' EstimateR(I, T.Start = 2:21, T.End = 8:27, method = "ParametricSI", 
+#'           Mean.SI = 2.6, Std.SI = 1.5, plot = TRUE)
 #' 
 #' ## estimate the reproduction number (method "ParametricSI")
 #' EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI", 
@@ -702,7 +715,12 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   
   
   if(!is.null(I$dates)) 
+  {
     results$dates <- check_dates(I)
+  }else
+  {
+    results$dates <- 1:T
+  }
   results$I <- rowSums(I[,c("local","imported")])
   results$I_local <- I$local
   results$I_imported <- I$imported

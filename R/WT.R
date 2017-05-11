@@ -35,7 +35,7 @@
 #' 	\item{I}{: the time series of total incidence}
 #' 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
 #' 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
-#' 	\item{dates}{: if dates were specified in I, a vector of dates corresponding to the incidence time series}
+#' 	\item{dates}{: a vector of dates corresponding to the incidence time series}
 #' 	}
 #' 	}
 #' @details{
@@ -129,12 +129,15 @@ WT <- function(I, T.Start, T.End,
   if(!is.null(I$dates)) 
   {
     dates <- check_dates(I)
+    I <- process_I_vector(I)
+    T<-length(I)
   }else
   {
-    dates <- NULL
+    I <- process_I_vector(I)
+    T<-length(I)
+    dates <- 1:T
   }
-  I <- process_I_vector(I)
-  T<-length(I)
+  
   
   ### Adjusting T.Start and T.End so that at least an incident case has been observed before T.Start[1] ###
   

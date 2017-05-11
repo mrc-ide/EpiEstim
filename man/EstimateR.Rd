@@ -22,7 +22,7 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 so that \code{I$local} contains the incidence of cases due to local transmission and 
 \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} 
 the total incidence). If the dataframe contains a column \code{I$dates}, this is used for plotting. 
-\code{I$dates} must be in date format, and the dates must be in a row.}
+\code{I$dates} must contains only dates in a row.}
 \item{An object of class \code{\link[incidence]{incidence}}}
 } 
 Note that the cases from the first time step are always all assumed to be imported cases.}
@@ -95,7 +95,7 @@ the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles
 	\item{I}{: the time series of total incidence}
 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
-	\item{dates}{: if dates were specified in I, a vector of dates corresponding to the incidence time series}
+	\item{dates}{: a vector of dates corresponding to the incidence time series}
 	\item{MCMC_converged}{ (only for method \code{SIFromData}): a boolean showing whether the Gelman-Rubin MCMC convergence diagnostic was successful (\code{TRUE}) or not (\code{FALSE})}
 }
 }
@@ -193,6 +193,19 @@ EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI",
           SI.Distr=Flu2009$SI.Distr, plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
+
+## example with an incidence object
+
+# create fake data
+library(incidence)
+data <- c(0,1,1,2,1,3,4,5,5,5,5,4,4,26,6,7,9)
+location <- sample(c("local","imported"), length(data), replace=TRUE)
+location[1] <- "imported" # forcing the first case to be imported
+# get incidence per group (location)
+I <- incidence(data, groups = location)
+# Estimate R with assumptions on serial interval
+EstimateR(I, T.Start = 2:21, T.End = 8:27, method = "ParametricSI", 
+          Mean.SI = 2.6, Std.SI = 1.5, plot = TRUE)
 
 ## estimate the reproduction number (method "ParametricSI")
 EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI", 
