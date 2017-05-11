@@ -189,7 +189,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
                               upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
         df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
         
-        p2 <- ggplot(df, aes(x=as.numeric(value), y=as.numeric(meanR), group=as.factor(group))) +
+        p2 <- ggplot(df, aes(x=value, y=as.numeric(meanR), group=as.factor(group))) +
           geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
           geom_line(aes(y = meanR, colour="Mean")) +
           xlab("Time") +
