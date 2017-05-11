@@ -206,17 +206,17 @@ check_SI.Distr <- function(SI.Distr) # this only produces warnings and errors, d
   }
 }
 
-check_dates <- function(I, date_col)
+check_dates <- function(I)
 {
-  dates <- I[,date_col]
+  dates <- I$dates
   if(class(dates) != "Date")
   {
-    stop("I[,date_col] must be an object of class date.")
+    stop("I$dates must be an object of class date.")
   }else
   {
     if(unique(diff(dates)) != 1)
     {
-      stop("I[,date_col] must contain dates which are all in a row.")
+      stop("I$dates must contain dates which are all in a row.")
     }else
     {
       return(dates)

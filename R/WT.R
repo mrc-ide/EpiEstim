@@ -7,10 +7,11 @@
 #' \code{WT} estimates the case reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
 #' 
 #' @param I Vector (or a dataframe with a column named 'I') of non-negative integers containing an incidence time series.
+#'  If the dataframe contains a column \code{I$dates}, this is used for plotting. 
+#' \code{I$dates} must be in date format, and the dates must be in a row.
 #' @param T.Start Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.
 #' @param T.End Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}.
 #' @param method One of "NonParametricSI" or "ParametricSI" (see details).
-#' @param date_col An optional integer (NULL by default) indicating a column in I (in the case when I is a dataframe) containing dates corresponding to the incidence data. The corresponding column in I must be in date format, and the dates must be in a row. This will be used for plotting. 
 #' @param Mean.SI For method "ParametricSI" ; positive real giving the mean serial interval.
 #' @param Std.SI For method "ParametricSI" ; non negative real giving the stadard deviation of the serial interval.
 #' @param SI.Distr For method "NonParametricSI" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{SI.Distr[1]} (probability that the serial interval is zero), which should be zero.
@@ -30,7 +31,7 @@
 #' 	\item{I}{: the time series of total incidence}
 #' 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
 #' 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
-#' 	\item{dates}{: if date_col was specified a vector of dates corresponding to the incidence time series}
+#' 	\item{dates}{: if dates were specified in I, a vector of dates corresponding to the incidence time series}
 #' 	}
 #' 	}
 #' @details{
@@ -72,18 +73,17 @@
 #' 
 #' ## estimate the case reproduction number (method "NonParametricSI")
 #' WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-#'    SI.Distr=Flu2009$SI.Distr, plot=TRUE, nSim=100, date_col = 1)
+#'    SI.Distr=Flu2009$SI.Distr, plot=TRUE, nSim=100)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the cqse reproduction number over the 7-day window finishing on that day.
 #' 
 #' ## estimate the case reproduction number (method "ParametricSI")
 #' WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI", 
-#'    Mean.SI=2.6, Std.SI=1.5, plot=TRUE, nSim=100, date_col = 1)
+#'    Mean.SI=2.6, Std.SI=1.5, plot=TRUE, nSim=100)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the case reproduction number over the 7-day window finishing on that day.
 WT <- function(I, T.Start, T.End,
                method=c("NonParametricSI","ParametricSI"),
-               date_col = NULL, 
                Mean.SI=NULL, Std.SI=NULL, SI.Distr=NULL, nSim=10, 
                plot=FALSE, legend=FALSE)
 {
@@ -122,8 +122,13 @@ WT <- function(I, T.Start, T.End,
   
   method <- match.arg(method)
   
-  if(!is.null(date_col)) 
-    dates <- check_dates(I, date_col)
+  if(!is.null(I$dates)) 
+  {
+    dates <- check_dates(I)
+  }else
+  {
+    dates <- NULL
+  }
   I <- process_I_vector(I)
   T<-length(I)
   
@@ -261,7 +266,7 @@ WT <- function(I, T.Start, T.End,
   results$SI.Moments<-as.data.frame(cbind(FinalMean.SI,FinalStd.SI))
   names(results$SI.Moments)<-c("Mean","Std")
   
-  if(!is.null(date_col)) 
+  if(!is.null(dates)) 
     results$dates <- dates
   results$I <- I
   results$I_local <- I

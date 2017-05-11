@@ -5,10 +5,10 @@
 \title{Estimated Instantaneous Reproduction Number}
 \usage{
 EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
-  "UncertainSI", "SIFromData", "SIFromSample"), date_col = NULL, n1 = NULL,
-  n2 = NULL, Mean.SI = NULL, Std.SI = NULL, Std.Mean.SI = NULL,
-  Min.Mean.SI = NULL, Max.Mean.SI = NULL, Std.Std.SI = NULL,
-  Min.Std.SI = NULL, Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
+  "UncertainSI", "SIFromData", "SIFromSample"), n1 = NULL, n2 = NULL,
+  Mean.SI = NULL, Std.SI = NULL, Std.Mean.SI = NULL, Min.Mean.SI = NULL,
+  Max.Mean.SI = NULL, Std.Std.SI = NULL, Min.Std.SI = NULL,
+  Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
   SI.parametricDistr = c("G", "W", "L", "off1G", "off1W", "off1L"),
   MCMC.control = list(init.pars = NULL, burnin = 3000, thin = 10, seed =
   as.integer(Sys.time())), SI.Sample = NULL, seed = NULL, Mean.Prior = 5,
@@ -18,7 +18,11 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 \item{I}{One of the following
 \itemize{
 \item{A vector (or a dataframe with a single column) of non-negative integers containing the incidence time series}
-\item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
+\item{A dataframe of non-negative integers with either i) \code{I$I} containing the total incidence, or ii) two columns, 
+so that \code{I$local} contains the incidence of cases due to local transmission and 
+\code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} 
+the total incidence). If the dataframe contains a column \code{I$dates}, this is used for plotting. 
+\code{I$dates} must be in date format, and the dates must be in a row.}
 } 
 Note that the cases from the first time step are always all assumed to be imported cases.}
 
@@ -27,8 +31,6 @@ Note that the cases from the first time step are always all assumed to be import
 \item{T.End}{Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}.}
 
 \item{method}{One of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample" (see details).}
-
-\item{date_col}{An optional integer (NULL by default) indicating a column in I (in the case when I is a dataframe) containing dates corresponding to the incidence data. The corresponding column in I must be in date format, and the dates must be in a row. This will be used for plotting.}
 
 \item{n1}{For method "UncertainSI" and "SIFromData"; positive integer giving the size of the sample of SI distributions to be drawn (see details).}
 
@@ -92,7 +94,7 @@ the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles
 	\item{I}{: the time series of total incidence}
 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
-	\item{dates}{: if date_col was specified a vector of dates corresponding to the incidence time series}
+	\item{dates}{: if dates were specified in I, a vector of dates corresponding to the incidence time series}
 	\item{MCMC_converged}{ (only for method \code{SIFromData}): a boolean showing whether the Gelman-Rubin MCMC convergence diagnostic was successful (\code{TRUE}) or not (\code{FALSE})}
 }
 }
@@ -187,13 +189,13 @@ data("Flu2009")
 
 ## estimate the reproduction number (method "NonParametricSI")
 EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-          SI.Distr=Flu2009$SI.Distr, plot=TRUE, date_col = 1)
+          SI.Distr=Flu2009$SI.Distr, plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
 
 ## estimate the reproduction number (method "ParametricSI")
 EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI", 
-          Mean.SI=2.6, Std.SI=1.5, plot=TRUE, date_col = 1)
+          Mean.SI=2.6, Std.SI=1.5, plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
 
@@ -201,7 +203,7 @@ EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI",
 EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="UncertainSI", 
           Mean.SI=2.6, Std.Mean.SI=1, Min.Mean.SI=1, Max.Mean.SI=4.2, 
           Std.SI=1.5, Std.Std.SI=0.5, Min.Std.SI=0.5, Max.Std.SI=2.5, 
-          n1=100, n2=100, plot=TRUE, date_col = 1)
+          n1=100, n2=100, plot=TRUE)
 # the bottom left plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
 

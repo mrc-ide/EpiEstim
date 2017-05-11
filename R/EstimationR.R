@@ -9,13 +9,16 @@
 #' @param I One of the following
 #' \itemize{
 #' \item{A vector (or a dataframe with a single column) of non-negative integers containing the incidence time series}
-#' \item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
+#' \item{A dataframe of non-negative integers with either i) \code{I$I} containing the total incidence, or ii) two columns, 
+#' so that \code{I$local} contains the incidence of cases due to local transmission and 
+#' \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} 
+#' the total incidence). If the dataframe contains a column \code{I$dates}, this is used for plotting. 
+#' \code{I$dates} must be in date format, and the dates must be in a row.}
 #' } 
 #' Note that the cases from the first time step are always all assumed to be imported cases. 
 #' @param T.Start Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.
 #' @param T.End Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. 
 #' @param method One of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample" (see details).
-#' @param date_col An optional integer (NULL by default) indicating a column in I (in the case when I is a dataframe) containing dates corresponding to the incidence data. The corresponding column in I must be in date format, and the dates must be in a row. This will be used for plotting. 
 #' @param n1 For method "UncertainSI" and "SIFromData"; positive integer giving the size of the sample of SI distributions to be drawn (see details).
 #' @param n2 For methods "UncertainSI", "SIFromData" and "SIFromSample"; positive integer giving the size of the sample drawn from the posterior distribution of R for each serial interval distribution considered (see details). 
 #' @param Mean.SI For method "ParametricSI" and "UncertainSI" ; positive real giving the mean serial interval (method "ParametricSI") or the average mean serial interval (method "UncertainSI", see details).
@@ -56,7 +59,7 @@
 #' 	\item{I}{: the time series of total incidence}
 #' 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
 #' 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
-#' 	\item{dates}{: if date_col was specified a vector of dates corresponding to the incidence time series}
+#' 	\item{dates}{: if dates were specified in I, a vector of dates corresponding to the incidence time series}
 #' 	\item{MCMC_converged}{ (only for method \code{SIFromData}): a boolean showing whether the Gelman-Rubin MCMC convergence diagnostic was successful (\code{TRUE}) or not (\code{FALSE})}
 #' }
 #' }
@@ -155,13 +158,13 @@
 #' 
 #' ## estimate the reproduction number (method "NonParametricSI")
 #' EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-#'           SI.Distr=Flu2009$SI.Distr, plot=TRUE, date_col = 1)
+#'           SI.Distr=Flu2009$SI.Distr, plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number over the 7-day window finishing on that day.
 #' 
 #' ## estimate the reproduction number (method "ParametricSI")
 #' EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI", 
-#'           Mean.SI=2.6, Std.SI=1.5, plot=TRUE, date_col = 1)
+#'           Mean.SI=2.6, Std.SI=1.5, plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number over the 7-day window finishing on that day.
 #' 
@@ -169,7 +172,7 @@
 #' EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="UncertainSI", 
 #'           Mean.SI=2.6, Std.Mean.SI=1, Min.Mean.SI=1, Max.Mean.SI=4.2, 
 #'           Std.SI=1.5, Std.Std.SI=0.5, Min.Std.SI=0.5, Max.Std.SI=2.5, 
-#'           n1=100, n2=100, plot=TRUE, date_col = 1)
+#'           n1=100, n2=100, plot=TRUE)
 #' # the bottom left plot produced shows, at each each day, 
 #' # the estimate of the reproduction number over the 7-day window finishing on that day.
 #' 
@@ -233,7 +236,6 @@
 #' 
 EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
                                                     "UncertainSI", "SIFromData", "SIFromSample"), 
-                      date_col = NULL, 
                       n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                       Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
                       Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
@@ -304,7 +306,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
       set.seed(seed)
     }
     
-    out <- EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = method, date_col=date_col, n1=n1 , n2=n2 , Mean.SI=Mean.SI , Std.SI=Std.SI ,
+    out <- EstimateR_func(I=I, T.Start=T.Start, T.End=T.End, method = method, n1=n1 , n2=n2 , Mean.SI=Mean.SI , Std.SI=Std.SI ,
                           Std.Mean.SI=Std.Mean.SI , Min.Mean.SI=Min.Mean.SI , Max.Mean.SI=Max.Mean.SI ,
                           Std.Std.SI=Std.Std.SI , Min.Std.SI=Min.Std.SI , Max.Std.SI=Max.Std.SI ,
                           SI.Distr=SI.Distr , SI.Sample= SI.Sample, Mean.Prior=Mean.Prior , Std.Prior=Std.Prior, CV.Posterior=CV.Posterior ,
@@ -325,7 +327,6 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
 #' @importFrom incidence as.incidence 
 EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
                                                           "UncertainSI", "SIFromData", "SIFromSample"), 
-                            date_col = NULL, 
                             n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                             Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
                             Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
@@ -699,8 +700,8 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   names(results$SI.Moments) <- c("Mean", "Std")
   
   
-  if(!is.null(date_col)) 
-    results$dates <- check_dates(I, date_col)
+  if(!is.null(I$dates)) 
+    results$dates <- check_dates(I)
   results$I <- rowSums(I[,c("local","imported")])
   results$I_local <- I$local
   results$I_imported <- I$imported

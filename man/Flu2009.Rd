@@ -27,7 +27,7 @@ data("Flu2009")
 EstimateR(Flu2009$Incidence, 
           T.Start=2:26, T.End=8:32, 
           method="NonParametricSI", SI.Distr=Flu2009$SI.Distr, 
-          plot=TRUE, date_col = 1)
+          plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.
