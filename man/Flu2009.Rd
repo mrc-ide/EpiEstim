@@ -6,7 +6,7 @@
 \title{Data on the 2009 H1N1 influenza pandemic in a school in Pennsylvania.}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 32 days of observation,}
+  \item{Incidence}{a dataframe with 32 lines containing dates in first column, and daily incidence in second column,}
   \item{SI.Distr}{a vector containing a set of 12 probabilities.}
 }}
 \source{
@@ -27,7 +27,7 @@ data("Flu2009")
 EstimateR(Flu2009$Incidence, 
           T.Start=2:26, T.End=8:32, 
           method="NonParametricSI", SI.Distr=Flu2009$SI.Distr, 
-          plot=TRUE)
+          plot=TRUE, date_col = 1)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.

@@ -87,9 +87,15 @@ process_I <- function(I)
     I[1,] <- c(0, I_init)
   }else
   {
-    if(!is.data.frame(I) | !all(c("local","imported") %in% names(I)) ) 
+    if(!is.data.frame(I) | (!("I" %in% names(I)) & !all(c("local","imported") %in% names(I)) ) ) 
     {
-      stop("I must be a vector or a dataframe with a single column; or a dataframe with 2 columns called 'local' and 'imported'.")
+      stop("I must be a vector or a dataframe with either i) a column called 'I', or ii) 2 columns called 'local' and 'imported'.")
+    }
+    if(("I" %in% names(I)) & !all(c("local","imported") %in% names(I)))
+    {
+      I$local <- I$I
+      I$local[1] <- 0
+      I$imported <- c(I$I[1], rep(0, nrow(I)-1))
     }
     if(I$local[1]>0)
     {
@@ -117,13 +123,16 @@ process_I_vector <- function(I)
       {
         I <- as.vector(I[,1])
       }
-      else
+      else if('I' %in% names(I))
       {
-        stop("I must be a vector or a dataframe with a single column.")
+        I <- as.vector(I$I)
+      }else
+      {
+        stop("I must be a vector or a dataframe with at least a column named 'I'.")
       }
     }else
     {
-      stop("I must be a vector or a dataframe with a single column.")
+      stop("I must be a vector or a dataframe with at least a column named 'I'.")
     }
   }
   I[which(is.na(I))] <- 0
@@ -194,5 +203,23 @@ check_SI.Distr <- function(SI.Distr) # this only produces warnings and errors, d
   }
   if (abs(sum(SI.Distr) - 1) > 0.01) {
     stop("SI.Distr must sum to 1.")
+  }
+}
+
+check_dates <- function(I, date_col)
+{
+  dates <- I[,date_col]
+  if(class(dates) != "Date")
+  {
+    stop("I[,date_col] must be an object of class date.")
+  }else
+  {
+    if(unique(diff(dates)) != 1)
+    {
+      stop("I[,date_col] must contain dates which are all in a row.")
+    }else
+    {
+      return(dates)
+    }
   }
 }

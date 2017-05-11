@@ -54,7 +54,7 @@ NULL
 #' @docType data
 #' @format A list of two elements: 
 #' \describe{
-#'   \item{Incidence}{a vector containing 32 days of observation,}
+#'   \item{Incidence}{a dataframe with 32 lines containing dates in first column, and daily incidence in second column,}
 #'   \item{SI.Distr}{a vector containing a set of 12 probabilities.}
 #' }
 #' @source Cauchemez S. et al. (2011) Role of social networks in shaping disease transmission during a community outbreak of 2009 H1N1 pandemic influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
@@ -72,7 +72,7 @@ NULL
 #' EstimateR(Flu2009$Incidence, 
 #'           T.Start=2:26, T.End=8:32, 
 #'           method="NonParametricSI", SI.Distr=Flu2009$SI.Distr, 
-#'           plot=TRUE)
+#'           plot=TRUE, date_col = 1)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
 #' # over the 7-day window finishing on that day.
