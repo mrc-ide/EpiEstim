@@ -6,10 +6,16 @@
 \usage{
 WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
   Mean.SI = NULL, Std.SI = NULL, SI.Distr = NULL, nSim = 10,
-  plot = FALSE, leg.pos = "topright")
+  plot = FALSE, legend = FALSE)
 }
 \arguments{
-\item{I}{Vector (or a dataframe with a single column)of non-negative integers containing an incidence time series.}
+\item{I}{One of the following
+\itemize{
+\item{Vector (or a dataframe with a column named 'I') of non-negative integers containing an incidence time series.
+ If the dataframe contains a column \code{I$dates}, this is used for plotting. 
+ \code{I$dates} must contains only dates in a row.}
+\item{An object of class \code{\link[incidence]{incidence}}}
+ }}
 
 \item{T.Start}{Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.}
 
@@ -27,7 +33,7 @@ WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
 
 \item{plot}{Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
 
-\item{leg.pos}{One of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
+\item{legend}{A boolean (TRUE by default) governing the presence / absence of legends on the plots
 This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.}
 }
 \value{
@@ -40,6 +46,10 @@ This specifies the position of the legend in the plot. Alternatively, \code{loca
 	\item{method}{: the method used to estimate R, one of "NonParametricSI", "ParametricSI", "UncertainSI", "SIFromData" or "SIFromSample"}
 	\item{SI.Distr}{: a vector containing the discrete serial interval distribution used for estimation}
 	\item{SI.Moments}{: a vector containing the mean and std of the discrete serial interval distribution(s) used for estimation}
+	\item{I}{: the time series of total incidence}
+	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
+	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
+	\item{dates}{: a vector of dates corresponding to the incidence time series}
 	}
 	}
 }
@@ -60,8 +70,7 @@ The discrete distribution of the serial interval is directly specified in the ar
 
 If \code{plot} is \code{TRUE}, 3 plots are produced. 
 The first one shows the epidemic curve. 
-The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
+The second one shows the posterior mean and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
 The third plot shows the discrete distribution of the serial interval. 
 
 ----------------------- \code{method "ParametricSI"} -----------------------
@@ -78,7 +87,7 @@ data("Flu2009")
 
 ## estimate the case reproduction number (method "NonParametricSI")
 WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-   SI.Distr=Flu2009$SI.Distr, plot=TRUE, leg.pos=xy.coords(1,1.75), nSim=100)
+   SI.Distr=Flu2009$SI.Distr, plot=TRUE, nSim=100)
 # the second plot produced shows, at each each day, 
 # the estimate of the cqse reproduction number over the 7-day window finishing on that day.
 
@@ -86,7 +95,7 @@ WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI",
 WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI", 
    Mean.SI=2.6, Std.SI=1.5, plot=TRUE, nSim=100)
 # the second plot produced shows, at each each day, 
-# the estimate of the cqse reproduction number over the 7-day window finishing on that day.
+# the estimate of the case reproduction number over the 7-day window finishing on that day.
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}

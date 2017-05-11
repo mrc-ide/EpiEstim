@@ -12,13 +12,18 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   SI.parametricDistr = c("G", "W", "L", "off1G", "off1W", "off1L"),
   MCMC.control = list(init.pars = NULL, burnin = 3000, thin = 10, seed =
   as.integer(Sys.time())), SI.Sample = NULL, seed = NULL, Mean.Prior = 5,
-  Std.Prior = 5, CV.Posterior = 0.3, plot = FALSE)
+  Std.Prior = 5, CV.Posterior = 0.3, plot = FALSE, legend = FALSE)
 }
 \arguments{
 \item{I}{One of the following
 \itemize{
 \item{A vector (or a dataframe with a single column) of non-negative integers containing the incidence time series}
-\item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
+\item{A dataframe of non-negative integers with either i) \code{I$I} containing the total incidence, or ii) two columns, 
+so that \code{I$local} contains the incidence of cases due to local transmission and 
+\code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} 
+the total incidence). If the dataframe contains a column \code{I$dates}, this is used for plotting. 
+\code{I$dates} must contains only dates in a row.}
+\item{An object of class \code{\link[incidence]{incidence}}}
 } 
 Note that the cases from the first time step are always all assumed to be imported cases.}
 
@@ -74,6 +79,8 @@ Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma shi
 \item{CV.Posterior}{A positive number giving the aimed posterior coefficient of variation (see details).}
 
 \item{plot}{Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
+
+\item{legend}{A boolean (TRUE by default) governing the presence / absence of legends on the plots}
 }
 \value{
 {
@@ -88,6 +95,7 @@ the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles
 	\item{I}{: the time series of total incidence}
 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
+	\item{dates}{: a vector of dates corresponding to the incidence time series}
 	\item{MCMC_converged}{ (only for method \code{SIFromData}): a boolean showing whether the Gelman-Rubin MCMC convergence diagnostic was successful (\code{TRUE}) or not (\code{FALSE})}
 }
 }
@@ -103,7 +111,7 @@ for a given discrete distribution of the serial interval (see references).
 The more incident cases are observed over a time window, the smallest the posterior coefficient of variation (CV, ratio of standard deviation over mean) of the reproduction number. 
 An aimed CV can be specified in the argument \code{CV.Posterior} (default is \code{0.3}), and a warning will be produced if the incidence within one of the time windows considered is too low to get this CV. 
 
-The methods vary in the way the serial interval distribution is specified. The plots are also different according to the method used.
+The methods vary in the way the serial interval distribution is specified. 
 
 In short there are five methods to specify the serial interval distribution (see below for more detail on each method). 
 In the first two methods, a unique serial interval distribution is considered, whereas in the last three, a range of serial interval distributions are integrated over:
@@ -115,21 +123,19 @@ In the first two methods, a unique serial interval distribution is considered, w
 \item{In method "SIFromSample", the user directly provides the sample of serial interval distribution to use for estimation of R. This can be a useful alternative to the previous method, where the MCMC estimation of the serial interval distribution could be run once, and the same estimated SI distribution then used in EstimateR in different contexts, e.g. with different time windows, hence avoiding to rerun the MCMC everytime EstimateR is called.}
 }
 
+If \code{plot} is \code{TRUE}, 3 plots are produced. 
+The first one shows the epidemic curve. 
+The second one shows the posterior mean and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
+The third plot shows the discrete distribution(s) of the serial interval. 
+
 ----------------------- \code{method "NonParametricSI"} -----------------------
   
 The discrete distribution of the serial interval is directly specified in the argument \code{SI.Distr}.
-
-If \code{plot} is \code{TRUE}, 3 plots are produced. 
-The first one shows the epidemic curve. 
-The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-The third plot shows the discrete distribution of the serial interval. 
 
 ----------------------- \code{method "ParametricSI"} -----------------------
   
 The mean and standard deviation of the continuous distribution of the serial interval are given in the arguments \code{Mean.SI} and \code{Std.SI}.
 The discrete distribution of the serial interval is derived automatically using \code{\link{DiscrSI}}.
-
-If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "NonParametricSI"} .
 
 ----------------------- \code{method "UncertainSI"} -----------------------
    
@@ -144,11 +150,6 @@ Warnings are produced when the truncated normal distributions are not symmetric 
 For each pair \eqn{(\mu^{(k)},\sigma^{(k)})}, we then draw a sample of size \code{n2} in the posterior distribution of the reproduction number over each time window, conditionnally on this serial interval distribution. 
 After pooling, a sample of size \eqn{\code{n1}\times\code{n2}} of the joint posterior distribution of the reproduction number over each time window is obtained.
 The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window are obtained from this sample.
-
-If \code{plot} is \code{TRUE}, 3 plots are produced.
-The first one shows the epidemic curve. 
-The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-The third plot shows the sampled discrete distributions of the serial interval. 
 
 ----------------------- \code{method "SIFromData"} -----------------------
   
@@ -177,13 +178,10 @@ After pooling, a sample of size \eqn{\code{n1}\times\code{n2}} of the joint post
 the reproduction number over each time window is obtained.
 The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window are obtained from this sample.
 
-If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "UncertaintySI"} .
-
-#' ----------------------- \code{method "SIFromSample"} -----------------------
+----------------------- \code{method "SIFromSample"} -----------------------
 \code{Method "SIFromSample"} also allows accounting for uncertainty on the serial interval distribution. 
 Unlike methods "UncertainSI" and "SIFromData", the user directly provides (in argument \code{SI.Sample}) a sample of serial interval distribution to be explored. 
 
-If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "UncertaintySI"} . 
 }
 }
 \examples{
@@ -195,6 +193,19 @@ EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI",
           SI.Distr=Flu2009$SI.Distr, plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
+
+## example with an incidence object
+
+# create fake data
+library(incidence)
+data <- c(0,1,1,2,1,3,4,5,5,5,5,4,4,26,6,7,9)
+location <- sample(c("local","imported"), length(data), replace=TRUE)
+location[1] <- "imported" # forcing the first case to be imported
+# get incidence per group (location)
+I <- incidence(data, groups = location)
+# Estimate R with assumptions on serial interval
+EstimateR(I, T.Start = 2:21, T.End = 8:27, method = "ParametricSI", 
+          Mean.SI = 2.6, Std.SI = 1.5, plot = TRUE)
 
 ## estimate the reproduction number (method "ParametricSI")
 EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI", 
