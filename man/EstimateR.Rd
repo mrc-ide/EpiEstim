@@ -23,6 +23,7 @@ so that \code{I$local} contains the incidence of cases due to local transmission
 \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} 
 the total incidence). If the dataframe contains a column \code{I$dates}, this is used for plotting. 
 \code{I$dates} must be in date format, and the dates must be in a row.}
+\item{An object of class \code{\link[incidence]{incidence}}}
 } 
 Note that the cases from the first time step are always all assumed to be imported cases.}
 

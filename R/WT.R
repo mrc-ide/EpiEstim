@@ -6,9 +6,13 @@
 #' 
 #' \code{WT} estimates the case reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
 #' 
-#' @param I Vector (or a dataframe with a column named 'I') of non-negative integers containing an incidence time series.
+#' @param I One of the following
+#' \itemize{
+#' \item{Vector (or a dataframe with a column named 'I') of non-negative integers containing an incidence time series.
 #'  If the dataframe contains a column \code{I$dates}, this is used for plotting. 
-#' \code{I$dates} must be in date format, and the dates must be in a row.
+#'  \code{I$dates} must contains only dates in a row.}
+#' \item{An object of class \code{\link[incidence]{incidence}}}
+#'  }
 #' @param T.Start Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.
 #' @param T.End Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}.
 #' @param method One of "NonParametricSI" or "ParametricSI" (see details).

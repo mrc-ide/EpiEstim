@@ -61,6 +61,12 @@ process_SI.Data <- function(SI.Data)
 
 process_I <- function(I)
 {
+  if(class(I)=="incidence")
+  {
+    I_inc <- I
+    I <- as.data.frame(I_inc)
+    I$I <- rowSums(I_inc$counts)
+  }
   vector_I <- FALSE
   single_col_df_I <- FALSE
   if(is.vector(I)) 
@@ -115,6 +121,10 @@ process_I <- function(I)
 
 process_I_vector <- function(I)
 {
+  if(class(I)=="incidence")
+  {
+    I <- rowSums(I$counts)
+  }
   if(!is.vector(I))
   {
     if(is.data.frame(I))
@@ -209,9 +219,9 @@ check_SI.Distr <- function(SI.Distr) # this only produces warnings and errors, d
 check_dates <- function(I)
 {
   dates <- I$dates
-  if(class(dates) != "Date")
+  if(class(dates) != "Date" & class(dates) != "numeric")
   {
-    stop("I$dates must be an object of class date.")
+    stop("I$dates must be an object of class date or numeric.")
   }else
   {
     if(unique(diff(dates)) != 1)
