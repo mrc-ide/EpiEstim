@@ -111,9 +111,20 @@ process_I <- function(I)
     }
   }
   
-  if(any(I<0))
+  I[which(is.na(I))] <- 0
+  date_col <- names(I)=='dates'
+  if(any(date_col))
   {
-    stop("I must contain only non negative integer values.")
+    if(any(I[,!date_col]<0))
+    {
+      stop("I must contain only non negative integer values.")
+    }
+  }else
+  {
+    if(any(I<0))
+    {
+      stop("I must contain only non negative integer values.")
+    }
   }
   
   return(I)
@@ -132,23 +143,32 @@ process_I_vector <- function(I)
       if(ncol(I)==1)
       {
         I <- as.vector(I[,1])
-      }
-      else if('I' %in% names(I))
+      }else if('I' %in% names(I))
       {
         I <- as.vector(I$I)
-      }else
+      }else if(!all(c('local', 'imported') %in% names(I)))
       {
-        stop("I must be a vector or a dataframe with at least a column named 'I'.")
+        stop("I must be a vector or a dataframe with at least a column named 'I' or two columns named 'local' and 'imported'.")
       }
     }else
     {
-      stop("I must be a vector or a dataframe with at least a column named 'I'.")
+      stop("I must be a vector or a dataframe with at least a column named 'I' or two columns named 'local' and 'imported'.")
     }
   }
   I[which(is.na(I))] <- 0
-  if(any(I<0))
+  date_col <- names(I)=='dates'
+  if(any(date_col))
   {
-    stop("I must contain only non negative integer values.")
+    if(any(I[,!date_col]<0))
+    {
+      stop("I must contain only non negative integer values.")
+    }
+  }else
+  {
+    if(any(I<0))
+    {
+      stop("I must contain only non negative integer values.")
+    }
   }
   
   return(I)
