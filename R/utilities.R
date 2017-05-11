@@ -165,7 +165,7 @@ process_SI.Sample <- function(SI.Sample)
   return(SI.Sample)
 }
 
-check_times <- function(T.Start, T.End) # this only produces warnings and errors, does not return anything
+check_times <- function(T.Start, T.End, T) # this only produces warnings and errors, does not return anything
 {
   if (!is.vector(T.Start)) {
     stop("T.Start must be a vector.")
@@ -179,11 +179,11 @@ check_times <- function(T.Start, T.End) # this only produces warnings and errors
   if (any(T.Start > T.End)) {
     stop("T.Start[i] must be <= T.End[i] for all i.")
   }
-  if (any(T.Start < 2 || T.Start%%1 != 0)) {
-    stop("T.Start must be a vector of integers >1.")
+  if (any(T.Start < 2 | T.Start > T | T.Start%%1 != 0 )) {
+    stop("T.Start must be a vector of integers between 2 and the number of timesteps in I.")
   }
-  if (any(T.End < 2 || T.End%%1 != 0)) {
-    stop("T.End must be a vector of integers >1.")
+  if (any(T.End < 2 | T.End > T | T.End%%1 != 0)) {
+    stop("T.End must be a vector of integers between 2 and the number of timesteps in I.")
   }
 }
 

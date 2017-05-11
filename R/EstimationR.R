@@ -430,7 +430,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   a.Prior <- (Mean.Prior/Std.Prior)^2
   b.Prior <- Std.Prior^2/Mean.Prior
   
-  check_times(T.Start, T.End)
+  check_times(T.Start, T.End, T)
   NbTimePeriods <- length(T.Start)
   
   if (method == "NonParametricSI") {

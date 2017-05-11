@@ -146,7 +146,7 @@ WT <- function(I, T.Start, T.End,
     T.End <- T.End[-temp]
   }
   
-  check_times(T.Start, T.End)
+  check_times(T.Start, T.End, T)
   NbTimePeriods <- length(T.Start)
   
   if(method=="NonParametricSI")
