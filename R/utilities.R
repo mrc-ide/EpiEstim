@@ -179,11 +179,11 @@ check_times <- function(T.Start, T.End) # this only produces warnings and errors
   if (any(T.Start > T.End)) {
     stop("T.Start[i] must be <= T.End[i] for all i.")
   }
-  if (any(T.Start < 1 || T.Start%%1 != 0)) {
-    stop("T.Start must be a vector of >0 integers.")
+  if (any(T.Start < 2 || T.Start%%1 != 0)) {
+    stop("T.Start must be a vector of integers >1.")
   }
-  if (any(T.End < 1 || T.End%%1 != 0)) {
-    stop("T.End must be a vector of >0 integers.")
+  if (any(T.End < 2 || T.End%%1 != 0)) {
+    stop("T.End must be a vector of integers >1.")
   }
 }
 
