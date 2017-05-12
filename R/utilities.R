@@ -61,6 +61,12 @@ process_SI.Data <- function(SI.Data)
 
 process_I <- function(I)
 {
+  if(class(I)=="incidence")
+  {
+    I_inc <- I
+    I <- as.data.frame(I_inc)
+    I$I <- rowSums(I_inc$counts)
+  }
   vector_I <- FALSE
   single_col_df_I <- FALSE
   if(is.vector(I)) 
@@ -87,9 +93,15 @@ process_I <- function(I)
     I[1,] <- c(0, I_init)
   }else
   {
-    if(!is.data.frame(I) | !all(c("local","imported") %in% names(I)) ) 
+    if(!is.data.frame(I) | (!("I" %in% names(I)) & !all(c("local","imported") %in% names(I)) ) ) 
     {
-      stop("I must be a vector or a dataframe with a single column; or a dataframe with 2 columns called 'local' and 'imported'.")
+      stop("I must be a vector or a dataframe with either i) a column called 'I', or ii) 2 columns called 'local' and 'imported'.")
+    }
+    if(("I" %in% names(I)) & !all(c("local","imported") %in% names(I)))
+    {
+      I$local <- I$I
+      I$local[1] <- 0
+      I$imported <- c(I$I[1], rep(0, nrow(I)-1))
     }
     if(I$local[1]>0)
     {
@@ -99,9 +111,20 @@ process_I <- function(I)
     }
   }
   
-  if(any(I<0))
+  I[which(is.na(I))] <- 0
+  date_col <- names(I)=='dates'
+  if(any(date_col))
   {
-    stop("I must contain only non negative integer values.")
+    if(any(I[,!date_col]<0))
+    {
+      stop("I must contain only non negative integer values.")
+    }
+  }else
+  {
+    if(any(I<0))
+    {
+      stop("I must contain only non negative integer values.")
+    }
   }
   
   return(I)
@@ -109,6 +132,10 @@ process_I <- function(I)
 
 process_I_vector <- function(I)
 {
+  if(class(I)=="incidence")
+  {
+    I <- rowSums(I$counts)
+  }
   if(!is.vector(I))
   {
     if(is.data.frame(I))
@@ -116,20 +143,32 @@ process_I_vector <- function(I)
       if(ncol(I)==1)
       {
         I <- as.vector(I[,1])
-      }
-      else
+      }else if('I' %in% names(I))
       {
-        stop("I must be a vector or a dataframe with a single column.")
+        I <- as.vector(I$I)
+      }else if(!all(c('local', 'imported') %in% names(I)))
+      {
+        stop("I must be a vector or a dataframe with at least a column named 'I' or two columns named 'local' and 'imported'.")
       }
     }else
     {
-      stop("I must be a vector or a dataframe with a single column.")
+      stop("I must be a vector or a dataframe with at least a column named 'I' or two columns named 'local' and 'imported'.")
     }
   }
   I[which(is.na(I))] <- 0
-  if(any(I<0))
+  date_col <- names(I)=='dates'
+  if(any(date_col))
   {
-    stop("I must contain only non negative integer values.")
+    if(any(I[,!date_col]<0))
+    {
+      stop("I must contain only non negative integer values.")
+    }
+  }else
+  {
+    if(any(I<0))
+    {
+      stop("I must contain only non negative integer values.")
+    }
   }
   
   return(I)
@@ -156,7 +195,7 @@ process_SI.Sample <- function(SI.Sample)
   return(SI.Sample)
 }
 
-check_times <- function(T.Start, T.End) # this only produces warnings and errors, does not return anything
+check_times <- function(T.Start, T.End, T) # this only produces warnings and errors, does not return anything
 {
   if (!is.vector(T.Start)) {
     stop("T.Start must be a vector.")
@@ -170,11 +209,11 @@ check_times <- function(T.Start, T.End) # this only produces warnings and errors
   if (any(T.Start > T.End)) {
     stop("T.Start[i] must be <= T.End[i] for all i.")
   }
-  if (any(T.Start < 1 || T.Start%%1 != 0)) {
-    stop("T.Start must be a vector of >0 integers.")
+  if (any(T.Start < 2 | T.Start > T | T.Start%%1 != 0 )) {
+    stop("T.Start must be a vector of integers between 2 and the number of timesteps in I.")
   }
-  if (any(T.End < 1 || T.End%%1 != 0)) {
-    stop("T.End must be a vector of >0 integers.")
+  if (any(T.End < 2 | T.End > T | T.End%%1 != 0)) {
+    stop("T.End must be a vector of integers between 2 and the number of timesteps in I.")
   }
 }
 
@@ -194,5 +233,23 @@ check_SI.Distr <- function(SI.Distr) # this only produces warnings and errors, d
   }
   if (abs(sum(SI.Distr) - 1) > 0.01) {
     stop("SI.Distr must sum to 1.")
+  }
+}
+
+check_dates <- function(I)
+{
+  dates <- I$dates
+  if(class(dates) != "Date" & class(dates) != "numeric")
+  {
+    stop("I$dates must be an object of class date or numeric.")
+  }else
+  {
+    if(unique(diff(dates)) != 1)
+    {
+      stop("I$dates must contain dates which are all in a row.")
+    }else
+    {
+      return(dates)
+    }
   }
 }

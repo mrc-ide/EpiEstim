@@ -6,7 +6,7 @@
 \title{Data on the 2009 H1N1 influenza pandemic in a school in Pennsylvania.}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 32 days of observation,}
+  \item{Incidence}{a dataframe with 32 lines containing dates in first column, and daily incidence in second column,}
   \item{SI.Distr}{a vector containing a set of 12 probabilities.}
 }}
 \source{
