@@ -94,8 +94,8 @@ process_I <- function(I)
     if(I$local[1]>0)
     {
       warning("I$local[1] is >0 but must be 0, as all cases on the first time step are assumed imported. This is corrected automatically by cases being transferred to I$imported.")
-      I_init <- sum(I[1,])
-      I[1,] <- c(0, I_init)
+      I_init <- sum(I[1,c('local','imported')])
+      I[1,c('local','imported')] <- c(0, I_init)
     }
   }
   
