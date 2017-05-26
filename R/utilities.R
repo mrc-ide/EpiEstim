@@ -217,8 +217,9 @@ check_times <- function(T.Start, T.End, T) # this only produces warnings and err
   }
 }
 
-check_SI.Distr <- function(SI.Distr) # this only produces warnings and errors, does not return anything
+check_SI.Distr <- function(SI.Distr, sumToOne = c("error", "warning")) # this only produces warnings and errors, does not return anything
 {
+  sumToOne <- match.arg(sumToOne)
   if (is.null(SI.Distr)) {
     stop("SI.Distr argument missing.")
   }
@@ -232,7 +233,14 @@ check_SI.Distr <- function(SI.Distr) # this only produces warnings and errors, d
     stop("SI.Distr must be a positive vector.")
   }
   if (abs(sum(SI.Distr) - 1) > 0.01) {
-    stop("SI.Distr must sum to 1.")
+    if(sumToOne == "error") 
+    {
+      stop("SI.Distr must sum to 1.")
+    }
+    else if(sumToOne == "warning") 
+    {
+      warning("SI.Distr does not sum to 1.")
+    }
   }
 }
 

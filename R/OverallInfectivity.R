@@ -43,7 +43,7 @@ OverallInfectivity <-function (I,SI.Distr)
 {
   I <- process_I(I)
   T<-nrow(I)
-  check_SI.Distr(SI.Distr)
+  check_SI.Distr(SI.Distr, "warning")
   lambda <- vector()
   lambda[1]<-NA
   for (t in 2:T)
