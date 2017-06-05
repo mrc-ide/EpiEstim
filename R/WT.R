@@ -126,14 +126,15 @@ WT <- function(I, T.Start, T.End,
   
   method <- match.arg(method)
   
+  I <- process_I(I)
   if(!is.null(I$dates)) 
   {
     dates <- check_dates(I)
-    I <- process_I_vector(I)
+    I <- process_I_vector(rowSums(I[,c("local","imported")]))
     T<-length(I)
   }else
   {
-    I <- process_I_vector(I)
+    I <- process_I_vector(rowSums(I[,c("local","imported")]))
     T<-length(I)
     dates <- 1:T
   }
