@@ -23,10 +23,11 @@ Imports:
     incidence, 
     scales,
     grDevices
-Remotes: 
+Remotes:
     reconhub/incidence,
     nickreich/coarseDataTools@hackout3
 License: GPL (>=2)
 LazyLoad: yes
 Packaged: 2012-05-30 10:35:03 UTC; acori
 RoxygenNote: 5.0.1
+Suggests: testthat
