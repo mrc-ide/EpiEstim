@@ -9,7 +9,7 @@ Description: This package provides tools to quantify transmissibility throughout
     an epidemic from the analysis of time series of incidence.
 Depends: R (>= 2.10)
 Imports:
-    coarseDataTools, 
+    coarseDataTools,
     stats,
     graphics,
     reshape2,
@@ -20,13 +20,16 @@ Imports:
     plotly,
     fitdistrplus,
     coda,
-    incidence, 
+    incidence,
     scales,
     grDevices
-Remotes: 
+Remotes:
     reconhub/incidence,
     nickreich/coarseDataTools@hackout3
+Suggests:
+    testthat,
+    compare
 License: GPL (>=2)
 LazyLoad: yes
 Packaged: 2012-05-30 10:35:03 UTC; acori
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1.9000
