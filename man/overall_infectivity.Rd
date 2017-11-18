@@ -38,9 +38,9 @@ In mathematical terms:
 data("Flu2009")
 
 ## compute overall infectivity
-lambda <- overall_infectivity(Flu2009$Incidence, Flu2009$si_distr)
+lambda <- overall_infectivity(Flu2009$incidence, Flu2009$si_distr)
 par(mfrow=c(2,1))
-plot(Flu2009$Incidence, type="s", xlab="time (days)", ylab="Incidence")
+plot(Flu2009$incidence, type="s", xlab="time (days)", ylab="incidence")
 title(main="Epidemic curve")
 plot(lambda, type="s", xlab="time (days)", ylab="Infectivity")
 title(main="Overall infectivity")

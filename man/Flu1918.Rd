@@ -6,7 +6,7 @@
 \title{Data on the 1918 H1N1 influenza pandemic in Baltimore.}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 92 days of observation,}
+  \item{incidence}{a vector containing 92 days of observation,}
   \item{si_distr}{a vector containing a set of 12 probabilities.}
 }}
 \source{
@@ -22,7 +22,7 @@ This data set gives:
 data("Flu1918")
 
 ## estimate the reproduction number (method "non_parametric_si")
-EstimateR(Flu1918$Incidence, 
+EstimateR(Flu1918$incidence, 
           t_start=2:86, t_end=8:92, 
           method="non_parametric_si", si_distr=Flu1918$si_distr, 
           plot=TRUE)

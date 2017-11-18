@@ -6,7 +6,7 @@
 \title{Data on the 2003 SARS epidemic in Hong Kong.}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 107 days of observation,}
+  \item{incidence}{a vector containing 107 days of observation,}
   \item{si_distr}{a vector containing a set of 25 probabilities.}
 }}
 \source{
@@ -22,7 +22,7 @@ This data set gives:
 data("SARS2003")
 
 ## estimate the reproduction number (method "non_parametric_si")
-EstimateR(SARS2003$Incidence, 
+EstimateR(SARS2003$incidence, 
           t_start=14:101, t_end=20:107, 
           method="non_parametric_si", si_distr=SARS2003$si_distr, 
           plot=TRUE)

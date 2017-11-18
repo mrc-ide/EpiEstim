@@ -189,7 +189,7 @@ Unlike methods "uncertain_si" and "si_from_data", the user directly provides (in
 data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
-EstimateR(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
+EstimateR(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
           si_distr=Flu2009$si_distr, plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
@@ -208,13 +208,13 @@ EstimateR(I, t_start = 2:21, t_end = 8:27, method = "parametric_si",
           mean_si = 2.6, std_si = 1.5, plot = TRUE)
 
 ## estimate the reproduction number (method "parametric_si")
-EstimateR(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="parametric_si", 
+EstimateR(Flu2009$incidence, t_start=2:26, t_end=8:32, method="parametric_si", 
           mean_si=2.6, std_si=1.5, plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
 
 ## estimate the reproduction number (method "uncertain_si")
-EstimateR(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="uncertain_si", 
+EstimateR(Flu2009$incidence, t_start=2:26, t_end=8:32, method="uncertain_si", 
           mean_si=2.6, std_mean_si=1, min_mean_si=1, max_mean_si=4.2, 
           std_si=1.5, std_std_si=0.5, min_std_si=0.5, max_std_si=2.5, 
           n1=100, n2=100, plot=TRUE)
@@ -232,7 +232,7 @@ data("MockRotavirus")
 ## estimate the reproduction number (method "si_from_data")
 MCMC_seed <- 1
 overall_seed <- 2
-R_si_from_data <- EstimateR(MockRotavirus$Incidence, 
+R_si_from_data <- EstimateR(MockRotavirus$incidence, 
                                         t_start=2:47, t_end=8:53, 
                                         method="si_from_data", 
                                         si_data=MockRotavirus$si_data, 
@@ -243,7 +243,7 @@ R_si_from_data <- EstimateR(MockRotavirus$Incidence,
                                         seed = overall_seed,
                                         plot=TRUE)
 ## compare with version with no uncertainty
-R_Parametric <- EstimateR(MockRotavirus$Incidence, 
+R_Parametric <- EstimateR(MockRotavirus$incidence, 
                           t_start=2:47, t_end=8:53, 
                           method="parametric_si", 
                           mean_si = mean(R_si_from_data$SI.Moments$Mean), 
@@ -266,7 +266,7 @@ SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
                              n.samples = 5000, 
                              seed = MCMC_seed)
 si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
-R_si_from_sample <- EstimateR(MockRotavirus$Incidence, 
+R_si_from_sample <- EstimateR(MockRotavirus$incidence, 
                             t_start=2:47, t_end=8:53, 
                             method="si_from_sample", si_sample=si_sample,
                             n2 = 50,

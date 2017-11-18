@@ -6,7 +6,7 @@
 \title{Data on the 1972 smallpox epidemic in Kosovo}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 57 days of observation,}
+  \item{incidence}{a vector containing 57 days of observation,}
   \item{si_distr}{a vector containing a set of 46 probabilities.}
 }}
 \source{
@@ -22,7 +22,7 @@ This data set gives:
 data("Smallpox1972")
 
 ## estimate the reproduction number (method "non_parametric_si")
-EstimateR(Smallpox1972$Incidence, 
+EstimateR(Smallpox1972$incidence, 
           t_start=27:51, t_end=33:57, 
           method="non_parametric_si", si_distr=Smallpox1972$si_distr, 
           plot=TRUE)

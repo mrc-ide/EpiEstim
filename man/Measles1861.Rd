@@ -6,7 +6,7 @@
 \title{Data on the 1861 measles epidemic in Hagelloch, Germany.}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 48 days of observation,}
+  \item{incidence}{a vector containing 48 days of observation,}
   \item{si_distr}{a vector containing a set of 38 probabilities.}
 }}
 \source{
@@ -22,7 +22,7 @@ This data set gives:
 data("Measles1861")
 
 ## estimate the reproduction number (method "non_parametric_si")
-EstimateR(Measles1861$Incidence, 
+EstimateR(Measles1861$incidence, 
           t_start=17:42, t_end=23:48, 
           method="non_parametric_si", si_distr=Measles1861$si_distr, 
           plot=TRUE)

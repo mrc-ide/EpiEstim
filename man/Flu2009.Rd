@@ -6,7 +6,7 @@
 \title{Data on the 2009 H1N1 influenza pandemic in a school in Pennsylvania.}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a dataframe with 32 lines containing dates in first column, and daily incidence in second column,}
+  \item{incidence}{a dataframe with 32 lines containing dates in first column, and daily incidence in second column,}
   \item{si_distr}{a vector containing a set of 12 probabilities.}
 }}
 \source{
@@ -24,7 +24,7 @@ amongst children in a school in Pennsylvania during the 2009 H1N1 influenza pand
 data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
-EstimateR(Flu2009$Incidence, 
+EstimateR(Flu2009$incidence, 
           t_start=2:26, t_end=8:32, 
           method="non_parametric_si", si_distr=Flu2009$si_distr, 
           plot=TRUE)

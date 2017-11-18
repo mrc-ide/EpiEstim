@@ -6,7 +6,7 @@
 \title{Mock data on a rotavirus epidemic.}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 53 days of observation,}
+  \item{incidence}{a vector containing 53 days of observation,}
   \item{si_distr}{a dataframe containing a set of 19 observations; each observation corresponds to a pair of infector/infected individuals. EL and ER columns contain the lower an upper bounds of the dates of symptoms onset in the infectors. SL and SR columns contain the lower an upper bounds of the dates of symptoms onset in the infected indiviuals. The type column corresponds to XXX TO BE COMPLETED XXX}
 }}
 \source{
@@ -27,7 +27,7 @@ This data set gives:
 data("MockRotavirus")
 
 ## estimate the reproduction number (method "si_from_data")
-EstimateR(MockRotavirus$Incidence, 
+EstimateR(MockRotavirus$incidence, 
           t_start=2:47, t_end=8:53, 
           method="si_from_data", 
           si_data=MockRotavirus$si_data, 

@@ -22,6 +22,7 @@ compare_output <- function(output, id) {
   filename <- paste("../expected_output/", id, ".RData", sep="")
   if(file.exists(filename)) {
     load(filename)
+    output
     expect_true(compare(saved, output)$result)
   } else {
     saved <- output
