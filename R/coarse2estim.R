@@ -39,7 +39,7 @@
 #' si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
 #' 
 #' ## use EstimateR to estimate the reproduction number based on these estimates of the serial interval
-#' R_si_from_sample <- EstimateR(MockRotavirus$Incidence, 
+#' R_si_from_sample <- EstimateR(MockRotavirus$incidence, 
 #'                             t_start=2:47, t_end=8:53, 
 #'                             method="si_from_sample", si_sample=si_sample,
 #'                             n2 = 50,

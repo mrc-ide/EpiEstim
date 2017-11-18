@@ -14,7 +14,7 @@
   The functions implemented in this package are:
   \itemize{
          \item \code{\link{DiscrSI}}, which computes the discrete distribution of the serial interval with a given mean and standard deviation;
-         \item \code{\link{OverallInfectivity}}, which calculates, at each time step, the overall infectivity due to previously infected individuals;
+         \item \code{\link{overall_infectivity}}, which calculates, at each time step, the overall infectivity due to previously infected individuals;
          \item \code{\link{EstimateR}}, which estimates, for each time step, the instantaneous reproduction number, given the incidence time series and the serial interval distribution. 
          \item \code{\link{WT}}, which estimates, for each time step, the case reproduction number, given the incidence time series and the serial interval distribution. 
        }

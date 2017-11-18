@@ -12,7 +12,7 @@ EstimateR(I, t_start, t_end, method = c("non_parametric_si", "parametric_si",
   si_parametric_distr = c("G", "W", "L", "off1G", "off1W", "off1L"),
   mcmc_control = list(init.pars = NULL, burnin = 3000, thin = 10, seed =
   as.integer(Sys.time())), si_sample = NULL, seed = NULL, mean_prior = 5,
-  std_prior = 5, CV.Posterior = 0.3, plot = FALSE, legend = FALSE)
+  std_prior = 5, cv_posterior = 0.3, plot = FALSE, legend = FALSE)
 }
 \arguments{
 \item{I}{One of the following
@@ -76,7 +76,7 @@ Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma shi
 
 \item{std_prior}{A positive number giving the standard deviation of the common prior distribution for all reproduction numbers (see details).}
 
-\item{CV.Posterior}{A positive number giving the aimed posterior coefficient of variation (see details).}
+\item{cv_posterior}{A positive number giving the aimed posterior coefficient of variation (see details).}
 
 \item{plot}{Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
 
@@ -109,7 +109,7 @@ Analytical estimates of the reproduction number for an epidemic over predefined 
 for a given discrete distribution of the serial interval (see references). 
 
 The more incident cases are observed over a time window, the smallest the posterior coefficient of variation (CV, ratio of standard deviation over mean) of the reproduction number. 
-An aimed CV can be specified in the argument \code{CV.Posterior} (default is \code{0.3}), and a warning will be produced if the incidence within one of the time windows considered is too low to get this CV. 
+An aimed CV can be specified in the argument \code{cv_posterior} (default is \code{0.3}), and a warning will be produced if the incidence within one of the time windows considered is too low to get this CV. 
 
 The methods vary in the way the serial interval distribution is specified. 
 

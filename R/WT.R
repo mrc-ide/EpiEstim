@@ -76,13 +76,13 @@
 #' data("Flu2009")
 #' 
 #' ## estimate the case reproduction number (method "non_parametric_si")
-#' WT(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
+#' WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
 #'    si_distr=Flu2009$si_distr, plot=TRUE, nSim=100)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the cqse reproduction number over the 7-day window finishing on that day.
 #' 
 #' ## estimate the case reproduction number (method "parametric_si")
-#' WT(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="parametric_si", 
+#' WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="parametric_si", 
 #'    mean_si=2.6, std_si=1.5, plot=TRUE, nSim=100)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the case reproduction number over the 7-day window finishing on that day.
@@ -155,7 +155,7 @@ WT <- function(I, t_start, t_end,
   }
   
   check_times(t_start, t_end, T)
-  NbTimePeriods <- length(t_start)
+  nb_time_periods <- length(t_start)
   
   if(method=="non_parametric_si")
   {
@@ -213,22 +213,22 @@ WT <- function(I, t_start, t_end,
     si_distr <- sapply(1:T, function(t) DiscrSI(t-1,mean_si,std_si))
   }
   if(length(si_distr)<T+1){si_distr[(length(si_distr)+1):(T+1)]<-0}
-  Finalmean_si<-sum(si_distr*(0:(length(si_distr)-1)))
-  Finalstd_si<-sqrt(sum(si_distr*(0:(length(si_distr)-1))^2)-Finalmean_si^2)
+  final_mean_si<-sum(si_distr*(0:(length(si_distr)-1)))
+  Finalstd_si<-sqrt(sum(si_distr*(0:(length(si_distr)-1))^2)-final_mean_si^2)
   
-  TimePeriodsWithNoIncidence <- vector()
-  for(i in 1:NbTimePeriods)
+  TimePeriodsWithNoincidence <- vector()
+  for(i in 1:nb_time_periods)
   {
     if(sum(I[t_start[i]:t_end[i]])==0)
     {
-      TimePeriodsWithNoIncidence <- c(TimePeriodsWithNoIncidence,i)
+      TimePeriodsWithNoincidence <- c(TimePeriodsWithNoincidence,i)
     }
   }
-  if(length(TimePeriodsWithNoIncidence)>0)
+  if(length(TimePeriodsWithNoincidence)>0)
   {
-    t_start <- t_start[-TimePeriodsWithNoIncidence]
-    t_end <- t_end[-TimePeriodsWithNoIncidence]
-    NbTimePeriods <- length(t_start)
+    t_start <- t_start[-TimePeriodsWithNoincidence]
+    t_end <- t_end[-TimePeriodsWithNoincidence]
+    nb_time_periods <- length(t_start)
   }
   
   Onset <- vector()
@@ -249,12 +249,12 @@ WT <- function(I, t_start, t_end,
   p[which(is.na(p))] <- 0
   p[which(is.infinite(p))] <- 0
   MeanRperIndexCaseDate <- sapply(1:ncol(p), function(j) sum(p[,j]*I, na.rm=TRUE))
-  MeanRperDate.WT <- sapply(1:NbTimePeriods, function(i) mean(rep(MeanRperIndexCaseDate[which((1:T >= t_start[i]) * (1:T <= t_end[i]) == 1)], I[which((1:T >= t_start[i]) * (1:T <= t_end[i]) == 1)]) ) )
+  MeanRperDate.WT <- sapply(1:nb_time_periods, function(i) mean(rep(MeanRperIndexCaseDate[which((1:T >= t_start[i]) * (1:T <= t_end[i]) == 1)], I[which((1:T >= t_start[i]) * (1:T <= t_end[i]) == 1)]) ) )
   
   possibleAncesTime <- sapply(1:T,function(t) (t-(which(si_distr!=0))+1)[which(t-(which(si_distr!=0))+1>0)])
   ancestriesTime <- t(sapply(1:nSim , function(i) DrawOneSetOfAncestries()))
   
-  Rsim <- sapply(1:NbTimePeriods,function(i) rowSums((ancestriesTime[,]>=t_start[i]) * (ancestriesTime[,]<=t_end[i]),na.rm=TRUE)/sum(I[t_start[i]:t_end[i]]))
+  Rsim <- sapply(1:nb_time_periods,function(i) rowSums((ancestriesTime[,]>=t_start[i]) * (ancestriesTime[,]<=t_end[i]),na.rm=TRUE)/sum(I[t_start[i]:t_end[i]]))
   
   R025.WT <- apply(Rsim, 2, quantile,0.025,na.rm=TRUE)
   R025.WT <- R025.WT[which(!is.na(R025.WT))]
@@ -271,7 +271,7 @@ WT <- function(I, t_start, t_end,
   results$method <- method
   results$si_distr <- si_distr
   
-  results$SI.Moments<-as.data.frame(cbind(Finalmean_si,Finalstd_si))
+  results$SI.Moments<-as.data.frame(cbind(final_mean_si,Finalstd_si))
   names(results$SI.Moments)<-c("Mean","Std")
   
   if(!is.null(dates)) 

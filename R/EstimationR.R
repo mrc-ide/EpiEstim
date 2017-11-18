@@ -45,7 +45,7 @@
 #' @param seed An optional integer used as the seed for the random number generator at the start of the function (then potentially reset within the MCMC for method \code{si_from_data}); useful to get reproducible results.
 #' @param mean_prior A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).
 #' @param std_prior A positive number giving the standard deviation of the common prior distribution for all reproduction numbers (see details).
-#' @param CV.Posterior A positive number giving the aimed posterior coefficient of variation (see details).
+#' @param cv_posterior A positive number giving the aimed posterior coefficient of variation (see details).
 #' @param plot Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).
 #' @param legend A boolean (TRUE by default) governing the presence / absence of legends on the plots
 #' @return {
@@ -69,7 +69,7 @@
 #' for a given discrete distribution of the serial interval (see references). 
 #' 
 #' The more incident cases are observed over a time window, the smallest the posterior coefficient of variation (CV, ratio of standard deviation over mean) of the reproduction number. 
-#' An aimed CV can be specified in the argument \code{CV.Posterior} (default is \code{0.3}), and a warning will be produced if the incidence within one of the time windows considered is too low to get this CV. 
+#' An aimed CV can be specified in the argument \code{cv_posterior} (default is \code{0.3}), and a warning will be produced if the incidence within one of the time windows considered is too low to get this CV. 
 #' 
 #' The methods vary in the way the serial interval distribution is specified. 
 #' 
@@ -158,7 +158,7 @@
 #' data("Flu2009")
 #' 
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' EstimateR(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
+#' EstimateR(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
 #'           si_distr=Flu2009$si_distr, plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number over the 7-day window finishing on that day.
@@ -177,13 +177,13 @@
 #'           mean_si = 2.6, std_si = 1.5, plot = TRUE)
 #' 
 #' ## estimate the reproduction number (method "parametric_si")
-#' EstimateR(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="parametric_si", 
+#' EstimateR(Flu2009$incidence, t_start=2:26, t_end=8:32, method="parametric_si", 
 #'           mean_si=2.6, std_si=1.5, plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number over the 7-day window finishing on that day.
 #' 
 #' ## estimate the reproduction number (method "uncertain_si")
-#' EstimateR(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="uncertain_si", 
+#' EstimateR(Flu2009$incidence, t_start=2:26, t_end=8:32, method="uncertain_si", 
 #'           mean_si=2.6, std_mean_si=1, min_mean_si=1, max_mean_si=4.2, 
 #'           std_si=1.5, std_std_si=0.5, min_std_si=0.5, max_std_si=2.5, 
 #'           n1=100, n2=100, plot=TRUE)
@@ -201,7 +201,7 @@
 #' ## estimate the reproduction number (method "si_from_data")
 #' MCMC_seed <- 1
 #' overall_seed <- 2
-#' R_si_from_data <- EstimateR(MockRotavirus$Incidence, 
+#' R_si_from_data <- EstimateR(MockRotavirus$incidence, 
 #'                                         t_start=2:47, t_end=8:53, 
 #'                                         method="si_from_data", 
 #'                                         si_data=MockRotavirus$si_data, 
@@ -212,7 +212,7 @@
 #'                                         seed = overall_seed,
 #'                                         plot=TRUE)
 #' ## compare with version with no uncertainty
-#' R_Parametric <- EstimateR(MockRotavirus$Incidence, 
+#' R_Parametric <- EstimateR(MockRotavirus$incidence, 
 #'                           t_start=2:47, t_end=8:53, 
 #'                           method="parametric_si", 
 #'                           mean_si = mean(R_si_from_data$SI.Moments$Mean), 
@@ -235,7 +235,7 @@
 #'                              n.samples = 5000, 
 #'                              seed = MCMC_seed)
 #' si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
-#' R_si_from_sample <- EstimateR(MockRotavirus$Incidence, 
+#' R_si_from_sample <- EstimateR(MockRotavirus$incidence, 
 #'                             t_start=2:47, t_end=8:53, 
 #'                             method="si_from_sample", si_sample=si_sample,
 #'                             n2 = 50,
@@ -258,7 +258,7 @@ EstimateR <- function(I, t_start, t_end, method = c("non_parametric_si", "parame
                       mcmc_control = list(init.pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time())), 
                       si_sample = NULL, 
                       seed = NULL,
-                      mean_prior = 5, std_prior = 5, CV.Posterior = 0.3,
+                      mean_prior = 5, std_prior = 5, cv_posterior = 0.3,
                       plot = FALSE, legend = FALSE) {
   
   method <- match.arg(method)
@@ -288,17 +288,17 @@ EstimateR <- function(I, t_start, t_end, method = c("non_parametric_si", "parame
     
     if(!is.null(mcmc_control$seed))
     {
-      CDT <- dic.fit.mcmc(dat = si_data, dist=si_parametric_distr, burnin = mcmc_control$burnin, n.samples = n1*mcmc_control$thin, init.pars=mcmc_control$init.pars, seed = mcmc_control$seed)
+      cdt <- dic.fit.mcmc(dat = si_data, dist=si_parametric_distr, burnin = mcmc_control$burnin, n.samples = n1*mcmc_control$thin, init.pars=mcmc_control$init.pars, seed = mcmc_control$seed)
     }else
     {
-      CDT <- dic.fit.mcmc(dat = si_data, dist=si_parametric_distr, burnin = mcmc_control$burnin, n.samples = n1*mcmc_control$thin, init.pars=mcmc_control$init.pars)
+      cdt <- dic.fit.mcmc(dat = si_data, dist=si_parametric_distr, burnin = mcmc_control$burnin, n.samples = n1*mcmc_control$thin, init.pars=mcmc_control$init.pars)
     }
     
     # check convergence of the MCMC and print warning if not converged
-    MCMC_conv <- check_CDTsamples_convergence(CDT@samples)
+    MCMC_conv <- check_cdtsamples_convergence(cdt@samples)
     
     # thin the chain, and turn the two parameters of the SI distribution into a whole discrete distribution
-    c2e <- coarse2estim(CDT, thin=mcmc_control$thin)
+    c2e <- coarse2estim(cdt, thin=mcmc_control$thin)
     
     cat("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nEstimating the reproduction number for these serial interval estimates...\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     
@@ -310,7 +310,7 @@ EstimateR <- function(I, t_start, t_end, method = c("non_parametric_si", "parame
     out <- EstimateR_func(I=I, t_start=t_start, t_end=t_end, method = "si_from_data", n1=n1 , n2=n2 , mean_si=NULL , std_si=NULL ,
                           std_mean_si=NULL , min_mean_si=NULL , max_mean_si=NULL ,
                           std_std_si=NULL , min_std_si=NULL , max_std_si=NULL ,
-                          si_distr=NULL , si_sample= c2e$si_sample , mean_prior=mean_prior , std_prior=std_prior, CV.Posterior=CV.Posterior ,
+                          si_distr=NULL , si_sample= c2e$si_sample , mean_prior=mean_prior , std_prior=std_prior, cv_posterior=cv_posterior ,
                           plot=plot)
     out[["MCMC_converged"]] <- MCMC_conv
   } else {
@@ -323,7 +323,7 @@ EstimateR <- function(I, t_start, t_end, method = c("non_parametric_si", "parame
     out <- EstimateR_func(I=I, t_start=t_start, t_end=t_end, method = method, n1=n1 , n2=n2 , mean_si=mean_si , std_si=std_si ,
                           std_mean_si=std_mean_si , min_mean_si=min_mean_si , max_mean_si=max_mean_si ,
                           std_std_si=std_std_si , min_std_si=min_std_si , max_std_si=max_std_si ,
-                          si_distr=si_distr , si_sample= si_sample, mean_prior=mean_prior , std_prior=std_prior, CV.Posterior=CV.Posterior ,
+                          si_distr=si_distr , si_sample= si_sample, mean_prior=mean_prior , std_prior=std_prior, cv_posterior=cv_posterior ,
                           plot=plot, legend=legend)
   }
   return(out)
@@ -346,7 +346,7 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
                             std_std_si = NULL, min_std_si = NULL, max_std_si = NULL,
                             si_distr = NULL, 
                             si_sample = NULL, 
-                            mean_prior = 5, std_prior = 5, CV.Posterior = 0.3,
+                            mean_prior = 5, std_prior = 5, cv_posterior = 0.3,
                             plot = FALSE, legend = FALSE)
 {
   
@@ -354,10 +354,10 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
   # Calculates the cumulative incidence over time steps   #
   #########################################################
   
-  CalculIncidencePerTimeStep <- function(I, t_start, t_end) {
-    NbTimePeriods <- length(t_start)
-    IncidencePerTimeStep <- sapply(1:NbTimePeriods, function(i) sum(I[t_start[i]:t_end[i],c("local","imported")]))
-    return(IncidencePerTimeStep)
+  calc_incidence_per_time_step <- function(I, t_start, t_end) {
+    nb_time_periods <- length(t_start)
+    incidence_per_time_step <- sapply(1:nb_time_periods, function(i) sum(I[t_start[i]:t_end[i],c("local","imported")]))
+    return(incidence_per_time_step)
   }
   
   #########################################################
@@ -365,29 +365,29 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
   # distribution from the discrete SI distribution        #
   #########################################################
   
-  PosteriorFromSIDistr <- function(I, si_distr, a.Prior, b.Prior,
+  PosteriorFromSIDistr <- function(I, si_distr, a_prior, b_prior,
                                    t_start, t_end) {
-    NbTimePeriods <- length(t_start)
-    lambda <- OverallInfectivity(I, si_distr)
-    Finalmean_si <- sum(si_distr * (0:(length(si_distr) -
+    nb_time_periods <- length(t_start)
+    lambda <- overall_infectivity(I, si_distr)
+    final_mean_si <- sum(si_distr * (0:(length(si_distr) -
                                          1)))
-    a.Posterior <- vector()
-    b.Posterior <- vector()
-    a.Posterior <- sapply(1:(NbTimePeriods), function(t) if (t_end[t] >
-                                                             Finalmean_si) {
-      a.Prior + sum(I[t_start[t]:t_end[t],"local"]) # only counting local cases on the "numerator"
+    a_posterior <- vector()
+    b_posterior <- vector()
+    a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
+                                                             final_mean_si) {
+      a_prior + sum(I[t_start[t]:t_end[t],"local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
     })
-    b.Posterior <- sapply(1:(NbTimePeriods), function(t) if (t_end[t] >
-                                                             Finalmean_si) {
-      1/(1/b.Prior + sum(lambda[t_start[t]:t_end[t]]))
+    b_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
+                                                             final_mean_si) {
+      1/(1/b_prior + sum(lambda[t_start[t]:t_end[t]]))
     }
     else {
       NA
     })
-    return(list(a.Posterior, b.Posterior))
+    return(list(a_posterior, b_posterior))
   }
   
   #########################################################
@@ -395,40 +395,40 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
   # given mean SI and std SI                              #
   #########################################################
   
-  SampleFromPosterior <- function(SampleSize, I, mean_si, std_si, si_distr=NULL, 
-                                  a.Prior, b.Prior, t_start, t_end) {
-    NbTimePeriods <- length(t_start)
+  sample_from_posterior <- function(sample_size, I, mean_si, std_si, si_distr=NULL, 
+                                  a_prior, b_prior, t_start, t_end) {
+    nb_time_periods <- length(t_start)
     
     if(is.null(si_distr))
       si_distr <- sapply(1:T, function(t) DiscrSI(t - 1, mean_si, std_si))
     
-    Finalmean_si <- sum(si_distr * (0:(length(si_distr) -
+    final_mean_si <- sum(si_distr * (0:(length(si_distr) -
                                          1)))
-    lambda <- OverallInfectivity(I, si_distr)
-    a.Posterior <- vector()
-    b.Posterior <- vector()
-    a.Posterior <- sapply(1:(NbTimePeriods), function(t) if (t_end[t] >
-                                                             Finalmean_si) {
-      a.Prior + sum(I[t_start[t]:t_end[t],"local"]) # only counting local cases on the "numerator"
+    lambda <- overall_infectivity(I, si_distr)
+    a_posterior <- vector()
+    b_posterior <- vector()
+    a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
+                                                             final_mean_si) {
+      a_prior + sum(I[t_start[t]:t_end[t],"local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
     })
-    b.Posterior <- sapply(1:(NbTimePeriods), function(t) if (t_end[t] >
-                                                             Finalmean_si) {
-      1/(1/b.Prior + sum(lambda[t_start[t]:t_end[t]], na.rm = TRUE))
+    b_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
+                                                             final_mean_si) {
+      1/(1/b_prior + sum(lambda[t_start[t]:t_end[t]], na.rm = TRUE))
     }
     else {
       NA
     })
-    SampleR.Posterior <- sapply(1:(NbTimePeriods), function(t) if (!is.na(a.Posterior[t])) {
-      rgamma(SampleSize, shape = unlist(a.Posterior[t]),
-             scale = unlist(b.Posterior[t]))
+    sample_r_posterior <- sapply(1:(nb_time_periods), function(t) if (!is.na(a_posterior[t])) {
+      rgamma(sample_size, shape = unlist(a_posterior[t]),
+             scale = unlist(b_posterior[t]))
     }
     else {
-      rep(NA, SampleSize)
+      rep(NA, sample_size)
     })
-    return(list(SampleR.Posterior, si_distr))
+    return(list(sample_r_posterior, si_distr))
   }
   method <- match.arg(method)
   
@@ -441,11 +441,11 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
   if (std_prior <= 0) {
     stop("std_prior must be >0.")
   }
-  a.Prior <- (mean_prior/std_prior)^2
-  b.Prior <- std_prior^2/mean_prior
+  a_prior <- (mean_prior/std_prior)^2
+  b_prior <- std_prior^2/mean_prior
   
   check_times(t_start, t_end, T)
-  NbTimePeriods <- length(t_start)
+  nb_time_periods <- length(t_start)
   
   if (method == "non_parametric_si") {
     check_si_distr(si_distr)
@@ -547,35 +547,35 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
     }
     si_sample <- process_si_sample(si_sample)
   }
-  if (CV.Posterior < 0) {
-    stop("CV.Posterior must be >0.")
+  if (cv_posterior < 0) {
+    stop("cv_posterior must be >0.")
   }
-  MinNbCasesPerTimePeriod <- ceiling(1/CV.Posterior^2 - a.Prior)
-  IncidencePerTimeStep <- CalculIncidencePerTimeStep(I, t_start,
+  min_nb_cases_per_time_period <- ceiling(1/cv_posterior^2 - a_prior)
+  incidence_per_time_step <- calc_incidence_per_time_step(I, t_start,
                                                      t_end)
-  if (IncidencePerTimeStep[1] < MinNbCasesPerTimePeriod) {
+  if (incidence_per_time_step[1] < min_nb_cases_per_time_period) {
     warning("You're estimating R too early in the epidemic to get the desired posterior CV.")
   }
   if (plot != TRUE && plot != FALSE) {
     stop("plot must be TRUE or FALSE.")
   }
   if (method == "non_parametric_si") {
-    SIUncertainty <- "N"
+    si_uncertainty <- "N"
     parametric_si <- "N"
   }
   if (method == "parametric_si") {
-    SIUncertainty <- "N"
+    si_uncertainty <- "N"
     parametric_si <- "Y"
   }
   if (method == "uncertain_si") {
-    SIUncertainty <- "Y"
+    si_uncertainty <- "Y"
     parametric_si <- "Y"
   }
   if (method == "si_from_data" | method == "si_from_sample") {
-    SIUncertainty <- "Y"
+    si_uncertainty <- "Y"
     parametric_si <- "N"
   }
-  if (SIUncertainty == "Y") {
+  if (si_uncertainty == "Y") {
     if  (parametric_si == "Y") {
       mean_si.sample <- rep(-1, n1)
       std_si.sample <- rep(-1, n1)
@@ -590,31 +590,31 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
           std_si.sample[k] <- rnorm(1, mean = std_si, sd = std_std_si)
         }
       }
-      temp <- lapply(1:n1, function(k) SampleFromPosterior(n2,
-                                                           I, mean_si.sample[k], std_si.sample[k], si_distr=NULL, a.Prior,
-                                                           b.Prior, t_start, t_end))
+      temp <- lapply(1:n1, function(k) sample_from_posterior(n2,
+                                                           I, mean_si.sample[k], std_si.sample[k], si_distr=NULL, a_prior,
+                                                           b_prior, t_start, t_end))
       si_distr <- cbind(t(sapply(1:n1, function(k) (temp[[k]])[[2]])),
                         rep(0, n1))
-      Rsample <- matrix(NA, n2 * n1, NbTimePeriods)
+      r_sample <- matrix(NA, n2 * n1, nb_time_periods)
       for (k in 1:n1) {
-        Rsample[((k - 1) * n2 + 1):(k * n2), which(t_end >
+        r_sample[((k - 1) * n2 + 1):(k * n2), which(t_end >
                                                      mean_si.sample[k])] <- (temp[[k]])[[1]][, which(t_end >
                                                                                                        mean_si.sample[k])]
       }
-      Mean.Posterior <- apply(Rsample, 2, mean, na.rm = TRUE)
-      Std.Posterior <- apply(Rsample, 2, sd, na.rm = TRUE)
-      Quantile.0.025.Posterior <- apply(Rsample, 2, quantile,
+      mean_posterior <- apply(r_sample, 2, mean, na.rm = TRUE)
+      std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
+      quantile_0.025_posterior <- apply(r_sample, 2, quantile,
                                         0.025, na.rm = TRUE)
-      Quantile.0.05.Posterior <- apply(Rsample, 2, quantile,
+      quantile_0.05_posterior <- apply(r_sample, 2, quantile,
                                        0.05, na.rm = TRUE)
-      Quantile.0.25.Posterior <- apply(Rsample, 2, quantile,
+      quantile_0.25_posterior <- apply(r_sample, 2, quantile,
                                        0.25, na.rm = TRUE)
-      Median.Posterior <- apply(Rsample, 2, median, na.rm = TRUE)
-      Quantile.0.75.Posterior <- apply(Rsample, 2, quantile,
+      median_posterior <- apply(r_sample, 2, median, na.rm = TRUE)
+      quantile_0.25_posterior <- apply(r_sample, 2, quantile,
                                        0.75, na.rm = TRUE)
-      Quantile.0.95.Posterior <- apply(Rsample, 2, quantile,
+      quantile_0.25_posterior <- apply(r_sample, 2, quantile,
                                        0.95, na.rm = TRUE)
-      Quantile.0.975.Posterior <- apply(Rsample, 2, quantile,
+      quantile_0.975_posterior <- apply(r_sample, 2, quantile,
                                         0.975, na.rm = TRUE)
     }
     else {
@@ -625,31 +625,31 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
         mean_si.sample[k] <- sum((1:dim(si_sample)[1]-1)*si_sample[,k])
         std_si.sample[k] <- sqrt(sum(si_sample[,k]*((1:dim(si_sample)[1]-1) - mean_si.sample[k])^2))
       }
-      temp <- lapply(1:n1, function(k) SampleFromPosterior(n2,
-                                                           I, mean_si=NULL, std_si=NULL, si_sample[,k], a.Prior,
-                                                           b.Prior, t_start, t_end))
+      temp <- lapply(1:n1, function(k) sample_from_posterior(n2,
+                                                           I, mean_si=NULL, std_si=NULL, si_sample[,k], a_prior,
+                                                           b_prior, t_start, t_end))
       si_distr <- cbind(t(sapply(1:n1, function(k) (temp[[k]])[[2]])),
                         rep(0, n1))
-      Rsample <- matrix(NA, n2 * n1, NbTimePeriods)
+      r_sample <- matrix(NA, n2 * n1, nb_time_periods)
       for (k in 1:n1) {
-        Rsample[((k - 1) * n2 + 1):(k * n2), which(t_end >
+        r_sample[((k - 1) * n2 + 1):(k * n2), which(t_end >
                                                      mean_si.sample[k])] <- (temp[[k]])[[1]][, which(t_end >
                                                                                                        mean_si.sample[k])]
       }
-      Mean.Posterior <- apply(Rsample, 2, mean, na.rm = TRUE)
-      Std.Posterior <- apply(Rsample, 2, sd, na.rm = TRUE)
-      Quantile.0.025.Posterior <- apply(Rsample, 2, quantile,
+      mean_posterior <- apply(r_sample, 2, mean, na.rm = TRUE)
+      std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
+      quantile_0.025_posterior <- apply(r_sample, 2, quantile,
                                         0.025, na.rm = TRUE)
-      Quantile.0.05.Posterior <- apply(Rsample, 2, quantile,
+      quantile_0.05_posterior <- apply(r_sample, 2, quantile,
                                        0.05, na.rm = TRUE)
-      Quantile.0.25.Posterior <- apply(Rsample, 2, quantile,
+      quantile_0.25_posterior <- apply(r_sample, 2, quantile,
                                        0.25, na.rm = TRUE)
-      Median.Posterior <- apply(Rsample, 2, median, na.rm = TRUE)
-      Quantile.0.75.Posterior <- apply(Rsample, 2, quantile,
+      median_posterior <- apply(r_sample, 2, median, na.rm = TRUE)
+      quantile_0.25_posterior <- apply(r_sample, 2, quantile,
                                        0.75, na.rm = TRUE)
-      Quantile.0.95.Posterior <- apply(Rsample, 2, quantile,
+      quantile_0.25_posterior <- apply(r_sample, 2, quantile,
                                        0.95, na.rm = TRUE)
-      Quantile.0.975.Posterior <- apply(Rsample, 2, quantile,
+      quantile_0.975_posterior <- apply(r_sample, 2, quantile,
                                         0.975, na.rm = TRUE)
     }
   }else{
@@ -661,36 +661,36 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
     if (length(si_distr) < T + 1) {
       si_distr[(length(si_distr) + 1):(T + 1)] <- 0
     }
-    Finalmean_si <- sum(si_distr * (0:(length(si_distr) -
+    final_mean_si <- sum(si_distr * (0:(length(si_distr) -
                                          1)))
     Finalstd_si <- sqrt(sum(si_distr * (0:(length(si_distr) -
-                                             1))^2) - Finalmean_si^2)
-    post <- PosteriorFromSIDistr(I, si_distr, a.Prior, b.Prior,
+                                             1))^2) - final_mean_si^2)
+    post <- PosteriorFromSIDistr(I, si_distr, a_prior, b_prior,
                                  t_start, t_end)
-    a.Posterior <- unlist(post[[1]])
-    b.Posterior <- unlist(post[[2]])
-    Mean.Posterior <- a.Posterior * b.Posterior
-    Std.Posterior <- sqrt(a.Posterior) * b.Posterior
-    Quantile.0.025.Posterior <- qgamma(0.025, shape = a.Posterior,
-                                       scale = b.Posterior, lower.tail = TRUE, log.p = FALSE)
-    Quantile.0.05.Posterior <- qgamma(0.05, shape = a.Posterior,
-                                      scale = b.Posterior, lower.tail = TRUE, log.p = FALSE)
-    Quantile.0.25.Posterior <- qgamma(0.25, shape = a.Posterior,
-                                      scale = b.Posterior, lower.tail = TRUE, log.p = FALSE)
-    Median.Posterior <- qgamma(0.5, shape = a.Posterior,
-                               scale = b.Posterior, lower.tail = TRUE, log.p = FALSE)
-    Quantile.0.75.Posterior <- qgamma(0.75, shape = a.Posterior,
-                                      scale = b.Posterior, lower.tail = TRUE, log.p = FALSE)
-    Quantile.0.95.Posterior <- qgamma(0.95, shape = a.Posterior,
-                                      scale = b.Posterior, lower.tail = TRUE, log.p = FALSE)
-    Quantile.0.975.Posterior <- qgamma(0.975, shape = a.Posterior,
-                                       scale = b.Posterior, lower.tail = TRUE, log.p = FALSE)
+    a_posterior <- unlist(post[[1]])
+    b_posterior <- unlist(post[[2]])
+    mean_posterior <- a_posterior * b_posterior
+    std_posterior <- sqrt(a_posterior) * b_posterior
+    quantile_0.025_posterior <- qgamma(0.025, shape = a_posterior,
+                                       scale = b_posterior, lower.tail = TRUE, log.p = FALSE)
+    quantile_0.05_posterior <- qgamma(0.05, shape = a_posterior,
+                                      scale = b_posterior, lower.tail = TRUE, log.p = FALSE)
+    quantile_0.25_posterior <- qgamma(0.25, shape = a_posterior,
+                                      scale = b_posterior, lower.tail = TRUE, log.p = FALSE)
+    median_posterior <- qgamma(0.5, shape = a_posterior,
+                               scale = b_posterior, lower.tail = TRUE, log.p = FALSE)
+    quantile_0.25_posterior <- qgamma(0.75, shape = a_posterior,
+                                      scale = b_posterior, lower.tail = TRUE, log.p = FALSE)
+    quantile_0.25_posterior <- qgamma(0.95, shape = a_posterior,
+                                      scale = b_posterior, lower.tail = TRUE, log.p = FALSE)
+    quantile_0.975_posterior <- qgamma(0.975, shape = a_posterior,
+                                       scale = b_posterior, lower.tail = TRUE, log.p = FALSE)
   }
   results <- list()
-  results$R <- as.data.frame(cbind(t_start, t_end, Mean.Posterior,
-                                   Std.Posterior, Quantile.0.025.Posterior, Quantile.0.05.Posterior,
-                                   Quantile.0.25.Posterior, Median.Posterior, Quantile.0.75.Posterior,
-                                   Quantile.0.95.Posterior, Quantile.0.975.Posterior))
+  results$R <- as.data.frame(cbind(t_start, t_end, mean_posterior,
+                                   std_posterior, quantile_0.025_posterior, quantile_0.05_posterior,
+                                   quantile_0.25_posterior, median_posterior, quantile_0.25_posterior,
+                                   quantile_0.25_posterior, quantile_0.975_posterior))
   names(results$R) <- c("t_start", "t_end", "Mean(R)", "Std(R)",
                         "Quantile.0.025(R)", "Quantile.0.05(R)", "Quantile.0.25(R)",
                         "Median(R)", "Quantile.0.75(R)", "Quantile.0.95(R)",
@@ -704,11 +704,11 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
   {
     names(results$si_distr) <- paste0("t",0:(length(results$si_distr)-1))
   }
-  if (SIUncertainty == "Y") {
+  if (si_uncertainty == "Y") {
     results$SI.Moments <- as.data.frame(cbind(mean_si.sample,
                                               std_si.sample))
   }else {
-    results$SI.Moments <- as.data.frame(cbind(Finalmean_si,
+    results$SI.Moments <- as.data.frame(cbind(final_mean_si,
                                               Finalstd_si))
   }
   names(results$SI.Moments) <- c("Mean", "Std")

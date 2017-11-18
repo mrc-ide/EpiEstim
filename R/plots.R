@@ -42,14 +42,14 @@
 #' data("Flu2009")
 #' 
 #' ## estimate the instantaneous reproduction number (method "non_parametric_si")
-#' R_i <- EstimateR(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
+#' R_i <- EstimateR(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
 #'           si_distr=Flu2009$si_distr, plot=FALSE)
 #'
 #' ## visualise results
 #' plots(R_i, legend = FALSE)
 #'
 #' ## estimate the instantaneous reproduction number (method "non_parametric_si")
-#' R_c <- WT(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
+#' R_c <- WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
 #'           si_distr=Flu2009$si_distr, plot=FALSE)
 #'
 #' ## produce plot of the incidence 
@@ -115,9 +115,9 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
   
   t_start <- x$R$t_start 
   t_end <- x$R$t_end
-  Mean.Posterior <- x$R[, "Mean(R)"]
-  Quantile.0.025.Posterior <- x$R[, "Quantile.0.025(R)"]
-  Quantile.0.975.Posterior <- x$R[, "Quantile.0.975(R)"]
+  mean_posterior <- x$R[, "Mean(R)"]
+  quantile_0.025_posterior <- x$R[, "Quantile.0.025(R)"]
+  quantile_0.975_posterior <- x$R[, "Quantile.0.975(R)"]
   method <- x$method
   si_distr <- x$si_distr
   I <- data.frame(local=x$I_local, imported=x$I_imported)
@@ -133,8 +133,8 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
   ########################################################################
   ### these few lines are to make CRAN checks happy with ggplot2... ###
   Time <- NULL
-  Incidence <- NULL
-  Incidence_imported <- NULL
+  incidence <- NULL
+  incidence_imported <- NULL
   value <- NULL
   meanR <- NULL
   meanR2 <- NULL
@@ -158,11 +158,11 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
   if (what == "I" | what =="all") {
     if(add_imported_cases)
     {
-      p1 <- plot(as.incidence(I, dates = x$dates), ylab="Incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
+      p1 <- plot(as.incidence(I, dates = x$dates), ylab="incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     }else
     {
-      p1 <- plot(as.incidence(rowSums(I), dates = x$dates), ylab="Incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
+      p1 <- plot(as.incidence(rowSums(I), dates = x$dates), ylab="incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     }
     
@@ -180,13 +180,13 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       if(!multiple_input)
       {
         if(is.null(options_R$ylim))
-          options_R$ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
+          options_R$ylim <- c(0,max(quantile_0.975_posterior, na.rm = TRUE))
         
         if(is.null(options_R$xlim))
           options_R$xlim <- c(min(dates),max(dates)+1)
         
-        df <- melt(data.frame(start=dates[t_start], end=dates[t_end], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
-                              upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
+        df <- melt(data.frame(start=dates[t_start], end=dates[t_end], meanR=mean_posterior, lower=quantile_0.025_posterior,
+                              upper=quantile_0.975_posterior), id=c("meanR", "lower", "upper")) 
         df$group <- as.factor(rep(1:length(t_start), dim(df)[1]/length(t_start)))
         
         p2 <- ggplot(df, aes(x=value, y=as.numeric(meanR), group=as.factor(group))) +
@@ -202,8 +202,8 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
         
       }else
       {
-        df_tmp <- data.frame(start=dates[t_start], end=dates[t_end], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
-                             upper=Quantile.0.975.Posterior)
+        df_tmp <- data.frame(start=dates[t_start], end=dates[t_end], meanR=mean_posterior, lower=quantile_0.025_posterior,
+                             upper=quantile_0.975_posterior)
         df <- df_tmp
         id_tmp <- c("meanR", "lower", "upper")
         id <- id_tmp
@@ -219,11 +219,11 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           {
             dates2 <- 1:T
           }
-          Mean.Posterior2 <- x2$R[, "Mean(R)"]
-          Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
-          Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
-          df_tmp2 <- data.frame(start2=dates2[t_start2], end2=dates2[t_end], meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
-                                upper2=Quantile.0.975.Posterior2)
+          mean_posterior2 <- x2$R[, "Mean(R)"]
+          quantile_0.025_posterior2 <- x2$R[, "Quantile.0.025(R)"]
+          quantile_0.975_posterior2 <- x2$R[, "Quantile.0.975(R)"]  
+          df_tmp2 <- data.frame(start2=dates2[t_start2], end2=dates2[t_end], meanR2=mean_posterior2, lower2=quantile_0.025_posterior2,
+                                upper2=quantile_0.975_posterior2)
           names(df_tmp2) <- paste0(names(df_tmp), i)
           df <- cbind(df, df_tmp2)
           id_tmp2 <- paste0(id, i)
@@ -265,13 +265,13 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       if(!multiple_input)
       {
         if(is.null(options_R$ylim))
-          options_R$ylim <- c(0,max(Quantile.0.975.Posterior, na.rm = TRUE))
+          options_R$ylim <- c(0,max(quantile_0.975_posterior, na.rm = TRUE))
         
         if(is.null(options_R$xlim))
           options_R$xlim <- c(min(dates),max(dates)+1)
         
-        p2 <- ggplot(data.frame(start=dates[t_start], end=dates[t_end], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
-                                upper=Quantile.0.975.Posterior), aes(end, meanR)) +
+        p2 <- ggplot(data.frame(start=dates[t_start], end=dates[t_end], meanR=mean_posterior, lower=quantile_0.025_posterior,
+                                upper=quantile_0.975_posterior), aes(end, meanR)) +
           geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
           geom_line(aes(colour="Mean")) +
           geom_hline(yintercept=1, linetype="dotted") +
@@ -286,8 +286,8 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       {
         ####
         
-        df_tmp <- data.frame(start=dates[t_start], end=dates[t_end], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
-                             upper=Quantile.0.975.Posterior)
+        df_tmp <- data.frame(start=dates[t_start], end=dates[t_end], meanR=mean_posterior, lower=quantile_0.025_posterior,
+                             upper=quantile_0.975_posterior)
         df <- df_tmp
         
         for(i in 2:length(x_list))
@@ -301,11 +301,11 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           {
             dates2 <- 1:T
           }
-          Mean.Posterior2 <- x2$R[, "Mean(R)"]
-          Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
-          Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
-          df_tmp2 <- data.frame(start2=dates2[t_start2], end2=dates2[t_end], meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
-                                upper2=Quantile.0.975.Posterior2)
+          mean_posterior2 <- x2$R[, "Mean(R)"]
+          quantile_0.025_posterior2 <- x2$R[, "Quantile.0.025(R)"]
+          quantile_0.975_posterior2 <- x2$R[, "Quantile.0.975(R)"]  
+          df_tmp2 <- data.frame(start2=dates2[t_start2], end2=dates2[t_end], meanR2=mean_posterior2, lower2=quantile_0.025_posterior2,
+                                upper2=quantile_0.975_posterior2)
           names(df_tmp2) <- paste0(names(df_tmp), i)
           df <- cbind(df, df_tmp2)
           

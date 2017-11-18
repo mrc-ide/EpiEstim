@@ -5,7 +5,7 @@
 
 #' Overall Infectivity Due To Previously Infected Individuals
 #' 
-#' \code{OverallInfectivity} computes the overall infectivity due to previously infected individuals. 
+#' \code{overall_infectivity} computes the overall infectivity due to previously infected individuals. 
 #' 
 #' @param I One of the following
 #' \itemize{
@@ -33,13 +33,13 @@
 #' data("Flu2009")
 #' 
 #' ## compute overall infectivity
-#' lambda <- OverallInfectivity(Flu2009$Incidence, Flu2009$si_distr)
+#' lambda <- overall_infectivity(Flu2009$incidence, Flu2009$si_distr)
 #' par(mfrow=c(2,1))
-#' plot(Flu2009$Incidence, type="s", xlab="time (days)", ylab="Incidence")
+#' plot(Flu2009$incidence, type="s", xlab="time (days)", ylab="incidence")
 #' title(main="Epidemic curve")
 #' plot(lambda, type="s", xlab="time (days)", ylab="Infectivity")
 #' title(main="Overall infectivity")
-OverallInfectivity <-function (I,si_distr)
+overall_infectivity <-function (I,si_distr)
 {
   I <- process_I(I)
   T<-nrow(I)

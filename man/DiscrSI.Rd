@@ -45,7 +45,7 @@ title(main="Discrete distribution of the serial interval of influenza")
 Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 }
 \seealso{
-\code{\link{OverallInfectivity}}, \code{\link{EstimateR}}
+\code{\link{overall_infectivity}}, \code{\link{EstimateR}}
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}
