@@ -7,7 +7,7 @@
 \format{A list of two elements: 
 \describe{
   \item{Incidence}{a vector containing 107 days of observation,}
-  \item{SI.Distr}{a vector containing a set of 25 probabilities.}
+  \item{si_distr}{a vector containing a set of 25 probabilities.}
 }}
 \source{
 Cori A. et al. (2009) Temporal variability and social heterogeneity in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): e1000471.
@@ -21,10 +21,10 @@ This data set gives:
 ## load data on SARS in Hong Kong in 2003
 data("SARS2003")
 
-## estimate the reproduction number (method "NonParametricSI")
+## estimate the reproduction number (method "non_parametric_si")
 EstimateR(SARS2003$Incidence, 
-          T.Start=14:101, T.End=20:107, 
-          method="NonParametricSI", SI.Distr=SARS2003$SI.Distr, 
+          t_start=14:101, t_end=20:107, 
+          method="non_parametric_si", si_distr=SARS2003$si_distr, 
           plot=TRUE)
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
@@ -37,4 +37,3 @@ Cori A. et al. (2009) Temporal variability and social heterogeneity in disease t
 Lipsitch M. et al. (2003) Transmission dynamics and control of severe acute respiratory syndrome. Science 300(5627): 1966-1970.
 }
 }
-

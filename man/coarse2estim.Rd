@@ -19,8 +19,8 @@ coarse2estim(x = NULL, dist = x@dist, samples = x@samples, thin = 10)
 \value{
 A list with two elements:
 \itemize{
-\item{SI.Sample: a matrix where each column gives one distribution of the serial interval to be explored, obtained from x by thinning the MCMC chain.}
-\item{SI.parametricDistr: the parametric distribution used when estimating the serial interval stored in x. }
+\item{si_sample: a matrix where each column gives one distribution of the serial interval to be explored, obtained from x by thinning the MCMC chain.}
+\item{si_parametric_distr: the parametric distribution used when estimating the serial interval stored in x. }
 }
 }
 \description{
@@ -36,28 +36,27 @@ A list with two elements:
 data("MockRotavirus")
 
 ## estimate the serial interval from data 
-SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$SI.Data, 
+SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
                              dist="G", 
-                             init.pars=init_MCMC_params(MockRotavirus$SI.Data, "G")
+                             init.pars=init_MCMC_params(MockRotavirus$si_data, "G")
                              burnin = 1000, 
                              n.samples = 5000)
                              
 ## use coarse2estim to turn this in the right format for EstimateR                             
-SI.Sample <- coarse2estim(SI.fit, thin=10)$SI.Sample
+si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
 
 ## use EstimateR to estimate the reproduction number based on these estimates of the serial interval
-R_SIFromSample <- EstimateR(MockRotavirus$Incidence, 
-                            T.Start=2:47, T.End=8:53, 
-                            method="SIFromSample", SI.Sample=SI.Sample,
+R_si_from_sample <- EstimateR(MockRotavirus$Incidence, 
+                            t_start=2:47, t_end=8:53, 
+                            method="si_from_sample", si_sample=si_sample,
                             n2 = 50,
                             plot=TRUE, leg.pos=xy.coords(1,3))
 }
 
 }
-\author{
-The Hackout3 Parameter Estimation team.
-}
 \seealso{
 \code{\link{EstimateR}}
 }
-
+\author{
+The Hackout3 Parameter Estimation team.
+}

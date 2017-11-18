@@ -41,16 +41,16 @@
 #' ## load data on pandemic flu in a school in 2009
 #' data("Flu2009")
 #' 
-#' ## estimate the instantaneous reproduction number (method "NonParametricSI")
-#' R_i <- EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-#'           SI.Distr=Flu2009$SI.Distr, plot=FALSE)
+#' ## estimate the instantaneous reproduction number (method "non_parametric_si")
+#' R_i <- EstimateR(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
+#'           si_distr=Flu2009$si_distr, plot=FALSE)
 #'
 #' ## visualise results
 #' plots(R_i, legend = FALSE)
 #'
-#' ## estimate the instantaneous reproduction number (method "NonParametricSI")
-#' R_c <- WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-#'           SI.Distr=Flu2009$SI.Distr, plot=FALSE)
+#' ## estimate the instantaneous reproduction number (method "non_parametric_si")
+#' R_c <- WT(Flu2009$Incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
+#'           si_distr=Flu2009$si_distr, plot=FALSE)
 #'
 #' ## produce plot of the incidence 
 #'        ## (with, on top of total incidence, the incidence of imported cases), 
@@ -113,13 +113,13 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
     }
   }
   
-  T.Start <- x$R$T.Start 
-  T.End <- x$R$T.End
+  t_start <- x$R$t_start 
+  t_end <- x$R$t_end
   Mean.Posterior <- x$R[, "Mean(R)"]
   Quantile.0.025.Posterior <- x$R[, "Quantile.0.025(R)"]
   Quantile.0.975.Posterior <- x$R[, "Quantile.0.975(R)"]
   method <- x$method
-  SI.Distr <- x$SI.Distr
+  si_distr <- x$si_distr
   I <- data.frame(local=x$I_local, imported=x$I_imported)
   T<-nrow(I)
   if(!is.null(x$dates))
@@ -147,12 +147,12 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
   ..density.. <- NULL
   start <- NULL
   end <- NULL
-  SI.Distr.1 <- NULL
+  si_distr.1 <- NULL
   ########################################################################
   
-  if (method == "UncertainSI" | method == "SIFromData" | method == "SIFromSample") {
-    Mean.SI.sample <- x$SI.Moments["Mean"]
-    Std.SI.sample <- x$SI.Moments["Std"]
+  if (method == "uncertain_si" | method == "si_from_data" | method == "si_from_sample") {
+    mean_si.sample <- x$SI.Moments["Mean"]
+    std_si.sample <- x$SI.Moments["Std"]
   }
   what <- match.arg(what)
   if (what == "I" | what =="all") {
@@ -174,7 +174,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
   }
   if (what == "R" | what =="all") {
     
-    time.points <- apply(x$R[,c("T.Start","T.End") ], 1, function(x) x[1]:(x[2]-1)) 
+    time.points <- apply(x$R[,c("t_start","t_end") ], 1, function(x) x[1]:(x[2]-1)) 
     if (length(time.points) == length(unique(matrix(time.points,ncol=1)))) { 
       
       if(!multiple_input)
@@ -185,9 +185,9 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
         if(is.null(options_R$xlim))
           options_R$xlim <- c(min(dates),max(dates)+1)
         
-        df <- melt(data.frame(start=dates[T.Start], end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+        df <- melt(data.frame(start=dates[t_start], end=dates[t_end], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                               upper=Quantile.0.975.Posterior), id=c("meanR", "lower", "upper")) 
-        df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
+        df$group <- as.factor(rep(1:length(t_start), dim(df)[1]/length(t_start)))
         
         p2 <- ggplot(df, aes(x=value, y=as.numeric(meanR), group=as.factor(group))) +
           geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
@@ -202,7 +202,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
         
       }else
       {
-        df_tmp <- data.frame(start=dates[T.Start], end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+        df_tmp <- data.frame(start=dates[t_start], end=dates[t_end], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                              upper=Quantile.0.975.Posterior)
         df <- df_tmp
         id_tmp <- c("meanR", "lower", "upper")
@@ -211,7 +211,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
         for(i in 2:length(x_list))
         {
           x2 <- x_list[[i]]
-          T.Start2 <- x2$R$T.Start 
+          t_start2 <- x2$R$t_start 
           if(!is.null(x2$dates))
           {
             dates2 <- x2$dates
@@ -222,7 +222,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           Mean.Posterior2 <- x2$R[, "Mean(R)"]
           Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
           Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
-          df_tmp2 <- data.frame(start2=dates2[T.Start2], end2=dates2[T.End], meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
+          df_tmp2 <- data.frame(start2=dates2[t_start2], end2=dates2[t_end], meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
                                 upper2=Quantile.0.975.Posterior2)
           names(df_tmp2) <- paste0(names(df_tmp), i)
           df <- cbind(df, df_tmp2)
@@ -237,7 +237,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           options_R$xlim <- c(min(dates),max(dates)+1)
         
         df <- melt(df, id=id) 
-        df$group <- as.factor(rep(1:length(T.Start), dim(df)[1]/length(T.Start)))
+        df$group <- as.factor(rep(1:length(t_start), dim(df)[1]/length(t_start)))
         
         p2 <- ggplot(df, aes(x=value, y=as.numeric(meanR), group=as.factor(group))) +
           geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
@@ -270,7 +270,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
         if(is.null(options_R$xlim))
           options_R$xlim <- c(min(dates),max(dates)+1)
         
-        p2 <- ggplot(data.frame(start=dates[T.Start], end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+        p2 <- ggplot(data.frame(start=dates[t_start], end=dates[t_end], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                                 upper=Quantile.0.975.Posterior), aes(end, meanR)) +
           geom_ribbon(aes(ymin=lower, ymax=upper, fill="95%CrI")) +
           geom_line(aes(colour="Mean")) +
@@ -286,14 +286,14 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       {
         ####
         
-        df_tmp <- data.frame(start=dates[T.Start], end=dates[T.End], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
+        df_tmp <- data.frame(start=dates[t_start], end=dates[t_end], meanR=Mean.Posterior, lower=Quantile.0.025.Posterior,
                              upper=Quantile.0.975.Posterior)
         df <- df_tmp
         
         for(i in 2:length(x_list))
         {
           x2 <- x_list[[i]]
-          T.Start2 <- x2$R$T.Start 
+          t_start2 <- x2$R$t_start 
           if(!is.null(x2$dates))
           {
             dates2 <- x2$dates
@@ -304,7 +304,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
           Mean.Posterior2 <- x2$R[, "Mean(R)"]
           Quantile.0.025.Posterior2 <- x2$R[, "Quantile.0.025(R)"]
           Quantile.0.975.Posterior2 <- x2$R[, "Quantile.0.975(R)"]  
-          df_tmp2 <- data.frame(start2=dates2[T.Start2], end2=dates2[T.End], meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
+          df_tmp2 <- data.frame(start2=dates2[t_start2], end2=dates2[t_end], meanR2=Mean.Posterior2, lower2=Quantile.0.025.Posterior2,
                                 upper2=Quantile.0.975.Posterior2)
           names(df_tmp2) <- paste0(names(df_tmp), i)
           df <- cbind(df, df_tmp2)
@@ -344,15 +344,15 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
   }
   if (what == "SI" | what == "all") {
     
-    if (method == "UncertainSI" | method == "SIFromData" | method == "SIFromSample") {
+    if (method == "uncertain_si" | method == "si_from_data" | method == "si_from_sample") {
       
-      tmp <- cumsum(apply(SI.Distr,2,max) >= options_SI$prob_min)
+      tmp <- cumsum(apply(si_distr,2,max) >= options_SI$prob_min)
       stop_at <- min(which(tmp == tmp[length(tmp)]))
       
-      SI.Distr_for_plot <- SI.Distr[,1:stop_at] 
+      si_distr_for_plot <- si_distr[,1:stop_at] 
       
-      dataL <-melt(t(SI.Distr_for_plot))
-      dataL$Var1 <- 0:(ncol(SI.Distr_for_plot)-1)
+      dataL <-melt(t(si_distr_for_plot))
+      dataL$Var1 <- 0:(ncol(si_distr_for_plot)-1)
       p3  <- ggplot(dataL, aes_string(x="Var1", y="value", group="Var2")) + 
         geom_line(col=options_SI$col, alpha=options_SI$transp) +
         ggtitle("Explored SI distributions") + 
@@ -367,12 +367,12 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       
     } else {
       
-      tmp <- cumsum(SI.Distr >= options_SI$prob_min)
+      tmp <- cumsum(si_distr >= options_SI$prob_min)
       stop_at <- min(which(tmp == tmp[length(tmp)]))
       
-      SI.Distr_for_plot <- SI.Distr[1:stop_at]
+      si_distr_for_plot <- si_distr[1:stop_at]
       
-      dataL <- data.frame(Times=0:(length(SI.Distr_for_plot)-1), SIDistr = SI.Distr_for_plot)
+      dataL <- data.frame(Times=0:(length(si_distr_for_plot)-1), SIDistr = si_distr_for_plot)
       p3  <- ggplot(dataL, aes_string(x="Times", y="SIDistr")) + 
         geom_line(col=options_SI$col, alpha=options_SI$transp) +
         ggtitle("Explored SI distribution") + 

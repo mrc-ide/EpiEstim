@@ -9,7 +9,7 @@
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 92 days of observation,}
-#'   \item{SI.Distr}{a vector containing a set of 12 probabilities.}
+#'   \item{si_distr}{a vector containing a set of 12 probabilities.}
 #' }
 #' @source Frost W. and E. Sydenstricker (1919) Influenza in Maryland: preliminary statistics of certain localities. Public Health Rep.(34): 491-504.
 #' @references 
@@ -30,10 +30,10 @@
 #' ## load data on pandemic flu in Baltimore in 1918
 #' data("Flu1918")
 #' 
-#' ## estimate the reproduction number (method "NonParametricSI")
+#' ## estimate the reproduction number (method "non_parametric_si")
 #' EstimateR(Flu1918$Incidence, 
-#'           T.Start=2:86, T.End=8:92, 
-#'           method="NonParametricSI", SI.Distr=Flu1918$SI.Distr, 
+#'           t_start=2:86, t_end=8:92, 
+#'           method="non_parametric_si", si_distr=Flu1918$si_distr, 
 #'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
@@ -55,7 +55,7 @@ NULL
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a dataframe with 32 lines containing dates in first column, and daily incidence in second column,}
-#'   \item{SI.Distr}{a vector containing a set of 12 probabilities.}
+#'   \item{si_distr}{a vector containing a set of 12 probabilities.}
 #' }
 #' @source Cauchemez S. et al. (2011) Role of social networks in shaping disease transmission during a community outbreak of 2009 H1N1 pandemic influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
 #' @references 
@@ -68,10 +68,10 @@ NULL
 #' ## load data on pandemic flu in a school in 2009
 #' data("Flu2009")
 #' 
-#' ## estimate the reproduction number (method "NonParametricSI")
+#' ## estimate the reproduction number (method "non_parametric_si")
 #' EstimateR(Flu2009$Incidence, 
-#'           T.Start=2:26, T.End=8:32, 
-#'           method="NonParametricSI", SI.Distr=Flu2009$SI.Distr, 
+#'           t_start=2:26, t_end=8:32, 
+#'           method="non_parametric_si", si_distr=Flu2009$si_distr, 
 #'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
@@ -91,7 +91,7 @@ NULL
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 48 days of observation,}
-#'   \item{SI.Distr}{a vector containing a set of 38 probabilities.}
+#'   \item{si_distr}{a vector containing a set of 38 probabilities.}
 #' }
 #' @source Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 #' @references Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
@@ -99,10 +99,10 @@ NULL
 #' ## load data on measles in Hallegoch in 1861
 #' data("Measles1861")
 #' 
-#' ## estimate the reproduction number (method "NonParametricSI")
+#' ## estimate the reproduction number (method "non_parametric_si")
 #' EstimateR(Measles1861$Incidence, 
-#'           T.Start=17:42, T.End=23:48, 
-#'           method="NonParametricSI", SI.Distr=Measles1861$SI.Distr, 
+#'           t_start=17:42, t_end=23:48, 
+#'           method="non_parametric_si", si_distr=Measles1861$si_distr, 
 #'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
@@ -122,7 +122,7 @@ NULL
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 107 days of observation,}
-#'   \item{SI.Distr}{a vector containing a set of 25 probabilities.}
+#'   \item{si_distr}{a vector containing a set of 25 probabilities.}
 #' }
 #' @source Cori A. et al. (2009) Temporal variability and social heterogeneity in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): e1000471.
 #' @references 
@@ -135,10 +135,10 @@ NULL
 #' ## load data on SARS in Hong Kong in 2003
 #' data("SARS2003")
 #' 
-#' ## estimate the reproduction number (method "NonParametricSI")
+#' ## estimate the reproduction number (method "non_parametric_si")
 #' EstimateR(SARS2003$Incidence, 
-#'           T.Start=14:101, T.End=20:107, 
-#'           method="NonParametricSI", SI.Distr=SARS2003$SI.Distr, 
+#'           t_start=14:101, t_end=20:107, 
+#'           method="non_parametric_si", si_distr=SARS2003$si_distr, 
 #'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
@@ -158,7 +158,7 @@ NULL
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 57 days of observation,}
-#'   \item{SI.Distr}{a vector containing a set of 46 probabilities.}
+#'   \item{si_distr}{a vector containing a set of 46 probabilities.}
 #' }
 #' @source Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health Organization.
 #' @references 
@@ -173,10 +173,10 @@ NULL
 #' ## load data on smallpox in Kosovo in 1972
 #' data("Smallpox1972")
 #' 
-#' ## estimate the reproduction number (method "NonParametricSI")
+#' ## estimate the reproduction number (method "non_parametric_si")
 #' EstimateR(Smallpox1972$Incidence, 
-#'           T.Start=27:51, T.End=33:57, 
-#'           method="NonParametricSI", SI.Distr=Smallpox1972$SI.Distr, 
+#'           t_start=27:51, t_end=33:57, 
+#'           method="non_parametric_si", si_distr=Smallpox1972$si_distr, 
 #'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number 
@@ -196,7 +196,7 @@ NULL
 #' @format A list of two elements: 
 #' \describe{
 #'   \item{Incidence}{a vector containing 53 days of observation,}
-#'   \item{SI.Distr}{a dataframe containing a set of 19 observations; each observation corresponds to a pair of infector/infected individuals. EL and ER columns contain the lower an upper bounds of the dates of symptoms onset in the infectors. SL and SR columns contain the lower an upper bounds of the dates of symptoms onset in the infected indiviuals. The type column corresponds to XXX TO BE COMPLETED XXX}
+#'   \item{si_distr}{a dataframe containing a set of 19 observations; each observation corresponds to a pair of infector/infected individuals. EL and ER columns contain the lower an upper bounds of the dates of symptoms onset in the infectors. SL and SR columns contain the lower an upper bounds of the dates of symptoms onset in the infected indiviuals. The type column corresponds to XXX TO BE COMPLETED XXX}
 #' }
 #' @source XXX TO BE COMPLETED XXX
 #' @references 
@@ -212,13 +212,13 @@ NULL
 #' ## load data 
 #' data("MockRotavirus")
 #' 
-#' ## estimate the reproduction number (method "SIFromData")
+#' ## estimate the reproduction number (method "si_from_data")
 #' EstimateR(MockRotavirus$Incidence, 
-#'           T.Start=2:47, T.End=8:53, 
-#'           method="SIFromData", 
-#'           SI.Data=MockRotavirus$SI.Data, 
-#'           SI.parametricDistr = "G", 
-#'           MCMC.control = list(burnin = 3000, thin=10), 
+#'           t_start=2:47, t_end=8:53, 
+#'           method="si_from_data", 
+#'           si_data=MockRotavirus$si_data, 
+#'           si_parametric_distr = "G", 
+#'           mcmc_control = list(burnin = 3000, thin=10), 
 #'           n1 = 500, n2 = 50,
 #'           plot=TRUE)
 #' # the second plot produced shows, at each each day, 

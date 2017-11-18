@@ -1,12 +1,12 @@
 #######################################################################################################################
-# init_MCMC_params finds clever starting points for the MCMC to be used to estimate the serial interval, when using option SIFromData in EstimateR #
+# init_MCMC_params finds clever starting points for the MCMC to be used to estimate the serial interval, when using option si_from_data in EstimateR #
 #######################################################################################################################
 
 #' init_MCMC_params TITLE
 #' 
 #' \code{init_MCMC_params} DESCRIPTION TO COME. 
 #' 
-#' @param SI.Data XXXXXXX.
+#' @param si_data XXXXXXX.
 #' @param dist XXXXXXX.
 #' @return XXXXXXX.
 #' @details{
@@ -19,10 +19,10 @@
 #' @export
 #' @examples
 #' ## XXXXXXX.
-init_MCMC_params <- function(SI.Data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
+init_MCMC_params <- function(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
 {
   dist <- match.arg(dist)
-  naive_SI_obs <- (SI.Data$SR + SI.Data$SL ) / 2 - (SI.Data$ER + SI.Data$EL ) / 2
+  naive_SI_obs <- (si_data$SR + si_data$SL ) / 2 - (si_data$ER + si_data$EL ) / 2
   mu <- mean(naive_SI_obs)
   sigma <- sd(naive_SI_obs)
   if (dist == "G"){
@@ -81,7 +81,7 @@ init_MCMC_params <- function(SI.Data, dist = c("G", "W", "L", "off1G", "off1W", 
   }
   if(any(is.na(param)))
   {
-    stop("NA result. Check that SI.Data is in the right format. ")
+    stop("NA result. Check that si_data is in the right format. ")
   }  
   return(param)
 }

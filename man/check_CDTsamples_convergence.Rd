@@ -23,13 +23,12 @@ XXXXXXX.
 \examples{
 ## XXXXXXX.
 }
-\author{
-XXXXXXX.
-}
 \references{
 XXXXXXX.
 }
 \seealso{
 XXXXXXX.
 }
-
+\author{
+XXXXXXX.
+}

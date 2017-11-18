@@ -4,7 +4,7 @@
 \alias{OverallInfectivity}
 \title{Overall Infectivity Due To Previously Infected Individuals}
 \usage{
-OverallInfectivity(I, SI.Distr)
+OverallInfectivity(I, si_distr)
 }
 \arguments{
 \item{I}{One of the following
@@ -14,7 +14,7 @@ OverallInfectivity(I, SI.Distr)
 } 
 Note that the cases from the first time step are always all assumed to be imported cases.}
 
-\item{SI.Distr}{Vector of probabilities giving the discrete distribution of the serial interval.}
+\item{si_distr}{Vector of probabilities giving the discrete distribution of the serial interval.}
 }
 \value{
 A vector which contains the overall infectivity \eqn{\lambda_t} at each time step
@@ -38,15 +38,12 @@ In mathematical terms:
 data("Flu2009")
 
 ## compute overall infectivity
-lambda <- OverallInfectivity(Flu2009$Incidence, Flu2009$SI.Distr)
+lambda <- OverallInfectivity(Flu2009$Incidence, Flu2009$si_distr)
 par(mfrow=c(2,1))
 plot(Flu2009$Incidence, type="s", xlab="time (days)", ylab="Incidence")
 title(main="Epidemic curve")
 plot(lambda, type="s", xlab="time (days)", ylab="Infectivity")
 title(main="Overall infectivity")
-}
-\author{
-Anne Cori \email{a.cori@imperial.ac.uk}
 }
 \references{
 Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
@@ -54,4 +51,6 @@ Cori, A. et al. A new framework and software to estimate time-varying reproducti
 \seealso{
 \code{\link{DiscrSI}}, \code{\link{EstimateR}}
 }
-
+\author{
+Anne Cori \email{a.cori@imperial.ac.uk}
+}
