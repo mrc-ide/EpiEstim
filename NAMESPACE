@@ -3,7 +3,7 @@
 export(DiscrSI)
 export(EstimateR)
 export(WT)
-export(check_cdtsamples_convergence)
+export(check_cdt_samples_convergence)
 export(coarse2estim)
 export(init_MCMC_params)
 export(overall_infectivity)
