@@ -248,83 +248,120 @@
 #' all(R_si_from_sample$R$`Mean(R)` == R_si_from_data$R$`Mean(R)`) 
 #' }
 #' 
-EstimateR <- function(I, t_start, t_end, method = c("non_parametric_si", "parametric_si",
-                                                    "uncertain_si", "si_from_data", "si_from_sample"), 
-                      n1 = NULL, n2 = NULL, mean_si = NULL, std_si = NULL,
-                      std_mean_si = NULL, min_mean_si = NULL, max_mean_si = NULL,
-                      std_std_si = NULL, min_std_si = NULL, max_std_si = NULL,
-                      si_distr = NULL, 
-                      si_data = NULL, si_parametric_distr = c("G", "W", "L", "off1G", "off1W", "off1L"),  
-                      mcmc_control = list(init.pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time())), 
-                      si_sample = NULL, 
-                      seed = NULL,
-                      mean_prior = 5, std_prior = 5, cv_posterior = 0.3,
-                      plot = FALSE, legend = FALSE) {
-  
+EstimateR <- function(I,
+                      method = c("non_parametric_si", "parametric_si",
+                                 "uncertain_si", "si_from_data",
+                                 "si_from_sample"),
+                      si_data = NULL,
+                      si_sample = NULL,
+                      config) {
+
   method <- match.arg(method)
   
+  if (!("mean_prior" %in% names(config))) {
+    config$mean_prior = 5
+  }
+  
+  if (!("std_prior" %in% names(config))) {
+    config$std_prior = 5
+  }
+  
+  if (!("cv_posterior" %in% names(config))) {
+    config$cv_posterior = 0.3
+  }
+  
+  if (!("plot" %in% names(config))) {
+    config$plot = FALSE
+  }
+  
+  if (!("legend" %in% names(config))) {
+    config$legend = FALSE
+  }
+  
+  if (!("mcmc_control" %in% names(config))) {
+    config$mcmc_control = list(init.pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time()))
+  }
+
   if (method=="si_from_data") {
     # Warning if the expected set of parameters is not adequate
     si_data <- process_si_data(si_data)
-    
-    si_parametric_distr <- match.arg(si_parametric_distr)
-    if (is.null(n1)) {
-      stop("method si_from_data requires to specify the n1 argument.")
+
+    config$si_parametric_distr <- match.arg(config$si_parametric_distr)
+    if (is.null(config$n1)) {
+      stop("method si_from_data requires to specify the config$n1 argument.")
     }
-    if (is.null(n2)) {
-      stop("method si_from_data requires to specify the n2 argument.")
+    if (is.null(config$n2)) {
+      stop("method si_from_data requires to specify the config$n2 argument.")
     }
-    if (n2 <= 0 || n2%%1 != 0) {
-      stop("method si_from_data requires a >0 integer value for n2.")
+    if (config$n2 <= 0 || config$n2%%1 != 0) {
+      stop("method si_from_data requires a >0 integer value for config$n2.")
     }
-    if (n1 <= 0 || n1%%1 != 0) {
-      stop("method si_from_data requires a >0 integer value for n1.")
+    if (config$n1 <= 0 || config$n1%%1 != 0) {
+      stop("method si_from_data requires a >0 integer value for config$n1.")
     }
-    if(is.null(mcmc_control$init.pars)) mcmc_control$init.pars <- init_MCMC_params(si_data, si_parametric_distr)
-    if((si_parametric_distr=="off1G" | si_parametric_distr=="off1W" | si_parametric_distr=="off1L") & any(si_data$SR-si_data$EL<=1))
+    if(is.null(config$mcmc_control$init.pars)) {
+        config$mcmc_control$init.pars <-
+            init_MCMC_params(si_data, config$si_parametric_distr)
+    }
+    if((config$si_parametric_distr=="off1G" |
+        config$si_parametric_distr=="off1W" |
+        config$si_parametric_distr=="off1L") & 
+       any(si_data$SR-si_data$EL<=1))
     {
-      stop("You cannot fit a distribution with offset 1 to this SI dataset, because for some data points the maximum serial interval is <=1.\nChoose a different distribution")
+      stop(paste("You cannot fit a distribution with offset 1 to this SI",
+                 "dataset, because for some data points the maximum serial",
+                 "interval is <=1.\nChoose a different distribution"))
     }
-    
-    if(!is.null(mcmc_control$seed))
-    {
-      cdt <- dic.fit.mcmc(dat = si_data, dist=si_parametric_distr, burnin = mcmc_control$burnin, n.samples = n1*mcmc_control$thin, init.pars=mcmc_control$init.pars, seed = mcmc_control$seed)
-    }else
-    {
-      cdt <- dic.fit.mcmc(dat = si_data, dist=si_parametric_distr, burnin = mcmc_control$burnin, n.samples = n1*mcmc_control$thin, init.pars=mcmc_control$init.pars)
+
+    if(!is.null(config$mcmc_control$seed)) {
+      cdt <- dic.fit.mcmc(dat = si_data,
+                          dist=config$si_parametric_distr,
+                          burnin = config$mcmc_control$burnin,
+                          n.samples = config$n1*config$mcmc_control$thin,
+                          init.pars=config$mcmc_control$init.pars,
+                          seed = config$mcmc_control$seed)
+    }else{
+      cdt <- dic.fit.mcmc(dat = si_data,
+                          dist=config$si_parametric_distr,
+                          burnin = config$mcmc_control$burnin,
+                          n.samples = config$n1*config$mcmc_control$thin,
+                          init.pars=config$mcmc_control$init.pars)
     }
-    
+
     # check convergence of the MCMC and print warning if not converged
     MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
-    
+
     # thin the chain, and turn the two parameters of the SI distribution into a whole discrete distribution
-    c2e <- coarse2estim(cdt, thin=mcmc_control$thin)
-    
-    cat("\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\nEstimating the reproduction number for these serial interval estimates...\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-    
-    if(!is.null(seed))
+    c2e <- coarse2estim(cdt, thin=config$mcmc_control$thin)
+
+    cat(paste(
+              "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+              "\nEstimating the reproduction number for these serial interval",
+              "estimates...\n",
+              "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    ))
+
+    if(!is.null(config$seed))
     {
-      set.seed(seed)
+      set.seed(config$seed)
     }
-    
-    out <- EstimateR_func(I=I, t_start=t_start, t_end=t_end, method = "si_from_data", n1=n1 , n2=n2 , mean_si=NULL , std_si=NULL ,
-                          std_mean_si=NULL , min_mean_si=NULL , max_mean_si=NULL ,
-                          std_std_si=NULL , min_std_si=NULL , max_std_si=NULL ,
-                          si_distr=NULL , si_sample= c2e$si_sample , mean_prior=mean_prior , std_prior=std_prior, cv_posterior=cv_posterior ,
-                          plot=plot)
+
+    out <- EstimateR_func(I=I,
+                          method = "si_from_data",
+                          si_sample = c2e$si_sample,
+                          config=config
+                          )
     out[["MCMC_converged"]] <- MCMC_conv
   } else {
     
-    if(!is.null(seed))
+    if(!is.null(config$seed))
     {
-      set.seed(seed)
+      set.seed(config$seed)
     }
     
-    out <- EstimateR_func(I=I, t_start=t_start, t_end=t_end, method = method, n1=n1 , n2=n2 , mean_si=mean_si , std_si=std_si ,
-                          std_mean_si=std_mean_si , min_mean_si=min_mean_si , max_mean_si=max_mean_si ,
-                          std_std_si=std_std_si , min_std_si=min_std_si , max_std_si=max_std_si ,
-                          si_distr=si_distr , si_sample= si_sample, mean_prior=mean_prior , std_prior=std_prior, cv_posterior=cv_posterior ,
-                          plot=plot, legend=legend)
+    out <- EstimateR_func(I=I, method = method, si_sample=si_sample,
+                          config = config
+                          )
   }
   return(out)
 }
@@ -339,16 +376,11 @@ EstimateR <- function(I, t_start, t_end, method = c("non_parametric_si", "parame
 #' @importFrom stats median pgamma plnorm pweibull qgamma qlnorm quantile qweibull rgamma rmultinom rnorm sd
 #' @importFrom graphics plot
 #' @importFrom incidence as.incidence 
-EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "parametric_si",
-                                                          "uncertain_si", "si_from_data", "si_from_sample"), 
-                            n1 = NULL, n2 = NULL, mean_si = NULL, std_si = NULL,
-                            std_mean_si = NULL, min_mean_si = NULL, max_mean_si = NULL,
-                            std_std_si = NULL, min_std_si = NULL, max_std_si = NULL,
-                            si_distr = NULL, 
-                            si_sample = NULL, 
-                            mean_prior = 5, std_prior = 5, cv_posterior = 0.3,
-                            plot = FALSE, legend = FALSE)
-{
+EstimateR_func <- function (I,
+                            si_sample,
+                            method = c("non_parametric_si", "parametric_si",
+                                        "uncertain_si", "si_from_data", "si_from_sample"),
+                            config) {
   
   #########################################################
   # Calculates the cumulative incidence over time steps   #
@@ -435,129 +467,129 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
   I <- process_I(I)
   T<-nrow(I)
   
-  if (mean_prior <= 0) {
-    stop("mean_prior must be >0.")
+  if (config$mean_prior <= 0) {
+    stop("config$mean_prior must be >0.")
   }
-  if (std_prior <= 0) {
-    stop("std_prior must be >0.")
+  if (config$std_prior <= 0) {
+    stop("config$std_prior must be >0.")
   }
-  a_prior <- (mean_prior/std_prior)^2
-  b_prior <- std_prior^2/mean_prior
+  a_prior <- (config$mean_prior/config$std_prior)^2
+  b_prior <- config$std_prior^2/config$mean_prior
   
-  check_times(t_start, t_end, T)
-  nb_time_periods <- length(t_start)
+  check_times(config$t_start, config$t_end, T)
+  nb_time_periods <- length(config$t_start)
   
   if (method == "non_parametric_si") {
-    check_si_distr(si_distr)
+    check_si_distr(config$si_distr)
   }
   if (method == "parametric_si") {
-    if (is.null(mean_si)) {
-      stop("method parametric_si requires to specify the mean_si argument.")
+    if (is.null(config$mean_si)) {
+      stop("method parametric_si requires to specify the config$mean_si argument.")
     }
-    if (is.null(std_si)) {
-      stop("method parametric_si requires to specify the std_si argument.")
+    if (is.null(config$std_si)) {
+      stop("method parametric_si requires to specify the config$std_si argument.")
     }
-    if (mean_si <= 1) {
-      stop("method parametric_si requires a value >1 for mean_si.")
+    if (config$mean_si <= 1) {
+      stop("method parametric_si requires a value >1 for config$mean_si.")
     }
-    if (std_si <= 0) {
-      stop("method parametric_si requires a >0 value for std_si.")
+    if (config$std_si <= 0) {
+      stop("method parametric_si requires a >0 value for config$std_si.")
     }
   }
   if (method == "uncertain_si") {
-    if (is.null(mean_si)) {
-      stop("method uncertain_si requires to specify the mean_si argument.")
+    if (is.null(config$mean_si)) {
+      stop("method uncertain_si requires to specify the config$mean_si argument.")
     }
-    if (is.null(std_si)) {
-      stop("method uncertain_si requires to specify the std_si argument.")
+    if (is.null(config$std_si)) {
+      stop("method uncertain_si requires to specify the config$std_si argument.")
     }
-    if (is.null(n1)) {
-      stop("method uncertain_si requires to specify the n1 argument.")
+    if (is.null(config$n1)) {
+      stop("method uncertain_si requires to specify the config$n1 argument.")
     }
-    if (is.null(n2)) {
-      stop("method uncertain_si requires to specify the n2 argument.")
+    if (is.null(config$n2)) {
+      stop("method uncertain_si requires to specify the config$n2 argument.")
     }
-    if (is.null(std_mean_si)) {
-      stop("method uncertain_si requires to specify the std_mean_si argument.")
+    if (is.null(config$std_mean_si)) {
+      stop("method uncertain_si requires to specify the config$std_mean_si argument.")
     }
-    if (is.null(min_mean_si)) {
-      stop("method uncertain_si requires to specify the min_mean_si argument.")
+    if (is.null(config$min_mean_si)) {
+      stop("method uncertain_si requires to specify the config$min_mean_si argument.")
     }
-    if (is.null(max_mean_si)) {
-      stop("method uncertain_si requires to specify the max_mean_si argument.")
+    if (is.null(config$max_mean_si)) {
+      stop("method uncertain_si requires to specify the config$max_mean_si argument.")
     }
-    if (is.null(std_std_si)) {
-      stop("method uncertain_si requires to specify the std_std_si argument.")
+    if (is.null(config$std_std_si)) {
+      stop("method uncertain_si requires to specify the config$std_std_si argument.")
     }
-    if (is.null(min_std_si)) {
-      stop("method uncertain_si requires to specify the min_std_si argument.")
+    if (is.null(config$min_std_si)) {
+      stop("method uncertain_si requires to specify the config$min_std_si argument.")
     }
-    if (is.null(max_std_si)) {
-      stop("method uncertain_si requires to specify the max_std_si argument.")
+    if (is.null(config$max_std_si)) {
+      stop("method uncertain_si requires to specify the config$max_std_si argument.")
     }
-    if (mean_si <= 0) {
-      stop("method uncertain_si requires a >0 value for mean_si.")
+    if (config$mean_si <= 0) {
+      stop("method uncertain_si requires a >0 value for config$mean_si.")
     }
-    if (std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for std_si.")
+    if (config$std_si <= 0) {
+      stop("method uncertain_si requires a >0 value for config$std_si.")
     }
-    if (n2 <= 0 || n2%%1 != 0) {
-      stop("method uncertain_si requires a >0 integer value for n2.")
+    if (config$n2 <= 0 || config$n2%%1 != 0) {
+      stop("method uncertain_si requires a >0 integer value for config$n2.")
     }
-    if (n1 <= 0 || n1%%1 != 0) {
-      stop("method uncertain_si requires a >0 integer value for n1.")
+    if (config$n1 <= 0 || config$n1%%1 != 0) {
+      stop("method uncertain_si requires a >0 integer value for config$n1.")
     }
-    if (std_mean_si <= 0) {
-      stop("method uncertain_si requires a >0 value for std_mean_si.")
+    if (config$std_mean_si <= 0) {
+      stop("method uncertain_si requires a >0 value for config$std_mean_si.")
     }
-    if (min_mean_si < 1) {
-      stop("method uncertain_si requires a value >=1 for min_mean_si.")
+    if (config$min_mean_si < 1) {
+      stop("method uncertain_si requires a value >=1 for config$min_mean_si.")
     }
-    if (max_mean_si < mean_si) {
-      stop("method uncertain_si requires that max_mean_si >= mean_si.")
+    if (config$max_mean_si < config$mean_si) {
+      stop("method uncertain_si requires that config$max_mean_si >= config$mean_si.")
     }
-    if (mean_si < min_mean_si) {
-      stop("method uncertain_si requires that mean_si >= min_mean_si.")
+    if (config$mean_si < config$min_mean_si) {
+      stop("method uncertain_si requires that config$mean_si >= config$min_mean_si.")
     }
-    if (signif(max_mean_si - mean_si, 3) != signif(mean_si -
-                                                   min_mean_si, 3)) {
+    if (signif(config$max_mean_si - config$mean_si, 3) != signif(config$mean_si -
+                                                                 config$min_mean_si, 3)) {
       warning("The distribution you chose for the mean SI is not centered around the mean.")
     }
-    if (std_std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for std_std_si.")
+    if (config$std_std_si <= 0) {
+      stop("method uncertain_si requires a >0 value for config$std_std_si.")
     }
-    if (min_std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for min_std_si.")
+    if (config$min_std_si <= 0) {
+      stop("method uncertain_si requires a >0 value for config$min_std_si.")
     }
-    if (max_std_si < std_si) {
-      stop("method uncertain_si requires that max_std_si >= std_si.")
+    if (config$max_std_si < config$std_si) {
+      stop("method uncertain_si requires that config$max_std_si >= config$std_si.")
     }
-    if (std_si < min_std_si) {
-      stop("method uncertain_si requires that std_si >= min_std_si.")
+    if (config$std_si < config$min_std_si) {
+      stop("method uncertain_si requires that config$std_si >= config$min_std_si.")
     }
-    if (signif(max_std_si - std_si, 3) != signif(std_si -
-                                                 min_std_si, 3)) {
+    if (signif(config$max_std_si - config$std_si, 3) != signif(config$std_si -
+                                                               config$min_std_si, 3)) {
       warning("The distribution you chose for the std of the SI is not centered around the mean.")
     }
   }
   if(method == "si_from_sample")
   {
-    if (is.null(n2)) {
-      stop("method si_from_sample requires to specify the n2 argument.")
+    if (is.null(config$n2)) {
+      stop("method si_from_sample requires to specify the config$n2 argument.")
     }
     si_sample <- process_si_sample(si_sample)
   }
-  if (cv_posterior < 0) {
-    stop("cv_posterior must be >0.")
+  if (config$cv_posterior < 0) {
+    stop("config$cv_posterior must be >0.")
   }
-  min_nb_cases_per_time_period <- ceiling(1/cv_posterior^2 - a_prior)
-  incidence_per_time_step <- calc_incidence_per_time_step(I, t_start,
-                                                     t_end)
+  min_nb_cases_per_time_period <- ceiling(1/config$cv_posterior^2 - a_prior)
+  incidence_per_time_step <- calc_incidence_per_time_step(I, config$t_start,
+                                                          config$t_end)
   if (incidence_per_time_step[1] < min_nb_cases_per_time_period) {
     warning("You're estimating R too early in the epidemic to get the desired posterior CV.")
   }
-  if (plot != TRUE && plot != FALSE) {
-    stop("plot must be TRUE or FALSE.")
+  if (config$plot != TRUE && config$plot != FALSE) {
+    stop("config$plot must be TRUE or FALSE.")
   }
   if (method == "non_parametric_si") {
     si_uncertainty <- "N"
@@ -577,29 +609,29 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
   }
   if (si_uncertainty == "Y") {
     if  (parametric_si == "Y") {
-      mean_si.sample <- rep(-1, n1)
-      std_si.sample <- rep(-1, n1)
-      for (k in 1:n1) {
-        while (mean_si.sample[k] < min_mean_si || mean_si.sample[k] >
-               max_mean_si) {
-          mean_si.sample[k] <- rnorm(1, mean = mean_si,
-                                     sd = std_mean_si)
+      mean_si_sample <- rep(-1, config$n1)
+      std_si_sample <- rep(-1, config$n1)
+      for (k in 1:config$n1) {
+        while (mean_si_sample[k] < config$min_mean_si || mean_si_sample[k] >
+               config$max_mean_si) {
+          mean_si_sample[k] <- rnorm(1, mean = config$mean_si,
+                                     sd = config$std_mean_si)
         }
-        while (std_si.sample[k] < min_std_si || std_si.sample[k] >
-               max_std_si || std_si.sample[k] > mean_si.sample[k]) {
-          std_si.sample[k] <- rnorm(1, mean = std_si, sd = std_std_si)
+        while (std_si_sample[k] < config$min_std_si || std_si_sample[k] >
+               config$max_std_si || std_si_sample[k] > mean_si_sample[k]) {
+          std_si_sample[k] <- rnorm(1, mean = config$std_si, sd = config$std_std_si)
         }
       }
-      temp <- lapply(1:n1, function(k) sample_from_posterior(n2,
-                                                           I, mean_si.sample[k], std_si.sample[k], si_distr=NULL, a_prior,
-                                                           b_prior, t_start, t_end))
-      si_distr <- cbind(t(sapply(1:n1, function(k) (temp[[k]])[[2]])),
-                        rep(0, n1))
-      r_sample <- matrix(NA, n2 * n1, nb_time_periods)
-      for (k in 1:n1) {
-        r_sample[((k - 1) * n2 + 1):(k * n2), which(t_end >
-                                                     mean_si.sample[k])] <- (temp[[k]])[[1]][, which(t_end >
-                                                                                                       mean_si.sample[k])]
+      temp <- lapply(1:config$n1, function(k) sample_from_posterior(config$n2,
+                                                           I, mean_si_sample[k], std_si_sample[k], si_distr=NULL, a_prior,
+                                                           b_prior, config$t_start, config$t_end))
+      config$si_distr <- cbind(t(sapply(1:config$n1, function(k) (temp[[k]])[[2]])),
+                        rep(0, config$n1))
+      r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
+      for (k in 1:config$n1) {
+        r_sample[((k - 1) * config$n2 + 1):(k * config$n2), which(config$t_end >
+                                                     mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
+                                                                                                       mean_si_sample[k])]
       }
       mean_posterior <- apply(r_sample, 2, mean, na.rm = TRUE)
       std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
@@ -618,23 +650,23 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
                                         0.975, na.rm = TRUE)
     }
     else {
-      n1<-dim(si_sample)[2]
-      mean_si.sample <- rep(-1, n1)
-      std_si.sample <- rep(-1, n1)
-      for (k in 1:n1) {
-        mean_si.sample[k] <- sum((1:dim(si_sample)[1]-1)*si_sample[,k])
-        std_si.sample[k] <- sqrt(sum(si_sample[,k]*((1:dim(si_sample)[1]-1) - mean_si.sample[k])^2))
+      config$n1<-dim(si_sample)[2]
+      mean_si_sample <- rep(-1, config$n1)
+      std_si_sample <- rep(-1, config$n1)
+      for (k in 1:config$n1) {
+        mean_si_sample[k] <- sum((1:dim(si_sample)[1]-1)*si_sample[,k])
+        std_si_sample[k] <- sqrt(sum(si_sample[,k]*((1:dim(si_sample)[1]-1) - mean_si_sample[k])^2))
       }
-      temp <- lapply(1:n1, function(k) sample_from_posterior(n2,
+      temp <- lapply(1:config$n1, function(k) sample_from_posterior(config$n2,
                                                            I, mean_si=NULL, std_si=NULL, si_sample[,k], a_prior,
-                                                           b_prior, t_start, t_end))
-      si_distr <- cbind(t(sapply(1:n1, function(k) (temp[[k]])[[2]])),
-                        rep(0, n1))
-      r_sample <- matrix(NA, n2 * n1, nb_time_periods)
-      for (k in 1:n1) {
-        r_sample[((k - 1) * n2 + 1):(k * n2), which(t_end >
-                                                     mean_si.sample[k])] <- (temp[[k]])[[1]][, which(t_end >
-                                                                                                       mean_si.sample[k])]
+                                                           b_prior, config$t_start, config$t_end))
+      config$si_distr <- cbind(t(sapply(1:config$n1, function(k) (temp[[k]])[[2]])),
+                        rep(0, config$n1))
+      r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
+      for (k in 1:config$n1) {
+        r_sample[((k - 1) * config$n2 + 1):(k * config$n2), which(config$t_end >
+                                                     mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
+                                                                                                       mean_si_sample[k])]
       }
       mean_posterior <- apply(r_sample, 2, mean, na.rm = TRUE)
       std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
@@ -655,18 +687,18 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
   }else{
     # CertainSI
     if (parametric_si == "Y") {
-      si_distr <- sapply(1:T, function(t) DiscrSI(t - 1,
-                                                  mean_si, std_si))
+      config$si_distr <- sapply(1:T, function(t) DiscrSI(t - 1,
+                                                  config$mean_si, config$std_si))
     }
-    if (length(si_distr) < T + 1) {
-      si_distr[(length(si_distr) + 1):(T + 1)] <- 0
+    if (length(config$si_distr) < T + 1) {
+      config$si_distr[(length(config$si_distr) + 1):(T + 1)] <- 0
     }
-    final_mean_si <- sum(si_distr * (0:(length(si_distr) -
+    final_mean_si <- sum(config$si_distr * (0:(length(config$si_distr) -
                                          1)))
-    Finalstd_si <- sqrt(sum(si_distr * (0:(length(si_distr) -
+    Finalstd_si <- sqrt(sum(config$si_distr * (0:(length(config$si_distr) -
                                              1))^2) - final_mean_si^2)
-    post <- PosteriorFromSIDistr(I, si_distr, a_prior, b_prior,
-                                 t_start, t_end)
+    post <- PosteriorFromSIDistr(I, config$si_distr, a_prior, b_prior,
+                                 config$t_start, config$t_end)
     a_posterior <- unlist(post[[1]])
     b_posterior <- unlist(post[[2]])
     mean_posterior <- a_posterior * b_posterior
@@ -687,7 +719,7 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
                                        scale = b_posterior, lower.tail = TRUE, log.p = FALSE)
   }
   results <- list()
-  results$R <- as.data.frame(cbind(t_start, t_end, mean_posterior,
+  results$R <- as.data.frame(cbind(config$t_start, config$t_end, mean_posterior,
                                    std_posterior, quantile_0.025_posterior, quantile_0.05_posterior,
                                    quantile_0.25_posterior, median_posterior, quantile_0.25_posterior,
                                    quantile_0.25_posterior, quantile_0.975_posterior))
@@ -696,7 +728,7 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
                         "Median(R)", "Quantile.0.75(R)", "Quantile.0.95(R)",
                         "Quantile.0.975(R)")
   results$method <- method
-  results$si_distr <- si_distr
+  results$si_distr <- config$si_distr
   if(is.matrix(results$si_distr)) 
   {
     colnames(results$si_distr) <- paste0("t",0:(ncol(results$si_distr)-1))
@@ -705,8 +737,8 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
     names(results$si_distr) <- paste0("t",0:(length(results$si_distr)-1))
   }
   if (si_uncertainty == "Y") {
-    results$SI.Moments <- as.data.frame(cbind(mean_si.sample,
-                                              std_si.sample))
+    results$SI.Moments <- as.data.frame(cbind(mean_si_sample,
+                                              std_si_sample))
   }else {
     results$SI.Moments <- as.data.frame(cbind(final_mean_si,
                                               Finalstd_si))
@@ -725,7 +757,7 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
   results$I_local <- I$local
   results$I_imported <- I$imported
   
-  if (plot) {
+  if (config$plot) {
     
     if(sum(I$imported[-1])>0) # more than the first cases are imported
     {
@@ -735,7 +767,7 @@ EstimateR_func <- function (I, t_start, t_end, method = c("non_parametric_si", "
       add_imported_cases <- FALSE
     }
     
-    plots(results, what="all", add_imported_cases = add_imported_cases, legend = legend)
+    plots(results, what="all", add_imported_cases = add_imported_cases, legend = config$legend)
   }
   
   return(results)
