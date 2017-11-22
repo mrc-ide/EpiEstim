@@ -4,15 +4,9 @@
 \alias{EstimateR}
 \title{Estimated Instantaneous Reproduction Number}
 \usage{
-EstimateR(I, t_start, t_end, method = c("non_parametric_si", "parametric_si",
-  "uncertain_si", "si_from_data", "si_from_sample"), n1 = NULL, n2 = NULL,
-  mean_si = NULL, std_si = NULL, std_mean_si = NULL, min_mean_si = NULL,
-  max_mean_si = NULL, std_std_si = NULL, min_std_si = NULL,
-  max_std_si = NULL, si_distr = NULL, si_data = NULL,
-  si_parametric_distr = c("G", "W", "L", "off1G", "off1W", "off1L"),
-  mcmc_control = list(init.pars = NULL, burnin = 3000, thin = 10, seed =
-  as.integer(Sys.time())), si_sample = NULL, seed = NULL, mean_prior = 5,
-  std_prior = 5, cv_posterior = 0.3, plot = FALSE, legend = FALSE)
+EstimateR(I, method = c("non_parametric_si", "parametric_si", "uncertain_si",
+  "si_from_data", "si_from_sample"), si_data = NULL, si_sample = NULL,
+  config)
 }
 \arguments{
 \item{I}{One of the following
@@ -27,39 +21,29 @@ the total incidence). If the dataframe contains a column \code{I$dates}, this is
 } 
 Note that the cases from the first time step are always all assumed to be imported cases.}
 
-\item{t_start}{Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}. t_start[1] should be strictly after the first day with non null incidence.}
-
-\item{t_end}{Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}.}
-
 \item{method}{One of "non_parametric_si", "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample" (see details).}
-
-\item{n1}{For method "uncertain_si" and "si_from_data"; positive integer giving the size of the sample of SI distributions to be drawn (see details).}
-
-\item{n2}{For methods "uncertain_si", "si_from_data" and "si_from_sample"; positive integer giving the size of the sample drawn from the posterior distribution of R for each serial interval distribution considered (see details).}
-
-\item{mean_si}{For method "parametric_si" and "uncertain_si" ; positive real giving the mean serial interval (method "parametric_si") or the average mean serial interval (method "uncertain_si", see details).}
-
-\item{std_si}{For method "parametric_si" and "uncertain_si" ; non negative real giving the stadard deviation of the serial interval (method "parametric_si") or the average standard deviation of the serial interval (method "uncertain_si", see details).}
-
-\item{std_mean_si}{For method "uncertain_si" ; standard deviation of the distribution from which mean serial intervals are drawn (see details).}
-
-\item{min_mean_si}{For method "uncertain_si" ; lower bound of the distribution from which mean serial intervals are drawn (see details).}
-
-\item{max_mean_si}{For method "uncertain_si" ; upper bound of the distribution from which mean serial intervals are drawn (see details).}
-
-\item{std_std_si}{For method "uncertain_si" ; standard deviation of the distribution from which standard deviations of the serial interval are drawn (see details).}
-
-\item{min_std_si}{For method "uncertain_si" ; lower bound of the distribution from which standard deviations of the serial interval are drawn (see details).}
-
-\item{max_std_si}{For method "uncertain_si" ; upper bound of the distribution from which standard deviations of the serial interval are drawn (see details).}
-
-\item{si_distr}{For method "non_parametric_si" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{si_distr[1]} (probability that the serial interval is zero), which should be zero.}
 
 \item{si_data}{For method "si_from_data" ; the data on dates of symptoms of pairs of infector/infected individuals to be used to estimate the serial interval distribution (see details).}
 
-\item{si_parametric_distr}{For method "si_from_data" ; the parametric distribution to use when estimating the serial interval from data on dates of symptoms of pairs of infector/infected individuals (see details). 
-Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal shifted by 1).}
+\item{si_sample}{For method "si_from_sample" ; a matrix where each column gives one distribution of the serial interval to be explored (see details).}
 
+\item{config}{A list containing the following:
+\describe{
+\item{t_start}{Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}. t_start[1] should be strictly after the first day with non null incidence.}
+\item{t_end}{Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}.}
+\item{n1}{For method "uncertain_si" and "si_from_data"; positive integer giving the size of the sample of SI distributions to be drawn (see details).}
+\item{n2}{For methods "uncertain_si", "si_from_data" and "si_from_sample"; positive integer giving the size of the sample drawn from the posterior distribution of R for each serial interval distribution considered (see details).}
+\item{mean_si}{For method "parametric_si" and "uncertain_si" ; positive real giving the mean serial interval (method "parametric_si") or the average mean serial interval (method "uncertain_si", see details).}
+\item{std_si}{For method "parametric_si" and "uncertain_si" ; non negative real giving the stadard deviation of the serial interval (method "parametric_si") or the average standard deviation of the serial interval (method "uncertain_si", see details).}
+\item{std_mean_si}{For method "uncertain_si" ; standard deviation of the distribution from which mean serial intervals are drawn (see details).}
+\item{min_mean_si}{For method "uncertain_si" ; lower bound of the distribution from which mean serial intervals are drawn (see details).}
+\item{max_mean_si}{For method "uncertain_si" ; upper bound of the distribution from which mean serial intervals are drawn (see details).}
+\item{std_std_si}{For method "uncertain_si" ; standard deviation of the distribution from which standard deviations of the serial interval are drawn (see details).}
+\item{min_std_si}{For method "uncertain_si" ; lower bound of the distribution from which standard deviations of the serial interval are drawn (see details).}
+\item{max_std_si}{For method "uncertain_si" ; upper bound of the distribution from which standard deviations of the serial interval are drawn (see details).}
+\item{si_distr}{For method "non_parametric_si" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{si_distr[1]} (probability that the serial interval is zero), which should be zero.}
+\item{si_parametric_distr}{For method "si_from_data" ; the parametric distribution to use when estimating the serial interval from data on dates of symptoms of pairs of infector/infected individuals (see details).
+Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal shifted by 1).}
 \item{mcmc_control}{For method "si_from_data" ; a list containing the following (see details):
 \describe{
   \item{init.pars}{vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically using function \code{\link{init_MCMC_params}}.}
@@ -67,20 +51,13 @@ Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma shi
   \item{thin}{a positive integer corresponding to thinning parameter; the MCMC will be run for \code{burnin+n1*thin iterations}; 1 in \code{thin} iterations will be recorded, after the burnin phase, so the posterior sample size is n1.}
   \item{seed}{An integer used as the seed for the random number generator at the start of the MCMC estimation; useful to get reproducible results.} 
 }}
-
-\item{si_sample}{For method "si_from_sample" ; a matrix where each column gives one distribution of the serial interval to be explored (see details).}
-
 \item{seed}{An optional integer used as the seed for the random number generator at the start of the function (then potentially reset within the MCMC for method \code{si_from_data}); useful to get reproducible results.}
-
 \item{mean_prior}{A positive number giving the mean of the common prior distribution for all reproduction numbers (see details).}
-
 \item{std_prior}{A positive number giving the standard deviation of the common prior distribution for all reproduction numbers (see details).}
-
 \item{cv_posterior}{A positive number giving the aimed posterior coefficient of variation (see details).}
-
 \item{plot}{Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
-
 \item{legend}{A boolean (TRUE by default) governing the presence / absence of legends on the plots}
+}}
 }
 \value{
 {
@@ -189,8 +166,9 @@ Unlike methods "uncertain_si" and "si_from_data", the user directly provides (in
 data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
-EstimateR(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
-          si_distr=Flu2009$si_distr, plot=TRUE)
+EstimateR(Flu2009$incidence, method="non_parametric_si", 
+          config=list(t_start=2:26, t_end=8:32,
+          si_distr=Flu2009$si_distr, plot=TRUE))
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
 
@@ -204,20 +182,23 @@ location[1] <- "imported" # forcing the first case to be imported
 # get incidence per group (location)
 I <- incidence(data, groups = location)
 # Estimate R with assumptions on serial interval
-EstimateR(I, t_start = 2:21, t_end = 8:27, method = "parametric_si", 
-          mean_si = 2.6, std_si = 1.5, plot = TRUE)
+EstimateR(I, method = "parametric_si", 
+          config=list(t_start = 2:21, t_end = 8:27,
+          mean_si = 2.6, std_si = 1.5, plot = TRUE))
 
 ## estimate the reproduction number (method "parametric_si")
-EstimateR(Flu2009$incidence, t_start=2:26, t_end=8:32, method="parametric_si", 
-          mean_si=2.6, std_si=1.5, plot=TRUE)
+EstimateR(Flu2009$incidence, method="parametric_si", 
+          config=list(t_start=2:26, t_end=8:32, 
+          mean_si=2.6, std_si=1.5, plot=TRUE))
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
 
 ## estimate the reproduction number (method "uncertain_si")
-EstimateR(Flu2009$incidence, t_start=2:26, t_end=8:32, method="uncertain_si", 
+EstimateR(Flu2009$incidence, method="uncertain_si",
+          config=list(t_start=2:26, t_end=8:32,
           mean_si=2.6, std_mean_si=1, min_mean_si=1, max_mean_si=4.2, 
           std_si=1.5, std_std_si=0.5, min_std_si=0.5, max_std_si=2.5, 
-          n1=100, n2=100, plot=TRUE)
+          n1=100, n2=100, plot=TRUE))
 # the bottom left plot produced shows, at each each day, 
 # the estimate of the reproduction number over the 7-day window finishing on that day.
 
@@ -232,20 +213,20 @@ data("MockRotavirus")
 ## estimate the reproduction number (method "si_from_data")
 MCMC_seed <- 1
 overall_seed <- 2
-R_si_from_data <- EstimateR(MockRotavirus$incidence, 
-                                        t_start=2:47, t_end=8:53, 
-                                        method="si_from_data", 
-                                        si_data=MockRotavirus$si_data, 
+R_si_from_data <- EstimateR(MockRotavirus$incidence,
+                            method="si_from_data",  
+                            si_data=MockRotavirus$si_data, 
+                            config=list(t_start=2:47, t_end=8:53, 
                                         si_parametric_distr = "G", 
                                         mcmc_control = list(burnin = 1000, 
                                         thin=10, seed = MCMC_seed), 
                                         n1 = 500, n2 = 50,
                                         seed = overall_seed,
-                                        plot=TRUE)
+                                        plot=TRUE))
 ## compare with version with no uncertainty
 R_Parametric <- EstimateR(MockRotavirus$incidence, 
-                          t_start=2:47, t_end=8:53, 
                           method="parametric_si", 
+                          t_start=2:47, t_end=8:53, 
                           mean_si = mean(R_si_from_data$SI.Moments$Mean), 
                           std_si = mean(R_si_from_data$SI.Moments$Std), 
                           plot=TRUE)
@@ -267,11 +248,11 @@ SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
                              seed = MCMC_seed)
 si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
 R_si_from_sample <- EstimateR(MockRotavirus$incidence, 
-                            t_start=2:47, t_end=8:53, 
                             method="si_from_sample", si_sample=si_sample,
+                            config=list(t_start=2:47, t_end=8:53, 
                             n2 = 50,
                             seed = overall_seed,
-                            plot=TRUE)
+                            plot=TRUE))
 
 # check that R_si_from_sample is the same as R_si_from_data 
 # since they were generated using the same MCMC algorithm to generate the SI sample

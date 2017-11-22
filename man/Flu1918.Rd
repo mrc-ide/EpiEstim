@@ -22,10 +22,10 @@ This data set gives:
 data("Flu1918")
 
 ## estimate the reproduction number (method "non_parametric_si")
-EstimateR(Flu1918$incidence, 
-          t_start=2:86, t_end=8:92, 
-          method="non_parametric_si", si_distr=Flu1918$si_distr, 
-          plot=TRUE)
+EstimateR(Flu1918$incidence, method="non_parametric_si",
+          config=list(t_start=2:86, t_end=8:92, 
+                      si_distr=Flu1918$si_distr, 
+                      plot=TRUE))
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.

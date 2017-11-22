@@ -22,10 +22,11 @@ This data set gives:
 data("Smallpox1972")
 
 ## estimate the reproduction number (method "non_parametric_si")
-EstimateR(Smallpox1972$incidence, 
-          t_start=27:51, t_end=33:57, 
-          method="non_parametric_si", si_distr=Smallpox1972$si_distr, 
-          plot=TRUE)
+EstimateR(Smallpox1972$incidence, method="non_parametric_si",
+          config=list(t_start=27:51, t_end=33:57, 
+                      si_distr=Smallpox1972$si_distr, 
+                      plot=TRUE)
+          )
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.
