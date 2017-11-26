@@ -293,7 +293,8 @@ EstimateR <- function(I,
     # Warning if the expected set of parameters is not adequate
     si_data <- process_si_data(si_data)
 
-    config$si_parametric_distr <- match.arg(config$si_parametric_distr)
+    config$si_parametric_distr <- match.arg(config$si_parametric_distr,
+                                            c("G", "W", "L", "off1G", "off1W", "off1L"))
     if (is.null(config$n1)) {
       stop("method si_from_data requires to specify the config$n1 argument.")
     }
