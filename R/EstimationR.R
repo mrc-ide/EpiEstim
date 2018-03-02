@@ -740,8 +740,7 @@ EstimateR_func <- function (I,
   if(is.matrix(results$si_distr)) 
   {
     colnames(results$si_distr) <- paste0("t",0:(ncol(results$si_distr)-1))
-  }else
-  {
+  }else {
     names(results$si_distr) <- paste0("t",0:(length(results$si_distr)-1))
   }
   if (si_uncertainty == "Y") {
@@ -757,8 +756,7 @@ EstimateR_func <- function (I,
   if(!is.null(I$dates)) 
   {
     results$dates <- check_dates(I)
-  }else
-  {
+  }else {
     results$dates <- 1:T
   }
   results$I <- rowSums(I[,c("local","imported")])
@@ -770,8 +768,7 @@ EstimateR_func <- function (I,
     if(sum(I$imported[-1])>0) # more than the first cases are imported
     {
       add_imported_cases <- TRUE
-    }else
-    {
+    }else {
       add_imported_cases <- FALSE
     }
     
