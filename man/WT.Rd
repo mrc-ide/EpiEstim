@@ -4,30 +4,36 @@
 \alias{WT}
 \title{Estimation of the case reproduction number using the Wallinga and Teunis method}
 \usage{
-WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
-  Mean.SI = NULL, Std.SI = NULL, SI.Distr = NULL, nSim = 10,
-  plot = FALSE, leg.pos = "topright")
+WT(I, t_start, t_end, method = c("non_parametric_si", "parametric_si"),
+  mean_si = NULL, std_si = NULL, si_distr = NULL, nSim = 10,
+  plot = FALSE, legend = FALSE)
 }
 \arguments{
-\item{I}{Vector of non-negative integers containing an incidence time series.}
+\item{I}{One of the following
+\itemize{
+\item{Vector (or a dataframe with a column named 'I') of non-negative integers containing an incidence time series.
+ If the dataframe contains a column \code{I$dates}, this is used for plotting. 
+ \code{I$dates} must contains only dates in a row.}
+\item{An object of class \code{\link[incidence]{incidence}}}
+ }}
 
-\item{T.Start}{Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.}
+\item{t_start}{Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}. t_start[1] should be strictly after the first day with non null incidence.}
 
-\item{T.End}{Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}.}
+\item{t_end}{Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}.}
 
-\item{method}{One of "NonParametricSI" or "ParametricSI" (see details).}
+\item{method}{One of "non_parametric_si" or "parametric_si" (see details).}
 
-\item{Mean.SI}{For method "ParametricSI" ; positive real giving the mean serial interval.}
+\item{mean_si}{For method "parametric_si" ; positive real giving the mean serial interval.}
 
-\item{Std.SI}{For method "ParametricSI" ; non negative real giving the stadard deviation of the serial interval.}
+\item{std_si}{For method "parametric_si" ; non negative real giving the stadard deviation of the serial interval.}
 
-\item{SI.Distr}{For method "NonParametricSI" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{SI.Distr[1]} (probability that the serial interval is zero), which should be zero.}
+\item{si_distr}{For method "non_parametric_si" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{si_distr[1]} (probability that the serial interval is zero), which should be zero.}
 
 \item{nSim}{A positive integer giving the number of simulated epidemic trees used for computation of the confidence intervals of the case reproduction number (see details).}
 
 \item{plot}{Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).}
 
-\item{leg.pos}{One of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
+\item{legend}{A boolean (TRUE by default) governing the presence / absence of legends on the plots
 This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.}
 }
 \value{
@@ -36,10 +42,14 @@ This specifies the position of the legend in the plot. Alternatively, \code{loca
 	\itemize{
 	\item{R}{: a dataframe containing: 
 	    the times of start and end of each time window considered ; 
-	  the estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction number for each time window.}
-	\item{SIDistr}{: a dataframe containing: 
-	    for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
-	for method "ParametricSI", the discrete serial interval distribution.}
+	    the estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction number for each time window.}
+	\item{method}{: the method used to estimate R, one of "non_parametric_si", "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
+	\item{si_distr}{: a vector containing the discrete serial interval distribution used for estimation}
+	\item{SI.Moments}{: a vector containing the mean and std of the discrete serial interval distribution(s) used for estimation}
+	\item{I}{: the time series of total incidence}
+	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
+	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
+	\item{dates}{: a vector of dates corresponding to the incidence time series}
 	}
 	}
 }
@@ -54,42 +64,38 @@ Confidence intervals are obtained by simulating a number (nSim) of possible tran
 
 The methods vary in the way the serial interval distribution is specified.
 
------------------------ \code{method "NonParametricSI"} -----------------------
+----------------------- \code{method "non_parametric_si"} -----------------------
 
-The discrete distribution of the serial interval is directly specified in the argument \code{SI.Distr}.
+The discrete distribution of the serial interval is directly specified in the argument \code{si_distr}.
 
 If \code{plot} is \code{TRUE}, 3 plots are produced. 
 The first one shows the epidemic curve. 
-The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
+The second one shows the posterior mean and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
 The third plot shows the discrete distribution of the serial interval. 
 
------------------------ \code{method "ParametricSI"} -----------------------
+----------------------- \code{method "parametric_si"} -----------------------
 
-The mean and standard deviation of the continuous distribution of the serial interval are given in the arguments \code{Mean.SI} and \code{Std.SI}.
+The mean and standard deviation of the continuous distribution of the serial interval are given in the arguments \code{mean_si} and \code{std_si}.
 The discrete distribution of the serial interval is derived automatically using \code{\link{DiscrSI}}.
 
-If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "NonParametricSI"} .
+If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "non_parametric_si"} .
 }
 }
 \examples{
 ## load data on pandemic flu in a school in 2009
 data("Flu2009")
 
-## estimate the case reproduction number (method "NonParametricSI")
-WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-   SI.Distr=Flu2009$SI.Distr, plot=TRUE, leg.pos=xy.coords(1,1.75), nSim=100)
+## estimate the case reproduction number (method "non_parametric_si")
+WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
+   si_distr=Flu2009$si_distr, plot=TRUE, nSim=100)
 # the second plot produced shows, at each each day, 
 # the estimate of the cqse reproduction number over the 7-day window finishing on that day.
 
-## estimate the case reproduction number (method "ParametricSI")
-WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI", 
-   Mean.SI=2.6, Std.SI=1.5, plot=TRUE, nSim=100)
+## estimate the case reproduction number (method "parametric_si")
+WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="parametric_si", 
+   mean_si=2.6, std_si=1.5, plot=TRUE, nSim=100)
 # the second plot produced shows, at each each day, 
-# the estimate of the cqse reproduction number over the 7-day window finishing on that day.
-}
-\author{
-Anne Cori \email{a.cori@imperial.ac.uk}
+# the estimate of the case reproduction number over the 7-day window finishing on that day.
 }
 \references{
 {
@@ -100,4 +106,6 @@ Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respirato
 \seealso{
 \code{\link{DiscrSI}}, \code{\link{EstimateR}}
 }
-
+\author{
+Anne Cori \email{a.cori@imperial.ac.uk}
+}

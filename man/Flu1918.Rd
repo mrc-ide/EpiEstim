@@ -6,14 +6,11 @@
 \title{Data on the 1918 H1N1 influenza pandemic in Baltimore.}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 92 days of observation,}
-  \item{SI.Distr}{a vector containing a set of 12 probabilities.}
+  \item{incidence}{a vector containing 92 days of observation,}
+  \item{si_distr}{a vector containing a set of 12 probabilities.}
 }}
 \source{
 Frost W. and E. Sydenstricker (1919) Influenza in Maryland: preliminary statistics of certain localities. Public Health Rep.(34): 491-504.
-}
-\usage{
-Flu1918
 }
 \description{
 This data set gives:
@@ -24,11 +21,11 @@ This data set gives:
 ## load data on pandemic flu in Baltimore in 1918
 data("Flu1918")
 
-## estimate the reproduction number (method "NonParametricSI")
-EstimateR(Flu1918$Incidence, 
-          T.Start=2:86, T.End=8:92, 
-          method="NonParametricSI", SI.Distr=Flu1918$SI.Distr, 
-          plot=TRUE, leg.pos=xy.coords(1,3))
+## estimate the reproduction number (method "non_parametric_si")
+EstimateR(Flu1918$incidence, method="non_parametric_si",
+          config=list(t_start=2:86, t_end=8:92, 
+                      si_distr=Flu1918$si_distr, 
+                      plot=TRUE))
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.
@@ -48,5 +45,3 @@ Vynnycky E. et al. (2007) Estimates of the reproduction numbers of Spanish influ
 White L.F. and M. Pagano (2008) Transmissibility of the influenza virus in the 1918 pandemic. PLoS One 3(1): e1498.
 }
 }
-\keyword{datasets}
-

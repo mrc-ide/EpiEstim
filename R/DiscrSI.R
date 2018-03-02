@@ -19,10 +19,10 @@
 #' 
 #' where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma distribution with mean \eqn{\mu} and standard deviation \eqn{\sigma}.
 #' }
-#' @seealso \code{\link{OverallInfectivity}}, \code{\link{EstimateR}}
+#' @seealso \code{\link{overall_infectivity}}, \code{\link{EstimateR}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk} 
 #' @references Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
-#' @import stats
+# #' @import stats
 #' @export
 #' @examples
 #' ## Computing the discrete serial interval of influenza

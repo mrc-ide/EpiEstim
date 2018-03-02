@@ -5,14 +5,19 @@
 
 #' Overall Infectivity Due To Previously Infected Individuals
 #' 
-#' \code{OverallInfectivity} computes the overall infectivity due to previously infected individuals. 
+#' \code{overall_infectivity} computes the overall infectivity due to previously infected individuals. 
 #' 
-#' @param I Vector of non-negative integers containing an incidence time series.
-#' @param SI.Distr Vector of probabilities giving the discrete distribution of the serial interval.
+#' @param I One of the following
+#' \itemize{
+#' \item{A vector (or a dataframe with a single column) of non-negative integers containing an incidence time series}
+#' \item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
+#' } 
+#' Note that the cases from the first time step are always all assumed to be imported cases. 
+#' @param si_distr Vector of probabilities giving the discrete distribution of the serial interval.
 #' @return A vector which contains the overall infectivity \eqn{\lambda_t} at each time step
 #' @details{
 #' The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is equal to the sum of the previously infected individuals 
-#' (given by the incidence vector \eqn{I}), 
+#' (given by the incidence vector \eqn{I}, with \code{I=I$local + I$imported} if \eqn{I} is a matrix), 
 #' weigthed by their infectivity at time \eqn{t} (given by the discrete serial interval distribution \eqn{w_k}). 
 #' In mathematical terms:   
 #' \cr
@@ -28,53 +33,22 @@
 #' data("Flu2009")
 #' 
 #' ## compute overall infectivity
-#' lambda <- OverallInfectivity(Flu2009$Incidence, Flu2009$SI.Distr)
+#' lambda <- overall_infectivity(Flu2009$incidence, Flu2009$si_distr)
 #' par(mfrow=c(2,1))
-#' plot(Flu2009$Incidence, type="s", xlab="time (days)", ylab="Incidence")
+#' plot(Flu2009$incidence, type="s", xlab="time (days)", ylab="incidence")
 #' title(main="Epidemic curve")
 #' plot(lambda, type="s", xlab="time (days)", ylab="Infectivity")
 #' title(main="Overall infectivity")
-OverallInfectivity <-function (I,SI.Distr)
+overall_infectivity <-function (I,si_distr)
 {
-  if(is.vector(I)==FALSE)
-  {
-    stop("Incidence must be a vector.")
-  }
-  T<-length(I)
-  for(i in 1:T)
-  {
-    if(I[i]<0)
-    {
-      stop("Incidence must be a positive vector.")
-    }
-  }
-  if(is.vector(SI.Distr)==FALSE)
-  {
-    stop("SI.Distr must be a vector.")
-  }
-  if(SI.Distr[1]!=0)
-  {
-    stop("SI.Distr[1] needs to be 0.")
-  }
-  if(length(SI.Distr)>1)
-  {
-    for(i in 2:length(SI.Distr))
-    {
-      if(SI.Distr[i]<0)
-      {
-        stop("SI.Distr must be a positive vector.")
-      }
-    }
-  }
-  if(abs(sum(SI.Distr)-1)>0.01)
-  {
-    stop("SI.Distr must sum to 1.")
-  }
+  I <- process_I(I)
+  T<-nrow(I)
+  check_si_distr(si_distr, "warning")
   lambda <- vector()
   lambda[1]<-NA
-  for (t in 2:length(I))
+  for (t in 2:T)
   {
-    lambda[t] <- sum(SI.Distr[1:t]*I[t:1],na.rm=TRUE)
+    lambda[t] <- sum(si_distr[1:t]*rowSums(I[t:1, c("local","imported")]),na.rm=TRUE)
   }
   return(lambda)
 }

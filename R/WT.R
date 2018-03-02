@@ -6,26 +6,36 @@
 #' 
 #' \code{WT} estimates the case reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
 #' 
-#' @param I Vector of non-negative integers containing an incidence time series.
-#' @param T.Start Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}. T.Start[1] should be strictly after the first day with non null incidence.
-#' @param T.End Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{T.Start[i]<=T.End[i]}.
-#' @param method One of "NonParametricSI" or "ParametricSI" (see details).
-#' @param Mean.SI For method "ParametricSI" ; positive real giving the mean serial interval.
-#' @param Std.SI For method "ParametricSI" ; non negative real giving the stadard deviation of the serial interval.
-#' @param SI.Distr For method "NonParametricSI" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{SI.Distr[1]} (probability that the serial interval is zero), which should be zero.
+#' @param I One of the following
+#' \itemize{
+#' \item{Vector (or a dataframe with a column named 'I') of non-negative integers containing an incidence time series.
+#'  If the dataframe contains a column \code{I$dates}, this is used for plotting. 
+#'  \code{I$dates} must contains only dates in a row.}
+#' \item{An object of class \code{\link[incidence]{incidence}}}
+#'  }
+#' @param t_start Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}. t_start[1] should be strictly after the first day with non null incidence.
+#' @param t_end Vector of positive integers giving the ending times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}.
+#' @param method One of "non_parametric_si" or "parametric_si" (see details).
+#' @param mean_si For method "parametric_si" ; positive real giving the mean serial interval.
+#' @param std_si For method "parametric_si" ; non negative real giving the stadard deviation of the serial interval.
+#' @param si_distr For method "non_parametric_si" ; vector of probabilities giving the discrete distribution of the serial interval, starting with \code{si_distr[1]} (probability that the serial interval is zero), which should be zero.
 #' @param nSim A positive integer giving the number of simulated epidemic trees used for computation of the confidence intervals of the case reproduction number (see details).
 #' @param plot Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see value).
-#' @param leg.pos One of "\code{bottomright}", "\code{bottom}", "\code{bottomleft}", "\code{left}", "\code{topleft}", "\code{top}", "\code{topright}", "\code{right}", "\code{center}" or \code{\link{xy.coords}(x, y)}, with \code{x} and \code{y} real numbers. 
+#' @param legend A boolean (TRUE by default) governing the presence / absence of legends on the plots
 #' This specifies the position of the legend in the plot. Alternatively, \code{locator(1)} can be used ; the user will then need to click where the legend needs to be written.
 #' @return {
 #' 	a list with components: 
 #' 	\itemize{
 #' 	\item{R}{: a dataframe containing: 
 #' 	    the times of start and end of each time window considered ; 
-#' 	  the estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction number for each time window.}
-#' 	\item{SIDistr}{: a dataframe containing: 
-#' 	    for method "NonParametricSI", the mean and standard deviation of the discrete serial interval distribution;
-#' 	for method "ParametricSI", the discrete serial interval distribution.}
+#' 	    the estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction number for each time window.}
+#' 	\item{method}{: the method used to estimate R, one of "non_parametric_si", "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
+#' 	\item{si_distr}{: a vector containing the discrete serial interval distribution used for estimation}
+#' 	\item{SI.Moments}{: a vector containing the mean and std of the discrete serial interval distribution(s) used for estimation}
+#' 	\item{I}{: the time series of total incidence}
+#' 	\item{I_local}{: the time series of incidence of local cases (so that \code{I_local + I_imported = I})}
+#' 	\item{I_imported}{: the time series of incidence of imported cases (so that \code{I_local + I_imported = I})}
+#' 	\item{dates}{: a vector of dates corresponding to the incidence time series}
 #' 	}
 #' 	}
 #' @details{
@@ -35,22 +45,21 @@
 #' 
 #' The methods vary in the way the serial interval distribution is specified.
 #' 
-#' ----------------------- \code{method "NonParametricSI"} -----------------------
+#' ----------------------- \code{method "non_parametric_si"} -----------------------
 #' 
-#' The discrete distribution of the serial interval is directly specified in the argument \code{SI.Distr}.
+#' The discrete distribution of the serial interval is directly specified in the argument \code{si_distr}.
 #' 
 #' If \code{plot} is \code{TRUE}, 3 plots are produced. 
 #' The first one shows the epidemic curve. 
-#' The second one shows the posterior median and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-#' The position of the legend on that graph can be monitored by the argument \code{leg.pos} (default is "\code{topright}").
+#' The second one shows the posterior mean and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
 #' The third plot shows the discrete distribution of the serial interval. 
 #'
-#' ----------------------- \code{method "ParametricSI"} -----------------------
+#' ----------------------- \code{method "parametric_si"} -----------------------
 #' 
-#' The mean and standard deviation of the continuous distribution of the serial interval are given in the arguments \code{Mean.SI} and \code{Std.SI}.
+#' The mean and standard deviation of the continuous distribution of the serial interval are given in the arguments \code{mean_si} and \code{std_si}.
 #' The discrete distribution of the serial interval is derived automatically using \code{\link{DiscrSI}}.
 #'
-#' If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "NonParametricSI"} .
+#' If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "non_parametric_si"} .
 #' }
 #' @seealso \code{\link{DiscrSI}}, \code{\link{EstimateR}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk} 
@@ -59,23 +68,28 @@
 #' Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respiratory syndrome reveal similar impacts of control measures (AJE 2004).
 #' }
 #' @export
-#' @import graphics
+#' @import reshape2 grid gridExtra
+#' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
+#' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
 #' data("Flu2009")
 #' 
-#' ## estimate the case reproduction number (method "NonParametricSI")
-#' WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-#'    SI.Distr=Flu2009$SI.Distr, plot=TRUE, leg.pos=xy.coords(1,1.75), nSim=100)
+#' ## estimate the case reproduction number (method "non_parametric_si")
+#' WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
+#'    si_distr=Flu2009$si_distr, plot=TRUE, nSim=100)
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the cqse reproduction number over the 7-day window finishing on that day.
 #' 
-#' ## estimate the case reproduction number (method "ParametricSI")
-#' WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI", 
-#'    Mean.SI=2.6, Std.SI=1.5, plot=TRUE, nSim=100)
+#' ## estimate the case reproduction number (method "parametric_si")
+#' WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="parametric_si", 
+#'    mean_si=2.6, std_si=1.5, plot=TRUE, nSim=100)
 #' # the second plot produced shows, at each each day, 
-#' # the estimate of the cqse reproduction number over the 7-day window finishing on that day.
-WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.SI=NULL,Std.SI=NULL,SI.Distr=NULL,nSim=10,plot=FALSE,leg.pos="topright")
+#' # the estimate of the case reproduction number over the 7-day window finishing on that day.
+WT <- function(I, t_start, t_end,
+               method=c("non_parametric_si","parametric_si"),
+               mean_si=NULL, std_si=NULL, si_distr=NULL, nSim=10, 
+               plot=FALSE, legend=FALSE)
 {
   
   ### Functions ###
@@ -87,13 +101,13 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   DrawOneSetOfAncestries <- function()
   {
     res <- vector()
-    for(t in T.Start[1]:T.End[length(T.End)])
+    for(t in t_start[1]:t_end[length(t_end)])
     {
       if(length(which(Onset==t))>0)
       {
         if(length(possibleAncesTime[[t]])>0)
         {
-          prob <- SI.Distr[t-possibleAncesTime[[t]]+1]*I[possibleAncesTime[[t]]]
+          prob <- si_distr[t-possibleAncesTime[[t]]+1]*I[possibleAncesTime[[t]]]
           if(any(prob>0))
           {
             res[which(Onset==t)] <- possibleAncesTime[[t]][which(rmultinom(length(which(Onset==t)),size=1,prob=prob)==TRUE,arr.ind=TRUE)[,1]]
@@ -108,115 +122,64 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
     return(res)
   }
   
-  ### Adjusting T.Start and T.End so that at least an incident case has been observed before T.Start[1] ###
-  
-  i <- 1
-  while(sum(I[1:(T.Start[i]-1)])==0)
-  {
-    i <- i+1
-  }
-  temp <- which(T.Start<i)
-  if(length(temp>0))
-  {
-    T.Start <- T.Start[-temp]
-    T.End <- T.End[-temp]
-  }
-  
   ### Error messages ###
   
   method <- match.arg(method)
   
-  if(is.vector(I)==FALSE)
+  I <- process_I(I)
+  if(!is.null(I$dates)) 
   {
-    stop("I must be a vector.")
-  }
-  T<-length(I)
-  for(i in 1:T)
+    dates <- check_dates(I)
+    I <- process_I_vector(rowSums(I[,c("local","imported")]))
+    T<-length(I)
+  }else
   {
-    if(I[i]<0)
-    {
-      stop("I must be a positive vector.")
-    }
-  }
-  I[which(is.na(I))] <- 0
-  
-  if(is.vector(T.Start)==FALSE)
-  {
-    stop("T.Start must be a vector.")
-  }
-  if(is.vector(T.End)==FALSE)
-  {
-    stop("T.End must be a vector.")
-  }
-  if(length(T.Start)!=length(T.End))
-  {
-    stop("T.Start and T.End must have the same length.")
-  }
-  NbTimePeriods<-length(T.Start)
-  for(i in 1:NbTimePeriods)
-  {
-    if(T.Start[i]>T.End[i])
-    {
-      stop("T.Start[i] must be <= T.End[i] for all i.")
-    }
-    if(T.Start[i]<1 || T.Start[i]%%1!=0)
-    {
-      stop("T.Start must be a vector of >0 integers.")
-    }
-    if(T.End[i]<1 || T.End[i]%%1!=0)
-    {
-      stop("T.End must be a vector of >0 integers.")
-    }
+    I <- process_I_vector(rowSums(I[,c("local","imported")]))
+    T<-length(I)
+    dates <- 1:T
   }
   
-  if(method=="NonParametricSI")
+  
+  ### Adjusting t_start and t_end so that at least an incident case has been observed before t_start[1] ###
+  
+  i <- 1
+  while(sum(I[1:(t_start[i]-1)])==0)
   {
-    if(is.null(SI.Distr)==TRUE)
-    {
-      stop("method NonParametricSI requires to specify the SI.Distr argument.")
-    }
-    if(is.vector(SI.Distr)==FALSE)
-    {
-      stop("method NonParametricSI requires that SI.Distr must be a vector.")
-    }
-    if(SI.Distr[1]!=0)
-    {
-      stop("method NonParametricSI requires that SI.Distr[1] = 0.")
-    }
-    if(length(SI.Distr)>1)
-    {
-      for(i in 2:length(SI.Distr))
-      {
-        if(SI.Distr[i]<0)
-        {
-          stop("method NonParametricSI requires that SI.Distr must be a positive vector.")
-        }
-      }
-    }
-    if(abs(sum(SI.Distr)-1)>0.01)
-    {
-      stop("method NonParametricSI requires that SI.Distr must sum to 1.")
-    }
-    SI.Distr <- c(SI.Distr,0)
+    i <- i+1
+  }
+  temp <- which(t_start<i)
+  if(length(temp>0))
+  {
+    t_start <- t_start[-temp]
+    t_end <- t_end[-temp]
   }
   
-  if(method=="ParametricSI")
+  check_times(t_start, t_end, T)
+  nb_time_periods <- length(t_start)
+  
+  if(method=="non_parametric_si")
   {
-    if(is.null(Mean.SI)==TRUE)
+    check_si_distr(si_distr)
+    si_distr <- c(si_distr,0)
+  }
+  
+  if(method=="parametric_si")
+  {
+    if(is.null(mean_si))
     {
-      stop("method NonParametricSI requires to specify the Mean.SI argument.")
+      stop("method non_parametric_si requires to specify the mean_si argument.")
     }
-    if(is.null(Std.SI)==TRUE)
+    if(is.null(std_si))
     {
-      stop("method NonParametricSI requires to specify the Std.SI argument.")
+      stop("method non_parametric_si requires to specify the std_si argument.")
     }
-    if(Mean.SI<1)
+    if(mean_si<1)
     {
-      stop("method ParametricSI requires a value >1 for Mean.SI.")
+      stop("method parametric_si requires a value >1 for mean_si.")
     }
-    if(Std.SI<0)
+    if(std_si<0)
     {
-      stop("method ParametricSI requires a >0 value for Std.SI.")
+      stop("method parametric_si requires a >0 value for std_si.")
     }
   }
   
@@ -225,7 +188,7 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
     stop("plot must be TRUE or FALSE.")
   }
   
-  if(is.numeric(nSim)==FALSE)
+  if(!is.numeric(nSim))
   {
     stop("nSim must be a positive integer.")
   }
@@ -236,36 +199,36 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   
   ### What does each method do ###
   
-  if(method=="NonParametricSI")
+  if(method=="non_parametric_si")
   {
-    ParametricSI<-"N"
+    parametric_si<-"N"
   }
-  if(method=="ParametricSI")
+  if(method=="parametric_si")
   {
-    ParametricSI<-"Y"
+    parametric_si<-"Y"
   }
   
-  if(ParametricSI=="Y")
+  if(parametric_si=="Y")
   {
-    SI.Distr <- sapply(1:T, function(t) DiscrSI(t-1,Mean.SI,Std.SI))
+    si_distr <- sapply(1:T, function(t) DiscrSI(t-1,mean_si,std_si))
   }
-  if(length(SI.Distr)<T+1){SI.Distr[(length(SI.Distr)+1):(T+1)]<-0}
-  FinalMean.SI<-sum(SI.Distr*(0:(length(SI.Distr)-1)))
-  FinalStd.SI<-sqrt(sum(SI.Distr*(0:(length(SI.Distr)-1))^2)-FinalMean.SI^2)
+  if(length(si_distr)<T+1){si_distr[(length(si_distr)+1):(T+1)]<-0}
+  final_mean_si<-sum(si_distr*(0:(length(si_distr)-1)))
+  Finalstd_si<-sqrt(sum(si_distr*(0:(length(si_distr)-1))^2)-final_mean_si^2)
   
-  TimePeriodsWithNoIncidence <- vector()
-  for(i in 1:NbTimePeriods)
+  TimePeriodsWithNoincidence <- vector()
+  for(i in 1:nb_time_periods)
   {
-    if(sum(I[T.Start[i]:T.End[i]])==0)
+    if(sum(I[t_start[i]:t_end[i]])==0)
     {
-      TimePeriodsWithNoIncidence <- c(TimePeriodsWithNoIncidence,i)
+      TimePeriodsWithNoincidence <- c(TimePeriodsWithNoincidence,i)
     }
   }
-  if(length(TimePeriodsWithNoIncidence)>0)
+  if(length(TimePeriodsWithNoincidence)>0)
   {
-    T.Start <- T.Start[-TimePeriodsWithNoIncidence]
-    T.End <- T.End[-TimePeriodsWithNoIncidence]
-    NbTimePeriods <- length(T.Start)
+    t_start <- t_start[-TimePeriodsWithNoincidence]
+    t_end <- t_end[-TimePeriodsWithNoincidence]
+    nb_time_periods <- length(t_start)
   }
   
   Onset <- vector()
@@ -275,7 +238,7 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   NbCases <- length(Onset)
   
   delay <- outer (1:T, 1:T, "-")
-  SIdelay <- apply(delay, 2, function(x) SI.Distr[pmin(pmax(x + 1, 1), length(SI.Distr))])
+  SIdelay <- apply(delay, 2, function(x) si_distr[pmin(pmax(x + 1, 1), length(si_distr))])
   SumOnColSIDelay_tmp <- sapply(1:nrow(SIdelay), function(i) sum(SIdelay [i,]* I, na.rm=TRUE) )
   SumOnColSIDelay <- vector()
   for (t in 1:T) {
@@ -286,12 +249,12 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   p[which(is.na(p))] <- 0
   p[which(is.infinite(p))] <- 0
   MeanRperIndexCaseDate <- sapply(1:ncol(p), function(j) sum(p[,j]*I, na.rm=TRUE))
-  MeanRperDate.WT <- sapply(1:NbTimePeriods, function(i) mean(rep(MeanRperIndexCaseDate[which((1:T >= T.Start[i]) * (1:T <= T.End[i]) == 1)], I[which((1:T >= T.Start[i]) * (1:T <= T.End[i]) == 1)]) ) )
+  MeanRperDate.WT <- sapply(1:nb_time_periods, function(i) mean(rep(MeanRperIndexCaseDate[which((1:T >= t_start[i]) * (1:T <= t_end[i]) == 1)], I[which((1:T >= t_start[i]) * (1:T <= t_end[i]) == 1)]) ) )
   
-  possibleAncesTime <- sapply(1:T,function(t) (t-(which(SI.Distr!=0))+1)[which(t-(which(SI.Distr!=0))+1>0)])
+  possibleAncesTime <- sapply(1:T,function(t) (t-(which(si_distr!=0))+1)[which(t-(which(si_distr!=0))+1>0)])
   ancestriesTime <- t(sapply(1:nSim , function(i) DrawOneSetOfAncestries()))
   
-  Rsim <- sapply(1:NbTimePeriods,function(i) rowSums((ancestriesTime[,]>=T.Start[i]) * (ancestriesTime[,]<=T.End[i]),na.rm=TRUE)/sum(I[T.Start[i]:T.End[i]]))
+  Rsim <- sapply(1:nb_time_periods,function(i) rowSums((ancestriesTime[,]>=t_start[i]) * (ancestriesTime[,]<=t_end[i]),na.rm=TRUE)/sum(I[t_start[i]:t_end[i]]))
   
   R025.WT <- apply(Rsim, 2, quantile,0.025,na.rm=TRUE)
   R025.WT <- R025.WT[which(!is.na(R025.WT))]
@@ -302,44 +265,25 @@ WT <- function(I,T.Start,T.End,method=c("NonParametricSI","ParametricSI"),Mean.S
   
   results<-list()
   
-  results$R<-as.data.frame(cbind(T.Start,T.End,MeanRperDate.WT,std.WT,R025.WT,R975.WT))
-  names(results$R)<-c("T.Start","T.End","Mean(R)","Std(R)","Quantile.0.025(R)","Quantile.0.975(R)")
+  results$R<-as.data.frame(cbind(t_start,t_end,MeanRperDate.WT,std.WT,R025.WT,R975.WT))
+  names(results$R)<-c("t_start","t_end","Mean(R)","Std(R)","Quantile.0.025(R)","Quantile.0.975(R)")
   
-  if(ParametricSI=="Y") # method "ParametricSI"
-  {
-    if(length(which(abs(cumsum(SI.Distr)-1)<0.01))==0)
-    {
-      warning("The serial interval distribution you have chosen is very wide compared to the duration of the epidemic.\nEstimation will be performed anyway but restults should be interpreted with care.")
-      MaxT <- length(cumsum(SI.Distr))
-    }else
-    {
-      MaxT<-min(which(abs(cumsum(SI.Distr)-1)<0.01))
-    }
-    results$SIDistr<-as.data.frame(cbind(0:(MaxT-1),SI.Distr[1:MaxT]))
-    names(results$SIDistr)<-c("k","w[k]")
-  }else # method "NonParametricSI"
-  {
-    results$SIDistr<-as.data.frame(cbind(FinalMean.SI,FinalStd.SI))
-    names(results$SIDistr)<-c("Mean Discrete SI","Std Discrete SI")
-  }
+  results$method <- method
+  results$si_distr <- si_distr
   
-  if(plot==TRUE)
+  results$SI.Moments<-as.data.frame(cbind(final_mean_si,Finalstd_si))
+  names(results$SI.Moments)<-c("Mean","Std")
+  
+  if(!is.null(dates)) 
+    results$dates <- dates
+  results$I <- I
+  results$I_local <- I
+  results$I_local[1] <- 0
+  results$I_imported <- c(I[1], rep(0, length(I)-1))
+  
+  if(plot)
   {
-    grey <- "#999999"
-    
-    par(mfrow=c(3,1),las=1,cex.main=1.8,cex.lab=1.5,cex.axis=1.2,mar=c(6,6,3,1),mgp=c(4,1,0))
-    plot(I,type="s",bty="n",xlab="Time",ylab="Incidence",main="Epidemic curve")		
-    plot(T.End,MeanRperDate.WT,type="p",bty="n",xlab="Time",ylab=expression(R^c),main=expression(paste("Estimated ",R^c,sep="")),ylim=c(0,max(R975.WT,na.rm=TRUE)),xlim=c(1,T),pch=20)
-    for(i in 1:length(T.End))
-    {
-      segments(T.End[i],R025.WT[i],T.End[i],R975.WT[i],col=grey)
-    }
-    points(T.End,MeanRperDate.WT,pch=20)
-    lines(0:T,rep(1,T+1),lty=2)
-    legend(leg.pos,c("Mean","95% CI"),col=c("Black",grey),lwd=c(0,1.5),pch=c(19,19),pt.cex=c(1,0),bty="n",cex=1.2)
-    
-    plot(0:(length(SI.Distr)-1),SI.Distr,type="h",lwd=10,lend=1,bty="n",xlab="Time",ylab="Frequency",main="Serial interval distribution",xlim=c(0,FinalMean.SI+6*FinalStd.SI))
-    
+    plots(results, what="all", legend = legend)
   }
   
   return(results)

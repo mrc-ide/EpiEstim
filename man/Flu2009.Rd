@@ -6,14 +6,11 @@
 \title{Data on the 2009 H1N1 influenza pandemic in a school in Pennsylvania.}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 32 days of observation,}
-  \item{SI.Distr}{a vector containing a set of 12 probabilities.}
+  \item{incidence}{a dataframe with 32 lines containing dates in first column, and daily incidence in second column,}
+  \item{si_distr}{a vector containing a set of 12 probabilities.}
 }}
 \source{
 Cauchemez S. et al. (2011) Role of social networks in shaping disease transmission during a community outbreak of 2009 H1N1 pandemic influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
-}
-\usage{
-Flu2009
 }
 \description{
 This data set gives:
@@ -26,11 +23,12 @@ amongst children in a school in Pennsylvania during the 2009 H1N1 influenza pand
 ## load data on pandemic flu in a school in 2009
 data("Flu2009")
 
-## estimate the reproduction number (method "NonParametricSI")
-EstimateR(Flu2009$Incidence, 
-          T.Start=2:26, T.End=8:32, 
-          method="NonParametricSI", SI.Distr=Flu2009$SI.Distr, 
-          plot=TRUE, leg.pos=xy.coords(1,3))
+## estimate the reproduction number (method "non_parametric_si")
+EstimateR(Flu2009$incidence, method="non_parametric_si",
+          config=list(t_start=2:26, t_end=8:32, 
+                      si_distr=Flu2009$si_distr, 
+                      plot=TRUE)
+          )
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.
@@ -42,5 +40,3 @@ Cauchemez S. et al. (2011) Role of social networks in shaping disease transmissi
 Ferguson N.M. et al. (2005) Strategies for containing an emerging influenza pandemic in Southeast Asia. Nature 437(7056), 209-214.
 }
 }
-\keyword{datasets}
-

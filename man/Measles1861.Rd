@@ -6,14 +6,11 @@
 \title{Data on the 1861 measles epidemic in Hagelloch, Germany.}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 48 days of observation,}
-  \item{SI.Distr}{a vector containing a set of 38 probabilities.}
+  \item{incidence}{a vector containing 48 days of observation,}
+  \item{si_distr}{a vector containing a set of 38 probabilities.}
 }}
 \source{
 Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
-}
-\usage{
-Measles1861
 }
 \description{
 This data set gives:
@@ -24,11 +21,12 @@ This data set gives:
 ## load data on measles in Hallegoch in 1861
 data("Measles1861")
 
-## estimate the reproduction number (method "NonParametricSI")
-EstimateR(Measles1861$Incidence, 
-          T.Start=17:42, T.End=23:48, 
-          method="NonParametricSI", SI.Distr=Measles1861$SI.Distr, 
-          plot=TRUE, leg.pos=xy.coords(1,7))
+## estimate the reproduction number (method "non_parametric_si")
+EstimateR(Measles1861$incidence, method="non_parametric_si",
+          config=list(t_start=17:42, t_end=23:48, 
+                si_distr=Measles1861$si_distr, 
+                plot=TRUE)
+          )
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.
@@ -36,5 +34,3 @@ EstimateR(Measles1861$Incidence,
 \references{
 Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 }
-\keyword{datasets}
-
