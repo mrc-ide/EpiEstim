@@ -6,8 +6,8 @@
 \title{Mock data on a rotavirus epidemic.}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 53 days of observation,}
-  \item{SI.Distr}{a dataframe containing a set of 19 observations; each observation corresponds to a pair of infector/infected individuals. EL and ER columns contain the lower an upper bounds of the dates of symptoms onset in the infectors. SL and SR columns contain the lower an upper bounds of the dates of symptoms onset in the infected indiviuals. The type column corresponds to XXX TO BE COMPLETED XXX}
+  \item{incidence}{a vector containing 53 days of observation,}
+  \item{si_distr}{a dataframe containing a set of 19 observations; each observation corresponds to a pair of infector/infected individuals. EL and ER columns contain the lower an upper bounds of the dates of symptoms onset in the infectors. SL and SR columns contain the lower an upper bounds of the dates of symptoms onset in the infected indiviuals. The type column corresponds to XXX TO BE COMPLETED XXX}
 }}
 \source{
 XXX TO BE COMPLETED XXX
@@ -26,15 +26,17 @@ This data set gives:
 ## load data 
 data("MockRotavirus")
 
-## estimate the reproduction number (method "SIFromData")
-EstimateR(MockRotavirus$Incidence, 
-          T.Start=2:47, T.End=8:53, 
-          method="SIFromData", 
-          SI.Data=MockRotavirus$SI.Data, 
-          SI.parametricDistr = "G", 
-          MCMC.control = list(burnin = 3000, thin=10), 
-          n1 = 500, n2 = 50,
-          plot=TRUE)
+## estimate the reproduction number (method "si_from_data")
+EstimateR(MockRotavirus$incidence, 
+          method="si_from_data", 
+          si_data=MockRotavirus$si_data,
+          config=list(
+            t_start=2:47, t_end=8:53,  
+            si_parametric_distr = "G", 
+            mcmc_control = list(burnin = 3000, thin=10), 
+            n1 = 500, n2 = 50,
+            plot=TRUE)
+          )
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.
@@ -45,4 +47,3 @@ EstimateR(MockRotavirus$Incidence,
 XXX TO BE COMPLETED XXX
 }
 }
-

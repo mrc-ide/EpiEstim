@@ -54,16 +54,18 @@ a plot (if \code{what = "I"}, \code{"R"}, or \code{"SI"}) or a \code{\link{grob}
 ## load data on pandemic flu in a school in 2009
 data("Flu2009")
 
-## estimate the instantaneous reproduction number (method "NonParametricSI")
-R_i <- EstimateR(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-          SI.Distr=Flu2009$SI.Distr, plot=FALSE)
+## estimate the instantaneous reproduction number (method "non_parametric_si")
+R_i <- EstimateR(Flu2009$incidence, method="non_parametric_si",
+                 config=list(t_start=2:26, t_end=8:32, 
+                             si_distr=Flu2009$si_distr, plot=FALSE)
+                )
 
 ## visualise results
 plots(R_i, legend = FALSE)
 
-## estimate the instantaneous reproduction number (method "NonParametricSI")
-R_c <- WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="NonParametricSI", 
-          SI.Distr=Flu2009$SI.Distr, plot=FALSE)
+## estimate the instantaneous reproduction number (method "non_parametric_si")
+R_c <- WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
+          si_distr=Flu2009$si_distr, plot=FALSE)
 
 ## produce plot of the incidence 
        ## (with, on top of total incidence, the incidence of imported cases), 
@@ -80,10 +82,9 @@ p_Rc <- plots(R_c, "R",
 gridExtra::grid.arrange(p_I,p_SI,p_Ri,p_Rc,ncol=2)
 
 }
-\author{
-Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori \email{a.cori@imperial.ac.uk}
-}
 \seealso{
 \code{\link{EstimateR}} and \code{\link{WT}}
 }
-
+\author{
+Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori \email{a.cori@imperial.ac.uk}
+}

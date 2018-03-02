@@ -5,7 +5,7 @@
 
 #' Overall Infectivity Due To Previously Infected Individuals
 #' 
-#' \code{OverallInfectivity} computes the overall infectivity due to previously infected individuals. 
+#' \code{overall_infectivity} computes the overall infectivity due to previously infected individuals. 
 #' 
 #' @param I One of the following
 #' \itemize{
@@ -13,7 +13,7 @@
 #' \item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
 #' } 
 #' Note that the cases from the first time step are always all assumed to be imported cases. 
-#' @param SI.Distr Vector of probabilities giving the discrete distribution of the serial interval.
+#' @param si_distr Vector of probabilities giving the discrete distribution of the serial interval.
 #' @return A vector which contains the overall infectivity \eqn{\lambda_t} at each time step
 #' @details{
 #' The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is equal to the sum of the previously infected individuals 
@@ -33,22 +33,22 @@
 #' data("Flu2009")
 #' 
 #' ## compute overall infectivity
-#' lambda <- OverallInfectivity(Flu2009$Incidence, Flu2009$SI.Distr)
+#' lambda <- overall_infectivity(Flu2009$incidence, Flu2009$si_distr)
 #' par(mfrow=c(2,1))
-#' plot(Flu2009$Incidence, type="s", xlab="time (days)", ylab="Incidence")
+#' plot(Flu2009$incidence, type="s", xlab="time (days)", ylab="incidence")
 #' title(main="Epidemic curve")
 #' plot(lambda, type="s", xlab="time (days)", ylab="Infectivity")
 #' title(main="Overall infectivity")
-OverallInfectivity <-function (I,SI.Distr)
+overall_infectivity <-function (I,si_distr)
 {
   I <- process_I(I)
   T<-nrow(I)
-  check_SI.Distr(SI.Distr, "warning")
+  check_si_distr(si_distr, "warning")
   lambda <- vector()
   lambda[1]<-NA
   for (t in 2:T)
   {
-    lambda[t] <- sum(SI.Distr[1:t]*rowSums(I[t:1, c("local","imported")]),na.rm=TRUE)
+    lambda[t] <- sum(si_distr[1:t]*rowSums(I[t:1, c("local","imported")]),na.rm=TRUE)
   }
   return(lambda)
 }

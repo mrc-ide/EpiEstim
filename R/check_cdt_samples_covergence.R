@@ -1,12 +1,12 @@
 #######################################################################################################################
-# check_CDTsamples_convergence runs a Gelman Rubin test to check convergence of the MCMC chain in coarseDataTools #
+# check_cdt_samples_convergence runs a Gelman Rubin test to check convergence of the MCMC chain in coarseDataTools #
 #######################################################################################################################
 
-#' check_CDTsamples_convergence TITLE
+#' check_cdt_samples_convergence TITLE
 #' 
-#' \code{check_CDTsamples_convergence} DESCRIPTION TO COME.
+#' \code{check_cdt_samples_convergence} DESCRIPTION TO COME.
 #' 
-#' @param CDTsamples XXXXXXX.
+#' @param cdtsamples XXXXXXX.
 #' @return TRUE if the Gelman Rubin test for convergence was successful, FALSE otherwise
 #' @details{
 #' XXXXXXX. 
@@ -18,13 +18,13 @@
 #' @export
 #' @examples
 #' ## XXXXXXX.
-check_CDTsamples_convergence <- function(CDTsamples)
+check_cdt_samples_convergence <- function(cdtsamples)
 {
   
   #############################################################################################################################
   # checking convergence of the MCMC by using the Gelman-Rubin algorithm between the first and second half of the MCMC sample
-  spl1 <- CDTsamples[1:floor(nrow(CDTsamples)/2),]
-  spl2 <- CDTsamples[(ceiling(nrow(CDTsamples)/2)+1):nrow(CDTsamples),]
+  spl1 <- cdtsamples[1:floor(nrow(cdtsamples)/2),]
+  spl2 <- cdtsamples[(ceiling(nrow(cdtsamples)/2)+1):nrow(cdtsamples),]
   GRD <- gelman.diag(as.mcmc.list(list(as.mcmc(spl1), as.mcmc(spl2))))
   # Is any of the potential scale reduction factors >1.1 (looking at the upper CI)? 
   # If so this would suggest that the MCMC has not converged well. 

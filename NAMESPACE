@@ -2,11 +2,11 @@
 
 export(DiscrSI)
 export(EstimateR)
-export(OverallInfectivity)
 export(WT)
-export(check_CDTsamples_convergence)
+export(check_cdt_samples_convergence)
 export(coarse2estim)
 export(init_MCMC_params)
+export(overall_infectivity)
 export(plots)
 import(grid)
 import(gridExtra)

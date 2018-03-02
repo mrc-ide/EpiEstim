@@ -41,13 +41,12 @@ DicreteSIDistr[i+1] <- DiscrSI(i, MeanFluSI, SdFluSI)
 plot(0:20, DicreteSIDistr, type="h", lwd=10, lend=1, xlab="time (days)", ylab="frequency")
 title(main="Discrete distribution of the serial interval of influenza")
 }
-\author{
-Anne Cori \email{a.cori@imperial.ac.uk}
-}
 \references{
 Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 }
 \seealso{
-\code{\link{OverallInfectivity}}, \code{\link{EstimateR}}
+\code{\link{overall_infectivity}}, \code{\link{EstimateR}}
 }
-
+\author{
+Anne Cori \email{a.cori@imperial.ac.uk}
+}

@@ -6,8 +6,8 @@
 \title{Data on the 1972 smallpox epidemic in Kosovo}
 \format{A list of two elements: 
 \describe{
-  \item{Incidence}{a vector containing 57 days of observation,}
-  \item{SI.Distr}{a vector containing a set of 46 probabilities.}
+  \item{incidence}{a vector containing 57 days of observation,}
+  \item{si_distr}{a vector containing a set of 46 probabilities.}
 }}
 \source{
 Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health Organization.
@@ -21,11 +21,12 @@ This data set gives:
 ## load data on smallpox in Kosovo in 1972
 data("Smallpox1972")
 
-## estimate the reproduction number (method "NonParametricSI")
-EstimateR(Smallpox1972$Incidence, 
-          T.Start=27:51, T.End=33:57, 
-          method="NonParametricSI", SI.Distr=Smallpox1972$SI.Distr, 
-          plot=TRUE)
+## estimate the reproduction number (method "non_parametric_si")
+EstimateR(Smallpox1972$incidence, method="non_parametric_si",
+          config=list(t_start=27:51, t_end=33:57, 
+                      si_distr=Smallpox1972$si_distr, 
+                      plot=TRUE)
+          )
 # the second plot produced shows, at each each day, 
 # the estimate of the reproduction number 
 # over the 7-day window finishing on that day.
@@ -39,4 +40,3 @@ Gani R. and S. Leach (2001) Transmission potential of smallpox in contemporary p
 Riley S. and N. M. Ferguson (2006) Smallpox transmission and control: spatial dynamics in Great Britain. Proc Natl Acad Sci U S A 103(33): 12637-12642.
 }
 }
-
