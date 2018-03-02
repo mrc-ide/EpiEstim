@@ -700,8 +700,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   if(is.matrix(results$SI.Distr)) 
   {
     colnames(results$SI.Distr) <- paste0("t",0:(ncol(results$SI.Distr)-1))
-  }else
-  {
+  }else {
     names(results$SI.Distr) <- paste0("t",0:(length(results$SI.Distr)-1))
   }
   if (SIUncertainty == "Y") {
@@ -717,8 +716,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
   if(!is.null(I$dates)) 
   {
     results$dates <- check_dates(I)
-  }else
-  {
+  }else {
     results$dates <- 1:T
   }
   results$I <- rowSums(I[,c("local","imported")])
@@ -730,8 +728,7 @@ EstimateR_func <- function (I, T.Start, T.End, method = c("NonParametricSI", "Pa
     if(sum(I$imported[-1])>0) # more than the first cases are imported
     {
       add_imported_cases <- TRUE
-    }else
-    {
+    }else {
       add_imported_cases <- FALSE
     }
     
