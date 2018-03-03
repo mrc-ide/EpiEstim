@@ -160,11 +160,11 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
   if (what == "I" | what =="all") {
     if(add_imported_cases)
     {
-      p1 <- plot(as.incidence(I, dates = x$dates), ylab="incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
+      p1 <- plot(as.incidence(I, dates = x$dates), ylab="Incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     }else
     {
-      p1 <- plot(as.incidence(rowSums(I), dates = x$dates), ylab="incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
+      p1 <- plot(as.incidence(rowSums(I), dates = x$dates), ylab="Incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     }
     
