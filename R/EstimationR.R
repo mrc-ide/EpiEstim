@@ -221,13 +221,13 @@
 #' ## compare with version with no uncertainty
 #' R_Parametric <- EstimateR(MockRotavirus$incidence, 
 #'                           method="parametric_si", 
-#'                           t_start=2:47, t_end=8:53, 
-#'                           mean_si = mean(R_si_from_data$SI.Moments$Mean), 
-#'                           std_si = mean(R_si_from_data$SI.Moments$Std), 
-#'                           plot=TRUE)
+#'                           config=list(t_start=2:47, t_end=8:53, 
+#'                                       mean_si = mean(R_si_from_data$SI.Moments$Mean), 
+#'                                       std_si = mean(R_si_from_data$SI.Moments$Std), 
+#'                                       plot=TRUE))
 #' ## generate plots
-#' p_uncertainty <- plots(R_si_from_data, "R", ylim=c(0, 1.5))
-#' p_no_uncertainty <- plots(R_Parametric, "R", ylim=c(0, 1.5))
+#' p_uncertainty <- plots(R_si_from_data, "R", options_R=list(ylim=c(0, 1.5)))
+#' p_no_uncertainty <- plots(R_Parametric, "R", options_R=list(ylim=c(0, 1.5)))
 #' gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
 #' # the left hand side graph is with uncertainty in the SI distribution, the right hand side without. 
 #' # The credible intervals are wider when accounting for uncertainty in the SI distribution. 
