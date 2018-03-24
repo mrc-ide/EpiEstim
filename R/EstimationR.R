@@ -142,6 +142,7 @@
 #' The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number for each time window are obtained from this sample.
 #' 
 #' ----------------------- \code{method "si_from_sample"} -----------------------
+#'
 #' \code{Method "si_from_sample"} also allows accounting for uncertainty on the serial interval distribution. 
 #' Unlike methods "uncertain_si" and "si_from_data", the user directly provides (in argument \code{si_sample}) a sample of serial interval distribution to be explored. 
 #' 
