@@ -7,7 +7,7 @@
 discr_si(k, mu, sigma)
 }
 \arguments{
-\item{k}{Positive integer for which the discrete distribution is desired.}
+\item{k}{Positive integer, or vector of positive ingerers for which the discrete distribution is desired.}
 
 \item{mu}{A positive real giving the mean of the Gamma distribution.}
 
@@ -33,9 +33,9 @@ where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma dis
 ## Computing the discrete serial interval of influenza
 mean_flu_si <- 2.6
 sd_flu_si <- 1.5
-dicrete_si_distr <- sapply(0:20, function(i) discr_si(i, mean_flu_si, sd_flu_si))
-plot(0:20, dicrete_si_distr, type="h", lwd=10, lend=1, xlab="time (days)", ylab="frequency")
-title(main="Discrete distribution of the serial interval of influenza")
+dicrete_si_distr <- discr_si(0:20, mean_flu_si, sd_flu_si)
+plot(0:20, dicrete_si_distr, type = "h", lwd = 10, lend = 1, xlab = "time (days)", ylab = "frequency")
+title(main = "Discrete distribution of the serial interval of influenza")
 }
 \references{
 Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
