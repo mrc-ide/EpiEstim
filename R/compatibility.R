@@ -17,7 +17,7 @@
 #' @param Std.Std.SI see \code{config$std_std_si} in \code{estimate_r}
 #' @param Min.Std.SI see \code{config$min_std_si} in \code{estimate_r}
 #' @param Max.Std.SI see \code{config$max_std_si} in \code{estimate_r}
-#' @param SI.Distr see \code{si_distr} in \code{estimate_r}
+#' @param SI.Distr see \code{config$si_distr} in \code{estimate_r}
 #' @param SI.Data see \code{si_data} in \code{estimate_r}
 #' @param SI.parametricDistr see \code{config$si_parametric_distr} in \code{estimate_r}
 #' @param MCMC.control see \code{config$mcmc_control} in \code{estimate_r}
@@ -96,8 +96,30 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
 #'
 #' @export
 #'
-DiscrSI<-function(k,mu,sigma)
+DiscrSI <- function(k,mu,sigma)
 {
   .Deprecated("discr_si")
   discr_si(k,mu,sigma)
 }
+
+
+
+#' Function to ensure compatibility with EpiEstim versions <2.0
+#'
+#' Please only use for compatibility;
+#' Prefer the new overall_infectivity function instead
+#'
+#' @param I see \code{I} in \code{overall_infectivity}
+#' @param SI.Distr see \code{si_distr} in \code{overall_infectivity}
+#'
+#' @return
+#' @export
+#'
+#' @examples
+OverallInfectivity <- function(I, SI.Distr)
+{
+  .Deprecated("overall_infectivity")
+  overall_infectivity(I = I, si_distr = SI.Distr)
+}
+
+

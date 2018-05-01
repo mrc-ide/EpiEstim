@@ -43,7 +43,7 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 
 \item{Max.Std.SI}{see \code{config$max_std_si} in \code{estimate_r}}
 
-\item{SI.Distr}{see \code{si_distr} in \code{estimate_r}}
+\item{SI.Distr}{see \code{config$si_distr} in \code{estimate_r}}
 
 \item{SI.Data}{see \code{si_data} in \code{estimate_r}}
 
