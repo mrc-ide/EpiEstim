@@ -357,7 +357,7 @@ estimate_r_func <- function (I,
   # distribution from the discrete SI distribution        #
   #########################################################
   
-  PosteriorFromSIDistr <- function(I, si_distr, a_prior, b_prior,
+  posterior_from_si_distr <- function(I, si_distr, a_prior, b_prior,
                                    t_start, t_end) {
     nb_time_periods <- length(t_start)
     lambda <- overall_infectivity(I, si_distr)
@@ -657,7 +657,7 @@ estimate_r_func <- function (I,
                                          1)))
     Finalstd_si <- sqrt(sum(config$si_distr * (0:(length(config$si_distr) -
                                              1))^2) - final_mean_si^2)
-    post <- PosteriorFromSIDistr(I, config$si_distr, a_prior, b_prior,
+    post <- posterior_from_si_distr(I, config$si_distr, a_prior, b_prior,
                                  config$t_start, config$t_end)
     a_posterior <- unlist(post[[1]])
     b_posterior <- unlist(post[[2]])
