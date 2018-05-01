@@ -1,10 +1,10 @@
 #########################################################################################################################
-# EstimateR is a wraper which replace the old EstimateR with EstimateR_func and accepts an object of class "cd.fit.mcmc"#
+# estimate_r replaces the old EstimateR function #
 #########################################################################################################################
 
 #' Estimated Instantaneous Reproduction Number
 #' 
-#' \code{EstimateR} estimates the reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
+#' \code{estimate_r} estimates the reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
 #' 
 #' @param I One of the following
 #' \itemize{
@@ -83,7 +83,7 @@
 #' \item{In method "parametric_si" the user specifies the mean and sd of the serial interval}
 #' \item{In method "uncertain_si" the mean and sd of the serial interval are each drawn from truncated normal distributions, with parameters specified by the user}
 #' \item{In method "si_from_data", the serial interval distribution is directly estimated, using MCMC, from interval censored exposure data, with data provided by the user together with a choice of parametric distribution for the serial interval}
-#' \item{In method "si_from_sample", the user directly provides the sample of serial interval distribution to use for estimation of R. This can be a useful alternative to the previous method, where the MCMC estimation of the serial interval distribution could be run once, and the same estimated SI distribution then used in EstimateR in different contexts, e.g. with different time windows, hence avoiding to rerun the MCMC everytime EstimateR is called.}
+#' \item{In method "si_from_sample", the user directly provides the sample of serial interval distribution to use for estimation of R. This can be a useful alternative to the previous method, where the MCMC estimation of the serial interval distribution could be run once, and the same estimated SI distribution then used in estimate_r in different contexts, e.g. with different time windows, hence avoiding to rerun the MCMC everytime estimate_r is called.}
 #' }
 #' 
 #' If \code{plot} is \code{TRUE}, 3 plots are produced. 
@@ -162,7 +162,7 @@
 #' data("Flu2009")
 #' 
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' EstimateR(Flu2009$incidence, method="non_parametric_si", 
+#' estimate_r(Flu2009$incidence, method="non_parametric_si", 
 #'           config=list(t_start=2:26, t_end=8:32,
 #'           si_distr=Flu2009$si_distr, plot=TRUE))
 #' # the second plot produced shows, at each each day, 
@@ -178,19 +178,19 @@
 #' # get incidence per group (location)
 #' I <- incidence(data, groups = location)
 #' # Estimate R with assumptions on serial interval
-#' EstimateR(I, method = "parametric_si", 
+#' estimate_r(I, method = "parametric_si", 
 #'           config=list(t_start = 2:21, t_end = 8:27,
 #'           mean_si = 2.6, std_si = 1.5, plot = TRUE))
 #' 
 #' ## estimate the reproduction number (method "parametric_si")
-#' EstimateR(Flu2009$incidence, method="parametric_si", 
+#' estimate_r(Flu2009$incidence, method="parametric_si", 
 #'           config=list(t_start=2:26, t_end=8:32, 
 #'           mean_si=2.6, std_si=1.5, plot=TRUE))
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number over the 7-day window finishing on that day.
 #' 
 #' ## estimate the reproduction number (method "uncertain_si")
-#' EstimateR(Flu2009$incidence, method="uncertain_si",
+#' estimate_r(Flu2009$incidence, method="uncertain_si",
 #'           config=list(t_start=2:26, t_end=8:32,
 #'           mean_si=2.6, std_mean_si=1, min_mean_si=1, max_mean_si=4.2, 
 #'           std_si=1.5, std_std_si=0.5, min_std_si=0.5, max_std_si=2.5, 
@@ -209,7 +209,7 @@
 #' ## estimate the reproduction number (method "si_from_data")
 #' MCMC_seed <- 1
 #' overall_seed <- 2
-#' R_si_from_data <- EstimateR(MockRotavirus$incidence,
+#' R_si_from_data <- estimate_r(MockRotavirus$incidence,
 #'                             method="si_from_data",  
 #'                             si_data=MockRotavirus$si_data, 
 #'                             config=list(t_start=2:47, t_end=8:53, 
@@ -220,7 +220,7 @@
 #'                                         seed = overall_seed,
 #'                                         plot=TRUE))
 #' ## compare with version with no uncertainty
-#' R_Parametric <- EstimateR(MockRotavirus$incidence, 
+#' R_Parametric <- estimate_r(MockRotavirus$incidence, 
 #'                           method="parametric_si", 
 #'                           config=list(t_start=2:47, t_end=8:53, 
 #'                                       mean_si = mean(R_si_from_data$SI.Moments$Mean), 
@@ -243,7 +243,7 @@
 #'                              n.samples = 5000, 
 #'                              seed = MCMC_seed)
 #' si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
-#' R_si_from_sample <- EstimateR(MockRotavirus$incidence, 
+#' R_si_from_sample <- estimate_r(MockRotavirus$incidence, 
 #'                             method="si_from_sample", si_sample=si_sample,
 #'                             config=list(t_start=2:47, t_end=8:53, 
 #'                             n2 = 50,
@@ -376,7 +376,7 @@ estimate_r <- function(I,
 }
 
 #########################################################
-# EstimateR_func: Doing the heavy work in EstimateR     #
+# EstimateR_func: Doing the heavy work in estimate_r     #
 #########################################################
 
 #' @import reshape2 grid gridExtra

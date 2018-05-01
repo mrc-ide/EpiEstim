@@ -61,7 +61,7 @@
 #'
 #' If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "non_parametric_si"} .
 #' }
-#' @seealso \code{\link{DiscrSI}}, \code{\link{EstimateR}}
+#' @seealso \code{\link{DiscrSI}}, \code{\link{estimate_r}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk} 
 #' @references {
 #' Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).

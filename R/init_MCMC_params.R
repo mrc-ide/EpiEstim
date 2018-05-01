@@ -1,5 +1,5 @@
 #######################################################################################################################
-# init_MCMC_params finds clever starting points for the MCMC to be used to estimate the serial interval, when using option si_from_data in EstimateR #
+# init_MCMC_params finds clever starting points for the MCMC to be used to estimate the serial interval, when using option si_from_data in estimate_r #
 #######################################################################################################################
 
 #' init_MCMC_params TITLE

@@ -35,7 +35,7 @@ check_cdt_samples_convergence <- function(cdtsamples)
             > par(mfrow=c(2,1))
             > plot(res$SI.Moments[,'Mean'], type='l', xlab='Iterations', ylab='Mean SI') 
             > plot(res$SI.Moments[,'Std'], type='l', xlab='Iterations', ylab='Std SI'),
-            where res is the output of EstimateR
+            where res is the output of estimate_r
             and decide whether to rerun for longer.")
     return(FALSE)
   }else

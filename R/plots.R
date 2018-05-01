@@ -1,8 +1,8 @@
 #' Plotting the outputs of functions estimating the reproduction number from incidence time series and assumptions regarding the serial interval distribution
 #' 
-#' \code{plots} allows plotting the outputs of functions \code{\link{EstimateR}} and \code{\link{WT}}
+#' \code{plots} allows plotting the outputs of functions \code{\link{estimate_r}} and \code{\link{WT}}
 #' 
-#' @param x The output of function \code{\link{EstimateR}} or function \code{\link{WT}}, or a list of such outputs. If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph. 
+#' @param x The output of function \code{\link{estimate_r}} or function \code{\link{WT}}, or a list of such outputs. If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph. 
 #' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or all three (\code{what='all'})). 
 #' @param add_imported_cases A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases. 
 #' @param options_I For what = "I" or "all". A list of graphical options: 
@@ -30,7 +30,7 @@
 #' @param legend A boolean (TRUE by default) governing the presence / absence of legends on the plots
 #' @return a plot (if \code{what = "I"}, \code{"R"}, or \code{"SI"}) or a \code{\link{grob}} object (if \code{what = "all"}).
 # #' @details
-#' @seealso \code{\link{EstimateR}} and \code{\link{WT}}
+#' @seealso \code{\link{estimate_r}} and \code{\link{WT}}
 #' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori \email{a.cori@imperial.ac.uk} 
 # #' @references 
 #' @importFrom ggplot2 aes aes_string theme
@@ -42,7 +42,7 @@
 #' data("Flu2009")
 #' 
 #' ## estimate the instantaneous reproduction number (method "non_parametric_si")
-#' R_i <- EstimateR(Flu2009$incidence, method="non_parametric_si",
+#' R_i <- estimate_r(Flu2009$incidence, method="non_parametric_si",
 #'                  config=list(t_start=2:26, t_end=8:32, 
 #'                              si_distr=Flu2009$si_distr, plot=FALSE)
 #'                 )

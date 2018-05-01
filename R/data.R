@@ -31,7 +31,8 @@
 #' data("Flu1918")
 #' 
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' EstimateR(Flu1918$incidence, method="non_parametric_si",
+#' estimate_r(Flu1918$incidence, 
+#'           method="non_parametric_si",
 #'           config=list(t_start=2:86, t_end=8:92, 
 #'                       si_distr=Flu1918$si_distr, 
 #'                       plot=TRUE))
@@ -69,7 +70,7 @@ NULL
 #' data("Flu2009")
 #' 
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' EstimateR(Flu2009$incidence, method="non_parametric_si",
+#' estimate_r(Flu2009$incidence, method="non_parametric_si",
 #'           config=list(t_start=2:26, t_end=8:32, 
 #'                       si_distr=Flu2009$si_distr, 
 #'                       plot=TRUE)
@@ -101,7 +102,7 @@ NULL
 #' data("Measles1861")
 #' 
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' EstimateR(Measles1861$incidence, method="non_parametric_si",
+#' estimate_r(Measles1861$incidence, method="non_parametric_si",
 #'           config=list(t_start=17:42, t_end=23:48, 
 #'                 si_distr=Measles1861$si_distr, 
 #'                 plot=TRUE)
@@ -138,7 +139,7 @@ NULL
 #' data("SARS2003")
 #' 
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' EstimateR(SARS2003$incidence, method="non_parametric_si",
+#' estimate_r(SARS2003$incidence, method="non_parametric_si",
 #'           config=list(t_start=14:101, t_end=20:107, 
 #'                       si_distr=SARS2003$si_distr, 
 #'                       plot=TRUE)
@@ -177,7 +178,7 @@ NULL
 #' data("Smallpox1972")
 #' 
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' EstimateR(Smallpox1972$incidence, method="non_parametric_si",
+#' estimate_r(Smallpox1972$incidence, method="non_parametric_si",
 #'           config=list(t_start=27:51, t_end=33:57, 
 #'                       si_distr=Smallpox1972$si_distr, 
 #'                       plot=TRUE)
@@ -217,7 +218,7 @@ NULL
 #' data("MockRotavirus")
 #' 
 #' ## estimate the reproduction number (method "si_from_data")
-#' EstimateR(MockRotavirus$incidence, 
+#' estimate_r(MockRotavirus$incidence, 
 #'           method="si_from_data", 
 #'           si_data=MockRotavirus$si_data,
 #'           config=list(

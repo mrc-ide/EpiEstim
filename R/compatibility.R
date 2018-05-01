@@ -45,7 +45,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       plot = FALSE, legend = FALSE) {
   .Deprecated("estimate_r")
   
-  ### TO DO change to incidence
+  ### TO DO change I to incidence
   
   method_tr <- c("NonParametricSI" = "non_parametric_si", 
                  "ParametricSI" = "parametric_si",
