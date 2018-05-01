@@ -392,7 +392,7 @@ estimate_r_func <- function (I,
     nb_time_periods <- length(t_start)
     
     if(is.null(si_distr))
-      si_distr <- sapply(1:T, function(t) discr_si(t - 1, mean_si, std_si))
+      si_distr <- discr_si(0:(T-1), mean_si, std_si)
     
     final_mean_si <- sum(si_distr * (0:(length(si_distr) -
                                          1)))
@@ -647,8 +647,7 @@ estimate_r_func <- function (I,
   }else{
     # CertainSI
     if (parametric_si == "Y") {
-      config$si_distr <- sapply(1:T, function(t) discr_si(t - 1,
-                                                  config$mean_si, config$std_si))
+      config$si_distr <- discr_si(0:(T-1), config$mean_si, config$std_si)
     }
     if (length(config$si_distr) < T + 1) {
       config$si_distr[(length(config$si_distr) + 1):(T + 1)] <- 0

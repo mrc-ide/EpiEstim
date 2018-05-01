@@ -210,7 +210,7 @@ WT <- function(I, t_start, t_end,
   
   if(parametric_si=="Y")
   {
-    si_distr <- sapply(1:T, function(t) discr_si(t-1,mean_si,std_si))
+    si_distr <- discr_si(0:(T-1),mean_si,std_si)
   }
   if(length(si_distr)<T+1){si_distr[(length(si_distr)+1):(T+1)]<-0}
   final_mean_si<-sum(si_distr*(0:(length(si_distr)-1)))
