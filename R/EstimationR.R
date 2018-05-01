@@ -306,7 +306,7 @@ estimate_r <- function(I,
       set.seed(config$seed)
     }
 
-    out <- EstimateR_func(I=I,
+    out <- estimate_r_func(I=I,
                           method = "si_from_data",
                           si_sample = c2e$si_sample,
                           config=config
@@ -319,7 +319,7 @@ estimate_r <- function(I,
       set.seed(config$seed)
     }
     
-    out <- EstimateR_func(I=I, method = method, si_sample=si_sample,
+    out <- estimate_r_func(I=I, method = method, si_sample=si_sample,
                           config = config
                           )
   }
@@ -327,7 +327,7 @@ estimate_r <- function(I,
 }
 
 #########################################################
-# EstimateR_func: Doing the heavy work in estimate_r     #
+# estimate_r_func: Doing the heavy work in estimate_r     #
 #########################################################
 
 #' @import reshape2 grid gridExtra
@@ -336,7 +336,7 @@ estimate_r <- function(I,
 #' @importFrom stats median pgamma plnorm pweibull qgamma qlnorm quantile qweibull rgamma rmultinom rnorm sd
 #' @importFrom graphics plot
 #' @importFrom incidence as.incidence 
-EstimateR_func <- function (I,
+estimate_r_func <- function (I,
                             si_sample,
                             method = c("non_parametric_si", "parametric_si",
                                         "uncertain_si", "si_from_data", "si_from_sample"),
