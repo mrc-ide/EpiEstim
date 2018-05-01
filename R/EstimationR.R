@@ -256,7 +256,7 @@
 #' all(R_si_from_sample$R$`Mean(R)` == R_si_from_data$R$`Mean(R)`) 
 #' }
 #' 
-EstimateR <- function(I,
+estimate_r <- function(I,
                       method = c("non_parametric_si", "parametric_si",
                                  "uncertain_si", "si_from_data",
                                  "si_from_sample"),
