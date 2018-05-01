@@ -31,14 +31,10 @@ where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma dis
 }
 \examples{
 ## Computing the discrete serial interval of influenza
-MeanFluSI <- 2.6
-SdFluSI <- 1.5
-DicreteSIDistr <- vector()
-for(i in 0:20)
-{
-DicreteSIDistr[i+1] <- discr_si(i, MeanFluSI, SdFluSI)
-}
-plot(0:20, DicreteSIDistr, type="h", lwd=10, lend=1, xlab="time (days)", ylab="frequency")
+mean_flu_si <- 2.6
+sd_flu_si <- 1.5
+dicrete_si_distr <- sapply(0:20, function(i) discr_si(i, mean_flu_si, sd_flu_si))
+plot(0:20, dicrete_si_distr, type="h", lwd=10, lend=1, xlab="time (days)", ylab="frequency")
 title(main="Discrete distribution of the serial interval of influenza")
 }
 \references{
