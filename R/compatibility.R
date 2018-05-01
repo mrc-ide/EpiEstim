@@ -81,3 +81,23 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
   estimate_r(I, method, si_data = SI.Data, si_sample = SI.Sample, 
              config = config)
 }
+
+
+
+
+#' Function to ensure compatibility with EpiEstim versions <2.0
+#'
+#' Please only use for compatibility;
+#' Prefer the new discr_si function instead
+#'
+#' @param k see \code{k} in \code{discr_si}
+#' @param mu see \code{mu} in \code{discr_si}
+#' @param sigma see \code{sigma} in \code{discr_si}
+#'
+#' @export
+#'
+DiscrSI<-function(k,mu,sigma)
+{
+  .Deprecated("discr_si")
+  discr_si(k,mu,sigma)
+}

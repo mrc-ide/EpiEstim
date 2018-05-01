@@ -24,7 +24,7 @@ amongst children in a school in Pennsylvania during the 2009 H1N1 influenza pand
 data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
-EstimateR(Flu2009$incidence, method="non_parametric_si",
+estimate_r(Flu2009$incidence, method="non_parametric_si",
           config=list(t_start=2:26, t_end=8:32, 
                       si_distr=Flu2009$si_distr, 
                       plot=TRUE)

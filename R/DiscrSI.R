@@ -5,7 +5,7 @@
 
 #' Discretized Generation Time Distribution Assuming A Shifted Gamma Distribution
 #' 
-#' \code{DiscrSI} computes the discrete distribution of the serial interval, assuming that the serial interval is shifted Gamma distributed, with shift 1. 
+#' \code{discr_si} computes the discrete distribution of the serial interval, assuming that the serial interval is shifted Gamma distributed, with shift 1. 
 #' 
 #' @param k Positive integer for which the discrete distribution is desired.
 #' @param mu A positive real giving the mean of the Gamma distribution.
@@ -31,11 +31,11 @@
 #' DicreteSIDistr <- vector()
 #' for(i in 0:20)
 #' {
-#' DicreteSIDistr[i+1] <- DiscrSI(i, MeanFluSI, SdFluSI)
+#' DicreteSIDistr[i+1] <- discr_si(i, MeanFluSI, SdFluSI)
 #' }
 #' plot(0:20, DicreteSIDistr, type="h", lwd=10, lend=1, xlab="time (days)", ylab="frequency")
 #' title(main="Discrete distribution of the serial interval of influenza")
-DiscrSI<-function(k,mu,sigma)
+discr_si<-function(k,mu,sigma)
 {
   if(sigma<0)
   {

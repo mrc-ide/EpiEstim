@@ -98,7 +98,7 @@
 #' ----------------------- \code{method "parametric_si"} -----------------------
 #'   
 #' The mean and standard deviation of the continuous distribution of the serial interval are given in the arguments \code{mean_si} and \code{std_si}.
-#' The discrete distribution of the serial interval is derived automatically using \code{\link{DiscrSI}}.
+#' The discrete distribution of the serial interval is derived automatically using \code{\link{discr_si}}.
 #' 
 #' ----------------------- \code{method "uncertain_si"} -----------------------
 #'    
@@ -147,7 +147,7 @@
 #' Unlike methods "uncertain_si" and "si_from_data", the user directly provides (in argument \code{si_sample}) a sample of serial interval distribution to be explored. 
 #' 
 #' }
-#' @seealso \code{\link{DiscrSI}}
+#' @seealso \code{\link{discr_si}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk} 
 #' @references {
 #' Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
@@ -392,7 +392,7 @@ estimate_r_func <- function (I,
     nb_time_periods <- length(t_start)
     
     if(is.null(si_distr))
-      si_distr <- sapply(1:T, function(t) DiscrSI(t - 1, mean_si, std_si))
+      si_distr <- sapply(1:T, function(t) discr_si(t - 1, mean_si, std_si))
     
     final_mean_si <- sum(si_distr * (0:(length(si_distr) -
                                          1)))
@@ -647,7 +647,7 @@ estimate_r_func <- function (I,
   }else{
     # CertainSI
     if (parametric_si == "Y") {
-      config$si_distr <- sapply(1:T, function(t) DiscrSI(t - 1,
+      config$si_distr <- sapply(1:T, function(t) discr_si(t - 1,
                                                   config$mean_si, config$std_si))
     }
     if (length(config$si_distr) < T + 1) {

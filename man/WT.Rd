@@ -76,7 +76,7 @@ The third plot shows the discrete distribution of the serial interval.
 ----------------------- \code{method "parametric_si"} -----------------------
 
 The mean and standard deviation of the continuous distribution of the serial interval are given in the arguments \code{mean_si} and \code{std_si}.
-The discrete distribution of the serial interval is derived automatically using \code{\link{DiscrSI}}.
+The discrete distribution of the serial interval is derived automatically using \code{\link{discr_si}}.
 
 If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "non_parametric_si"} .
 }
@@ -89,7 +89,7 @@ data("Flu2009")
 WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
    si_distr=Flu2009$si_distr, plot=TRUE, nSim=100)
 # the second plot produced shows, at each each day, 
-# the estimate of the cqse reproduction number over the 7-day window finishing on that day.
+# the estimate of the case reproduction number over the 7-day window finishing on that day.
 
 ## estimate the case reproduction number (method "parametric_si")
 WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="parametric_si", 
@@ -104,7 +104,7 @@ Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respirato
 }
 }
 \seealso{
-\code{\link{DiscrSI}}, \code{\link{EstimateR}}
+\code{\link{discr_si}}, \code{\link{estimate_r}}
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}

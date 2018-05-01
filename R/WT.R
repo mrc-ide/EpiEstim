@@ -57,11 +57,11 @@
 #' ----------------------- \code{method "parametric_si"} -----------------------
 #' 
 #' The mean and standard deviation of the continuous distribution of the serial interval are given in the arguments \code{mean_si} and \code{std_si}.
-#' The discrete distribution of the serial interval is derived automatically using \code{\link{DiscrSI}}.
+#' The discrete distribution of the serial interval is derived automatically using \code{\link{discr_si}}.
 #'
 #' If \code{plot} is \code{TRUE}, 3 plots are produced, which are identical to the ones for \code{method "non_parametric_si"} .
 #' }
-#' @seealso \code{\link{DiscrSI}}, \code{\link{estimate_r}}
+#' @seealso \code{\link{discr_si}}, \code{\link{estimate_r}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk} 
 #' @references {
 #' Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
@@ -210,7 +210,7 @@ WT <- function(I, t_start, t_end,
   
   if(parametric_si=="Y")
   {
-    si_distr <- sapply(1:T, function(t) DiscrSI(t-1,mean_si,std_si))
+    si_distr <- sapply(1:T, function(t) discr_si(t-1,mean_si,std_si))
   }
   if(length(si_distr)<T+1){si_distr[(length(si_distr)+1):(T+1)]<-0}
   final_mean_si<-sum(si_distr*(0:(length(si_distr)-1)))
