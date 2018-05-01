@@ -2,7 +2,7 @@
 % Please edit documentation in R/compatibility.R
 \name{EstimateR}
 \alias{EstimateR}
-\title{Title ### PLEASE USE THIS ONLY FOR COMPATIBILITY...}
+\title{Function to ensure compatibility with EpiEstim versions <2.0}
 \usage{
 EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   "UncertainSI", "SIFromData", "SIFromSample"), n1 = NULL, n2 = NULL,
@@ -15,56 +15,57 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   Std.Prior = 5, CV.Posterior = 0.3, plot = FALSE, legend = FALSE)
 }
 \arguments{
-\item{I}{see I in \code{estimate_r}}
+\item{I}{see \code{I} in \code{estimate_r} ### TO DO change to incidence}
 
 \item{T.Start}{see \code{config$t_start} in \code{estimate_r}}
 
-\item{T.End}{.}
+\item{T.End}{see \code{config$t_end} in \code{estimate_r}}
 
-\item{method}{.}
+\item{method}{see method in \code{estimate_r} (but EstimateR uses CamelCase where estimate_r uses snake_case for the method names)}
 
-\item{n1}{.}
+\item{n1}{see \code{n1} in \code{estimate_r}}
 
-\item{n2}{.}
+\item{n2}{see \code{n2} in \code{estimate_r}}
 
-\item{Mean.SI}{.}
+\item{Mean.SI}{see \code{config$mean_si} in \code{estimate_r}}
 
-\item{Std.SI}{.}
+\item{Std.SI}{see \code{config$std_si} in \code{estimate_r}}
 
-\item{Std.Mean.SI}{.}
+\item{Std.Mean.SI}{see \code{config$std_mean_si} in \code{estimate_r}}
 
-\item{Min.Mean.SI}{.}
+\item{Min.Mean.SI}{see \code{config$min_mean_si} in \code{estimate_r}}
 
-\item{Max.Mean.SI}{.}
+\item{Max.Mean.SI}{see \code{config$max_mean_si} in \code{estimate_r}}
 
-\item{Std.Std.SI}{.}
+\item{Std.Std.SI}{see \code{config$std_std_si} in \code{estimate_r}}
 
-\item{Min.Std.SI}{.}
+\item{Min.Std.SI}{see \code{config$min_std_si} in \code{estimate_r}}
 
-\item{Max.Std.SI}{.}
+\item{Max.Std.SI}{see \code{config$max_std_si} in \code{estimate_r}}
 
-\item{SI.Distr}{.}
+\item{SI.Distr}{see \code{si_distr} in \code{estimate_r}}
 
-\item{SI.Data}{.}
+\item{SI.Data}{see \code{si_data} in \code{estimate_r}}
 
-\item{SI.parametricDistr}{.}
+\item{SI.parametricDistr}{see \code{config$si_parametric_distr} in \code{estimate_r}}
 
-\item{MCMC.control}{.}
+\item{MCMC.control}{see \code{config$mcmc_control} in \code{estimate_r}}
 
-\item{SI.Sample}{.}
+\item{SI.Sample}{see \code{si_sample} in \code{estimate_r}}
 
-\item{seed}{.}
+\item{seed}{see \code{config$seed} in \code{estimate_r}}
 
-\item{Mean.Prior}{.}
+\item{Mean.Prior}{see \code{config$mean_prior} in \code{estimate_r}}
 
-\item{Std.Prior}{.}
+\item{Std.Prior}{see \code{config$std_prior} in \code{estimate_r}}
 
-\item{CV.Posterior}{.}
+\item{CV.Posterior}{see \code{config$cv_posterior} in \code{estimate_r}}
 
-\item{plot}{.}
+\item{plot}{see \code{config$plot} in \code{estimate_r}}
 
-\item{legend}{.}
+\item{legend}{see \code{config$legend} in \code{estimate_r}}
 }
 \description{
-Title ### PLEASE USE THIS ONLY FOR COMPATIBILITY...
+Please only use for compatibility;
+Prefer the new estimate_r function instead
 }
