@@ -261,3 +261,67 @@ check_dates <- function(I)
     }
   }
 }
+
+process_config <- function(config)
+{
+  if (!("mean_prior" %in% names(config))) {
+    config$mean_prior = 5
+  }
+  
+  if (!("std_prior" %in% names(config))) {
+    config$std_prior = 5
+  }
+  
+  if (!("cv_posterior" %in% names(config))) {
+    config$cv_posterior = 0.3
+  }
+  
+  if (!("plot" %in% names(config))) {
+    config$plot = FALSE
+  }
+  
+  if (!("legend" %in% names(config))) {
+    config$legend = FALSE
+  }
+  
+  if (!("mcmc_control" %in% names(config))) {
+    config$mcmc_control = list(init.pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time()))
+  }
+  
+  return(config)
+}
+
+process_config_si_from_data <- function(config, si_data)
+{
+  config$si_parametric_distr <- match.arg(config$si_parametric_distr,
+                                          c("G", "W", "L", "off1G", "off1W", "off1L"))
+  if (is.null(config$n1)) {
+    stop("method si_from_data requires to specify the config$n1 argument.")
+  }
+  if (is.null(config$n2)) {
+    stop("method si_from_data requires to specify the config$n2 argument.")
+  }
+  if (config$n2 <= 0 || config$n2%%1 != 0) {
+    stop("method si_from_data requires a >0 integer value for config$n2.")
+  }
+  if (config$n1 <= 0 || config$n1%%1 != 0) {
+    stop("method si_from_data requires a >0 integer value for config$n1.")
+  }
+  if(is.null(config$mcmc_control$init.pars)) {
+    config$mcmc_control$init.pars <-
+      init_MCMC_params(si_data, config$si_parametric_distr)
+  }
+  if((config$si_parametric_distr=="off1G" |
+      config$si_parametric_distr=="off1W" |
+      config$si_parametric_distr=="off1L") & 
+     any(si_data$SR-si_data$EL<=1))
+  {
+    stop(paste("You cannot fit a distribution with offset 1 to this SI",
+               "dataset, because for some data points the maximum serial",
+               "interval is <=1.\nChoose a different distribution"))
+  }
+  return(config)
+}
+
+
+
