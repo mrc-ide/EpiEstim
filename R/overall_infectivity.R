@@ -35,20 +35,18 @@
 #' ## compute overall infectivity
 #' lambda <- overall_infectivity(Flu2009$incidence, Flu2009$si_distr)
 #' par(mfrow=c(2,1))
-#' plot(Flu2009$incidence, type="s", xlab="time (days)", ylab="incidence")
-#' title(main="Epidemic curve")
-#' plot(lambda, type="s", xlab="time (days)", ylab="Infectivity")
-#' title(main="Overall infectivity")
+#' plot(Flu2009$incidence, type = "s", xlab = "time (days)", ylab = "incidence")
+#' title(main = "Epidemic curve")
+#' plot(lambda, type = "s", xlab = "time (days)", ylab = "Infectivity")
+#' title(main = "Overall infectivity")
 overall_infectivity <-function (I,si_distr)
 {
   I <- process_I(I)
-  T<-nrow(I)
+  T <- nrow(I)
   check_si_distr(si_distr, "warning")
   lambda <- vector()
-  lambda[1]<-NA
+  lambda[1] <- NA
   for (t in 2:T)
-  {
     lambda[t] <- sum(si_distr[1:t]*rowSums(I[t:1, c("local","imported")]),na.rm=TRUE)
-  }
   return(lambda)
 }
