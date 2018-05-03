@@ -164,7 +164,7 @@ Unlike methods "uncertain_si" and "si_from_data", the user directly provides (in
 }
 \examples{
 ## load data on pandemic flu in a school in 2009
-utils::data("Flu2009")
+data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
 estimate_r(Flu2009$incidence, method="non_parametric_si", 

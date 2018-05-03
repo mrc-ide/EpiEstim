@@ -272,9 +272,8 @@ wallinga_teunis <- function(I,
   std_wt <- apply(r_sim, 2, sd,na.rm=TRUE)
   std_wt <- std_wt[which(!is.na(std_wt))]
   
-  results <- list()
+  results <- list(R = as.data.frame(cbind(config$t_start,config$t_end,mean_r_per_date_wt,std_wt,r025_wt,r975_wt)) )
   
-  results$R <- as.data.frame(cbind(config$t_start,config$t_end,mean_r_per_date_wt,std_wt,r025_wt,r975_wt))
   names(results$R) <- c("t_start","t_end","Mean(R)","Std(R)","Quantile.0.025(R)","Quantile.0.975(R)")
   
   results$method <- method

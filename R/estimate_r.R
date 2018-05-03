@@ -582,11 +582,12 @@ estimate_r_func <- function (I,
     quantile_0.975_posterior <- qgamma(0.975, shape = a_posterior,
                                        scale = b_posterior, lower.tail = TRUE, log.p = FALSE)
   }
-  results <- list()
-  results$R <- as.data.frame(cbind(config$t_start, config$t_end, mean_posterior,
+  
+  results <- list(R = as.data.frame(cbind(config$t_start, config$t_end, mean_posterior,
                                    std_posterior, quantile_0.025_posterior, quantile_0.05_posterior,
                                    quantile_0.25_posterior, median_posterior, quantile_0.25_posterior,
-                                   quantile_0.25_posterior, quantile_0.975_posterior))
+                                   quantile_0.25_posterior, quantile_0.975_posterior)) )
+  
   names(results$R) <- c("t_start", "t_end", "Mean(R)", "Std(R)",
                         "Quantile.0.025(R)", "Quantile.0.05(R)", "Quantile.0.25(R)",
                         "Median(R)", "Quantile.0.75(R)", "Quantile.0.95(R)",
