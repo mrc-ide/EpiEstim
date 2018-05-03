@@ -257,17 +257,17 @@
 #' }
 #' 
 estimate_r <- function(I,
-                      method = c("non_parametric_si", "parametric_si",
-                                 "uncertain_si", "si_from_data",
-                                 "si_from_sample"),
-                      si_data = NULL,
-                      si_sample = NULL,
-                      config) {
-
+                       method = c("non_parametric_si", "parametric_si",
+                                  "uncertain_si", "si_from_data",
+                                  "si_from_sample"),
+                       si_data = NULL,
+                       si_sample = NULL,
+                       config) {
+  
   method <- match.arg(method)
   config <- process_config(config)
   check_config(config, method)
-
+  
   if (method=="si_from_data") {
     # Warning if the expected set of parameters is not adequate
     si_data <- process_si_data(si_data)
@@ -288,32 +288,32 @@ estimate_r <- function(I,
                           n.samples = config$n1*config$mcmc_control$thin,
                           init.pars=config$mcmc_control$init.pars)
     }
-
+    
     # check convergence of the MCMC and print warning if not converged
     MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
-
+    
     # thin the chain, and turn the two parameters of the SI distribution into a whole discrete distribution
     c2e <- coarse2estim(cdt, thin=config$mcmc_control$thin)
-
+    
     cat(paste(
-              "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
-              "\nEstimating the reproduction number for these serial interval",
-              "estimates...\n",
-              "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+      "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+      "\nEstimating the reproduction number for these serial interval",
+      "estimates...\n",
+      "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     ))
-
+    
     # then estimate R for these serial intervals
     
     if(!is.null(config$seed))
     {
       set.seed(config$seed)
     }
-
+    
     out <- estimate_r_func(I=I,
-                          method = "si_from_data",
-                          si_sample = c2e$si_sample,
-                          config=config
-                          )
+                           method = "si_from_data",
+                           si_sample = c2e$si_sample,
+                           config=config
+    )
     out[["MCMC_converged"]] <- MCMC_conv
   } else {
     
@@ -323,8 +323,8 @@ estimate_r <- function(I,
     }
     
     out <- estimate_r_func(I=I, method = method, si_sample=si_sample,
-                          config = config
-                          )
+                           config = config
+    )
   }
   return(out)
 }
@@ -340,10 +340,10 @@ estimate_r <- function(I,
 #' @importFrom graphics plot
 #' @importFrom incidence as.incidence 
 estimate_r_func <- function (I,
-                            si_sample,
-                            method = c("non_parametric_si", "parametric_si",
+                             si_sample,
+                             method = c("non_parametric_si", "parametric_si",
                                         "uncertain_si", "si_from_data", "si_from_sample"),
-                            config) {
+                             config) {
   
   #########################################################
   # Calculates the cumulative incidence over time steps   #
@@ -361,22 +361,22 @@ estimate_r_func <- function (I,
   #########################################################
   
   posterior_from_si_distr <- function(I, si_distr, a_prior, b_prior,
-                                   t_start, t_end) {
+                                      t_start, t_end) {
     nb_time_periods <- length(t_start)
     lambda <- overall_infectivity(I, si_distr)
     final_mean_si <- sum(si_distr * (0:(length(si_distr) -
-                                         1)))
+                                          1)))
     a_posterior <- vector()
     b_posterior <- vector()
     a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
-                                                             final_mean_si) {
+                                                               final_mean_si) {
       a_prior + sum(I[t_start[t]:t_end[t], "local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
     })
     b_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
-                                                             final_mean_si) {
+                                                               final_mean_si) {
       1/(1/b_prior + sum(lambda[t_start[t]:t_end[t]]))
     }
     else {
@@ -391,7 +391,7 @@ estimate_r_func <- function (I,
   #########################################################
   
   sample_from_posterior <- function(sample_size, I, mean_si, std_si, si_distr=NULL, 
-                                  a_prior, b_prior, t_start, t_end) {
+                                    a_prior, b_prior, t_start, t_end) {
     
     nb_time_periods <- length(t_start)
     
@@ -399,19 +399,19 @@ estimate_r_func <- function (I,
       si_distr <- discr_si(0:(T-1), mean_si, std_si)
     
     final_mean_si <- sum(si_distr * (0:(length(si_distr) -
-                                         1)))
+                                          1)))
     lambda <- overall_infectivity(I, si_distr)
     a_posterior <- vector()
     b_posterior <- vector()
     a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
-                                                             final_mean_si) {
+                                                               final_mean_si) {
       a_prior + sum(I[t_start[t]:t_end[t], "local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
     })
     b_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
-                                                             final_mean_si) {
+                                                               final_mean_si) {
       1/(1/b_prior + sum(lambda[t_start[t]:t_end[t]], na.rm = TRUE))
     }
     else {
@@ -424,6 +424,9 @@ estimate_r_func <- function (I,
     else {
       rep(NA, sample_size)
     })
+    if (sample_size == 1L) {
+      sample_r_posterior <- matrix(sample_r_posterior, nrow = 1)
+    }
     return(list(sample_r_posterior, si_distr))
   }
   
@@ -431,7 +434,7 @@ estimate_r_func <- function (I,
   
   I <- process_I(I)
   T<-nrow(I)
-
+  
   a_prior <- (config$mean_prior/config$std_prior)^2
   b_prior <- config$std_prior^2/config$mean_prior
   
@@ -485,15 +488,15 @@ estimate_r_func <- function (I,
         }
       }
       temp <- lapply(1:config$n1, function(k) sample_from_posterior(config$n2,
-                                                           I, mean_si_sample[k], std_si_sample[k], si_distr=NULL, a_prior,
-                                                           b_prior, config$t_start, config$t_end))
+                                                                    I, mean_si_sample[k], std_si_sample[k], si_distr=NULL, a_prior,
+                                                                    b_prior, config$t_start, config$t_end))
       config$si_distr <- cbind(t(sapply(1:config$n1, function(k) (temp[[k]])[[2]])),
-                        rep(0, config$n1))
+                               rep(0, config$n1))
       r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
       for (k in 1:config$n1) {
         r_sample[((k - 1) * config$n2 + 1):(k * config$n2), which(config$t_end >
-                                                     mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
-                                                                                                       mean_si_sample[k])]
+                                                                    mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
+                                                                                                                      mean_si_sample[k])]
       }
       mean_posterior <- apply(r_sample, 2, mean, na.rm = TRUE)
       std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
@@ -520,15 +523,15 @@ estimate_r_func <- function (I,
         std_si_sample[k] <- sqrt(sum(si_sample[,k]*((1:dim(si_sample)[1]-1) - mean_si_sample[k])^2))
       }
       temp <- lapply(1:config$n1, function(k) sample_from_posterior(config$n2,
-                                                           I, mean_si=NULL, std_si=NULL, si_sample[,k], a_prior,
-                                                           b_prior, config$t_start, config$t_end))
+                                                                    I, mean_si=NULL, std_si=NULL, si_sample[,k], a_prior,
+                                                                    b_prior, config$t_start, config$t_end))
       config$si_distr <- cbind(t(sapply(1:config$n1, function(k) (temp[[k]])[[2]])),
-                        rep(0, config$n1))
+                               rep(0, config$n1))
       r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
       for (k in 1:config$n1) {
         r_sample[((k - 1) * config$n2 + 1):(k * config$n2), which(config$t_end >
-                                                     mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
-                                                                                                       mean_si_sample[k])]
+                                                                    mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
+                                                                                                                      mean_si_sample[k])]
       }
       mean_posterior <- apply(r_sample, 2, mean, na.rm = TRUE)
       std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
@@ -555,11 +558,11 @@ estimate_r_func <- function (I,
       config$si_distr[(length(config$si_distr) + 1):(T + 1)] <- 0
     }
     final_mean_si <- sum(config$si_distr * (0:(length(config$si_distr) -
-                                         1)))
+                                                 1)))
     Finalstd_si <- sqrt(sum(config$si_distr * (0:(length(config$si_distr) -
-                                             1))^2) - final_mean_si^2)
+                                                    1))^2) - final_mean_si^2)
     post <- posterior_from_si_distr(I, config$si_distr, a_prior, b_prior,
-                                 config$t_start, config$t_end)
+                                    config$t_start, config$t_end)
     a_posterior <- unlist(post[[1]])
     b_posterior <- unlist(post[[2]])
     mean_posterior <- a_posterior * b_posterior
