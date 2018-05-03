@@ -2,8 +2,13 @@
 #' 
 #' \code{plots} allows plotting the outputs of functions \code{\link{estimate_r}} and \code{\link{WT}}
 #' 
-#' @param x The output of function \code{\link{estimate_r}} or function \code{\link{WT}}, or a list of such outputs. If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph. 
-#' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or all three (\code{what='all'})). 
+#' @param x The output of function \code{\link{estimate_r}} or function \code{\link{WT}}, or a list of such outputs. 
+#' If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph. 
+#' @param what A string specifying what to plot, namely 
+#' the incidence time series (\code{what='I'}), 
+#' the estimated reproduction number (\code{what='R'}), 
+#' the serial interval distribution (\code{what='SI'}, 
+#' or all three (\code{what='all'})). 
 #' @param add_imported_cases A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases. 
 #' @param options_I For what = "I" or "all". A list of graphical options: 
 #'  \describe{
