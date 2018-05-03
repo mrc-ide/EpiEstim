@@ -126,7 +126,7 @@
 #' \item{ER: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that ER>=EL}
 #' \item{SL: the lower bound of the symptom onset date of the infected indivdiual (given as an integer)}
 #' \item{SR: the upper bound of the symptom onset date of the infected indivdiual (given as an integer). Should be such that SR>=SL}
-#' \item{type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates}
+#' \item{type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates}
 #' }
 #' Assuming a given parametric distribution for the serial interval distribution (specified in si_parametric_distr), 
 #' the posterior distribution of the serial interval is estimated directly fom these data using MCMC methods implemented in the package \code{coarsedatatools}. 
@@ -273,6 +273,7 @@ estimate_r <- function(I,
     si_data <- process_si_data(si_data)
     config <- process_config_si_from_data(config, si_data)
     
+    # estimate serial interval from serial interval data first
     if(!is.null(config$mcmc_control$seed)) {
       cdt <- dic.fit.mcmc(dat = si_data,
                           dist=config$si_parametric_distr,
@@ -301,6 +302,8 @@ estimate_r <- function(I,
               "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     ))
 
+    # then estimate R for these serial intervals
+    
     if(!is.null(config$seed))
     {
       set.seed(config$seed)
@@ -348,7 +351,7 @@ estimate_r_func <- function (I,
   
   calc_incidence_per_time_step <- function(I, t_start, t_end) {
     nb_time_periods <- length(t_start)
-    incidence_per_time_step <- sapply(1:nb_time_periods, function(i) sum(I[t_start[i]:t_end[i],c("local","imported")]))
+    incidence_per_time_step <- sapply(1:nb_time_periods, function(i) sum(I[t_start[i]:t_end[i], c("local", "imported")]))
     return(incidence_per_time_step)
   }
   
@@ -367,7 +370,7 @@ estimate_r_func <- function (I,
     b_posterior <- vector()
     a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
                                                              final_mean_si) {
-      a_prior + sum(I[t_start[t]:t_end[t],"local"]) # only counting local cases on the "numerator"
+      a_prior + sum(I[t_start[t]:t_end[t], "local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
@@ -401,7 +404,7 @@ estimate_r_func <- function (I,
     b_posterior <- vector()
     a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
                                                              final_mean_si) {
-      a_prior + sum(I[t_start[t]:t_end[t],"local"]) # only counting local cases on the "numerator"
+      a_prior + sum(I[t_start[t]:t_end[t], "local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
@@ -710,7 +713,7 @@ estimate_r_func <- function (I,
   }else {
     results$dates <- 1:T
   }
-  results$I <- rowSums(I[,c("local","imported")])
+  results$I <- rowSums(I[,c("local", "imported")])
   results$I_local <- I$local
   results$I_imported <- I$imported
   
