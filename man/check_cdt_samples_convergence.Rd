@@ -4,10 +4,10 @@
 \alias{check_cdt_samples_convergence}
 \title{Checking convergence of an MCMC chain by using the Gelman-Rubin algorithm}
 \usage{
-check_cdt_samples_convergence(cdtsamples)
+check_cdt_samples_convergence(cdt_samples)
 }
 \arguments{
-\item{cdtsamples}{the \code{@sample} slot of a \code{cd.fit.mcmc} S4 object (see package \code{coarseDataTools})}
+\item{cdt_samples}{the \code{@sample} slot of a \code{cd.fit.mcmc} S4 object (see package \code{coarseDataTools})}
 }
 \value{
 TRUE if the Gelman Rubin test for convergence was successful, FALSE otherwise
