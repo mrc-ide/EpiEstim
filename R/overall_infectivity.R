@@ -39,7 +39,7 @@
 #' title(main = "Epidemic curve")
 #' plot(lambda, type = "s", xlab = "time (days)", ylab = "Infectivity")
 #' title(main = "Overall infectivity")
-overall_infectivity <-function (I,si_distr)
+overall_infectivity <-function (I, si_distr)
 {
   I <- process_I(I)
   T <- nrow(I)
@@ -47,6 +47,6 @@ overall_infectivity <-function (I,si_distr)
   lambda <- vector()
   lambda[1] <- NA
   for (t in 2:T)
-    lambda[t] <- sum(si_distr[1:t]*rowSums(I[t:1, c("local","imported")]),na.rm=TRUE)
+    lambda[t] <- sum(si_distr[1:t]*rowSums(I[t:1, c("local", "imported")]), na.rm=TRUE)
   return(lambda)
 }
