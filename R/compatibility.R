@@ -31,25 +31,19 @@
 #'
 #' @export
 #'
-EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
-                                                    "UncertainSI", "SIFromData", "SIFromSample"), 
+EstimateR <- function(I, T.Start, T.End, 
+                      method = c("NonParametricSI", "ParametricSI", "UncertainSI"), 
                       n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
                       Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
                       Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
                       SI.Distr = NULL, 
-                      SI.Data = NULL, SI.parametricDistr = c("G", "W", "L", "off1G", "off1W", "off1L"),  
-                      MCMC.control = list(init_pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time())), 
-                      SI.Sample = NULL, 
-                      seed = NULL,
                       Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
-                      plot = FALSE, legend = FALSE) {
+                      plot = FALSE, leg.pos="topright") {
   .Deprecated("estimate_r")
   
   method_tr <- c("NonParametricSI" = "non_parametric_si", 
                  "ParametricSI" = "parametric_si",
-                 "UncertainSI" = "uncertain_si", 
-                 "SIFromData" = "si_from_data", 
-                 "SIFromSample" = "si_from_sample")
+                 "UncertainSI" = "uncertain_si")
   method <- method_tr[[method]]
 
   config <- list(
@@ -66,14 +60,11 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     min_std_si = Min.Std.SI,
     max_std_si = Max.Std.SI,
     si_distr = SI.Distr,
-    si_parametric_distr = SI.parametricDistr,
-    mcmc_control = MCMC.control,
-    seed = seed,
     mean_prior = Mean.Prior,
     std_prior = Std.Prior, ### TO DO: change to sd_prior
     cv_posterior = CV.Posterior,
-    plot = plot, ### TO DO: plot outside the function (alsways!)
-    legend = legend
+    plot = plot, ### TO DO: plot outside the function (always!)
+    legend = FALSE
   )
     
   estimate_r(incid = I, method, si_data = SI.Data, si_sample = SI.Sample, 
