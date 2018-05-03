@@ -25,14 +25,15 @@
 #' data("MockRotavirus")
 #' 
 #' ## estimate the serial interval from data 
-#' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
+#' SI_fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
 #'                              dist="G", 
 #'                              init.pars=init_MCMC_params(MockRotavirus$si_data, "G"),
 #'                              burnin = 1000, 
 #'                              n.samples = 5000)
 #'                              
 #' ## use check_cdt_samples_convergence to check convergence
-#' check_cdt_samples_convergence(SI.fit@samples)
+#' converg_diag <- check_cdt_samples_convergence(SI_fit@samples)
+#' converg_diag
 #' 
 #' }
 #' 

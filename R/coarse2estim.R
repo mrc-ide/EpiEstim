@@ -47,7 +47,7 @@
 #'                             plot=TRUE))
 #' }
 #' 
-coarse2estim <- function(x=NULL, dist=x@dist, samples=x@samples, thin=10){
+coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples, thin = 10){
   
   if(is.null(x)) # then check that dist and samples are what we expect
   {
