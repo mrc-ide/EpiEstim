@@ -11,7 +11,7 @@
 #' @details{
 #' This function splits an MCMC chain in two halfs and uses the Gelman-Rubin algorithm to assess convergence of the chain by comparing its two halves.
 #' }
-#' @seealso \code{\link{estimate_r}
+#' @seealso \code{\link{estimate_r}}
 #' @author Anne Cori
 #' @importFrom coda gelman.diag
 #' @export
@@ -27,7 +27,7 @@
 #' ## estimate the serial interval from data 
 #' SI_fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
 #'                              dist="G", 
-#'                              init.pars=init_MCMC_params(MockRotavirus$si_data, "G"),
+#'                              init.pars=init_mcmc_params(MockRotavirus$si_data, "G"),
 #'                              burnin = 1000, 
 #'                              n.samples = 5000)
 #'                              

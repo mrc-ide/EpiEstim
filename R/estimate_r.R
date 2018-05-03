@@ -39,7 +39,7 @@
 #' Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal shifted by 1).}
 #' \item{mcmc_control}{For method "si_from_data" ; a list containing the following (see details):
 #' \describe{
-#'   \item{init.pars}{vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically using function \code{\link{init_MCMC_params}}.}
+#'   \item{init.pars}{vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically using function \code{\link{init_mcmc_params}}.}
 #'   \item{burnin}{a positive integer giving the burnin used in the MCMC when estimating the serial interval distribution.}
 #'   \item{thin}{a positive integer corresponding to thinning parameter; the MCMC will be run for \code{burnin+n1*thin iterations}; 1 in \code{thin} iterations will be recorded, after the burnin phase, so the posterior sample size is n1.}
 #'   \item{seed}{An integer used as the seed for the random number generator at the start of the MCMC estimation; useful to get reproducible results.} 
@@ -238,7 +238,7 @@
 #' overall_seed <- 2
 #' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
 #'                              dist="G", 
-#'                              init.pars=init_MCMC_params(MockRotavirus$si_data, "G"),
+#'                              init.pars=init_mcmc_params(MockRotavirus$si_data, "G"),
 #'                              burnin = 1000, 
 #'                              n.samples = 5000, 
 #'                              seed = MCMC_seed)

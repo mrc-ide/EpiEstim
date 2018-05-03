@@ -316,7 +316,7 @@ process_config_si_from_data <- function(config, si_data)
   }
   if(is.null(config$mcmc_control$init.pars)) {
     config$mcmc_control$init.pars <-
-      init_MCMC_params(si_data, config$si_parametric_distr)
+      init_mcmc_params(si_data, config$si_parametric_distr)
   }
   if((config$si_parametric_distr=="off1G" |
       config$si_parametric_distr=="off1W" |

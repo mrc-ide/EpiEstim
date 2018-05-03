@@ -15,6 +15,8 @@ wallinga_teunis(I, method = c("non_parametric_si", "parametric_si"), config)
 \item{An object of class \code{\link[incidence]{incidence}}}
  }}
 
+\item{method}{the method used to estimate R, one of "non_parametric_si", "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
+
 \item{config}{a list with the following elements:
 \itemize{
 \item{t_start: Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}. t_start[1] should be strictly after the first day with non null incidence.}
@@ -36,7 +38,6 @@ This specifies the position of the legend in the plot. Alternatively, \code{loca
 	\item{R}{: a dataframe containing: 
 	    the times of start and end of each time window considered ; 
 	    the estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction number for each time window.}
-	\item{method}{: the method used to estimate R, one of "non_parametric_si", "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
 	\item{si_distr}{: a vector containing the discrete serial interval distribution used for estimation}
 	\item{SI.Moments}{: a vector containing the mean and std of the discrete serial interval distribution(s) used for estimation}
 	\item{I}{: the time series of total incidence}

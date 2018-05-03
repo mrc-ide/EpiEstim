@@ -1,11 +1,12 @@
 #######################################################################################################################
-# init_MCMC_params finds clever starting points for the MCMC to be used to estimate the serial interval, when using option si_from_data in estimate_r #
+# init_mcmc_params finds clever starting points for the MCMC to be used to estimate the serial interval, when using option si_from_data in estimate_r #
 #######################################################################################################################
 
-#' init_MCMC_params Finds clever starting points for the MCMC to be used to estimate the serial interval, e.g. when using option \code{si_from_data} in \code{estimate_r}
+#' init_mcmc_params Finds clever starting points for the MCMC to be used to estimate the serial interval, 
+#' e.g. when using option \code{si_from_data} in \code{estimate_r}
 #' 
-#' \code{init_MCMC_params} Finds values of the serial interval distribution parameters, used to initalise the MCMC estimation of the serial interval distribution. 
-#' Initial values are computed based on the observed mean and standard deviation of the sample from which the parameters are to be estiamted.}
+#' \code{init_mcmc_params} Finds values of the serial interval distribution parameters, used to initalise the MCMC estimation of the serial interval distribution. 
+#' Initial values are computed based on the observed mean and standard deviation of the sample from which the parameters are to be estiamted.
 #'   
 #' @param si_data the data on dates of symptoms of pairs of infector/infected individuals to be used to estimate the serial interval distribution. 
 #' This should be a dataframe with 5 columns:
@@ -36,7 +37,7 @@
 #' 
 #' ## get clever initial values for shape and scale of a Gamma distribution 
 #' ## fitted to the the data MockRotavirus$si_data
-#' clever_init_param <- init_MCMC_params(MockRotavirus$si_data, "G") 
+#' clever_init_param <- init_mcmc_params(MockRotavirus$si_data, "G") 
 #' 
 #' ## estimate the serial interval from data using a clever starting point for the MCMC chain
 #' SI_fit_clever <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
@@ -60,7 +61,7 @@
 #' 
 #' }
 #' 
-init_MCMC_params <- function(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
+init_mcmc_params <- function(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
 {
   dist <- match.arg(dist)
   naive_SI_obs <- (si_data$SR + si_data$SL ) / 2 - (si_data$ER + si_data$EL ) / 2

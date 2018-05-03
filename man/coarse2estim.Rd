@@ -38,7 +38,7 @@ data("MockRotavirus")
 ## estimate the serial interval from data 
 SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
                              dist="G", 
-                             init.pars=init_MCMC_params(MockRotavirus$si_data, "G"),
+                             init.pars=init_mcmc_params(MockRotavirus$si_data, "G"),
                              burnin = 1000, 
                              n.samples = 5000)
                              

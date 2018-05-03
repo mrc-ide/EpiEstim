@@ -69,8 +69,9 @@ R_i <- estimate_r(Flu2009$incidence, method="non_parametric_si",
 plots(R_i, legend = FALSE)
 
 ## estimate the instantaneous reproduction number (method "non_parametric_si")
-R_c <- wallinga_teunis(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
-          si_distr=Flu2009$si_distr, plot=FALSE)
+R_c <- wallinga_teunis(Flu2009$incidence, method="non_parametric_si",
+          config = list(t_start=2:26, t_end=8:32, 
+          si_distr=Flu2009$si_distr, plot=FALSE))
 
 ## produce plot of the incidence 
        ## (with, on top of total incidence, the incidence of imported cases), 

@@ -13,6 +13,7 @@
 #'  \code{I$dates} must contains only dates in a row.}
 #' \item{An object of class \code{\link[incidence]{incidence}}}
 #'  }
+#' @param method the method used to estimate R, one of "non_parametric_si", "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
 #' @param config a list with the following elements:
 #' \itemize{
 #' \item{t_start: Vector of positive integers giving the starting times of each window over which the reproduction number will be estimated. These must be in ascending order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}. t_start[1] should be strictly after the first day with non null incidence.}
@@ -32,7 +33,6 @@
 #' 	\item{R}{: a dataframe containing: 
 #' 	    the times of start and end of each time window considered ; 
 #' 	    the estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction number for each time window.}
-#' 	\item{method}{: the method used to estimate R, one of "non_parametric_si", "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
 #' 	\item{si_distr}{: a vector containing the discrete serial interval distribution used for estimation}
 #' 	\item{SI.Moments}{: a vector containing the mean and std of the discrete serial interval distribution(s) used for estimation}
 #' 	\item{I}{: the time series of total incidence}
@@ -97,7 +97,7 @@
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the case reproduction number over the 7-day window finishing on that day.
 wallinga_teunis <- function(I, 
-                            method=c("non_parametric_si","parametric_si"),
+                            method = c("non_parametric_si","parametric_si"),
                             config)
 {
   
@@ -166,6 +166,12 @@ wallinga_teunis <- function(I,
   check_times(config$t_start, config$t_end, T)
   nb_time_periods <- length(config$t_start)
   
+  if(is.null(config$n_sim))
+  {
+    config$n_sim <- 10
+    warning("setting config$n_sim to 10 as config$n_sim was not specified. ")
+  }
+  
   if(method=="non_parametric_si")
   {
     check_si_distr(config$si_distr)
@@ -222,7 +228,7 @@ wallinga_teunis <- function(I,
     config$si_distr <- discr_si(0:(T-1),config$mean_si,config$std_si)
   }
   if(length(config$si_distr)<T+1){config$si_distr[(length(config$si_distr)+1):(T+1)]<-0}
-  final_mean_si < -sum(config$si_distr*(0:(length(config$si_distr)-1)))
+  final_mean_si <- sum(config$si_distr*(0:(length(config$si_distr)-1)))
   final_std_si <- sqrt(sum(config$si_distr*(0:(length(config$si_distr)-1))^2)-final_mean_si^2)
   
   time_periods_with_no_incidence <- vector()
