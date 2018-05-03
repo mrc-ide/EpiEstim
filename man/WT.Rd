@@ -6,7 +6,7 @@
 \usage{
 WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
   Mean.SI = NULL, Std.SI = NULL, SI.Distr = NULL, nSim = 10,
-  plot = FALSE)
+  plot = FALSE, leg.pos = "topright")
 }
 \arguments{
 \item{I}{see \code{incid} in \code{wallinga_teunis}}
@@ -26,6 +26,8 @@ WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
 \item{nSim}{see \code{config$n_sim} in \code{wallinga_teunis}}
 
 \item{plot}{see \code{config$plot} in \code{wallinga_teunis}}
+
+\item{leg.pos}{Not used anymore, only there for compatibility}
 }
 \description{
 Please only use for compatibility;

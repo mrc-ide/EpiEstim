@@ -5,14 +5,11 @@
 \title{Function to ensure compatibility with EpiEstim versions <2.0}
 \usage{
 EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
-  "UncertainSI", "SIFromData", "SIFromSample"), n1 = NULL, n2 = NULL,
-  Mean.SI = NULL, Std.SI = NULL, Std.Mean.SI = NULL, Min.Mean.SI = NULL,
-  Max.Mean.SI = NULL, Std.Std.SI = NULL, Min.Std.SI = NULL,
-  Max.Std.SI = NULL, SI.Distr = NULL, SI.Data = NULL,
-  SI.parametricDistr = c("G", "W", "L", "off1G", "off1W", "off1L"),
-  MCMC.control = list(init_pars = NULL, burnin = 3000, thin = 10, seed =
-  as.integer(Sys.time())), SI.Sample = NULL, seed = NULL, Mean.Prior = 5,
-  Std.Prior = 5, CV.Posterior = 0.3, plot = FALSE, legend = FALSE)
+  "UncertainSI"), n1 = NULL, n2 = NULL, Mean.SI = NULL, Std.SI = NULL,
+  Std.Mean.SI = NULL, Min.Mean.SI = NULL, Max.Mean.SI = NULL,
+  Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
+  SI.Distr = NULL, Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,
+  plot = FALSE, leg.pos = "topright")
 }
 \arguments{
 \item{I}{see \code{incid} in \code{estimate_r}}
@@ -45,16 +42,6 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 
 \item{SI.Distr}{see \code{config$si_distr} in \code{estimate_r}}
 
-\item{SI.Data}{see \code{si_data} in \code{estimate_r}}
-
-\item{SI.parametricDistr}{see \code{config$si_parametric_distr} in \code{estimate_r}}
-
-\item{MCMC.control}{see \code{config$mcmc_control} in \code{estimate_r}}
-
-\item{SI.Sample}{see \code{si_sample} in \code{estimate_r}}
-
-\item{seed}{see \code{config$seed} in \code{estimate_r}}
-
 \item{Mean.Prior}{see \code{config$mean_prior} in \code{estimate_r}}
 
 \item{Std.Prior}{see \code{config$std_prior} in \code{estimate_r}}
@@ -63,7 +50,7 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 
 \item{plot}{see \code{config$plot} in \code{estimate_r}}
 
-\item{legend}{see \code{config$legend} in \code{estimate_r}}
+\item{leg.pos}{Not used anymore, only there for compatibility}
 }
 \description{
 Please only use for compatibility;

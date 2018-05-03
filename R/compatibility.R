@@ -18,16 +18,11 @@
 #' @param Min.Std.SI see \code{config$min_std_si} in \code{estimate_r}
 #' @param Max.Std.SI see \code{config$max_std_si} in \code{estimate_r}
 #' @param SI.Distr see \code{config$si_distr} in \code{estimate_r}
-#' @param SI.Data see \code{si_data} in \code{estimate_r}
-#' @param SI.parametricDistr see \code{config$si_parametric_distr} in \code{estimate_r}
-#' @param MCMC.control see \code{config$mcmc_control} in \code{estimate_r}
-#' @param SI.Sample see \code{si_sample} in \code{estimate_r}
-#' @param seed see \code{config$seed} in \code{estimate_r}
 #' @param Mean.Prior see \code{config$mean_prior} in \code{estimate_r}
 #' @param Std.Prior see \code{config$std_prior} in \code{estimate_r}
 #' @param CV.Posterior see \code{config$cv_posterior} in \code{estimate_r}
 #' @param plot see \code{config$plot} in \code{estimate_r}
-#' @param legend see \code{config$legend} in \code{estimate_r}
+#' @param leg.pos Not used anymore, only there for compatibility 
 #'
 #' @export
 #'
@@ -67,7 +62,7 @@ EstimateR <- function(I, T.Start, T.End,
     legend = FALSE
   )
     
-  estimate_r(incid = I, method, si_data = SI.Data, si_sample = SI.Sample, 
+  estimate_r(incid = I, method = method,  
              config = config)
 }
 
@@ -125,6 +120,7 @@ OverallInfectivity <- function(I, SI.Distr)
 #' @param SI.Distr see \code{config$si_distr} in \code{wallinga_teunis}
 #' @param nSim see \code{config$n_sim} in \code{wallinga_teunis}
 #' @param plot see \code{config$plot} in \code{wallinga_teunis}
+#' @param leg.pos Not used anymore, only there for compatibility 
 #'
 #' @export
 WT <- function(I, T.Start, T.End,
@@ -146,7 +142,7 @@ WT <- function(I, T.Start, T.End,
                 n_sim = nSim, 
                 plot = plot)
   
-  wallinga_teunis(incid = I, method = method, config)
+  wallinga_teunis(incid = I, method = method, config = config)
 }
 
 
