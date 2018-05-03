@@ -2,22 +2,40 @@
 # check_cdt_samples_convergence runs a Gelman Rubin test to check convergence of the MCMC chain in coarseDataTools #
 #######################################################################################################################
 
-#' check_cdt_samples_convergence TITLE
+#' Checking convergence of an MCMC chain by using the Gelman-Rubin algorithm
 #' 
-#' \code{check_cdt_samples_convergence} DESCRIPTION TO COME.
+#' \code{check_cdt_samples_convergence} Checking convergence of an MCMC chain by using the Gelman-Rubin algorithm
 #' 
-#' @param cdtsamples XXXXXXX.
+#' @param cdtsamples the \code{@sample} slot of a \code{cd.fit.mcmc} S4 object (see package \code{coarseDataTools})
 #' @return TRUE if the Gelman Rubin test for convergence was successful, FALSE otherwise
 #' @details{
-#' XXXXXXX. 
+#' This function splits an MCMC chain in two halfs and uses the Gelman-Rubin algorithm to assess convergence of the chain by comparing its two halves.
 #' }
-#' @seealso XXXXXXX.
-#' @author XXXXXXX.
-#' @references XXXXXXX.
+#' @seealso \code{\link{estimate_r}
+#' @author Anne Cori
 #' @importFrom coda gelman.diag
 #' @export
 #' @examples
-#' ## XXXXXXX.
+#' \dontrun{
+#' ## Note the following examples use an MCMC routine 
+#' ## to estimate the serial interval distribution from data, 
+#' ## so they may take a few minutes to run
+#' 
+#' ## load data on rotavirus
+#' data("MockRotavirus")
+#' 
+#' ## estimate the serial interval from data 
+#' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
+#'                              dist="G", 
+#'                              init.pars=init_MCMC_params(MockRotavirus$si_data, "G"),
+#'                              burnin = 1000, 
+#'                              n.samples = 5000)
+#'                              
+#' ## use check_cdt_samples_convergence to check convergence
+#' check_cdt_samples_convergence(SI.fit@samples)
+#' 
+#' }
+#' 
 check_cdt_samples_convergence <- function(cdtsamples)
 {
   
