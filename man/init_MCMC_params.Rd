@@ -34,7 +34,8 @@ These are the shape and scale for all but the lognormal distribution, for which 
 ## load data on rotavirus
 data("MockRotavirus")
 
-## get clever initial values for shape and scale of a Gamma distribution fitted to the the data MockRotavirus$si_data
+## get clever initial values for shape and scale of a Gamma distribution 
+## fitted to the the data MockRotavirus$si_data
 clever_init_param <- init_MCMC_params(MockRotavirus$si_data, "G") 
 
 ## estimate the serial interval from data using a clever starting point for the MCMC chain

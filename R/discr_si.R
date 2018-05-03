@@ -29,7 +29,8 @@
 #' mean_flu_si <- 2.6
 #' sd_flu_si <- 1.5
 #' dicrete_si_distr <- discr_si(0:20, mean_flu_si, sd_flu_si)
-#' plot(0:20, dicrete_si_distr, type = "h", lwd = 10, lend = 1, xlab = "time (days)", ylab = "frequency")
+#' plot(0:20, dicrete_si_distr, type = "h", 
+#'           lwd = 10, lend = 1, xlab = "time (days)", ylab = "frequency")
 #' title(main = "Discrete distribution of the serial interval of influenza")
 discr_si <- function(k, mu, sigma) ### TO DO: make sure this also works if k is a vector
 {

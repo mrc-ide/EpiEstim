@@ -93,12 +93,12 @@
 #'    config = list(t_start=2:26, t_end=8:32,  
 #'                  mean_si=2.6, std_si=1.5, 
 #'                  n_sim=100,
-#'                  plot=TRUE)
+#'                  plot=TRUE))
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the case reproduction number over the 7-day window finishing on that day.
 wallinga_teunis <- function(I, 
-               method=c("non_parametric_si","parametric_si"),
-               config)
+                            method=c("non_parametric_si","parametric_si"),
+                            config)
 {
   
   ### Functions ###
@@ -275,7 +275,7 @@ wallinga_teunis <- function(I,
   results<-list()
   
   results$R<-as.data.frame(cbind(config$t_start,config$t_end,MeanRperDate.WT,std.WT,R025.WT,R975.WT))
-  names(results$R)<-c("config$t_start","config$t_end","Mean(R)","Std(R)","Quantile.0.025(R)","Quantile.0.975(R)")
+  names(results$R)<-c("t_start","t_end","Mean(R)","Std(R)","Quantile.0.025(R)","Quantile.0.975(R)")
   
   results$method <- method
   results$si_distr <- config$si_distr
@@ -290,9 +290,14 @@ wallinga_teunis <- function(I,
   results$I_local[1] <- 0
   results$I_imported <- c(I[1], rep(0, length(I)-1))
   
-  if(config$plot)
+  if(!is.null(config$plot))
   {
-    plots(results, what="all", legend = config$legend)
+    if(config$plot)
+    {
+      if(is.null(config$legend))
+        config$legend <- FALSE
+      plots(results, what="all", legend = config$legend)
+    }
   }
   
   return(results)

@@ -11,7 +11,7 @@ plots(x = NULL, what = c("all", "I", "R", "SI"),
   "black", transp = 0.25, xlim = NULL, ylim = NULL), legend = TRUE)
 }
 \arguments{
-\item{x}{The output of function \code{\link{estimate_r}} or function \code{\link{WT}}, or a list of such outputs. 
+\item{x}{The output of function \code{\link{estimate_r}} or function \code{\link{wallinga_teunis}}, or a list of such outputs. 
 If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph.}
 
 \item{what}{A string specifying what to plot, namely 
@@ -53,7 +53,7 @@ or all three (\code{what='all'})).}
 a plot (if \code{what = "I"}, \code{"R"}, or \code{"SI"}) or a \code{\link{grob}} object (if \code{what = "all"}).
 }
 \description{
-\code{plots} allows plotting the outputs of functions \code{\link{estimate_r}} and \code{\link{WT}}
+\code{plots} allows plotting the outputs of functions \code{\link{estimate_r}} and \code{\link{wallinga_teunis}}
 }
 \examples{
 ## load data on pandemic flu in a school in 2009
@@ -69,7 +69,7 @@ R_i <- estimate_r(Flu2009$incidence, method="non_parametric_si",
 plots(R_i, legend = FALSE)
 
 ## estimate the instantaneous reproduction number (method "non_parametric_si")
-R_c <- WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
+R_c <- wallinga_teunis(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
           si_distr=Flu2009$si_distr, plot=FALSE)
 
 ## produce plot of the incidence 
@@ -88,7 +88,7 @@ gridExtra::grid.arrange(p_I,p_SI,p_Ri,p_Rc,ncol=2)
 
 }
 \seealso{
-\code{\link{estimate_r}} and \code{\link{WT}}
+\code{\link{estimate_r}} and \code{\link{wallinga_teunis}}
 }
 \author{
 Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori \email{a.cori@imperial.ac.uk}

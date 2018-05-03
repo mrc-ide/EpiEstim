@@ -111,11 +111,8 @@ DiscrSI <- function(k,mu,sigma)
 #'
 #' @param I see \code{I} in \code{overall_infectivity}
 #' @param SI.Distr see \code{si_distr} in \code{overall_infectivity}
-#'
-#' @return
+
 #' @export
-#'
-#' @examples
 OverallInfectivity <- function(I, SI.Distr)
 {
   .Deprecated("overall_infectivity")
@@ -123,3 +120,47 @@ OverallInfectivity <- function(I, SI.Distr)
 }
 
 
+
+
+#' Function to ensure compatibility with EpiEstim versions <2.0
+#'
+#' Please only use for compatibility;
+#' Prefer the new wallinga_teunis function instead
+#'
+#' @param I see \code{I} in \code{wallinga_teunis}
+#' @param T.Start see \code{config$t_start} in \code{wallinga_teunis}
+#' @param T.End see \code{config$t_end} in \code{wallinga_teunis}
+#' @param method see method in \code{wallinga_teunis} (but WT uses CamelCase where wallinga_teunis uses snake_case for the method names)
+#' @param Mean.SI see \code{config$mean_si} in \code{wallinga_teunis}
+#' @param Std.SI see \code{config$std_si} in \code{wallinga_teunis}
+#' @param SI.Distr see \code{config$si_distr} in \code{wallinga_teunis}
+#' @param nSim see \code{config$n_sim} in \code{wallinga_teunis}
+#' @param plot see \code{config$plot} in \code{wallinga_teunis}
+#'
+#' @export
+WT <- function(I, T.Start, T.End,
+               method=c("NonParametricSI", "ParametricSI"),
+               Mean.SI=NULL, Std.SI=NULL, 
+               SI.Distr=NULL, nSim=10, 
+               plot=FALSE)
+{
+  .Deprecated("wallinga_teunis")
+  method_tr <- c("NonParametricSI" = "non_parametric_si", 
+                 "ParametricSI" = "parametric_si")
+  method <- method_tr[[method]]
+  
+  config = list(t_start = T.Start, 
+                t_end = T.End,
+                mean_si = Mean.SI, 
+                std_si = Std.SI, 
+                si_distr = SI.Distr, 
+                n_sim = nSim, 
+                plot = plot)
+  
+  wallinga_teunis(I, method = method, config)
+}
+
+
+
+
+  
