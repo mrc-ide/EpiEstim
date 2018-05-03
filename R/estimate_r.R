@@ -265,6 +265,7 @@ estimate_r <- function(I,
                       config) {
 
   method <- match.arg(method)
+  check_config(config, method)
   config <- process_config(config)
 
   if (method=="si_from_data") {
@@ -424,116 +425,18 @@ estimate_r_func <- function (I,
     })
     return(list(sample_r_posterior, si_distr))
   }
+  
   method <- match.arg(method)
   
   I <- process_I(I)
   T<-nrow(I)
   
-  if (config$mean_prior <= 0) {
-    stop("config$mean_prior must be >0.")
-  }
-  if (config$std_prior <= 0) {
-    stop("config$std_prior must be >0.")
-  }
   a_prior <- (config$mean_prior/config$std_prior)^2
   b_prior <- config$std_prior^2/config$mean_prior
   
   check_times(config$t_start, config$t_end, T)
   nb_time_periods <- length(config$t_start)
   
-  if (method == "non_parametric_si") {
-    check_si_distr(config$si_distr, method = method)
-  }
-  if (method == "parametric_si") {
-    if (is.null(config$mean_si)) {
-      stop("method parametric_si requires to specify the config$mean_si argument.")
-    }
-    if (is.null(config$std_si)) {
-      stop("method parametric_si requires to specify the config$std_si argument.")
-    }
-    if (config$mean_si <= 1) {
-      stop("method parametric_si requires a value >1 for config$mean_si.")
-    }
-    if (config$std_si <= 0) {
-      stop("method parametric_si requires a >0 value for config$std_si.")
-    }
-  }
-  if (method == "uncertain_si") {
-    if (is.null(config$mean_si)) {
-      stop("method uncertain_si requires to specify the config$mean_si argument.")
-    }
-    if (is.null(config$std_si)) {
-      stop("method uncertain_si requires to specify the config$std_si argument.")
-    }
-    if (is.null(config$n1)) {
-      stop("method uncertain_si requires to specify the config$n1 argument.")
-    }
-    if (is.null(config$n2)) {
-      stop("method uncertain_si requires to specify the config$n2 argument.")
-    }
-    if (is.null(config$std_mean_si)) {
-      stop("method uncertain_si requires to specify the config$std_mean_si argument.")
-    }
-    if (is.null(config$min_mean_si)) {
-      stop("method uncertain_si requires to specify the config$min_mean_si argument.")
-    }
-    if (is.null(config$max_mean_si)) {
-      stop("method uncertain_si requires to specify the config$max_mean_si argument.")
-    }
-    if (is.null(config$std_std_si)) {
-      stop("method uncertain_si requires to specify the config$std_std_si argument.")
-    }
-    if (is.null(config$min_std_si)) {
-      stop("method uncertain_si requires to specify the config$min_std_si argument.")
-    }
-    if (is.null(config$max_std_si)) {
-      stop("method uncertain_si requires to specify the config$max_std_si argument.")
-    }
-    if (config$mean_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$mean_si.")
-    }
-    if (config$std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_si.")
-    }
-    if (config$n2 <= 0 || config$n2%%1 != 0) {
-      stop("method uncertain_si requires a >0 integer value for config$n2.")
-    }
-    if (config$n1 <= 0 || config$n1%%1 != 0) {
-      stop("method uncertain_si requires a >0 integer value for config$n1.")
-    }
-    if (config$std_mean_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_mean_si.")
-    }
-    if (config$min_mean_si < 1) {
-      stop("method uncertain_si requires a value >=1 for config$min_mean_si.")
-    }
-    if (config$max_mean_si < config$mean_si) {
-      stop("method uncertain_si requires that config$max_mean_si >= config$mean_si.")
-    }
-    if (config$mean_si < config$min_mean_si) {
-      stop("method uncertain_si requires that config$mean_si >= config$min_mean_si.")
-    }
-    if (signif(config$max_mean_si - config$mean_si, 3) != signif(config$mean_si -
-                                                                 config$min_mean_si, 3)) {
-      warning("The distribution you chose for the mean SI is not centered around the mean.")
-    }
-    if (config$std_std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_std_si.")
-    }
-    if (config$min_std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$min_std_si.")
-    }
-    if (config$max_std_si < config$std_si) {
-      stop("method uncertain_si requires that config$max_std_si >= config$std_si.")
-    }
-    if (config$std_si < config$min_std_si) {
-      stop("method uncertain_si requires that config$std_si >= config$min_std_si.")
-    }
-    if (signif(config$max_std_si - config$std_si, 3) != signif(config$std_si -
-                                                               config$min_std_si, 3)) {
-      warning("The distribution you chose for the std of the SI is not centered around the mean.")
-    }
-  }
   if(method == "si_from_sample")
   {
     if (is.null(config$n2)) {
@@ -541,18 +444,14 @@ estimate_r_func <- function (I,
     }
     si_sample <- process_si_sample(si_sample)
   }
-  if (config$cv_posterior < 0) {
-    stop("config$cv_posterior must be >0.")
-  }
+  
   min_nb_cases_per_time_period <- ceiling(1/config$cv_posterior^2 - a_prior)
   incidence_per_time_step <- calc_incidence_per_time_step(I, config$t_start,
                                                           config$t_end)
   if (incidence_per_time_step[1] < min_nb_cases_per_time_period) {
     warning("You're estimating R too early in the epidemic to get the desired posterior CV.")
   }
-  if (config$plot != TRUE && config$plot != FALSE) {
-    stop("config$plot must be TRUE or FALSE.")
-  }
+  
   if (method == "non_parametric_si") {
     si_uncertainty <- "N"
     parametric_si <- "N"
