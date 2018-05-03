@@ -2,35 +2,67 @@
 % Please edit documentation in R/init_MCMC_params.R
 \name{init_MCMC_params}
 \alias{init_MCMC_params}
-\title{init_MCMC_params TITLE}
+\title{init_MCMC_params Finds clever starting points for the MCMC to be used to estimate the serial interval, e.g. when using option \code{si_from_data} in \code{estimate_r}}
 \usage{
 init_MCMC_params(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
 }
 \arguments{
-\item{si_data}{XXXXXXX.}
+\item{si_data}{the data on dates of symptoms of pairs of infector/infected individuals to be used to estimate the serial interval distribution. 
+This should be a dataframe with 5 columns:
+\itemize{
+\item{EL: the lower bound of the symptom onset date of the infector (given as an integer)}
+\item{ER: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that ER>=EL}
+\item{SL: the lower bound of the symptom onset date of the infected indivdiual (given as an integer)}
+\item{SR: the upper bound of the symptom onset date of the infected indivdiual (given as an integer). Should be such that SR>=SL}
+\item{type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, 
+respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates}
+}}
 
-\item{dist}{XXXXXXX.}
+\item{dist}{the parametric distribution to use for the serial interval.
+Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal shifted by 1).}
 }
 \value{
-XXXXXXX.
-}
-\description{
-\code{init_MCMC_params} DESCRIPTION TO COME.
-}
-\details{
-{
-XXXXXXX. 
-}
+A vector containing the initial values for the two parameters of the distribution of the serial interval. 
+These are the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog.
 }
 \examples{
-## XXXXXXX.
+\dontrun{
+## Note the following examples use an MCMC routine 
+## to estimate the serial interval distribution from data, 
+## so they may take a few minutes to run
+
+## load data on rotavirus
+data("MockRotavirus")
+
+## get clever initial values for shape and scale of a Gamma distribution fitted to the the data MockRotavirus$si_data
+clever_init_param <- init_MCMC_params(MockRotavirus$si_data, "G") 
+
+## estimate the serial interval from data using a clever starting point for the MCMC chain
+SI_fit_clever <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
+                             dist="G", 
+                             init.pars=clever_init_param,
+                             burnin = 1000, 
+                             n.samples = 5000)
+                             
+## estimate the serial interval from data using a random starting point for the MCMC chain
+SI_fit_naive <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
+                             dist="G", 
+                             burnin = 1000, 
+                             n.samples = 5000)
+                                                           
+                             
+## use check_cdt_samples_convergence to check convergence in both situations
+converg_diag_clever <- check_cdt_samples_convergence(SI_fit_clever@samples)
+converg_diag_naive <- check_cdt_samples_convergence(SI_fit_naive@samples)
+converg_diag_clever
+converg_diag_naive
+
 }
-\references{
-XXXXXXX.
+
 }
 \seealso{
-XXXXXXX.
+\code{\link{estimate_r}}
 }
 \author{
-XXXXXXX.
+Anne Cori
 }

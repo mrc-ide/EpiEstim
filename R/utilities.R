@@ -217,11 +217,11 @@ check_times <- function(t_start, t_end, T) # this only produces warnings and err
   }
 }
 
-check_si_distr <- function(si_distr, sumToOne = c("error", "warning")) # this only produces warnings and errors, does not return anything
+check_si_distr <- function(si_distr, sumToOne = c("error", "warning"), method = "non_parametric_si") # this only produces warnings and errors, does not return anything
 {
   sumToOne <- match.arg(sumToOne)
   if (is.null(si_distr)) {
-    stop("si_distr argument missing.")
+    stop(paste0("si_distr argument is missing but is required for method ", method, "."))
   }
   if (!is.vector(si_distr)) {
     stop("si_distr must be a vector.")
@@ -322,6 +322,3 @@ process_config_si_from_data <- function(config, si_data)
   }
   return(config)
 }
-
-
-

@@ -98,7 +98,7 @@ WT <- function(I, t_start, t_end,
   # Draws a possile transmission tree                     #
   #########################################################
   
-  DrawOneSetOfAncestries <- function()
+  draw_one_set_of_ancestries <- function()
   {
     res <- vector()
     for(t in t_start[1]:t_end[length(t_end)])
@@ -252,7 +252,7 @@ WT <- function(I, t_start, t_end,
   MeanRperDate.WT <- sapply(1:nb_time_periods, function(i) mean(rep(MeanRperIndexCaseDate[which((1:T >= t_start[i]) * (1:T <= t_end[i]) == 1)], I[which((1:T >= t_start[i]) * (1:T <= t_end[i]) == 1)]) ) )
   
   possibleAncesTime <- sapply(1:T,function(t) (t-(which(si_distr!=0))+1)[which(t-(which(si_distr!=0))+1>0)])
-  ancestriesTime <- t(sapply(1:nSim , function(i) DrawOneSetOfAncestries()))
+  ancestriesTime <- t(sapply(1:nSim , function(i) draw_one_set_of_ancestries()))
   
   Rsim <- sapply(1:nb_time_periods,function(i) rowSums((ancestriesTime[,]>=t_start[i]) * (ancestriesTime[,]<=t_end[i]),na.rm=TRUE)/sum(I[t_start[i]:t_end[i]]))
   

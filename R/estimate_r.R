@@ -265,8 +265,7 @@ estimate_r <- function(I,
                       config) {
 
   method <- match.arg(method)
-  
-  process_config(config)
+  config <- process_config(config)
 
   if (method=="si_from_data") {
     # Warning if the expected set of parameters is not adequate
@@ -443,7 +442,7 @@ estimate_r_func <- function (I,
   nb_time_periods <- length(config$t_start)
   
   if (method == "non_parametric_si") {
-    check_si_distr(config$si_distr)
+    check_si_distr(config$si_distr, method = method)
   }
   if (method == "parametric_si") {
     if (is.null(config$mean_si)) {

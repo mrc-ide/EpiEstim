@@ -140,7 +140,7 @@ This data, specified in argument \code{si_data}, should be a dataframe with 5 co
 \item{ER: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that ER>=EL}
 \item{SL: the lower bound of the symptom onset date of the infected indivdiual (given as an integer)}
 \item{SR: the upper bound of the symptom onset date of the infected indivdiual (given as an integer). Should be such that SR>=SL}
-\item{type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates}
+\item{type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates}
 }
 Assuming a given parametric distribution for the serial interval distribution (specified in si_parametric_distr), 
 the posterior distribution of the serial interval is estimated directly fom these data using MCMC methods implemented in the package \code{coarsedatatools}. 

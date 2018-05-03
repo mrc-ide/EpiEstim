@@ -11,9 +11,14 @@ plots(x = NULL, what = c("all", "I", "R", "SI"),
   "black", transp = 0.25, xlim = NULL, ylim = NULL), legend = TRUE)
 }
 \arguments{
-\item{x}{The output of function \code{\link{estimate_r}} or function \code{\link{WT}}, or a list of such outputs. If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph.}
+\item{x}{The output of function \code{\link{estimate_r}} or function \code{\link{WT}}, or a list of such outputs. 
+If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph.}
 
-\item{what}{A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or all three (\code{what='all'})).}
+\item{what}{A string specifying what to plot, namely 
+the incidence time series (\code{what='I'}), 
+the estimated reproduction number (\code{what='R'}), 
+the serial interval distribution (\code{what='SI'}, 
+or all three (\code{what='all'})).}
 
 \item{add_imported_cases}{A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases.}
 
