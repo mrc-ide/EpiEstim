@@ -4,7 +4,7 @@
 \alias{plots}
 \title{Plotting the outputs of functions estimating the reproduction number from incidence time series and assumptions regarding the serial interval distribution}
 \usage{
-plots(x = NULL, what = c("all", "I", "R", "SI"),
+plots(x = NULL, what = c("all", "incid", "R", "SI"),
   add_imported_cases = FALSE, options_I = list(col = palette(), transp =
   0.7, xlim = NULL, ylim = NULL), options_R = list(col = palette(), transp =
   0.2, xlim = NULL, ylim = NULL), options_SI = list(prob_min = 0.001, col =
@@ -15,16 +15,16 @@ plots(x = NULL, what = c("all", "I", "R", "SI"),
 If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph.}
 
 \item{what}{A string specifying what to plot, namely 
-the incidence time series (\code{what='I'}), 
+the incidence time series (\code{what='incid'}), 
 the estimated reproduction number (\code{what='R'}), 
 the serial interval distribution (\code{what='SI'}, 
 or all three (\code{what='all'})).}
 
 \item{add_imported_cases}{A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases.}
 
-\item{options_I}{For what = "I" or "all". A list of graphical options: 
+\item{options_I}{For what = "incid" or "all". A list of graphical options: 
  \describe{
-\item{col}{A colour or vector of colours used for plotting I. By default uses the default R colours.}
+\item{col}{A colour or vector of colours used for plotting incid. By default uses the default R colours.}
 \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the bars plotted. Defaults to 0.7.}
 \item{xlim}{A parameter similar to that in \code{par}, to monitor the limits of the horizontal axis}
 \item{ylim}{A parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
@@ -50,7 +50,7 @@ or all three (\code{what='all'})).}
 \item{legend}{A boolean (TRUE by default) governing the presence / absence of legends on the plots}
 }
 \value{
-a plot (if \code{what = "I"}, \code{"R"}, or \code{"SI"}) or a \code{\link{grob}} object (if \code{what = "all"}).
+a plot (if \code{what = "incid"}, \code{"R"}, or \code{"SI"}) or a \code{\link{grob}} object (if \code{what = "all"}).
 }
 \description{
 \code{plots} allows plotting the outputs of functions \code{\link{estimate_r}} and \code{\link{wallinga_teunis}}
@@ -77,7 +77,7 @@ R_c <- wallinga_teunis(Flu2009$incidence, method="non_parametric_si",
        ## (with, on top of total incidence, the incidence of imported cases), 
        ## estimated instantaneous and case reproduction numbers 
        ## and serial interval distribution used
-p_I <- plots(R_i, "I", add_imported_cases=TRUE) # plots the incidence 
+p_I <- plots(R_i, "incid", add_imported_cases=TRUE) # plots the incidence 
 p_SI <- plots(R_i, "SI") # plots the serial interval distribution
 p_Ri <- plots(R_i, "R", 
           options_R = list(ylim=c(0,4))) 

@@ -6,11 +6,11 @@
 #' 
 #' \code{wallinga_teunis} estimates the case reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
 #' 
-#' @param I One of the following
+#' @param incid One of the following
 #' \itemize{
-#' \item{Vector (or a dataframe with a column named 'I') of non-negative integers containing an incidence time series.
-#'  If the dataframe contains a column \code{I$dates}, this is used for plotting. 
-#'  \code{I$dates} must contains only dates in a row.}
+#' \item{Vector (or a dataframe with a column named 'incid') of non-negative integers containing an incidence time series.
+#'  If the dataframe contains a column \code{incid$dates}, this is used for plotting. 
+#'  \code{incid$dates} must contains only dates in a row.}
 #' \item{An object of class \code{\link[incidence]{incidence}}}
 #'  }
 #' @param method the method used to estimate R, one of "non_parametric_si", "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
@@ -96,7 +96,7 @@
 #'                  plot=TRUE))
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the case reproduction number over the 7-day window finishing on that day.
-wallinga_teunis <- function(I, 
+wallinga_teunis <- function(incid, 
                             method = c("non_parametric_si","parametric_si"),
                             config)
 {
@@ -116,7 +116,7 @@ wallinga_teunis <- function(I,
       {
         if(length(possible_ances_time[[t]])>0)
         {
-          prob <- config$si_distr[t-possible_ances_time[[t]]+1]*I[possible_ances_time[[t]]]
+          prob <- config$si_distr[t-possible_ances_time[[t]]+1]*incid[possible_ances_time[[t]]]
           if(any(prob>0))
           {
             res[which(Onset==t)] <- possible_ances_time[[t]][which(rmultinom(length(which(Onset==t)),size=1,prob=prob)==TRUE,arr.ind=TRUE)[,1]]
@@ -135,16 +135,16 @@ wallinga_teunis <- function(I,
   
   method <- match.arg(method)
   
-  I <- process_I(I)
-  if(!is.null(I$dates)) 
+  incid <- process_I(incid)
+  if(!is.null(incid$dates)) 
   {
-    dates <- check_dates(I)
-    I <- process_I_vector(rowSums(I[,c("local","imported")]))
-    T<-length(I)
+    dates <- check_dates(incid)
+    incid <- process_I_vector(rowSums(incid[,c("local","imported")]))
+    T<-length(incid)
   }else
   {
-    I <- process_I_vector(rowSums(I[,c("local","imported")]))
-    T<-length(I)
+    incid <- process_I_vector(rowSums(incid[,c("local","imported")]))
+    T<-length(incid)
     dates <- 1:T
   }
   
@@ -152,7 +152,7 @@ wallinga_teunis <- function(I,
   ### Adjusting t_start and t_end so that at least an incident case has been observed before t_start[1] ###
   
   i <- 1
-  while(sum(I[1:(config$t_start[i]-1)])==0)
+  while(sum(incid[1:(config$t_start[i]-1)])==0)
   {
     i <- i+1
   }
@@ -234,7 +234,7 @@ wallinga_teunis <- function(I,
   time_periods_with_no_incidence <- vector()
   for(i in 1:nb_time_periods)
   {
-    if(sum(I[config$t_start[i]:config$t_end[i]])==0)
+    if(sum(incid[config$t_start[i]:config$t_end[i]])==0)
     {
       time_periods_with_no_incidence <- c(time_periods_with_no_incidence,i)
     }
@@ -248,28 +248,28 @@ wallinga_teunis <- function(I,
   
   Onset <- vector()
   for (t in 1:T) {
-    Onset <- c(Onset, rep(t, I[t]))
+    Onset <- c(Onset, rep(t, incid[t]))
   }
   NbCases <- length(Onset)
   
   delay <- outer (1:T, 1:T, "-")
   si_delay <- apply(delay, 2, function(x) config$si_distr[pmin(pmax(x + 1, 1), length(config$si_distr))])
-  sum_on_col_si_delay_tmp <- sapply(1:nrow(si_delay), function(i) sum(si_delay [i,]* I, na.rm=TRUE) )
+  sum_on_col_si_delay_tmp <- sapply(1:nrow(si_delay), function(i) sum(si_delay [i,]* incid, na.rm=TRUE) )
   sum_on_col_si_delay <- vector()
   for (t in 1:T) {
-    sum_on_col_si_delay <- c(sum_on_col_si_delay, rep(sum_on_col_si_delay_tmp[t], I[t]))
+    sum_on_col_si_delay <- c(sum_on_col_si_delay, rep(sum_on_col_si_delay_tmp[t], incid[t]))
   }
   mat_sum_on_col_si_delay <- matrix(rep(sum_on_col_si_delay_tmp, T), nrow = T, ncol = T)
   p <- si_delay/(mat_sum_on_col_si_delay)
   p[which(is.na(p))] <- 0
   p[which(is.infinite(p))] <- 0
-  mean_r_per_index_case_date <- sapply(1:ncol(p), function(j) sum(p[,j]*I, na.rm=TRUE))
-  mean_r_per_date_wt <- sapply(1:nb_time_periods, function(i) mean(rep(mean_r_per_index_case_date[which((1:T >= config$t_start[i]) * (1:T <= config$t_end[i]) == 1)], I[which((1:T >= config$t_start[i]) * (1:T <= config$t_end[i]) == 1)]) ) )
+  mean_r_per_index_case_date <- sapply(1:ncol(p), function(j) sum(p[,j]*incid, na.rm=TRUE))
+  mean_r_per_date_wt <- sapply(1:nb_time_periods, function(i) mean(rep(mean_r_per_index_case_date[which((1:T >= config$t_start[i]) * (1:T <= config$t_end[i]) == 1)], incid[which((1:T >= config$t_start[i]) * (1:T <= config$t_end[i]) == 1)]) ) )
   
   possible_ances_time <- sapply(1:T,function(t) (t-(which(config$si_distr!=0))+1)[which(t-(which(config$si_distr!=0))+1>0)])
   ancestries_time <- t(sapply(1:config$n_sim , function(i) draw_one_set_of_ancestries()))
   
-  r_sim <- sapply(1:nb_time_periods,function(i) rowSums((ancestries_time[,]>=config$t_start[i]) * (ancestries_time[,]<=config$t_end[i]),na.rm=TRUE)/sum(I[config$t_start[i]:config$t_end[i]]))
+  r_sim <- sapply(1:nb_time_periods,function(i) rowSums((ancestries_time[,]>=config$t_start[i]) * (ancestries_time[,]<=config$t_end[i]),na.rm=TRUE)/sum(incid[config$t_start[i]:config$t_end[i]]))
   
   r025_wt <- apply(r_sim, 2, quantile,0.025,na.rm=TRUE)
   r025_wt <- r025_wt[which(!is.na(r025_wt))]
@@ -290,10 +290,10 @@ wallinga_teunis <- function(I,
   
   if(!is.null(dates)) 
     results$dates <- dates
-  results$I <- I
-  results$I_local <- I
+  results$I <- incid
+  results$I_local <- incid
   results$I_local[1] <- 0
-  results$I_imported <- c(I[1], rep(0, length(I)-1))
+  results$I_imported <- c(incid[1], rep(0, length(incid)-1))
   
   if(!is.null(config$plot))
   {

@@ -15,7 +15,7 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
   Std.Prior = 5, CV.Posterior = 0.3, plot = FALSE, legend = FALSE)
 }
 \arguments{
-\item{I}{see \code{I} in \code{estimate_r}}
+\item{I}{see \code{incid} in \code{estimate_r}}
 
 \item{T.Start}{see \code{config$t_start} in \code{estimate_r}}
 

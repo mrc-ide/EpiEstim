@@ -4,19 +4,19 @@
 \alias{estimate_r}
 \title{Estimated Instantaneous Reproduction Number}
 \usage{
-estimate_r(I, method = c("non_parametric_si", "parametric_si", "uncertain_si",
-  "si_from_data", "si_from_sample"), si_data = NULL, si_sample = NULL,
-  config)
+estimate_r(incid, method = c("non_parametric_si", "parametric_si",
+  "uncertain_si", "si_from_data", "si_from_sample"), si_data = NULL,
+  si_sample = NULL, config)
 }
 \arguments{
-\item{I}{One of the following
+\item{incid}{One of the following
 \itemize{
 \item{A vector (or a dataframe with a single column) of non-negative integers containing the incidence time series}
-\item{A dataframe of non-negative integers with either i) \code{I$I} containing the total incidence, or ii) two columns, 
-so that \code{I$local} contains the incidence of cases due to local transmission and 
-\code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} 
-the total incidence). If the dataframe contains a column \code{I$dates}, this is used for plotting. 
-\code{I$dates} must contains only dates in a row.}
+\item{A dataframe of non-negative integers with either i) \code{incid$I} containing the total incidence, or ii) two columns, 
+so that \code{incid$local} contains the incidence of cases due to local transmission and 
+\code{incid$imported} contains the incidence of imported cases (with \code{incid$local + incid$imported} 
+the total incidence). If the dataframe contains a column \code{incid$dates}, this is used for plotting. 
+\code{incid$dates} must contains only dates in a row.}
 \item{An object of class \code{\link[incidence]{incidence}}}
 } 
 Note that the cases from the first time step are always all assumed to be imported cases.}
@@ -181,9 +181,9 @@ data <- c(0,1,1,2,1,3,4,5,5,5,5,4,4,26,6,7,9)
 location <- sample(c("local","imported"), length(data), replace=TRUE)
 location[1] <- "imported" # forcing the first case to be imported
 # get incidence per group (location)
-I <- incidence(data, groups = location)
+incid <- incidence(data, groups = location)
 # Estimate R with assumptions on serial interval
-estimate_r(I, method = "parametric_si", 
+estimate_r(incid, method = "parametric_si", 
           config=list(t_start = 2:21, t_end = 8:27,
           mean_si = 2.6, std_si = 1.5, plot = TRUE))
 

@@ -59,22 +59,22 @@ process_si_data <- function(si_data)
 }
 
 
-process_I <- function(I)
+process_I <- function(incid)
 {
-  if(class(I)=="incidence")
+  if(class(incid)=="incidence")
   {
-    I_inc <- I
-    I <- as.data.frame(I_inc)
-    I$I <- rowSums(I_inc$counts)
+    I_inc <- incid
+    incid <- as.data.frame(I_inc)
+    incid$I <- rowSums(I_inc$counts)
   }
   vector_I <- FALSE
   single_col_df_I <- FALSE
-  if(is.vector(I)) 
+  if(is.vector(incid)) 
   {
     vector_I <- TRUE
-  }else if(is.data.frame(I))
+  }else if(is.data.frame(incid))
   {
-    if(ncol(I)==1)
+    if(ncol(incid)==1)
     {
       single_col_df_I <- TRUE
     }
@@ -83,95 +83,95 @@ process_I <- function(I)
   {
     if(single_col_df_I)
     {
-      I_tmp <- as.vector(I[,1])
+      I_tmp <- as.vector(incid[,1])
     }else
     {
-      I_tmp <- I
+      I_tmp <- incid
     }
-    I <- data.frame(local=I_tmp, imported=rep(0, length(I_tmp)))
-    I_init <- sum(I[1,])
-    I[1,] <- c(0, I_init)
+    incid <- data.frame(local=I_tmp, imported=rep(0, length(I_tmp)))
+    I_init <- sum(incid[1,])
+    incid[1,] <- c(0, I_init)
   }else
   {
-    if(!is.data.frame(I) | (!("I" %in% names(I)) & !all(c("local","imported") %in% names(I)) ) ) 
+    if(!is.data.frame(incid) | (!("I" %in% names(incid)) & !all(c("local","imported") %in% names(incid)) ) ) 
     {
-      stop("I must be a vector or a dataframe with either i) a column called 'I', or ii) 2 columns called 'local' and 'imported'.")
+      stop("incid must be a vector or a dataframe with either i) a column called 'I', or ii) 2 columns called 'local' and 'imported'.")
     }
-    if(("I" %in% names(I)) & !all(c("local","imported") %in% names(I)))
+    if(("I" %in% names(incid)) & !all(c("local","imported") %in% names(incid)))
     {
-      I$local <- I$I
-      I$local[1] <- 0
-      I$imported <- c(I$I[1], rep(0, nrow(I)-1))
+      incid$local <- incid$I
+      incid$local[1] <- 0
+      incid$imported <- c(incid$I[1], rep(0, nrow(incid)-1))
     }
-    if(I$local[1]>0)
+    if(incid$local[1]>0)
     {
-      warning("I$local[1] is >0 but must be 0, as all cases on the first time step are assumed imported. This is corrected automatically by cases being transferred to I$imported.")
-      I_init <- sum(I[1,c('local','imported')])
-      I[1,c('local','imported')] <- c(0, I_init)
+      warning("incid$local[1] is >0 but must be 0, as all cases on the first time step are assumed imported. This is corrected automatically by cases being transferred to incid$imported.")
+      I_init <- sum(incid[1,c('local','imported')])
+      incid[1,c('local','imported')] <- c(0, I_init)
     }
   }
   
-  I[which(is.na(I))] <- 0
-  date_col <- names(I)=='dates'
+  incid[which(is.na(incid))] <- 0
+  date_col <- names(incid)=='dates'
   if(any(date_col))
   {
-    if(any(I[,!date_col]<0))
+    if(any(incid[,!date_col]<0))
     {
-      stop("I must contain only non negative integer values.")
+      stop("incid must contain only non negative integer values.")
     }
   }else
   {
-    if(any(I<0))
+    if(any(incid<0))
     {
-      stop("I must contain only non negative integer values.")
+      stop("incid must contain only non negative integer values.")
     }
   }
   
-  return(I)
+  return(incid)
 }
 
-process_I_vector <- function(I)
+process_I_vector <- function(incid)
 {
-  if(class(I)=="incidence")
+  if(class(incid)=="incidence")
   {
-    I <- rowSums(I$counts)
+    incid <- rowSums(incid$counts)
   }
-  if(!is.vector(I))
+  if(!is.vector(incid))
   {
-    if(is.data.frame(I))
+    if(is.data.frame(incid))
     {
-      if(ncol(I)==1)
+      if(ncol(incid)==1)
       {
-        I <- as.vector(I[,1])
-      }else if('I' %in% names(I))
+        incid <- as.vector(incid[,1])
+      }else if('I' %in% names(incid))
       {
-        I <- as.vector(I$I)
-      }else if(!all(c('local', 'imported') %in% names(I)))
+        incid <- as.vector(incid$I)
+      }else if(!all(c('local', 'imported') %in% names(incid)))
       {
-        stop("I must be a vector or a dataframe with at least a column named 'I' or two columns named 'local' and 'imported'.")
+        stop("incid must be a vector or a dataframe with at least a column named 'I' or two columns named 'local' and 'imported'.")
       }
     }else
     {
-      stop("I must be a vector or a dataframe with at least a column named 'I' or two columns named 'local' and 'imported'.")
+      stop("incid must be a vector or a dataframe with at least a column named 'I' or two columns named 'local' and 'imported'.")
     }
   }
-  I[which(is.na(I))] <- 0
-  date_col <- names(I)=='dates'
+  incid[which(is.na(incid))] <- 0
+  date_col <- names(incid)=='dates'
   if(any(date_col))
   {
-    if(any(I[,!date_col]<0))
+    if(any(incid[,!date_col]<0))
     {
-      stop("I must contain only non negative integer values.")
+      stop("incid must contain only non negative integer values.")
     }
   }else
   {
-    if(any(I<0))
+    if(any(incid<0))
     {
-      stop("I must contain only non negative integer values.")
+      stop("incid must contain only non negative integer values.")
     }
   }
   
-  return(I)
+  return(incid)
 }
 
 process_si_sample <- function(si_sample)
@@ -210,10 +210,10 @@ check_times <- function(t_start, t_end, T) # this only produces warnings and err
     stop("t_start[i] must be <= t_end[i] for all i.")
   }
   if (any(t_start < 2 | t_start > T | t_start%%1 != 0 )) {
-    stop("t_start must be a vector of integers between 2 and the number of timesteps in I.")
+    stop("t_start must be a vector of integers between 2 and the number of timesteps in incid.")
   }
   if (any(t_end < 2 | t_end > T | t_end%%1 != 0)) {
-    stop("t_end must be a vector of integers between 2 and the number of timesteps in I.")
+    stop("t_end must be a vector of integers between 2 and the number of timesteps in incid.")
   }
 }
 
@@ -244,17 +244,17 @@ check_si_distr <- function(si_distr, sumToOne = c("error", "warning"), method = 
   }
 }
 
-check_dates <- function(I)
+check_dates <- function(incid)
 {
-  dates <- I$dates
+  dates <- incid$dates
   if(class(dates) != "Date" & class(dates) != "numeric")
   {
-    stop("I$dates must be an object of class date or numeric.")
+    stop("incid$dates must be an object of class date or numeric.")
   }else
   {
     if(unique(diff(dates)) != 1)
     {
-      stop("I$dates must contain dates which are all in a row.")
+      stop("incid$dates must contain dates which are all in a row.")
     }else
     {
       return(dates)

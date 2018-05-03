@@ -9,7 +9,7 @@ WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
   plot = FALSE)
 }
 \arguments{
-\item{I}{see \code{I} in \code{wallinga_teunis}}
+\item{I}{see \code{incid} in \code{wallinga_teunis}}
 
 \item{T.Start}{see \code{config$t_start} in \code{wallinga_teunis}}
 

@@ -4,14 +4,15 @@
 \alias{wallinga_teunis}
 \title{Estimation of the case reproduction number using the Wallinga and Teunis method}
 \usage{
-wallinga_teunis(I, method = c("non_parametric_si", "parametric_si"), config)
+wallinga_teunis(incid, method = c("non_parametric_si", "parametric_si"),
+  config)
 }
 \arguments{
-\item{I}{One of the following
+\item{incid}{One of the following
 \itemize{
-\item{Vector (or a dataframe with a column named 'I') of non-negative integers containing an incidence time series.
- If the dataframe contains a column \code{I$dates}, this is used for plotting. 
- \code{I$dates} must contains only dates in a row.}
+\item{Vector (or a dataframe with a column named 'incid') of non-negative integers containing an incidence time series.
+ If the dataframe contains a column \code{incid$dates}, this is used for plotting. 
+ \code{incid$dates} must contains only dates in a row.}
 \item{An object of class \code{\link[incidence]{incidence}}}
  }}
 

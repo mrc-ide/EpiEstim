@@ -7,7 +7,7 @@
 OverallInfectivity(I, SI.Distr)
 }
 \arguments{
-\item{I}{see \code{I} in \code{overall_infectivity}}
+\item{I}{see \code{incid} in \code{overall_infectivity}}
 
 \item{SI.Distr}{see \code{si_distr} in \code{overall_infectivity}}
 }

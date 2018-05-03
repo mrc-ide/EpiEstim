@@ -3,7 +3,7 @@
 #' Please only use for compatibility;
 #' Prefer the new estimate_r function instead
 #'
-#' @param I see \code{I} in \code{estimate_r}
+#' @param I see \code{incid} in \code{estimate_r}
 #' @param T.Start see \code{config$t_start} in \code{estimate_r}
 #' @param T.End see \code{config$t_end} in \code{estimate_r}
 #' @param method see method in \code{estimate_r} (but EstimateR uses CamelCase where estimate_r uses snake_case for the method names)
@@ -45,8 +45,6 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       plot = FALSE, legend = FALSE) {
   .Deprecated("estimate_r")
   
-  ### TO DO change I to incidence
-  
   method_tr <- c("NonParametricSI" = "non_parametric_si", 
                  "ParametricSI" = "parametric_si",
                  "UncertainSI" = "uncertain_si", 
@@ -78,7 +76,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
     legend = legend
   )
     
-  estimate_r(I, method, si_data = SI.Data, si_sample = SI.Sample, 
+  estimate_r(incid = I, method, si_data = SI.Data, si_sample = SI.Sample, 
              config = config)
 }
 
@@ -109,14 +107,14 @@ DiscrSI <- function(k,mu,sigma)
 #' Please only use for compatibility;
 #' Prefer the new overall_infectivity function instead
 #'
-#' @param I see \code{I} in \code{overall_infectivity}
+#' @param I see \code{incid} in \code{overall_infectivity}
 #' @param SI.Distr see \code{si_distr} in \code{overall_infectivity}
 
 #' @export
 OverallInfectivity <- function(I, SI.Distr)
 {
   .Deprecated("overall_infectivity")
-  overall_infectivity(I = I, si_distr = SI.Distr)
+  overall_infectivity(incid = I, si_distr = SI.Distr)
 }
 
 
@@ -127,7 +125,7 @@ OverallInfectivity <- function(I, SI.Distr)
 #' Please only use for compatibility;
 #' Prefer the new wallinga_teunis function instead
 #'
-#' @param I see \code{I} in \code{wallinga_teunis}
+#' @param I see \code{incid} in \code{wallinga_teunis}
 #' @param T.Start see \code{config$t_start} in \code{wallinga_teunis}
 #' @param T.End see \code{config$t_end} in \code{wallinga_teunis}
 #' @param method see method in \code{wallinga_teunis} (but WT uses CamelCase where wallinga_teunis uses snake_case for the method names)
@@ -157,7 +155,7 @@ WT <- function(I, T.Start, T.End,
                 n_sim = nSim, 
                 plot = plot)
   
-  wallinga_teunis(I, method = method, config)
+  wallinga_teunis(incid = I, method = method, config)
 }
 
 

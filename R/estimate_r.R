@@ -6,14 +6,14 @@
 #' 
 #' \code{estimate_r} estimates the reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
 #' 
-#' @param I One of the following
+#' @param incid One of the following
 #' \itemize{
 #' \item{A vector (or a dataframe with a single column) of non-negative integers containing the incidence time series}
-#' \item{A dataframe of non-negative integers with either i) \code{I$I} containing the total incidence, or ii) two columns, 
-#' so that \code{I$local} contains the incidence of cases due to local transmission and 
-#' \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} 
-#' the total incidence). If the dataframe contains a column \code{I$dates}, this is used for plotting. 
-#' \code{I$dates} must contains only dates in a row.}
+#' \item{A dataframe of non-negative integers with either i) \code{incid$I} containing the total incidence, or ii) two columns, 
+#' so that \code{incid$local} contains the incidence of cases due to local transmission and 
+#' \code{incid$imported} contains the incidence of imported cases (with \code{incid$local + incid$imported} 
+#' the total incidence). If the dataframe contains a column \code{incid$dates}, this is used for plotting. 
+#' \code{incid$dates} must contains only dates in a row.}
 #' \item{An object of class \code{\link[incidence]{incidence}}}
 #' } 
 #' Note that the cases from the first time step are always all assumed to be imported cases.
@@ -176,9 +176,9 @@
 #' location <- sample(c("local","imported"), length(data), replace=TRUE)
 #' location[1] <- "imported" # forcing the first case to be imported
 #' # get incidence per group (location)
-#' I <- incidence(data, groups = location)
+#' incid <- incidence(data, groups = location)
 #' # Estimate R with assumptions on serial interval
-#' estimate_r(I, method = "parametric_si", 
+#' estimate_r(incid, method = "parametric_si", 
 #'           config=list(t_start = 2:21, t_end = 8:27,
 #'           mean_si = 2.6, std_si = 1.5, plot = TRUE))
 #' 
@@ -256,7 +256,7 @@
 #' all(R_si_from_sample$R$`Mean(R)` == R_si_from_data$R$`Mean(R)`) 
 #' }
 #' 
-estimate_r <- function(I,
+estimate_r <- function(incid,
                        method = c("non_parametric_si", "parametric_si",
                                   "uncertain_si", "si_from_data",
                                   "si_from_sample"),
@@ -309,10 +309,10 @@ estimate_r <- function(I,
       set.seed(config$seed)
     }
     
-    out <- estimate_r_func(I=I,
+    out <- estimate_r_func(incid = incid,
                            method = "si_from_data",
                            si_sample = c2e$si_sample,
-                           config=config
+                           config = config
     )
     out[["MCMC_converged"]] <- MCMC_conv
   } else {
@@ -322,7 +322,7 @@ estimate_r <- function(I,
       set.seed(config$seed)
     }
     
-    out <- estimate_r_func(I=I, method = method, si_sample=si_sample,
+    out <- estimate_r_func(incid = incid, method = method, si_sample=si_sample,
                            config = config
     )
   }
@@ -339,7 +339,7 @@ estimate_r <- function(I,
 #' @importFrom stats median pgamma plnorm pweibull qgamma qlnorm quantile qweibull rgamma rmultinom rnorm sd
 #' @importFrom graphics plot
 #' @importFrom incidence as.incidence 
-estimate_r_func <- function (I,
+estimate_r_func <- function (incid,
                              si_sample,
                              method = c("non_parametric_si", "parametric_si",
                                         "uncertain_si", "si_from_data", "si_from_sample"),
@@ -349,9 +349,9 @@ estimate_r_func <- function (I,
   # Calculates the cumulative incidence over time steps   #
   #########################################################
   
-  calc_incidence_per_time_step <- function(I, t_start, t_end) {
+  calc_incidence_per_time_step <- function(incid, t_start, t_end) {
     nb_time_periods <- length(t_start)
-    incidence_per_time_step <- sapply(1:nb_time_periods, function(i) sum(I[t_start[i]:t_end[i], c("local", "imported")]))
+    incidence_per_time_step <- sapply(1:nb_time_periods, function(i) sum(incid[t_start[i]:t_end[i], c("local", "imported")]))
     return(incidence_per_time_step)
   }
   
@@ -360,17 +360,17 @@ estimate_r_func <- function (I,
   # distribution from the discrete SI distribution        #
   #########################################################
   
-  posterior_from_si_distr <- function(I, si_distr, a_prior, b_prior,
+  posterior_from_si_distr <- function(incid, si_distr, a_prior, b_prior,
                                       t_start, t_end) {
     nb_time_periods <- length(t_start)
-    lambda <- overall_infectivity(I, si_distr)
+    lambda <- overall_infectivity(incid, si_distr)
     final_mean_si <- sum(si_distr * (0:(length(si_distr) -
                                           1)))
     a_posterior <- vector()
     b_posterior <- vector()
     a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
                                                                final_mean_si) {
-      a_prior + sum(I[t_start[t]:t_end[t], "local"]) # only counting local cases on the "numerator"
+      a_prior + sum(incid[t_start[t]:t_end[t], "local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
@@ -390,7 +390,7 @@ estimate_r_func <- function (I,
   # given mean SI and std SI                              #
   #########################################################
   
-  sample_from_posterior <- function(sample_size, I, mean_si, std_si, si_distr=NULL, 
+  sample_from_posterior <- function(sample_size, incid, mean_si, std_si, si_distr=NULL, 
                                     a_prior, b_prior, t_start, t_end) {
     
     nb_time_periods <- length(t_start)
@@ -400,12 +400,12 @@ estimate_r_func <- function (I,
     
     final_mean_si <- sum(si_distr * (0:(length(si_distr) -
                                           1)))
-    lambda <- overall_infectivity(I, si_distr)
+    lambda <- overall_infectivity(incid, si_distr)
     a_posterior <- vector()
     b_posterior <- vector()
     a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
                                                                final_mean_si) {
-      a_prior + sum(I[t_start[t]:t_end[t], "local"]) # only counting local cases on the "numerator"
+      a_prior + sum(incid[t_start[t]:t_end[t], "local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
@@ -432,8 +432,8 @@ estimate_r_func <- function (I,
   
   method <- match.arg(method)
   
-  I <- process_I(I)
-  T<-nrow(I)
+  incid <- process_I(incid)
+  T<-nrow(incid)
   
   a_prior <- (config$mean_prior/config$std_prior)^2
   b_prior <- config$std_prior^2/config$mean_prior
@@ -450,7 +450,7 @@ estimate_r_func <- function (I,
   }
   
   min_nb_cases_per_time_period <- ceiling(1/config$cv_posterior^2 - a_prior)
-  incidence_per_time_step <- calc_incidence_per_time_step(I, config$t_start,
+  incidence_per_time_step <- calc_incidence_per_time_step(incid, config$t_start,
                                                           config$t_end)
   if (incidence_per_time_step[1] < min_nb_cases_per_time_period) {
     warning("You're estimating R too early in the epidemic to get the desired posterior CV.")
@@ -488,7 +488,7 @@ estimate_r_func <- function (I,
         }
       }
       temp <- lapply(1:config$n1, function(k) sample_from_posterior(config$n2,
-                                                                    I, mean_si_sample[k], std_si_sample[k], si_distr=NULL, a_prior,
+                                                                    incid, mean_si_sample[k], std_si_sample[k], si_distr=NULL, a_prior,
                                                                     b_prior, config$t_start, config$t_end))
       config$si_distr <- cbind(t(sapply(1:config$n1, function(k) (temp[[k]])[[2]])),
                                rep(0, config$n1))
@@ -523,7 +523,7 @@ estimate_r_func <- function (I,
         std_si_sample[k] <- sqrt(sum(si_sample[,k]*((1:dim(si_sample)[1]-1) - mean_si_sample[k])^2))
       }
       temp <- lapply(1:config$n1, function(k) sample_from_posterior(config$n2,
-                                                                    I, mean_si=NULL, std_si=NULL, si_sample[,k], a_prior,
+                                                                    incid, mean_si=NULL, std_si=NULL, si_sample[,k], a_prior,
                                                                     b_prior, config$t_start, config$t_end))
       config$si_distr <- cbind(t(sapply(1:config$n1, function(k) (temp[[k]])[[2]])),
                                rep(0, config$n1))
@@ -561,7 +561,7 @@ estimate_r_func <- function (I,
                                                  1)))
     Finalstd_si <- sqrt(sum(config$si_distr * (0:(length(config$si_distr) -
                                                     1))^2) - final_mean_si^2)
-    post <- posterior_from_si_distr(I, config$si_distr, a_prior, b_prior,
+    post <- posterior_from_si_distr(incid, config$si_distr, a_prior, b_prior,
                                     config$t_start, config$t_end)
     a_posterior <- unlist(post[[1]])
     b_posterior <- unlist(post[[2]])
@@ -610,19 +610,19 @@ estimate_r_func <- function (I,
   names(results$SI.Moments) <- c("Mean", "Std")
   
   
-  if(!is.null(I$dates)) 
+  if(!is.null(incid$dates)) 
   {
-    results$dates <- check_dates(I)
+    results$dates <- check_dates(incid)
   }else {
     results$dates <- 1:T
   }
-  results$I <- rowSums(I[,c("local", "imported")])
-  results$I_local <- I$local
-  results$I_imported <- I$imported
+  results$I <- rowSums(incid[,c("local", "imported")])
+  results$I_local <- incid$local
+  results$I_imported <- incid$imported
   
   if (config$plot) {
     
-    if(sum(I$imported[-1])>0) # more than the first cases are imported
+    if(sum(incid$imported[-1])>0) # more than the first cases are imported
     {
       add_imported_cases <- TRUE
     }else {

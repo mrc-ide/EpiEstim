@@ -7,17 +7,17 @@
 #' 
 #' \code{overall_infectivity} computes the overall infectivity due to previously infected individuals. 
 #' 
-#' @param I One of the following
+#' @param incid One of the following
 #' \itemize{
 #' \item{A vector (or a dataframe with a single column) of non-negative integers containing an incidence time series}
-#' \item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
+#' \item{A dataframe of non-negative integers with two columns, so that \code{incid$local} contains the incidence of cases due to local transmission and \code{incid$imported} contains the incidence of imported cases (with \code{incid$local + incid$imported} the total incidence).}
 #' } 
 #' Note that the cases from the first time step are always all assumed to be imported cases. 
 #' @param si_distr Vector of probabilities giving the discrete distribution of the serial interval.
 #' @return A vector which contains the overall infectivity \eqn{\lambda_t} at each time step
 #' @details{
 #' The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is equal to the sum of the previously infected individuals 
-#' (given by the incidence vector \eqn{I}, with \code{I=I$local + I$imported} if \eqn{I} is a matrix), 
+#' (given by the incidence vector \eqn{I}, with \code{I = incid$local + incid$imported} if \eqn{I} is a matrix), 
 #' weigthed by their infectivity at time \eqn{t} (given by the discrete serial interval distribution \eqn{w_k}). 
 #' In mathematical terms:   
 #' \cr
@@ -39,14 +39,14 @@
 #' title(main = "Epidemic curve")
 #' plot(lambda, type = "s", xlab = "time (days)", ylab = "Infectivity")
 #' title(main = "Overall infectivity")
-overall_infectivity <-function (I, si_distr)
+overall_infectivity <-function (incid, si_distr)
 {
-  I <- process_I(I)
-  T <- nrow(I)
+  incid <- process_I(incid)
+  T <- nrow(incid)
   check_si_distr(si_distr, "warning")
   lambda <- vector()
   lambda[1] <- NA
   for (t in 2:T)
-    lambda[t] <- sum(si_distr[1:t]*rowSums(I[t:1, c("local", "imported")]), na.rm=TRUE)
+    lambda[t] <- sum(si_distr[1:t]*rowSums(incid[t:1, c("local", "imported")]), na.rm=TRUE)
   return(lambda)
 }
