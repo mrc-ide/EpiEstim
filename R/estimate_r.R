@@ -265,8 +265,8 @@ estimate_r <- function(I,
                       config) {
 
   method <- match.arg(method)
-  check_config(config, method)
   config <- process_config(config)
+  check_config(config, method)
 
   if (method=="si_from_data") {
     # Warning if the expected set of parameters is not adequate
