@@ -392,6 +392,7 @@ estimate_r_func <- function (I,
   
   sample_from_posterior <- function(sample_size, I, mean_si, std_si, si_distr=NULL, 
                                   a_prior, b_prior, t_start, t_end) {
+    
     nb_time_periods <- length(t_start)
     
     if(is.null(si_distr))
@@ -430,7 +431,7 @@ estimate_r_func <- function (I,
   
   I <- process_I(I)
   T<-nrow(I)
-  
+
   a_prior <- (config$mean_prior/config$std_prior)^2
   b_prior <- config$std_prior^2/config$mean_prior
   
@@ -479,7 +480,7 @@ estimate_r_func <- function (I,
                                      sd = config$std_mean_si)
         }
         while (std_si_sample[k] < config$min_std_si || std_si_sample[k] >
-               config$max_std_si || std_si_sample[k] > mean_si_sample[k]) {
+               config$max_std_si){ 
           std_si_sample[k] <- rnorm(1, mean = config$std_si, sd = config$std_std_si)
         }
       }
