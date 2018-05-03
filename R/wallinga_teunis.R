@@ -114,12 +114,12 @@ wallinga_teunis <- function(I,
     {
       if(length(which(Onset==t))>0)
       {
-        if(length(possibleAncesTime[[t]])>0)
+        if(length(possible_ances_time[[t]])>0)
         {
-          prob <- config$si_distr[t-possibleAncesTime[[t]]+1]*I[possibleAncesTime[[t]]]
+          prob <- config$si_distr[t-possible_ances_time[[t]]+1]*I[possible_ances_time[[t]]]
           if(any(prob>0))
           {
-            res[which(Onset==t)] <- possibleAncesTime[[t]][which(rmultinom(length(which(Onset==t)),size=1,prob=prob)==TRUE,arr.ind=TRUE)[,1]]
+            res[which(Onset==t)] <- possible_ances_time[[t]][which(rmultinom(length(which(Onset==t)),size=1,prob=prob)==TRUE,arr.ind=TRUE)[,1]]
           }else
           {
             res[which(Onset==t)] <- NA
@@ -222,21 +222,21 @@ wallinga_teunis <- function(I,
     config$si_distr <- discr_si(0:(T-1),config$mean_si,config$std_si)
   }
   if(length(config$si_distr)<T+1){config$si_distr[(length(config$si_distr)+1):(T+1)]<-0}
-  final_mean_si<-sum(config$si_distr*(0:(length(config$si_distr)-1)))
-  Finalstd_si<-sqrt(sum(config$si_distr*(0:(length(config$si_distr)-1))^2)-final_mean_si^2)
+  final_mean_si < -sum(config$si_distr*(0:(length(config$si_distr)-1)))
+  final_std_si <- sqrt(sum(config$si_distr*(0:(length(config$si_distr)-1))^2)-final_mean_si^2)
   
-  TimePeriodsWithNoincidence <- vector()
+  time_periods_with_no_incidence <- vector()
   for(i in 1:nb_time_periods)
   {
     if(sum(I[config$t_start[i]:config$t_end[i]])==0)
     {
-      TimePeriodsWithNoincidence <- c(TimePeriodsWithNoincidence,i)
+      time_periods_with_no_incidence <- c(time_periods_with_no_incidence,i)
     }
   }
-  if(length(TimePeriodsWithNoincidence)>0)
+  if(length(time_periods_with_no_incidence)>0)
   {
-    config$t_start <- config$t_start[-TimePeriodsWithNoincidence]
-    config$t_end <- config$t_end[-TimePeriodsWithNoincidence]
+    config$t_start <- config$t_start[-time_periods_with_no_incidence]
+    config$t_end <- config$t_end[-time_periods_with_no_incidence]
     nb_time_periods <- length(config$t_start)
   }
   
@@ -247,40 +247,40 @@ wallinga_teunis <- function(I,
   NbCases <- length(Onset)
   
   delay <- outer (1:T, 1:T, "-")
-  SIdelay <- apply(delay, 2, function(x) config$si_distr[pmin(pmax(x + 1, 1), length(config$si_distr))])
-  SumOnColSIDelay_tmp <- sapply(1:nrow(SIdelay), function(i) sum(SIdelay [i,]* I, na.rm=TRUE) )
-  SumOnColSIDelay <- vector()
+  si_delay <- apply(delay, 2, function(x) config$si_distr[pmin(pmax(x + 1, 1), length(config$si_distr))])
+  sum_on_col_si_delay_tmp <- sapply(1:nrow(si_delay), function(i) sum(si_delay [i,]* I, na.rm=TRUE) )
+  sum_on_col_si_delay <- vector()
   for (t in 1:T) {
-    SumOnColSIDelay <- c(SumOnColSIDelay, rep(SumOnColSIDelay_tmp[t], I[t]))
+    sum_on_col_si_delay <- c(sum_on_col_si_delay, rep(sum_on_col_si_delay_tmp[t], I[t]))
   }
-  MatSumOnColSIDelay <- matrix(rep(SumOnColSIDelay_tmp, T), nrow = T, ncol = T)
-  p <- SIdelay/(MatSumOnColSIDelay)
+  mat_sum_on_col_si_delay <- matrix(rep(sum_on_col_si_delay_tmp, T), nrow = T, ncol = T)
+  p <- si_delay/(mat_sum_on_col_si_delay)
   p[which(is.na(p))] <- 0
   p[which(is.infinite(p))] <- 0
-  MeanRperIndexCaseDate <- sapply(1:ncol(p), function(j) sum(p[,j]*I, na.rm=TRUE))
-  MeanRperDate.WT <- sapply(1:nb_time_periods, function(i) mean(rep(MeanRperIndexCaseDate[which((1:T >= config$t_start[i]) * (1:T <= config$t_end[i]) == 1)], I[which((1:T >= config$t_start[i]) * (1:T <= config$t_end[i]) == 1)]) ) )
+  mean_r_per_index_case_date <- sapply(1:ncol(p), function(j) sum(p[,j]*I, na.rm=TRUE))
+  mean_r_per_date_wt <- sapply(1:nb_time_periods, function(i) mean(rep(mean_r_per_index_case_date[which((1:T >= config$t_start[i]) * (1:T <= config$t_end[i]) == 1)], I[which((1:T >= config$t_start[i]) * (1:T <= config$t_end[i]) == 1)]) ) )
   
-  possibleAncesTime <- sapply(1:T,function(t) (t-(which(config$si_distr!=0))+1)[which(t-(which(config$si_distr!=0))+1>0)])
-  ancestriesTime <- t(sapply(1:config$n_sim , function(i) draw_one_set_of_ancestries()))
+  possible_ances_time <- sapply(1:T,function(t) (t-(which(config$si_distr!=0))+1)[which(t-(which(config$si_distr!=0))+1>0)])
+  ancestries_time <- t(sapply(1:config$n_sim , function(i) draw_one_set_of_ancestries()))
   
-  Rsim <- sapply(1:nb_time_periods,function(i) rowSums((ancestriesTime[,]>=config$t_start[i]) * (ancestriesTime[,]<=config$t_end[i]),na.rm=TRUE)/sum(I[config$t_start[i]:config$t_end[i]]))
+  r_sim <- sapply(1:nb_time_periods,function(i) rowSums((ancestries_time[,]>=config$t_start[i]) * (ancestries_time[,]<=config$t_end[i]),na.rm=TRUE)/sum(I[config$t_start[i]:config$t_end[i]]))
   
-  R025.WT <- apply(Rsim, 2, quantile,0.025,na.rm=TRUE)
-  R025.WT <- R025.WT[which(!is.na(R025.WT))]
-  R975.WT <- apply(Rsim, 2, quantile,0.975,na.rm=TRUE)
-  R975.WT <- R975.WT[which(!is.na(R975.WT))]
-  std.WT <- apply(Rsim, 2, sd,na.rm=TRUE)
-  std.WT <- std.WT[which(!is.na(std.WT))]
+  r025_wt <- apply(r_sim, 2, quantile,0.025,na.rm=TRUE)
+  r025_wt <- r025_wt[which(!is.na(r025_wt))]
+  r975_wt <- apply(r_sim, 2, quantile,0.975,na.rm=TRUE)
+  r975_wt <- r975_wt[which(!is.na(r975_wt))]
+  std_wt <- apply(r_sim, 2, sd,na.rm=TRUE)
+  std_wt <- std_wt[which(!is.na(std_wt))]
   
-  results<-list()
+  results <- list()
   
-  results$R<-as.data.frame(cbind(config$t_start,config$t_end,MeanRperDate.WT,std.WT,R025.WT,R975.WT))
-  names(results$R)<-c("t_start","t_end","Mean(R)","Std(R)","Quantile.0.025(R)","Quantile.0.975(R)")
+  results$R <- as.data.frame(cbind(config$t_start,config$t_end,mean_r_per_date_wt,std_wt,r025_wt,r975_wt))
+  names(results$R) <- c("t_start","t_end","Mean(R)","Std(R)","Quantile.0.025(R)","Quantile.0.975(R)")
   
   results$method <- method
   results$si_distr <- config$si_distr
   
-  results$SI.Moments<-as.data.frame(cbind(final_mean_si,Finalstd_si))
+  results$SI.Moments<-as.data.frame(cbind(final_mean_si,final_std_si))
   names(results$SI.Moments)<-c("Mean","Std")
   
   if(!is.null(dates)) 
