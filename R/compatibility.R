@@ -131,7 +131,7 @@ WT <- function(I, T.Start, T.End,
                method=c("NonParametricSI", "ParametricSI"),
                Mean.SI=NULL, Std.SI=NULL, 
                SI.Distr=NULL, nSim=10, 
-               plot=FALSE)
+               plot=FALSE, leg.pos="topright")
 {
   .Deprecated("wallinga_teunis")
   method_tr <- c("NonParametricSI" = "non_parametric_si", 
