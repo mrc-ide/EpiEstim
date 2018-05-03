@@ -38,7 +38,7 @@ EstimateR <- function(I, T.Start, T.End, method = c("NonParametricSI", "Parametr
                       Std.Std.SI = NULL, Min.Std.SI = NULL, Max.Std.SI = NULL,
                       SI.Distr = NULL, 
                       SI.Data = NULL, SI.parametricDistr = c("G", "W", "L", "off1G", "off1W", "off1L"),  
-                      MCMC.control = list(init.pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time())), 
+                      MCMC.control = list(init_pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time())), 
                       SI.Sample = NULL, 
                       seed = NULL,
                       Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3,

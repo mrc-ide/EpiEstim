@@ -292,7 +292,7 @@ process_config <- function(config)
   }
   
   if (!("mcmc_control" %in% names(config))) {
-    config$mcmc_control = list(init.pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time()))
+    config$mcmc_control = list(init_pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time()))
   }
   
   return(config)
@@ -314,8 +314,8 @@ process_config_si_from_data <- function(config, si_data)
   if (config$n1 <= 0 || config$n1%%1 != 0) {
     stop("method si_from_data requires a >0 integer value for config$n1.")
   }
-  if(is.null(config$mcmc_control$init.pars)) {
-    config$mcmc_control$init.pars <-
+  if(is.null(config$mcmc_control$init_pars)) {
+    config$mcmc_control$init_pars <-
       init_mcmc_params(si_data, config$si_parametric_distr)
   }
   if((config$si_parametric_distr=="off1G" |
