@@ -237,18 +237,18 @@
 #' MCMC_seed <- 1
 #' overall_seed <- 2
 #' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
-#'                              dist="G", 
-#'                              init_pars=init_mcmc_params(MockRotavirus$si_data, "G"),
+#'                              dist = "G", 
+#'                              init.pars = init_mcmc_params(MockRotavirus$si_data, "G"),
 #'                              burnin = 1000, 
 #'                              n.samples = 5000, 
 #'                              seed = MCMC_seed)
 #' si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
 #' R_si_from_sample <- estimate_r(MockRotavirus$incidence, 
-#'                             method="si_from_sample", si_sample=si_sample,
-#'                             config=list(t_start=2:47, t_end=8:53, 
+#'                             method = "si_from_sample", si_sample = si_sample,
+#'                             config = list(t_start = 2:47, t_end = 8:53, 
 #'                             n2 = 50,
 #'                             seed = overall_seed,
-#'                             plot=TRUE))
+#'                             plot = TRUE))
 #' 
 #' # check that R_si_from_sample is the same as R_si_from_data 
 #' # since they were generated using the same MCMC algorithm to generate the SI sample
@@ -279,14 +279,14 @@ estimate_r <- function(incid,
                           dist=config$si_parametric_distr,
                           burnin = config$mcmc_control$burnin,
                           n.samples = config$n1*config$mcmc_control$thin,
-                          init_pars=config$mcmc_control$init_pars,
+                          init.pars = config$mcmc_control$init_pars,
                           seed = config$mcmc_control$seed)
     }else{
       cdt <- dic.fit.mcmc(dat = si_data,
                           dist=config$si_parametric_distr,
                           burnin = config$mcmc_control$burnin,
                           n.samples = config$n1*config$mcmc_control$thin,
-                          init_pars=config$mcmc_control$init_pars)
+                          init.pars = config$mcmc_control$init_pars)
     }
     
     # check convergence of the MCMC and print warning if not converged
