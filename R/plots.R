@@ -1,13 +1,18 @@
 #' Plotting the outputs of functions estimating the reproduction number from incidence time series and assumptions regarding the serial interval distribution
 #' 
-#' \code{plots} allows plotting the outputs of functions \code{\link{EstimateR}} and \code{\link{WT}}
+#' \code{plots} allows plotting the outputs of functions \code{\link{estimate_r}} and \code{\link{wallinga_teunis}}
 #' 
-#' @param x The output of function \code{\link{EstimateR}} or function \code{\link{WT}}, or a list of such outputs. If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph. 
-#' @param what A string specifying what to plot, namely the incidence time series (\code{what='I'}), the estimated reproduction number (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or all three (\code{what='all'})). 
+#' @param x The output of function \code{\link{estimate_r}} or function \code{\link{wallinga_teunis}}, or a list of such outputs. 
+#' If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a single graph. 
+#' @param what A string specifying what to plot, namely 
+#' the incidence time series (\code{what='incid'}), 
+#' the estimated reproduction number (\code{what='R'}), 
+#' the serial interval distribution (\code{what='SI'}, 
+#' or all three (\code{what='all'})). 
 #' @param add_imported_cases A boolean to specify whether, on the incidence time series plot, to add the incidence of imported cases. 
-#' @param options_I For what = "I" or "all". A list of graphical options: 
+#' @param options_I For what = "incid" or "all". A list of graphical options: 
 #'  \describe{
-#' \item{col}{A colour or vector of colours used for plotting I. By default uses the default R colours.}
+#' \item{col}{A colour or vector of colours used for plotting incid. By default uses the default R colours.}
 #' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of the bars plotted. Defaults to 0.7.}
 #' \item{xlim}{A parameter similar to that in \code{par}, to monitor the limits of the horizontal axis}
 #' \item{ylim}{A parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
@@ -28,9 +33,9 @@
 #' \item{ylim}{A parameter similar to that in \code{par}, to monitor the limits of the vertical axis}
 #' } 
 #' @param legend A boolean (TRUE by default) governing the presence / absence of legends on the plots
-#' @return a plot (if \code{what = "I"}, \code{"R"}, or \code{"SI"}) or a \code{\link{grob}} object (if \code{what = "all"}).
+#' @return a plot (if \code{what = "incid"}, \code{"R"}, or \code{"SI"}) or a \code{\link{grob}} object (if \code{what = "all"}).
 # #' @details
-#' @seealso \code{\link{EstimateR}} and \code{\link{WT}}
+#' @seealso \code{\link{estimate_r}} and \code{\link{wallinga_teunis}}
 #' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori \email{a.cori@imperial.ac.uk} 
 # #' @references 
 #' @importFrom ggplot2 aes aes_string theme
@@ -42,7 +47,7 @@
 #' data("Flu2009")
 #' 
 #' ## estimate the instantaneous reproduction number (method "non_parametric_si")
-#' R_i <- EstimateR(Flu2009$incidence, method="non_parametric_si",
+#' R_i <- estimate_r(Flu2009$incidence, method="non_parametric_si",
 #'                  config=list(t_start=2:26, t_end=8:32, 
 #'                              si_distr=Flu2009$si_distr, plot=FALSE)
 #'                 )
@@ -51,14 +56,15 @@
 #' plots(R_i, legend = FALSE)
 #'
 #' ## estimate the instantaneous reproduction number (method "non_parametric_si")
-#' R_c <- WT(Flu2009$incidence, t_start=2:26, t_end=8:32, method="non_parametric_si", 
-#'           si_distr=Flu2009$si_distr, plot=FALSE)
+#' R_c <- wallinga_teunis(Flu2009$incidence, method="non_parametric_si",
+#'           config = list(t_start=2:26, t_end=8:32, 
+#'           si_distr=Flu2009$si_distr, plot=FALSE))
 #'
 #' ## produce plot of the incidence 
 #'        ## (with, on top of total incidence, the incidence of imported cases), 
 #'        ## estimated instantaneous and case reproduction numbers 
 #'        ## and serial interval distribution used
-#' p_I <- plots(R_i, "I", add_imported_cases=TRUE) # plots the incidence 
+#' p_I <- plots(R_i, "incid", add_imported_cases=TRUE) # plots the incidence 
 #' p_SI <- plots(R_i, "SI") # plots the serial interval distribution
 #' p_Ri <- plots(R_i, "R", 
 #'           options_R = list(ylim=c(0,4))) 
@@ -73,7 +79,7 @@
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
 #' @importFrom graphics plot
 #' @importFrom incidence as.incidence
-plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FALSE, 
+plots <- function(x = NULL, what=c("all", "incid", "R", "SI"), add_imported_cases=FALSE, 
                   options_I = list(col = palette(), transp = 0.7, xlim = NULL, ylim=NULL),
                   options_R = list(col = palette(), transp = 0.2, xlim = NULL, ylim=NULL),
                   options_SI = list(prob_min = 0.001, col = "black", transp = 0.25, xlim = NULL, ylim=NULL), 
@@ -122,8 +128,8 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
   quantile_0.975_posterior <- x$R[, "Quantile.0.975(R)"]
   method <- x$method
   si_distr <- x$si_distr
-  I <- data.frame(local=x$I_local, imported=x$I_imported)
-  T<-nrow(I)
+  incid <- data.frame(local=x$I_local, imported=x$I_imported)
+  T<-nrow(incid)
   if(!is.null(x$dates))
   {
     dates <- x$dates
@@ -157,14 +163,14 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
     std_si.sample <- x$SI.Moments["Std"]
   }
   what <- match.arg(what)
-  if (what == "I" | what =="all") {
+  if (what == "incid" | what =="all") {
     if(add_imported_cases)
     {
-      p1 <- plot(as.incidence(I, dates = x$dates), ylab="Incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
+      p1 <- plot(as.incidence(incid, dates = x$dates), ylab="Incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     }else
     {
-      p1 <- plot(as.incidence(rowSums(I), dates = x$dates), ylab="Incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
+      p1 <- plot(as.incidence(rowSums(incid), dates = x$dates), ylab="Incidence", xlab = "Time", color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     }
     
@@ -390,7 +396,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
     }
   }
   
-  if(what == "I")
+  if(what == "incid")
   {
     if(!legend) p1 <- p1 + theme(legend.position="none")
     return(p1)
@@ -414,7 +420,7 @@ plots <- function(x = NULL, what=c("all", "I", "R", "SI"), add_imported_cases=FA
       p3 <- p3 + theme(legend.position="none")
     }
     
-    out <- list(I=p1, R=p2, SI=p3)
+    out <- list(incid=p1, R=p2, SI=p3)
     out.grid <- arrangeGrob(grobs=out, nrow = 3, ncol=1)
     grid.arrange(out.grid, newpage = FALSE)
     return(out.grid)

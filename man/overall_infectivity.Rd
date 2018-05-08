@@ -4,13 +4,13 @@
 \alias{overall_infectivity}
 \title{Overall Infectivity Due To Previously Infected Individuals}
 \usage{
-overall_infectivity(I, si_distr)
+overall_infectivity(incid, si_distr)
 }
 \arguments{
-\item{I}{One of the following
+\item{incid}{One of the following
 \itemize{
 \item{A vector (or a dataframe with a single column) of non-negative integers containing an incidence time series}
-\item{A dataframe of non-negative integers with two columns, so that \code{I$local} contains the incidence of cases due to local transmission and \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} the total incidence).}
+\item{A dataframe of non-negative integers with two columns, so that \code{incid$local} contains the incidence of cases due to local transmission and \code{incid$imported} contains the incidence of imported cases (with \code{incid$local + incid$imported} the total incidence).}
 } 
 Note that the cases from the first time step are always all assumed to be imported cases.}
 
@@ -25,7 +25,7 @@ A vector which contains the overall infectivity \eqn{\lambda_t} at each time ste
 \details{
 {
 The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is equal to the sum of the previously infected individuals 
-(given by the incidence vector \eqn{I}, with \code{I=I$local + I$imported} if \eqn{I} is a matrix), 
+(given by the incidence vector \eqn{I}, with \code{I = incid$local + incid$imported} if \eqn{I} is a matrix), 
 weigthed by their infectivity at time \eqn{t} (given by the discrete serial interval distribution \eqn{w_k}). 
 In mathematical terms:   
 \cr
@@ -40,16 +40,16 @@ data("Flu2009")
 ## compute overall infectivity
 lambda <- overall_infectivity(Flu2009$incidence, Flu2009$si_distr)
 par(mfrow=c(2,1))
-plot(Flu2009$incidence, type="s", xlab="time (days)", ylab="incidence")
-title(main="Epidemic curve")
-plot(lambda, type="s", xlab="time (days)", ylab="Infectivity")
-title(main="Overall infectivity")
+plot(Flu2009$incidence, type = "s", xlab = "time (days)", ylab = "incidence")
+title(main = "Epidemic curve")
+plot(lambda, type = "s", xlab = "time (days)", ylab = "Infectivity")
+title(main = "Overall infectivity")
 }
 \references{
 Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 }
 \seealso{
-\code{\link{DiscrSI}}, \code{\link{EstimateR}}
+\code{\link{discr_si}}, \code{\link{estimate_r}}
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}

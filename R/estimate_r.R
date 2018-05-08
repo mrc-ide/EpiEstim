@@ -1,19 +1,19 @@
 #########################################################################################################################
-# EstimateR is a wraper which replace the old EstimateR with EstimateR_func and accepts an object of class "cd.fit.mcmc"#
+# estimate_r replaces the old EstimateR function #
 #########################################################################################################################
 
 #' Estimated Instantaneous Reproduction Number
 #' 
-#' \code{EstimateR} estimates the reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
+#' \code{estimate_r} estimates the reproduction number of an epidemic, given the incidence time series and the serial interval distribution. 
 #' 
-#' @param I One of the following
+#' @param incid One of the following
 #' \itemize{
 #' \item{A vector (or a dataframe with a single column) of non-negative integers containing the incidence time series}
-#' \item{A dataframe of non-negative integers with either i) \code{I$I} containing the total incidence, or ii) two columns, 
-#' so that \code{I$local} contains the incidence of cases due to local transmission and 
-#' \code{I$imported} contains the incidence of imported cases (with \code{I$local + I$imported} 
-#' the total incidence). If the dataframe contains a column \code{I$dates}, this is used for plotting. 
-#' \code{I$dates} must contains only dates in a row.}
+#' \item{A dataframe of non-negative integers with either i) \code{incid$I} containing the total incidence, or ii) two columns, 
+#' so that \code{incid$local} contains the incidence of cases due to local transmission and 
+#' \code{incid$imported} contains the incidence of imported cases (with \code{incid$local + incid$imported} 
+#' the total incidence). If the dataframe contains a column \code{incid$dates}, this is used for plotting. 
+#' \code{incid$dates} must contains only dates in a row.}
 #' \item{An object of class \code{\link[incidence]{incidence}}}
 #' } 
 #' Note that the cases from the first time step are always all assumed to be imported cases.
@@ -39,7 +39,7 @@
 #' Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal shifted by 1).}
 #' \item{mcmc_control}{For method "si_from_data" ; a list containing the following (see details):
 #' \describe{
-#'   \item{init.pars}{vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically using function \code{\link{init_MCMC_params}}.}
+#'   \item{init_pars}{vector of size 2 corresponding to the initial values of parameters to use for the SI distribution. This is the shape and scale for all but the lognormal distribution, for which it is the meanlog and sdlog. If not specified these are chosen automatically using function \code{\link{init_mcmc_params}}.}
 #'   \item{burnin}{a positive integer giving the burnin used in the MCMC when estimating the serial interval distribution.}
 #'   \item{thin}{a positive integer corresponding to thinning parameter; the MCMC will be run for \code{burnin+n1*thin iterations}; 1 in \code{thin} iterations will be recorded, after the burnin phase, so the posterior sample size is n1.}
 #'   \item{seed}{An integer used as the seed for the random number generator at the start of the MCMC estimation; useful to get reproducible results.} 
@@ -83,7 +83,7 @@
 #' \item{In method "parametric_si" the user specifies the mean and sd of the serial interval}
 #' \item{In method "uncertain_si" the mean and sd of the serial interval are each drawn from truncated normal distributions, with parameters specified by the user}
 #' \item{In method "si_from_data", the serial interval distribution is directly estimated, using MCMC, from interval censored exposure data, with data provided by the user together with a choice of parametric distribution for the serial interval}
-#' \item{In method "si_from_sample", the user directly provides the sample of serial interval distribution to use for estimation of R. This can be a useful alternative to the previous method, where the MCMC estimation of the serial interval distribution could be run once, and the same estimated SI distribution then used in EstimateR in different contexts, e.g. with different time windows, hence avoiding to rerun the MCMC everytime EstimateR is called.}
+#' \item{In method "si_from_sample", the user directly provides the sample of serial interval distribution to use for estimation of R. This can be a useful alternative to the previous method, where the MCMC estimation of the serial interval distribution could be run once, and the same estimated SI distribution then used in estimate_r in different contexts, e.g. with different time windows, hence avoiding to rerun the MCMC everytime estimate_r is called.}
 #' }
 #' 
 #' If \code{plot} is \code{TRUE}, 3 plots are produced. 
@@ -98,7 +98,7 @@
 #' ----------------------- \code{method "parametric_si"} -----------------------
 #'   
 #' The mean and standard deviation of the continuous distribution of the serial interval are given in the arguments \code{mean_si} and \code{std_si}.
-#' The discrete distribution of the serial interval is derived automatically using \code{\link{DiscrSI}}.
+#' The discrete distribution of the serial interval is derived automatically using \code{\link{discr_si}}.
 #' 
 #' ----------------------- \code{method "uncertain_si"} -----------------------
 #'    
@@ -126,7 +126,7 @@
 #' \item{ER: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that ER>=EL}
 #' \item{SL: the lower bound of the symptom onset date of the infected indivdiual (given as an integer)}
 #' \item{SR: the upper bound of the symptom onset date of the infected indivdiual (given as an integer). Should be such that SR>=SL}
-#' \item{type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respsectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates}
+#' \item{type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates}
 #' }
 #' Assuming a given parametric distribution for the serial interval distribution (specified in si_parametric_distr), 
 #' the posterior distribution of the serial interval is estimated directly fom these data using MCMC methods implemented in the package \code{coarsedatatools}. 
@@ -147,7 +147,7 @@
 #' Unlike methods "uncertain_si" and "si_from_data", the user directly provides (in argument \code{si_sample}) a sample of serial interval distribution to be explored. 
 #' 
 #' }
-#' @seealso \code{\link{DiscrSI}}
+#' @seealso \code{\link{discr_si}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk} 
 #' @references {
 #' Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
@@ -162,7 +162,7 @@
 #' data("Flu2009")
 #' 
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' EstimateR(Flu2009$incidence, method="non_parametric_si", 
+#' estimate_r(Flu2009$incidence, method="non_parametric_si", 
 #'           config=list(t_start=2:26, t_end=8:32,
 #'           si_distr=Flu2009$si_distr, plot=TRUE))
 #' # the second plot produced shows, at each each day, 
@@ -176,21 +176,21 @@
 #' location <- sample(c("local","imported"), length(data), replace=TRUE)
 #' location[1] <- "imported" # forcing the first case to be imported
 #' # get incidence per group (location)
-#' I <- incidence(data, groups = location)
+#' incid <- incidence(data, groups = location)
 #' # Estimate R with assumptions on serial interval
-#' EstimateR(I, method = "parametric_si", 
+#' estimate_r(incid, method = "parametric_si", 
 #'           config=list(t_start = 2:21, t_end = 8:27,
 #'           mean_si = 2.6, std_si = 1.5, plot = TRUE))
 #' 
 #' ## estimate the reproduction number (method "parametric_si")
-#' EstimateR(Flu2009$incidence, method="parametric_si", 
+#' estimate_r(Flu2009$incidence, method="parametric_si", 
 #'           config=list(t_start=2:26, t_end=8:32, 
 #'           mean_si=2.6, std_si=1.5, plot=TRUE))
 #' # the second plot produced shows, at each each day, 
 #' # the estimate of the reproduction number over the 7-day window finishing on that day.
 #' 
 #' ## estimate the reproduction number (method "uncertain_si")
-#' EstimateR(Flu2009$incidence, method="uncertain_si",
+#' estimate_r(Flu2009$incidence, method="uncertain_si",
 #'           config=list(t_start=2:26, t_end=8:32,
 #'           mean_si=2.6, std_mean_si=1, min_mean_si=1, max_mean_si=4.2, 
 #'           std_si=1.5, std_std_si=0.5, min_std_si=0.5, max_std_si=2.5, 
@@ -209,7 +209,7 @@
 #' ## estimate the reproduction number (method "si_from_data")
 #' MCMC_seed <- 1
 #' overall_seed <- 2
-#' R_si_from_data <- EstimateR(MockRotavirus$incidence,
+#' R_si_from_data <- estimate_r(MockRotavirus$incidence,
 #'                             method="si_from_data",  
 #'                             si_data=MockRotavirus$si_data, 
 #'                             config=list(t_start=2:47, t_end=8:53, 
@@ -220,7 +220,7 @@
 #'                                         seed = overall_seed,
 #'                                         plot=TRUE))
 #' ## compare with version with no uncertainty
-#' R_Parametric <- EstimateR(MockRotavirus$incidence, 
+#' R_Parametric <- estimate_r(MockRotavirus$incidence, 
 #'                           method="parametric_si", 
 #'                           config=list(t_start=2:47, t_end=8:53, 
 #'                                       mean_si = mean(R_si_from_data$SI.Moments$Mean), 
@@ -237,18 +237,18 @@
 #' MCMC_seed <- 1
 #' overall_seed <- 2
 #' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
-#'                              dist="G", 
-#'                              init.pars=init_MCMC_params(MockRotavirus$si_data, "G"),
+#'                              dist = "G", 
+#'                              init.pars = init_mcmc_params(MockRotavirus$si_data, "G"),
 #'                              burnin = 1000, 
 #'                              n.samples = 5000, 
 #'                              seed = MCMC_seed)
 #' si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
-#' R_si_from_sample <- EstimateR(MockRotavirus$incidence, 
-#'                             method="si_from_sample", si_sample=si_sample,
-#'                             config=list(t_start=2:47, t_end=8:53, 
+#' R_si_from_sample <- estimate_r(MockRotavirus$incidence, 
+#'                             method = "si_from_sample", si_sample = si_sample,
+#'                             config = list(t_start = 2:47, t_end = 8:53, 
 #'                             n2 = 50,
 #'                             seed = overall_seed,
-#'                             plot=TRUE))
+#'                             plot = TRUE))
 #' 
 #' # check that R_si_from_sample is the same as R_si_from_data 
 #' # since they were generated using the same MCMC algorithm to generate the SI sample
@@ -256,110 +256,64 @@
 #' all(R_si_from_sample$R$`Mean(R)` == R_si_from_data$R$`Mean(R)`) 
 #' }
 #' 
-EstimateR <- function(I,
-                      method = c("non_parametric_si", "parametric_si",
-                                 "uncertain_si", "si_from_data",
-                                 "si_from_sample"),
-                      si_data = NULL,
-                      si_sample = NULL,
-                      config) {
-
+estimate_r <- function(incid,
+                       method = c("non_parametric_si", "parametric_si",
+                                  "uncertain_si", "si_from_data",
+                                  "si_from_sample"),
+                       si_data = NULL,
+                       si_sample = NULL,
+                       config) {
+  
   method <- match.arg(method)
+  config <- process_config(config)
+  check_config(config, method)
   
-  if (!("mean_prior" %in% names(config))) {
-    config$mean_prior = 5
-  }
-  
-  if (!("std_prior" %in% names(config))) {
-    config$std_prior = 5
-  }
-  
-  if (!("cv_posterior" %in% names(config))) {
-    config$cv_posterior = 0.3
-  }
-  
-  if (!("plot" %in% names(config))) {
-    config$plot = FALSE
-  }
-  
-  if (!("legend" %in% names(config))) {
-    config$legend = FALSE
-  }
-  
-  if (!("mcmc_control" %in% names(config))) {
-    config$mcmc_control = list(init.pars = NULL, burnin = 3000, thin=10, seed = as.integer(Sys.time()))
-  }
-
   if (method=="si_from_data") {
     # Warning if the expected set of parameters is not adequate
     si_data <- process_si_data(si_data)
-
-    config$si_parametric_distr <- match.arg(config$si_parametric_distr,
-                                            c("G", "W", "L", "off1G", "off1W", "off1L"))
-    if (is.null(config$n1)) {
-      stop("method si_from_data requires to specify the config$n1 argument.")
-    }
-    if (is.null(config$n2)) {
-      stop("method si_from_data requires to specify the config$n2 argument.")
-    }
-    if (config$n2 <= 0 || config$n2%%1 != 0) {
-      stop("method si_from_data requires a >0 integer value for config$n2.")
-    }
-    if (config$n1 <= 0 || config$n1%%1 != 0) {
-      stop("method si_from_data requires a >0 integer value for config$n1.")
-    }
-    if(is.null(config$mcmc_control$init.pars)) {
-        config$mcmc_control$init.pars <-
-            init_MCMC_params(si_data, config$si_parametric_distr)
-    }
-    if((config$si_parametric_distr=="off1G" |
-        config$si_parametric_distr=="off1W" |
-        config$si_parametric_distr=="off1L") & 
-       any(si_data$SR-si_data$EL<=1))
-    {
-      stop(paste("You cannot fit a distribution with offset 1 to this SI",
-                 "dataset, because for some data points the maximum serial",
-                 "interval is <=1.\nChoose a different distribution"))
-    }
-
+    config <- process_config_si_from_data(config, si_data)
+    
+    # estimate serial interval from serial interval data first
     if(!is.null(config$mcmc_control$seed)) {
       cdt <- dic.fit.mcmc(dat = si_data,
                           dist=config$si_parametric_distr,
                           burnin = config$mcmc_control$burnin,
                           n.samples = config$n1*config$mcmc_control$thin,
-                          init.pars=config$mcmc_control$init.pars,
+                          init.pars = config$mcmc_control$init_pars,
                           seed = config$mcmc_control$seed)
     }else{
       cdt <- dic.fit.mcmc(dat = si_data,
                           dist=config$si_parametric_distr,
                           burnin = config$mcmc_control$burnin,
                           n.samples = config$n1*config$mcmc_control$thin,
-                          init.pars=config$mcmc_control$init.pars)
+                          init.pars = config$mcmc_control$init_pars)
     }
-
+    
     # check convergence of the MCMC and print warning if not converged
     MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
-
+    
     # thin the chain, and turn the two parameters of the SI distribution into a whole discrete distribution
     c2e <- coarse2estim(cdt, thin=config$mcmc_control$thin)
-
+    
     cat(paste(
-              "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
-              "\nEstimating the reproduction number for these serial interval",
-              "estimates...\n",
-              "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+      "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+      "\nEstimating the reproduction number for these serial interval",
+      "estimates...\n",
+      "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     ))
-
+    
+    # then estimate R for these serial intervals
+    
     if(!is.null(config$seed))
     {
       set.seed(config$seed)
     }
-
-    out <- EstimateR_func(I=I,
-                          method = "si_from_data",
-                          si_sample = c2e$si_sample,
-                          config=config
-                          )
+    
+    out <- estimate_r_func(incid = incid,
+                           method = "si_from_data",
+                           si_sample = c2e$si_sample,
+                           config = config
+    )
     out[["MCMC_converged"]] <- MCMC_conv
   } else {
     
@@ -368,15 +322,15 @@ EstimateR <- function(I,
       set.seed(config$seed)
     }
     
-    out <- EstimateR_func(I=I, method = method, si_sample=si_sample,
-                          config = config
-                          )
+    out <- estimate_r_func(incid = incid, method = method, si_sample=si_sample,
+                           config = config
+    )
   }
   return(out)
 }
 
 #########################################################
-# EstimateR_func: Doing the heavy work in EstimateR     #
+# estimate_r_func: Doing the heavy work in estimate_r     #
 #########################################################
 
 #' @import reshape2 grid gridExtra
@@ -385,19 +339,19 @@ EstimateR <- function(I,
 #' @importFrom stats median pgamma plnorm pweibull qgamma qlnorm quantile qweibull rgamma rmultinom rnorm sd
 #' @importFrom graphics plot
 #' @importFrom incidence as.incidence 
-EstimateR_func <- function (I,
-                            si_sample,
-                            method = c("non_parametric_si", "parametric_si",
+estimate_r_func <- function (incid,
+                             si_sample,
+                             method = c("non_parametric_si", "parametric_si",
                                         "uncertain_si", "si_from_data", "si_from_sample"),
-                            config) {
+                             config) {
   
   #########################################################
   # Calculates the cumulative incidence over time steps   #
   #########################################################
   
-  calc_incidence_per_time_step <- function(I, t_start, t_end) {
+  calc_incidence_per_time_step <- function(incid, t_start, t_end) {
     nb_time_periods <- length(t_start)
-    incidence_per_time_step <- sapply(1:nb_time_periods, function(i) sum(I[t_start[i]:t_end[i],c("local","imported")]))
+    incidence_per_time_step <- sapply(1:nb_time_periods, function(i) sum(incid[t_start[i]:t_end[i], c("local", "imported")]))
     return(incidence_per_time_step)
   }
   
@@ -406,23 +360,23 @@ EstimateR_func <- function (I,
   # distribution from the discrete SI distribution        #
   #########################################################
   
-  PosteriorFromSIDistr <- function(I, si_distr, a_prior, b_prior,
-                                   t_start, t_end) {
+  posterior_from_si_distr <- function(incid, si_distr, a_prior, b_prior,
+                                      t_start, t_end) {
     nb_time_periods <- length(t_start)
-    lambda <- overall_infectivity(I, si_distr)
+    lambda <- overall_infectivity(incid, si_distr)
     final_mean_si <- sum(si_distr * (0:(length(si_distr) -
-                                         1)))
+                                          1)))
     a_posterior <- vector()
     b_posterior <- vector()
     a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
-                                                             final_mean_si) {
-      a_prior + sum(I[t_start[t]:t_end[t],"local"]) # only counting local cases on the "numerator"
+                                                               final_mean_si) {
+      a_prior + sum(incid[t_start[t]:t_end[t], "local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
     })
     b_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
-                                                             final_mean_si) {
+                                                               final_mean_si) {
       1/(1/b_prior + sum(lambda[t_start[t]:t_end[t]]))
     }
     else {
@@ -436,27 +390,28 @@ EstimateR_func <- function (I,
   # given mean SI and std SI                              #
   #########################################################
   
-  sample_from_posterior <- function(sample_size, I, mean_si, std_si, si_distr=NULL, 
-                                  a_prior, b_prior, t_start, t_end) {
+  sample_from_posterior <- function(sample_size, incid, mean_si, std_si, si_distr=NULL, 
+                                    a_prior, b_prior, t_start, t_end) {
+    
     nb_time_periods <- length(t_start)
     
     if(is.null(si_distr))
-      si_distr <- sapply(1:T, function(t) DiscrSI(t - 1, mean_si, std_si))
+      si_distr <- discr_si(0:(T-1), mean_si, std_si)
     
     final_mean_si <- sum(si_distr * (0:(length(si_distr) -
-                                         1)))
-    lambda <- overall_infectivity(I, si_distr)
+                                          1)))
+    lambda <- overall_infectivity(incid, si_distr)
     a_posterior <- vector()
     b_posterior <- vector()
     a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
-                                                             final_mean_si) {
-      a_prior + sum(I[t_start[t]:t_end[t],"local"]) # only counting local cases on the "numerator"
+                                                               final_mean_si) {
+      a_prior + sum(incid[t_start[t]:t_end[t], "local"]) # only counting local cases on the "numerator"
     }
     else {
       NA
     })
     b_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
-                                                             final_mean_si) {
+                                                               final_mean_si) {
       1/(1/b_prior + sum(lambda[t_start[t]:t_end[t]], na.rm = TRUE))
     }
     else {
@@ -469,118 +424,23 @@ EstimateR_func <- function (I,
     else {
       rep(NA, sample_size)
     })
+    if (sample_size == 1L) {
+      sample_r_posterior <- matrix(sample_r_posterior, nrow = 1)
+    }
     return(list(sample_r_posterior, si_distr))
   }
+  
   method <- match.arg(method)
   
-  I <- process_I(I)
-  T<-nrow(I)
+  incid <- process_I(incid)
+  T<-nrow(incid)
   
-  if (config$mean_prior <= 0) {
-    stop("config$mean_prior must be >0.")
-  }
-  if (config$std_prior <= 0) {
-    stop("config$std_prior must be >0.")
-  }
   a_prior <- (config$mean_prior/config$std_prior)^2
   b_prior <- config$std_prior^2/config$mean_prior
   
   check_times(config$t_start, config$t_end, T)
   nb_time_periods <- length(config$t_start)
   
-  if (method == "non_parametric_si") {
-    check_si_distr(config$si_distr)
-  }
-  if (method == "parametric_si") {
-    if (is.null(config$mean_si)) {
-      stop("method parametric_si requires to specify the config$mean_si argument.")
-    }
-    if (is.null(config$std_si)) {
-      stop("method parametric_si requires to specify the config$std_si argument.")
-    }
-    if (config$mean_si <= 1) {
-      stop("method parametric_si requires a value >1 for config$mean_si.")
-    }
-    if (config$std_si <= 0) {
-      stop("method parametric_si requires a >0 value for config$std_si.")
-    }
-  }
-  if (method == "uncertain_si") {
-    if (is.null(config$mean_si)) {
-      stop("method uncertain_si requires to specify the config$mean_si argument.")
-    }
-    if (is.null(config$std_si)) {
-      stop("method uncertain_si requires to specify the config$std_si argument.")
-    }
-    if (is.null(config$n1)) {
-      stop("method uncertain_si requires to specify the config$n1 argument.")
-    }
-    if (is.null(config$n2)) {
-      stop("method uncertain_si requires to specify the config$n2 argument.")
-    }
-    if (is.null(config$std_mean_si)) {
-      stop("method uncertain_si requires to specify the config$std_mean_si argument.")
-    }
-    if (is.null(config$min_mean_si)) {
-      stop("method uncertain_si requires to specify the config$min_mean_si argument.")
-    }
-    if (is.null(config$max_mean_si)) {
-      stop("method uncertain_si requires to specify the config$max_mean_si argument.")
-    }
-    if (is.null(config$std_std_si)) {
-      stop("method uncertain_si requires to specify the config$std_std_si argument.")
-    }
-    if (is.null(config$min_std_si)) {
-      stop("method uncertain_si requires to specify the config$min_std_si argument.")
-    }
-    if (is.null(config$max_std_si)) {
-      stop("method uncertain_si requires to specify the config$max_std_si argument.")
-    }
-    if (config$mean_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$mean_si.")
-    }
-    if (config$std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_si.")
-    }
-    if (config$n2 <= 0 || config$n2%%1 != 0) {
-      stop("method uncertain_si requires a >0 integer value for config$n2.")
-    }
-    if (config$n1 <= 0 || config$n1%%1 != 0) {
-      stop("method uncertain_si requires a >0 integer value for config$n1.")
-    }
-    if (config$std_mean_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_mean_si.")
-    }
-    if (config$min_mean_si < 1) {
-      stop("method uncertain_si requires a value >=1 for config$min_mean_si.")
-    }
-    if (config$max_mean_si < config$mean_si) {
-      stop("method uncertain_si requires that config$max_mean_si >= config$mean_si.")
-    }
-    if (config$mean_si < config$min_mean_si) {
-      stop("method uncertain_si requires that config$mean_si >= config$min_mean_si.")
-    }
-    if (signif(config$max_mean_si - config$mean_si, 3) != signif(config$mean_si -
-                                                                 config$min_mean_si, 3)) {
-      warning("The distribution you chose for the mean SI is not centered around the mean.")
-    }
-    if (config$std_std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_std_si.")
-    }
-    if (config$min_std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$min_std_si.")
-    }
-    if (config$max_std_si < config$std_si) {
-      stop("method uncertain_si requires that config$max_std_si >= config$std_si.")
-    }
-    if (config$std_si < config$min_std_si) {
-      stop("method uncertain_si requires that config$std_si >= config$min_std_si.")
-    }
-    if (signif(config$max_std_si - config$std_si, 3) != signif(config$std_si -
-                                                               config$min_std_si, 3)) {
-      warning("The distribution you chose for the std of the SI is not centered around the mean.")
-    }
-  }
   if(method == "si_from_sample")
   {
     if (is.null(config$n2)) {
@@ -588,18 +448,14 @@ EstimateR_func <- function (I,
     }
     si_sample <- process_si_sample(si_sample)
   }
-  if (config$cv_posterior < 0) {
-    stop("config$cv_posterior must be >0.")
-  }
+  
   min_nb_cases_per_time_period <- ceiling(1/config$cv_posterior^2 - a_prior)
-  incidence_per_time_step <- calc_incidence_per_time_step(I, config$t_start,
+  incidence_per_time_step <- calc_incidence_per_time_step(incid, config$t_start,
                                                           config$t_end)
   if (incidence_per_time_step[1] < min_nb_cases_per_time_period) {
     warning("You're estimating R too early in the epidemic to get the desired posterior CV.")
   }
-  if (config$plot != TRUE && config$plot != FALSE) {
-    stop("config$plot must be TRUE or FALSE.")
-  }
+  
   if (method == "non_parametric_si") {
     si_uncertainty <- "N"
     parametric_si <- "N"
@@ -627,20 +483,20 @@ EstimateR_func <- function (I,
                                      sd = config$std_mean_si)
         }
         while (std_si_sample[k] < config$min_std_si || std_si_sample[k] >
-               config$max_std_si || std_si_sample[k] > mean_si_sample[k]) {
+               config$max_std_si){ 
           std_si_sample[k] <- rnorm(1, mean = config$std_si, sd = config$std_std_si)
         }
       }
       temp <- lapply(1:config$n1, function(k) sample_from_posterior(config$n2,
-                                                           I, mean_si_sample[k], std_si_sample[k], si_distr=NULL, a_prior,
-                                                           b_prior, config$t_start, config$t_end))
+                                                                    incid, mean_si_sample[k], std_si_sample[k], si_distr=NULL, a_prior,
+                                                                    b_prior, config$t_start, config$t_end))
       config$si_distr <- cbind(t(sapply(1:config$n1, function(k) (temp[[k]])[[2]])),
-                        rep(0, config$n1))
+                               rep(0, config$n1))
       r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
       for (k in 1:config$n1) {
         r_sample[((k - 1) * config$n2 + 1):(k * config$n2), which(config$t_end >
-                                                     mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
-                                                                                                       mean_si_sample[k])]
+                                                                    mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
+                                                                                                                      mean_si_sample[k])]
       }
       mean_posterior <- apply(r_sample, 2, mean, na.rm = TRUE)
       std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
@@ -667,15 +523,15 @@ EstimateR_func <- function (I,
         std_si_sample[k] <- sqrt(sum(si_sample[,k]*((1:dim(si_sample)[1]-1) - mean_si_sample[k])^2))
       }
       temp <- lapply(1:config$n1, function(k) sample_from_posterior(config$n2,
-                                                           I, mean_si=NULL, std_si=NULL, si_sample[,k], a_prior,
-                                                           b_prior, config$t_start, config$t_end))
+                                                                    incid, mean_si=NULL, std_si=NULL, si_sample[,k], a_prior,
+                                                                    b_prior, config$t_start, config$t_end))
       config$si_distr <- cbind(t(sapply(1:config$n1, function(k) (temp[[k]])[[2]])),
-                        rep(0, config$n1))
+                               rep(0, config$n1))
       r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
       for (k in 1:config$n1) {
         r_sample[((k - 1) * config$n2 + 1):(k * config$n2), which(config$t_end >
-                                                     mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
-                                                                                                       mean_si_sample[k])]
+                                                                    mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
+                                                                                                                      mean_si_sample[k])]
       }
       mean_posterior <- apply(r_sample, 2, mean, na.rm = TRUE)
       std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
@@ -696,18 +552,17 @@ EstimateR_func <- function (I,
   }else{
     # CertainSI
     if (parametric_si == "Y") {
-      config$si_distr <- sapply(1:T, function(t) DiscrSI(t - 1,
-                                                  config$mean_si, config$std_si))
+      config$si_distr <- discr_si(0:(T-1), config$mean_si, config$std_si)
     }
     if (length(config$si_distr) < T + 1) {
       config$si_distr[(length(config$si_distr) + 1):(T + 1)] <- 0
     }
     final_mean_si <- sum(config$si_distr * (0:(length(config$si_distr) -
-                                         1)))
+                                                 1)))
     Finalstd_si <- sqrt(sum(config$si_distr * (0:(length(config$si_distr) -
-                                             1))^2) - final_mean_si^2)
-    post <- PosteriorFromSIDistr(I, config$si_distr, a_prior, b_prior,
-                                 config$t_start, config$t_end)
+                                                    1))^2) - final_mean_si^2)
+    post <- posterior_from_si_distr(incid, config$si_distr, a_prior, b_prior,
+                                    config$t_start, config$t_end)
     a_posterior <- unlist(post[[1]])
     b_posterior <- unlist(post[[2]])
     mean_posterior <- a_posterior * b_posterior
@@ -727,11 +582,12 @@ EstimateR_func <- function (I,
     quantile_0.975_posterior <- qgamma(0.975, shape = a_posterior,
                                        scale = b_posterior, lower.tail = TRUE, log.p = FALSE)
   }
-  results <- list()
-  results$R <- as.data.frame(cbind(config$t_start, config$t_end, mean_posterior,
+  
+  results <- list(R = as.data.frame(cbind(config$t_start, config$t_end, mean_posterior,
                                    std_posterior, quantile_0.025_posterior, quantile_0.05_posterior,
                                    quantile_0.25_posterior, median_posterior, quantile_0.25_posterior,
-                                   quantile_0.25_posterior, quantile_0.975_posterior))
+                                   quantile_0.25_posterior, quantile_0.975_posterior)) )
+  
   names(results$R) <- c("t_start", "t_end", "Mean(R)", "Std(R)",
                         "Quantile.0.025(R)", "Quantile.0.05(R)", "Quantile.0.25(R)",
                         "Median(R)", "Quantile.0.75(R)", "Quantile.0.95(R)",
@@ -754,19 +610,19 @@ EstimateR_func <- function (I,
   names(results$SI.Moments) <- c("Mean", "Std")
   
   
-  if(!is.null(I$dates)) 
+  if(!is.null(incid$dates)) 
   {
-    results$dates <- check_dates(I)
+    results$dates <- check_dates(incid)
   }else {
     results$dates <- 1:T
   }
-  results$I <- rowSums(I[,c("local","imported")])
-  results$I_local <- I$local
-  results$I_imported <- I$imported
+  results$I <- rowSums(incid[,c("local", "imported")])
+  results$I_local <- incid$local
+  results$I_imported <- incid$imported
   
   if (config$plot) {
     
-    if(sum(I$imported[-1])>0) # more than the first cases are imported
+    if(sum(incid$imported[-1])>0) # more than the first cases are imported
     {
       add_imported_cases <- TRUE
     }else {

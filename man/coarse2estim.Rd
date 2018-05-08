@@ -24,7 +24,7 @@ A list with two elements:
 }
 }
 \description{
-\code{coarse2estim} Transforms outputs of \code{coarseDataTools::dic.fit.mcmc} to right format for input into \code{EstimateR}
+\code{coarse2estim} Transforms outputs of \code{coarseDataTools::dic.fit.mcmc} to right format for input into \code{estimate_r}
 }
 \examples{
 \dontrun{
@@ -38,24 +38,26 @@ data("MockRotavirus")
 ## estimate the serial interval from data 
 SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
                              dist="G", 
-                             init.pars=init_MCMC_params(MockRotavirus$si_data, "G")
+                             init.pars=init_mcmc_params(MockRotavirus$si_data, "G"),
                              burnin = 1000, 
                              n.samples = 5000)
                              
-## use coarse2estim to turn this in the right format for EstimateR                             
+## use coarse2estim to turn this in the right format for estimate_r                             
 si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
 
-## use EstimateR to estimate the reproduction number based on these estimates of the serial interval
-R_si_from_sample <- EstimateR(MockRotavirus$incidence, 
-                            t_start=2:47, t_end=8:53, 
-                            method="si_from_sample", si_sample=si_sample,
+## use estimate_r to estimate the reproduction number 
+## based on these estimates of the serial interval
+R_si_from_sample <- estimate_r(MockRotavirus$incidence, 
+                            method="si_from_sample", 
+                            si_sample=si_sample,
+                            config = list(t_start=2:47, t_end=8:53, 
                             n2 = 50,
-                            plot=TRUE, leg.pos=xy.coords(1,3))
+                            plot=TRUE))
 }
 
 }
 \seealso{
-\code{\link{EstimateR}}
+\code{\link{estimate_r}}
 }
 \author{
 The Hackout3 Parameter Estimation team.
