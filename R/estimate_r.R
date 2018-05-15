@@ -1,6 +1,6 @@
 #' Estimated Instantaneous Reproduction Number
 #'
-#' #' \code{estimate_R} estimates the reproduction number of an epidemic, given the
+#' \code{estimate_R} estimates the reproduction number of an epidemic, given the
 #' incidence time series and the serial interval distribution.
 #'
 #' @param incid One of the following
