@@ -18,7 +18,8 @@ EstimateR(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI",
 
 \item{T.End}{see \code{config$t_end} in \code{estimate_R}}
 
-\item{method}{see method in \code{estimate_R} (but EstimateR uses CamelCase where estimate_R uses snake_case for the method names)}
+\item{method}{see method in \code{estimate_R} (but EstimateR uses CamelCase 
+where estimate_R uses snake_case for the method names)}
 
 \item{n1}{see \code{n1} in \code{estimate_R}}
 

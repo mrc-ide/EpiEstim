@@ -10,12 +10,15 @@
   \item{si_distr}{a vector containing a set of 38 probabilities.}
 }}
 \source{
-Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
+Groendyke C. et al. (2011) Bayesian Inference for Contact Networks 
+Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 }
 \description{
-This data set gives:
-1/ the daily incidence of onset of symptoms in Hallegoch (Germany) during the 1861 measles epidemic (see source and references),
-2/ the discrete daily distribution of the serial interval for measles, assuming a shifted Gamma distribution with mean 14.9 days, standard deviation 3.9 days and shift 1 day (see references).
+This data set gives: 1/ the daily incidence of onset of symptoms in Hallegoch
+(Germany) during the 1861 measles epidemic (see source and references), 2/
+the discrete daily distribution of the serial interval for measles, assuming
+a shifted Gamma distribution with mean 14.9 days, standard deviation 3.9 days
+and shift 1 day (see references).
 }
 \examples{
 ## load data on measles in Hallegoch in 1861
@@ -32,5 +35,7 @@ estimate_R(Measles1861$incidence, method="non_parametric_si",
 # over the 7-day window finishing on that day.
 }
 \references{
-Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
+Groendyke C. et al. (2011) Bayesian Inference for Contact 
+Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 
+600-616.
 }

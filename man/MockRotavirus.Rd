@@ -7,15 +7,20 @@
 \format{A list of two elements:
 \describe{
   \item{incidence}{a vector containing 53 days of observation,}
-  \item{si_distr}{a dataframe containing a set of 19 observations; each observation corresponds to a pair of infector/infected individuals. EL and ER columns contain the lower an upper bounds of the dates of symptoms onset in the infectors. SL and SR columns contain the lower an upper bounds of the dates of symptoms onset in the infected indiviuals. The type column corresponds to XXX TO BE COMPLETED XXX}
+  \item{si_distr}{a dataframe containing a set of 19 observations; each 
+  observation corresponds to a pair of infector/infected individuals. EL and 
+  ER columns contain the lower an upper bounds of the dates of symptoms onset
+   in the infectors. SL and SR columns contain the lower an upper bounds of 
+   the dates of symptoms onset in the infected indiviuals. The type column 
+   corresponds to XXX TO BE COMPLETED XXX}
 }}
 \source{
 XXX TO BE COMPLETED XXX
 }
 \description{
-This data set gives:
-1/ the daily incidence of onset of symptoms in a mock outbreak of rotavirus ,
-2/ mock observations of symptom onset dates for 19 pairs of infector/infected individuals.
+This data set gives: 1/ the daily incidence of onset of symptoms in a mock
+outbreak of rotavirus , 2/ mock observations of symptom onset dates for 19
+pairs of infector/infected individuals.
 }
 \examples{
 \dontrun{

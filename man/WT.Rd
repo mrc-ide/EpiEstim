@@ -15,7 +15,8 @@ WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
 
 \item{T.End}{see \code{config$t_end} in \code{wallinga_teunis}}
 
-\item{method}{see method in \code{wallinga_teunis} (but WT uses CamelCase where wallinga_teunis uses snake_case for the method names)}
+\item{method}{see method in \code{wallinga_teunis} (but WT uses CamelCase 
+where wallinga_teunis uses snake_case for the method names)}
 
 \item{Mean.SI}{see \code{config$mean_si} in \code{wallinga_teunis}}
 
