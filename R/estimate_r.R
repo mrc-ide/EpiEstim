@@ -1,7 +1,3 @@
-################################################################################
-# estimate_R replaces the old EstimateR function #
-################################################################################
-
 #' Estimated Instantaneous Reproduction Number
 #'
 #' \code{estimate_R} estimates the reproduction number of an epidemic, given the
