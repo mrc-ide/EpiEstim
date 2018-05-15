@@ -22,7 +22,7 @@ This data set gives:
 data("SARS2003")
 
 ## estimate the reproduction number (method "non_parametric_si")
-estimate_r(SARS2003$incidence, method="non_parametric_si",
+estimate_R(SARS2003$incidence, method="non_parametric_si",
           config=list(t_start=14:101, t_end=20:107, 
                       si_distr=SARS2003$si_distr, 
                       plot=TRUE)

@@ -27,7 +27,7 @@ This data set gives:
 data("MockRotavirus")
 
 ## estimate the reproduction number (method "si_from_data")
-estimate_r(MockRotavirus$incidence, 
+estimate_R(MockRotavirus$incidence, 
           method="si_from_data", 
           si_data=MockRotavirus$si_data,
           config=list(

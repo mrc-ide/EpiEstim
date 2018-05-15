@@ -106,7 +106,7 @@ Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respirato
 }
 }
 \seealso{
-\code{\link{discr_si}}, \code{\link{estimate_r}}
+\code{\link{discr_si}}, \code{\link{estimate_R}}
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}

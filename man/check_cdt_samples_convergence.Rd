@@ -44,7 +44,7 @@ converg_diag
 
 }
 \seealso{
-\code{\link{estimate_r}}
+\code{\link{estimate_R}}
 }
 \author{
 Anne Cori

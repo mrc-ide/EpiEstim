@@ -49,7 +49,7 @@ title(main = "Overall infectivity")
 Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
 }
 \seealso{
-\code{\link{discr_si}}, \code{\link{estimate_r}}
+\code{\link{discr_si}}, \code{\link{estimate_R}}
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}

@@ -32,7 +32,7 @@ in San Antonio, Texas, USA (see references).
 data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
-estimate_r(Flu2009$incidence, method="non_parametric_si",
+estimate_R(Flu2009$incidence, method="non_parametric_si",
           config=list(t_start=2:26, t_end=8:32, 
                       si_distr=Flu2009$si_distr, 
                       plot=TRUE)
@@ -47,7 +47,7 @@ estimate_r(Flu2009$incidence, method="non_parametric_si",
 ## so they may take a few minutes to run
 
 ## estimate the reproduction number (method "si_from_data")
-estimate_r(Flu2009$incidence, method="si_from_data",
+estimate_R(Flu2009$incidence, method="si_from_data",
           si_data = Flu2009$si_data,
           config=list(t_start=2:26, t_end=8:32, 
                       mcmc_control = list(burnin = 1000, 

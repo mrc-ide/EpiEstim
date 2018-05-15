@@ -22,7 +22,7 @@ This data set gives:
 data("Flu1918")
 
 ## estimate the reproduction number (method "non_parametric_si")
-estimate_r(Flu1918$incidence, 
+estimate_R(Flu1918$incidence, 
           method="non_parametric_si",
           config=list(t_start=2:86, t_end=8:92, 
                       si_distr=Flu1918$si_distr, 
