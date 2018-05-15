@@ -35,7 +35,7 @@
 #'   interval distribution (see details).
 #'
 #' @param config A list containing the following:
-#' \describe{
+#' \itemize{
 #'
 #' \item{t_start}{Vector of positive integers giving the starting times of each
 #' window over which the reproduction number will be estimated. These must be in
@@ -171,7 +171,7 @@
 #' }
 #' }
 #'
-#' @details{
+#' @details
 #' Analytical estimates of the reproduction number for an epidemic over
 #' predefined time windows can be obtained within a Bayesian framework,
 #' for a given discrete distribution of the serial interval (see references).
@@ -312,7 +312,7 @@
 #' (in argument \code{si_sample}) a sample of serial interval distribution to be
 #'  explored.
 #'
-#' }
+#'
 #' @seealso \code{\link{discr_si}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
 #' @references {

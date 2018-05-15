@@ -1,6 +1,6 @@
-################################################################################
-#wallinga_teunis function to estimate Rc the case reproduction number #
-################################################################################
+##########################################################################
+## wallinga_teunis function to estimate Rc the case reproduction number ##
+##########################################################################
 
 #' Estimation of the case reproduction number using the Wallinga and Teunis
 #' method
@@ -8,13 +8,19 @@
 #' \code{wallinga_teunis} estimates the case reproduction number of an epidemic,
 #' given the incidence time series and the serial interval distribution.
 #'
-#' @param incid One of the following \itemize{ \item{Vector (or a dataframe with
+#' @param incid One of the following
+#' \itemize{
+#' \item Vector (or a dataframe with
 #'   a column named 'incid') of non-negative integers containing an incidence
 #'   time series. If the dataframe contains a column \code{incid$dates}, this is
-#'   used for plotting. \code{incid$dates} must contains only dates in a row.}
-#'   \item{An object of class \code{\link[incidence]{incidence}}} }
+#'   used for plotting. \code{incid$dates} must contains only dates in a row.
+#'
+#'   \item An object of class \code{\link[incidence]{incidence}}
+#' }
+#'
 #' @param method the method used to estimate R, one of "non_parametric_si",
 #'   "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
+#'
 #' @param config a list with the following elements: \itemize{ \item{t_start:
 #'   Vector of positive integers giving the starting times of each window over
 #'   which the reproduction number will be estimated. These must be in ascending
@@ -50,7 +56,8 @@
 #'   the time series of incidence of imported cases (so that \code{I_local +
 #'   I_imported = I})} \item{dates}{: a vector of dates corresponding to the
 #'   incidence time series} } }
-#' @details{ Estimates of the case reproduction number for an epidemic over
+#'
+#' @details Estimates of the case reproduction number for an epidemic over
 #' predefined time windows can be obtained, for a given discrete distribution of
 #' the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
 #' Confidence intervals are obtained by simulating a number (config$n_sim) of
@@ -64,11 +71,6 @@
 #' The discrete distribution of the serial interval is directly specified in the
 #' argument \code{config$si_distr}.
 #'
-#' If \code{config$plot} is \code{TRUE}, 3 plots are produced. The first one
-#' shows the epidemic curve. The second one shows the posterior mean and 95\%
-#' credible interval of the reproduction number. The estimate for a time window
-#' is plotted at the end of the time window. The third plot shows the discrete
-#' distribution of the serial interval.
 #'
 #' ----------------------- \code{method "parametric_si"} -----------------------
 #'
@@ -77,8 +79,7 @@
 #' \code{config$std_si}. The discrete distribution of the serial interval is
 #' derived automatically using \code{\link{discr_si}}.
 #'
-#' If \code{config$plot} is \code{TRUE}, 3 plots are produced, which are
-#' identical to the ones for \code{method "non_parametric_si"} . }
+#'
 #' @seealso \code{\link{discr_si}}, \code{\link{estimate_R}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
 #' @references { Cori, A. et al. A new framework and software to estimate

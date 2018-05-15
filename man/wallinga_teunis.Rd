@@ -61,7 +61,7 @@ then need to click where the legend needs to be written.} }}
 given the incidence time series and the serial interval distribution.
 }
 \details{
-{ Estimates of the case reproduction number for an epidemic over
+Estimates of the case reproduction number for an epidemic over
 predefined time windows can be obtained, for a given discrete distribution of
 the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
 Confidence intervals are obtained by simulating a number (config$n_sim) of
@@ -75,11 +75,6 @@ The methods vary in the way the serial interval distribution is specified.
 The discrete distribution of the serial interval is directly specified in the
 argument \code{config$si_distr}.
 
-If \code{config$plot} is \code{TRUE}, 3 plots are produced. The first one
-shows the epidemic curve. The second one shows the posterior mean and 95\%
-credible interval of the reproduction number. The estimate for a time window
-is plotted at the end of the time window. The third plot shows the discrete
-distribution of the serial interval.
 
 ----------------------- \code{method "parametric_si"} -----------------------
 
@@ -87,9 +82,6 @@ The mean and standard deviation of the continuous distribution of the serial
 interval are given in the arguments \code{config$mean_si} and
 \code{config$std_si}. The discrete distribution of the serial interval is
 derived automatically using \code{\link{discr_si}}.
-
-If \code{config$plot} is \code{TRUE}, 3 plots are produced, which are
-identical to the ones for \code{method "non_parametric_si"} . }
 }
 \examples{
 ## load data on pandemic flu in a school in 2009

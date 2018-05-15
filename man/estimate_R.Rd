@@ -41,7 +41,7 @@ interval distribution (see details).}
 gives one distribution of the serial interval to be explored (see details).}
 
 \item{config}{A list containing the following:
-\describe{
+\itemize{
 
 \item{t_start}{Vector of positive integers giving the starting times of each
 window over which the reproduction number will be estimated. These must be in
@@ -183,7 +183,6 @@ showing whether the Gelman-Rubin MCMC convergence diagnostic was successful
 incidence time series and the serial interval distribution.
 }
 \details{
-{
 Analytical estimates of the reproduction number for an epidemic over
 predefined time windows can be obtained within a Bayesian framework,
 for a given discrete distribution of the serial interval (see references).
@@ -323,8 +322,6 @@ serial interval distribution.
 Unlike methods "uncertain_si" and "si_from_data", the user directly provides
 (in argument \code{si_sample}) a sample of serial interval distribution to be
  explored.
-
-}
 }
 \examples{
 ## load data on pandemic flu in a school in 2009
