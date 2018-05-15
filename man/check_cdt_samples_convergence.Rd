@@ -22,20 +22,20 @@ This function splits an MCMC chain in two halfs and uses the Gelman-Rubin algori
 }
 \examples{
 \dontrun{
-## Note the following examples use an MCMC routine 
-## to estimate the serial interval distribution from data, 
+## Note the following examples use an MCMC routine
+## to estimate the serial interval distribution from data,
 ## so they may take a few minutes to run
 
 ## load data on rotavirus
 data("MockRotavirus")
 
-## estimate the serial interval from data 
-SI_fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data, 
-                             dist="G", 
+## estimate the serial interval from data
+SI_fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
+                             dist="G",
                              init_pars=init_mcmc_params(MockRotavirus$si_data, "G"),
-                             burnin = 1000, 
+                             burnin = 1000,
                              n.samples = 5000)
-                             
+
 ## use check_cdt_samples_convergence to check convergence
 converg_diag <- check_cdt_samples_convergence(SI_fit@samples)
 converg_diag

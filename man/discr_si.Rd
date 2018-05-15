@@ -21,8 +21,8 @@ Gives the discrete probability \eqn{w_k} that the serial interval is equal to \e
 }
 \details{
 {
-Assuming that the serial interval is shifted Gamma distributed with mean \eqn{\mu}, standard deviation \eqn{\sigma} and shift \eqn{1}, 
-the discrete probability \eqn{w_k} that the serial interval is equal to \eqn{k} is: 
+Assuming that the serial interval is shifted Gamma distributed with mean \eqn{\mu}, standard deviation \eqn{\sigma} and shift \eqn{1},
+the discrete probability \eqn{w_k} that the serial interval is equal to \eqn{k} is:
 
 \deqn{w_k = kF_{\{\mu-1,\sigma\}}(k)+(k-2)F_{\{\mu-1,\sigma\}}(k-2)-2(k-1)F_{\{\mu-1,\sigma\}}(k-1)\\+(\mu-1)(2F_{\{\mu-1+\frac{\sigma^2}{\mu-1},\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-1)-F_{\{\mu-1+\frac{\sigma^2}{\mu-1},\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-2)-F_{\{\mu-1+\frac{\sigma^2}{\mu-1},\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k))}
 
@@ -34,7 +34,7 @@ where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma dis
 mean_flu_si <- 2.6
 sd_flu_si <- 1.5
 dicrete_si_distr <- discr_si(0:20, mean_flu_si, sd_flu_si)
-plot(0:20, dicrete_si_distr, type = "h", 
+plot(0:20, dicrete_si_distr, type = "h",
           lwd = 10, lend = 1, xlab = "time (days)", ylab = "frequency")
 title(main = "Discrete distribution of the serial interval of influenza")
 }

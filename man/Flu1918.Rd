@@ -4,7 +4,7 @@
 \name{Flu1918}
 \alias{Flu1918}
 \title{Data on the 1918 H1N1 influenza pandemic in Baltimore.}
-\format{A list of two elements: 
+\format{A list of two elements:
 \describe{
   \item{incidence}{a vector containing 92 days of observation,}
   \item{si_distr}{a vector containing a set of 12 probabilities.}
@@ -22,13 +22,13 @@ This data set gives:
 data("Flu1918")
 
 ## estimate the reproduction number (method "non_parametric_si")
-estimate_R(Flu1918$incidence, 
+estimate_R(Flu1918$incidence,
           method="non_parametric_si",
-          config=list(t_start=2:86, t_end=8:92, 
-                      si_distr=Flu1918$si_distr, 
+          config=list(t_start=2:86, t_end=8:92,
+                      si_distr=Flu1918$si_distr,
                       plot=TRUE))
-# the second plot produced shows, at each each day, 
-# the estimate of the reproduction number 
+# the second plot produced shows, at each each day,
+# the estimate of the reproduction number
 # over the 7-day window finishing on that day.
 }
 \references{

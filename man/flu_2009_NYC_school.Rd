@@ -4,10 +4,10 @@
 \name{flu_2009_NYC_school}
 \alias{flu_2009_NYC_school}
 \title{Data on the 2009 H1N1 influenza pandemic in a school in New York city}
-\format{A list of two elements: 
+\format{A list of two elements:
 \describe{
   \item{incidence}{a dataframe with 14 lines containing dates in first column, and daily incidence in second column ,}
-  \item{si_data}{a dataframe containing data on the generation time for 16 pairs of infector/infected individuals 
+  \item{si_data}{a dataframe containing data on the generation time for 16 pairs of infector/infected individuals
   (see references and see argument \code{si_data} of function \code{estimate_R} for details on columns) }
 }}
 \source{
@@ -15,15 +15,15 @@ Lessler J. et al. (2009) Outbreak of 2009 pandemic influenza A (H1N1) at a New Y
 }
 \description{
 This data set gives:
-1/ the daily incidence of self-reported and laboratory-confirmed cases of influenza 
+1/ the daily incidence of self-reported and laboratory-confirmed cases of influenza
 amongst children in a school in New York city during the 2009 H1N1 influenza pandemic (see source and references),
-2/ interval-censored serial interval data from the 2009 outbreak of H1N1 influenza 
+2/ interval-censored serial interval data from the 2009 outbreak of H1N1 influenza
 in a New York city school (see references).
 }
 \examples{
 \dontrun{
-## Note the following examples use an MCMC routine 
-## to estimate the serial interval distribution from data, 
+## Note the following examples use an MCMC routine
+## to estimate the serial interval distribution from data,
 ## so they may take a few minutes to run
 
 ## load data on pandemic flu in a New York school in 2009
@@ -33,14 +33,14 @@ data("flu_2009_NYC_school")
 estimate_R(flu_2009_NYC_school$incidence, method="si_from_data",
          si_data = flu_2009_NYC_school$si_data,
           config=list(t_start=2:8, t_end=8:14,
-                      si_parametric_distr = "G", 
-                      mcmc_control = list(burnin = 1000, 
-                                 thin=10, seed = 1), 
+                      si_parametric_distr = "G",
+                      mcmc_control = list(burnin = 1000,
+                                 thin=10, seed = 1),
                       n1 = 1000, n2 = 50,
                       plot=TRUE)
           )
-# the second plot produced shows, at each each day, 
-# the estimate of the reproduction number 
+# the second plot produced shows, at each each day,
+# the estimate of the reproduction number
 # over the 7-day window finishing on that day.
 }
 }

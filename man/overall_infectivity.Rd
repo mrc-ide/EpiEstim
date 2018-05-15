@@ -11,7 +11,7 @@ overall_infectivity(incid, si_distr)
 \itemize{
 \item{A vector (or a dataframe with a single column) of non-negative integers containing an incidence time series}
 \item{A dataframe of non-negative integers with two columns, so that \code{incid$local} contains the incidence of cases due to local transmission and \code{incid$imported} contains the incidence of imported cases (with \code{incid$local + incid$imported} the total incidence).}
-} 
+}
 Note that the cases from the first time step are always all assumed to be imported cases.}
 
 \item{si_distr}{Vector of probabilities giving the discrete distribution of the serial interval.}
@@ -24,10 +24,10 @@ A vector which contains the overall infectivity \eqn{\lambda_t} at each time ste
 }
 \details{
 {
-The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is equal to the sum of the previously infected individuals 
-(given by the incidence vector \eqn{I}, with \code{I = incid$local + incid$imported} if \eqn{I} is a matrix), 
-weigthed by their infectivity at time \eqn{t} (given by the discrete serial interval distribution \eqn{w_k}). 
-In mathematical terms:   
+The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is equal to the sum of the previously infected individuals
+(given by the incidence vector \eqn{I}, with \code{I = incid$local + incid$imported} if \eqn{I} is a matrix),
+weigthed by their infectivity at time \eqn{t} (given by the discrete serial interval distribution \eqn{w_k}).
+In mathematical terms:
 \cr
 \eqn{\lambda_t = \sum_{k=1}^{t-1}I_{t-k}w_k}
 \cr

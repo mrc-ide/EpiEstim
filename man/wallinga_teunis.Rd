@@ -11,7 +11,7 @@ wallinga_teunis(incid, method = c("non_parametric_si", "parametric_si"),
 \item{incid}{One of the following
 \itemize{
 \item{Vector (or a dataframe with a column named 'incid') of non-negative integers containing an incidence time series.
- If the dataframe contains a column \code{incid$dates}, this is used for plotting. 
+ If the dataframe contains a column \code{incid$dates}, this is used for plotting.
  \code{incid$dates} must contains only dates in a row.}
 \item{An object of class \code{\link[incidence]{incidence}}}
  }}
@@ -34,10 +34,10 @@ This specifies the position of the legend in the plot. Alternatively, \code{loca
 }
 \value{
 {
-	a list with components: 
+	a list with components:
 	\itemize{
-	\item{R}{: a dataframe containing: 
-	    the times of start and end of each time window considered ; 
+	\item{R}{: a dataframe containing:
+	    the times of start and end of each time window considered ;
 	    the estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction number for each time window.}
 	\item{si_distr}{: a vector containing the discrete serial interval distribution used for estimation}
 	\item{SI.Moments}{: a vector containing the mean and std of the discrete serial interval distribution(s) used for estimation}
@@ -53,9 +53,9 @@ This specifies the position of the legend in the plot. Alternatively, \code{loca
 }
 \details{
 {
-Estimates of the case reproduction number for an epidemic over predefined time windows can be obtained, 
-for a given discrete distribution of the serial interval, as proposed by Wallinga and Teunis (AJE, 2004). 
-Confidence intervals are obtained by simulating a number (config$n_sim) of possible transmission trees. 
+Estimates of the case reproduction number for an epidemic over predefined time windows can be obtained,
+for a given discrete distribution of the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
+Confidence intervals are obtained by simulating a number (config$n_sim) of possible transmission trees.
 
 The methods vary in the way the serial interval distribution is specified.
 
@@ -63,10 +63,10 @@ The methods vary in the way the serial interval distribution is specified.
 
 The discrete distribution of the serial interval is directly specified in the argument \code{config$si_distr}.
 
-If \code{config$plot} is \code{TRUE}, 3 plots are produced. 
-The first one shows the epidemic curve. 
-The second one shows the posterior mean and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window. 
-The third plot shows the discrete distribution of the serial interval. 
+If \code{config$plot} is \code{TRUE}, 3 plots are produced.
+The first one shows the epidemic curve.
+The second one shows the posterior mean and 95\% credible interval of the reproduction number. The estimate for a time window is plotted at the end of the time window.
+The third plot shows the discrete distribution of the serial interval.
 
 ----------------------- \code{method "parametric_si"} -----------------------
 
@@ -81,22 +81,22 @@ If \code{config$plot} is \code{TRUE}, 3 plots are produced, which are identical 
 data("Flu2009")
 
 ## estimate the case reproduction number (method "non_parametric_si")
-wallinga_teunis(Flu2009$incidence, 
-   method="non_parametric_si", 
-   config = list(t_start=2:26, t_end=8:32, 
-                 si_distr = Flu2009$si_distr, 
+wallinga_teunis(Flu2009$incidence,
+   method="non_parametric_si",
+   config = list(t_start=2:26, t_end=8:32,
+                 si_distr = Flu2009$si_distr,
                  n_sim=100,
                  plot=TRUE))
-# the second plot produced shows, at each each day, 
+# the second plot produced shows, at each each day,
 # the estimate of the case reproduction number over the 7-day window finishing on that day.
 
 ## estimate the case reproduction number (method "parametric_si")
-wallinga_teunis(Flu2009$incidence, method="parametric_si", 
-   config = list(t_start=2:26, t_end=8:32,  
-                 mean_si=2.6, std_si=1.5, 
+wallinga_teunis(Flu2009$incidence, method="parametric_si",
+   config = list(t_start=2:26, t_end=8:32,
+                 mean_si=2.6, std_si=1.5,
                  n_sim=100,
                  plot=TRUE))
-# the second plot produced shows, at each each day, 
+# the second plot produced shows, at each each day,
 # the estimate of the case reproduction number over the 7-day window finishing on that day.
 }
 \references{

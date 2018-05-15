@@ -4,7 +4,7 @@
 \name{MockRotavirus}
 \alias{MockRotavirus}
 \title{Mock data on a rotavirus epidemic.}
-\format{A list of two elements: 
+\format{A list of two elements:
 \describe{
   \item{incidence}{a vector containing 53 days of observation,}
   \item{si_distr}{a dataframe containing a set of 19 observations; each observation corresponds to a pair of infector/infected individuals. EL and ER columns contain the lower an upper bounds of the dates of symptoms onset in the infectors. SL and SR columns contain the lower an upper bounds of the dates of symptoms onset in the infected indiviuals. The type column corresponds to XXX TO BE COMPLETED XXX}
@@ -19,26 +19,26 @@ This data set gives:
 }
 \examples{
 \dontrun{
-## Note the following example uses an MCMC routine 
-## to estimate the serial interval distribution from data, 
+## Note the following example uses an MCMC routine
+## to estimate the serial interval distribution from data,
 ## so may take a few minutes to run
 
-## load data 
+## load data
 data("MockRotavirus")
 
 ## estimate the reproduction number (method "si_from_data")
-estimate_R(MockRotavirus$incidence, 
-          method="si_from_data", 
+estimate_R(MockRotavirus$incidence,
+          method="si_from_data",
           si_data=MockRotavirus$si_data,
           config=list(
-            t_start=2:47, t_end=8:53,  
-            si_parametric_distr = "G", 
-            mcmc_control = list(burnin = 3000, thin=10), 
+            t_start=2:47, t_end=8:53,
+            si_parametric_distr = "G",
+            mcmc_control = list(burnin = 3000, thin=10),
             n1 = 500, n2 = 50,
             plot=TRUE)
           )
-# the second plot produced shows, at each each day, 
-# the estimate of the reproduction number 
+# the second plot produced shows, at each each day,
+# the estimate of the reproduction number
 # over the 7-day window finishing on that day.
 }
 }
