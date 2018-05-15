@@ -10,12 +10,16 @@
   \item{si_distr}{a vector containing a set of 25 probabilities.}
 }}
 \source{
-Cori A. et al. (2009) Temporal variability and social heterogeneity in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): e1000471.
+Cori A. et al. (2009) Temporal variability and social heterogeneity 
+in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8)
+: e1000471.
 }
 \description{
-This data set gives:
-1/ the daily incidence of onset of symptoms in Hong Kong during the 2003 severe acute respiratory syndrome (SARS) epidemic (see source and references),
-2/ the discrete daily distribution of the serial interval for SARS, assuming a shifted Gamma distribution with mean 8.4 days, standard deviation 3.8 days and shift 1 day (see references).
+This data set gives: 1/ the daily incidence of onset of symptoms in Hong Kong
+during the 2003 severe acute respiratory syndrome (SARS) epidemic (see source
+and references), 2/ the discrete daily distribution of the serial interval
+for SARS, assuming a shifted Gamma distribution with mean 8.4 days, standard
+deviation 3.8 days and shift 1 day (see references).
 }
 \examples{
 ## load data on SARS in Hong Kong in 2003
@@ -33,8 +37,11 @@ estimate_R(SARS2003$incidence, method="non_parametric_si",
 }
 \references{
 {
-Cori A. et al. (2009) Temporal variability and social heterogeneity in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): e1000471.
+Cori A. et al. (2009) Temporal variability and social heterogeneity in 
+disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): 
+e1000471.
 
-Lipsitch M. et al. (2003) Transmission dynamics and control of severe acute respiratory syndrome. Science 300(5627): 1966-1970.
+Lipsitch M. et al. (2003) Transmission dynamics and control of severe acute 
+respiratory syndrome. Science 300(5627): 1966-1970.
 }
 }
