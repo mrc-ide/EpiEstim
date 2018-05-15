@@ -9,52 +9,87 @@ wallinga_teunis(incid, method = c("non_parametric_si", "parametric_si"),
   config)
 }
 \arguments{
-\item{incid}{One of the following \itemize{ \item{Vector (or a dataframe with
-a column named 'incid') of non-negative integers containing an incidence
-time series. If the dataframe contains a column \code{incid$dates}, this is
-used for plotting. \code{incid$dates} must contains only dates in a row.}
-\item{An object of class \code{\link[incidence]{incidence}}} }}
+\item{incid}{One of the following
+\itemize{
+
+\item Vector (or a dataframe with a column named 'incid') of non-negative
+  integers containing an incidence time series. If the dataframe contains a
+  column \code{incid$dates}, this is used for plotting. \code{incid$dates}
+  must contains only dates in a row.
+
+\item An object of class \code{\link[incidence]{incidence}}
+
+}}
 
 \item{method}{the method used to estimate R, one of "non_parametric_si",
 "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
 
-\item{config}{a list with the following elements: \itemize{ \item{t_start:
-Vector of positive integers giving the starting times of each window over
-which the reproduction number will be estimated. These must be in ascending
-order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}.
-t_start[1] should be strictly after the first day with non null incidence.}
-\item{t_end: Vector of positive integers giving the ending times of each
-window over which the reproduction number will be estimated. These must be
-in ascending order, and so that for all \code{i},
-\code{t_start[i]<=t_end[i]}.} \item{method: One of "non_parametric_si" or
-"parametric_si" (see details).} \item{mean_si: For method "parametric_si" ;
-positive real giving the mean serial interval.} \item{std_si: For method
-"parametric_si" ; non negative real giving the stadard deviation of the
-serial interval.} \item{si_distr: For method "non_parametric_si" ; vector
-of probabilities giving the discrete distribution of the serial interval,
-starting with \code{si_distr[1]} (probability that the serial interval is
-zero), which should be zero.} \item{n_sim: A positive integer giving the
-number of simulated epidemic trees used for computation of the confidence
-intervals of the case reproduction number (see details).} \item{plot:
-Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see
-value).} \item{legend: A boolean (TRUE by default) governing the presence /
-absence of legends on the plots This specifies the position of the legend
-in the plot. Alternatively, \code{locator(1)} can be used ; the user will
-then need to click where the legend needs to be written.} }}
+\item{config}{a list with the following elements:
+\itemize{
+
+\item t_start: Vector of positive integers giving the starting times of each
+  window over which the reproduction number will be estimated. These must be
+  in ascending order, and so that for all \code{i},
+  \code{t_start[i]<=t_end[i]}. t_start[1] should be strictly after the first
+  day with non null incidence.
+
+\item t_end: Vector of positive integers giving the ending times of each
+  window over which the reproduction number will be estimated. These must be
+  in ascending order, and so that for all \code{i},
+  \code{t_start[i]<=t_end[i]}.
+
+\item method: One of "non_parametric_si" or "parametric_si" (see details).
+
+\item mean_si: For method "parametric_si"; positive real giving the mean
+  serial interval.
+
+\item std_si: For method "parametric_si" ; non negative real giving the
+  stadard deviation of the serial interval.
+
+\item si_distr: For method "non_parametric_si"; vector of probabilities
+  giving the discrete distribution of the serial interval, starting with
+  \code{si_distr[1]} (probability that the serial interval is zero), which
+  should be zero.
+
+\item n_sim: A positive integer giving the number of simulated epidemic trees
+  used for computation of the confidence intervals of the case reproduction
+  number (see details).
+
+\item plot: Logical. If \code{TRUE} (default is \code{FALSE}), output is
+  plotted (see value).
+
+\item legend: A boolean (TRUE by default) governing the presence /
+  absence of legends on the plots This specifies the position of the legend
+  in the plot. Alternatively, \code{locator(1)} can be used ; the user will
+  then need to click where the legend needs to be written.
+
+}}
 }
 \value{
-{ a list with components: \itemize{ \item{R}{: a dataframe
-  containing: the times of start and end of each time window considered ; the
-  estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction
-  number for each time window.} \item{si_distr}{: a vector containing the
-  discrete serial interval distribution used for estimation}
-  \item{SI.Moments}{: a vector containing the mean and std of the discrete
-  serial interval distribution(s) used for estimation} \item{I}{: the time
-  series of total incidence} \item{I_local}{: the time series of incidence of
-  local cases (so that \code{I_local + I_imported = I})} \item{I_imported}{:
-  the time series of incidence of imported cases (so that \code{I_local +
-  I_imported = I})} \item{dates}{: a vector of dates corresponding to the
-  incidence time series} } }
+a list with components:
+\itemize{
+
+\item R a dataframe containing the times of start and end of each time window
+  considered ; the estimated mean, std, and 0.025 and 0.975 quantiles of the
+  reproduction number for each time window.
+
+\item si_distr a vector
+  containing the discrete serial interval distribution used for estimation
+
+\item SI.Moments a vector containing the mean and std of the discrete
+  serial interval distribution(s) used for estimation
+
+\item I the time series of total incidence
+
+\item I_local the time series of incidence of
+  local cases (so that \code{I_local + I_imported = I})
+
+\item I_imported the time series of incidence of imported cases (so that
+  \code{I_local + I_imported = I})
+
+\item dates a vector of dates corresponding to the incidence time series
+
+}
 }
 \description{
 \code{wallinga_teunis} estimates the case reproduction number of an epidemic,
@@ -62,10 +97,10 @@ given the incidence time series and the serial interval distribution.
 }
 \details{
 Estimates of the case reproduction number for an epidemic over
-predefined time windows can be obtained, for a given discrete distribution of
-the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
-Confidence intervals are obtained by simulating a number (config$n_sim) of
-possible transmission trees.
+  predefined time windows can be obtained, for a given discrete distribution
+  of the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
+  Confidence intervals are obtained by simulating a number
+  (\code{config$n_sim}) of possible transmission trees.
 
 The methods vary in the way the serial interval distribution is specified.
 
@@ -88,31 +123,35 @@ derived automatically using \code{\link{discr_si}}.
 data("Flu2009")
 
 ## estimate the case reproduction number (method "non_parametric_si")
-wallinga_teunis(Flu2009$incidence,
-   method="non_parametric_si",
-   config = list(t_start=2:26, t_end=8:32,
-                 si_distr = Flu2009$si_distr,
-                 n_sim=100,
-                 plot=TRUE))
-# the second plot produced shows, at each each day,
-# the estimate of the case reproduction number over the 7-day window
-# finishing on that day.
+res <- wallinga_teunis(Flu2009$incidence,
+                       method = "non_parametric_si",
+                       config = list(t_start = 2:26, t_end = 8:32,
+                       si_distr = Flu2009$si_distr,
+                       n_sim = 100,
+                       plot = TRUE))
+plot(res)
+
+## the second plot produced shows, at each each day,
+## the estimate of the case reproduction number over the 7-day window
+## finishing on that day.
 
 ## estimate the case reproduction number (method "parametric_si")
-wallinga_teunis(Flu2009$incidence, method="parametric_si",
-   config = list(t_start=2:26, t_end=8:32,
-                 mean_si=2.6, std_si=1.5,
-                 n_sim=100,
-                 plot=TRUE))
-# the second plot produced shows, at each each day,
-# the estimate of the case reproduction number over the 7-day window
-# finishing on that day.
+res <- wallinga_teunis(Flu2009$incidence, method="parametric_si",
+                       config = list(t_start = 2:26, t_end = 8:32,
+                       mean_si = 2.6, std_si = 1.5,
+                       n_sim = 100))
+plot(res)
+
+## the second plot produced shows, at each each day,
+## the estimate of the case reproduction number over the 7-day window
+## finishing on that day.
+
 }
 \references{
-{ Cori, A. et al. A new framework and software to estimate
+Cori, A. et al. A new framework and software to estimate
   time-varying reproduction numbers during epidemics (AJE 2013). Wallinga, J.
   and P. Teunis. Different epidemic curves for severe acute respiratory
-  syndrome reveal similar impacts of control measures (AJE 2004). }
+  syndrome reveal similar impacts of control measures (AJE 2004).
 }
 \seealso{
 \code{\link{discr_si}}, \code{\link{estimate_R}}
