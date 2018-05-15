@@ -69,7 +69,7 @@ discr_si <- function(k, mu, sigma)
     (k - 2) * cdf_gamma(k - 2, a, b) - 2 * (k - 1) * cdf_gamma(k - 1, a, b)
   res <- res + a * b * (2 * cdf_gamma(k - 1, a + 1, b) - 
                           cdf_gamma(k - 2, a + 1, b) - cdf_gamma(k, a + 1, b))
-  res <- sapply(res, function(e) max(0, e))
+  res <- vnapply(res, function(e) max(0, e))
 
   return(res)
 }

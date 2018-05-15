@@ -21,7 +21,7 @@ process_si_data <- function(si_data) {
   }
 
   # non integer entries in date columns
-  if (!all(sapply(seq_len(4), function(e) class(si_data[, e]) == "integer"))) {
+  if (!all(vlapply(seq_len(4), function(e) class(si_data[, e]) == "integer"))) {
     stop("si_data has entries for which EL, ER, SL or SR are non integers.")
   }
 
@@ -427,4 +427,20 @@ check_config <- function(config, method) {
   if (config$plot != TRUE && config$plot != FALSE) {
     stop("config$plot must be TRUE or FALSE.")
   }
+}
+
+viapply <- function(X, FUN, ...) {
+  vapply(X, FUN, integer(1), ...)
+}
+
+vlapply <- function(X, FUN, ...) {
+  vapply(X, FUN, logical(1), ...)
+}
+
+vnapply <- function(X, FUN, ...) {
+  vapply(X, FUN, numeric(1), ...)
+}
+
+vcapply <- function(X, FUN, ...) {
+  vapply(X, FUN, character(1), ...)
 }

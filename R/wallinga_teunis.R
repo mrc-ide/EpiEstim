@@ -261,7 +261,7 @@ wallinga_teunis <- function(incid,
   delay <- outer(seq_len(T), seq_len(T), "-")
   si_delay <- apply(delay, 2, function(x) 
     config$si_distr[pmin(pmax(x + 1, 1), length(config$si_distr))])
-  sum_on_col_si_delay_tmp <- sapply(seq_len(nrow(si_delay)), function(i) 
+  sum_on_col_si_delay_tmp <- vnapply(seq_len(nrow(si_delay)), function(i) 
     sum(si_delay [i, ] * incid, na.rm = TRUE))
   sum_on_col_si_delay <- vector()
   for (t in seq_len(T)) {
@@ -273,24 +273,28 @@ wallinga_teunis <- function(incid,
   p <- si_delay / (mat_sum_on_col_si_delay)
   p[which(is.na(p))] <- 0
   p[which(is.infinite(p))] <- 0
-  mean_r_per_index_case_date <- sapply(seq_len(ncol(p)), function(j) 
+  mean_r_per_index_case_date <- vnapply(seq_len(ncol(p)), function(j) 
     sum(p[, j] * incid, na.rm = TRUE))
-  mean_r_per_date_wt <- sapply(seq_len(nb_time_periods), function(i) 
-    mean(rep(mean_r_per_index_case_date[which((seq_len(T) >= config$t_start[i]) * 
-                                                (seq_len(T) <= config$t_end[i]) == 1)],
+  mean_r_per_date_wt <- vnapply(seq_len(nb_time_periods), function(i) 
+    mean(rep(mean_r_per_index_case_date[which((seq_len(T) >= 
+                                                 config$t_start[i]) * 
+                                                (seq_len(T) <= 
+                                                   config$t_end[i]) == 1)],
              incid[which((seq_len(T) >= config$t_start[i]) * 
                            (seq_len(T) <= config$t_end[i]) == 1)])))
 
-  possible_ances_time <- sapply(seq_len(T), function(t) 
+  possible_ances_time <- lapply(seq_len(T), function(t) 
     (t - (which(config$si_distr != 0)) + 
        1)[which(t - (which(config$si_distr != 0)) + 1 > 0)])
-  ancestries_time <- t(sapply(seq_len(config$n_sim), function(i) 
-    draw_one_set_of_ancestries()))
+  
+  ancestries_time <- t(vapply(seq_len(config$n_sim), function(i) 
+    draw_one_set_of_ancestries(), numeric(sum(incid))))
 
-  r_sim <- sapply(seq_len(nb_time_periods), function(i) 
+  r_sim <- vapply(seq_len(nb_time_periods), function(i) 
     rowSums((ancestries_time[, ] >= config$t_start[i]) * 
               (ancestries_time[, ] <= config$t_end[i]), na.rm = TRUE) / 
-      sum(incid[seq(config$t_start[i], config$t_end[i])]))
+      sum(incid[seq(config$t_start[i], config$t_end[i])]), 
+    numeric(config$n_sim))
 
   r025_wt <- apply(r_sim, 2, quantile, 0.025, na.rm = TRUE)
   r025_wt <- r025_wt[which(!is.na(r025_wt))]

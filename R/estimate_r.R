@@ -515,7 +515,7 @@ estimate_R_func <- function(incid,
 
   calc_incidence_per_time_step <- function(incid, t_start, t_end) {
     nb_time_periods <- length(t_start)
-    incidence_per_time_step <- sapply(seq_len(nb_time_periods), function(i) 
+    incidence_per_time_step <- vnapply(seq_len(nb_time_periods), function(i) 
       sum(incid[seq(t_start[i], t_end[i]), c("local", "imported")]))
     return(incidence_per_time_step)
   }
@@ -533,7 +533,7 @@ estimate_R_func <- function(incid,
       1)))
     a_posterior <- vector()
     b_posterior <- vector()
-    a_posterior <- sapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
+    a_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
         final_mean_si) {
         a_prior + sum(incid[seq(t_start[t], t_end[t]), "local"]) 
       ## only counting local cases on the "numerator"
@@ -541,7 +541,7 @@ estimate_R_func <- function(incid,
       else {
         NA
       })
-    b_posterior <- sapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
+    b_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
         final_mean_si) {
         1 / (1 / b_prior + sum(lambda[seq(t_start[t], t_end[t])]))
       }
@@ -570,7 +570,7 @@ estimate_R_func <- function(incid,
     lambda <- overall_infectivity(incid, si_distr)
     a_posterior <- vector()
     b_posterior <- vector()
-    a_posterior <- sapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
+    a_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
         final_mean_si) {
         a_prior + sum(incid[seq(t_start[t], t_end[t]), "local"]) 
       ## only counting local cases on the "numerator"
@@ -578,14 +578,14 @@ estimate_R_func <- function(incid,
       else {
         NA
       })
-    b_posterior <- sapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
+    b_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
         final_mean_si) {
         1 / (1 / b_prior + sum(lambda[seq(t_start[t], t_end[t])], na.rm = TRUE))
       }
       else {
         NA
       })
-    sample_r_posterior <- sapply(seq_len(nb_time_periods), function(t) 
+    sample_r_posterior <- vapply(seq_len(nb_time_periods), function(t) 
       if (!is.na(a_posterior[t])) {
         rgamma(sample_size,
           shape = unlist(a_posterior[t]),
@@ -594,7 +594,7 @@ estimate_R_func <- function(incid,
       }
       else {
         rep(NA, sample_size)
-      })
+      }, numeric(sample_size))
     if (sample_size == 1L) {
       sample_r_posterior <- matrix(sample_r_posterior, nrow = 1)
     }
@@ -669,7 +669,7 @@ estimate_R_func <- function(incid,
           b_prior, config$t_start, config$t_end
         ))
       config$si_distr <- cbind(
-        t(sapply(seq_len(config$n1), function(k) (temp[[k]])[[2]])),
+        t(vapply(seq_len(config$n1), function(k) (temp[[k]])[[2]], numeric(T))),
         rep(0, config$n1)
       )
       r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
@@ -722,7 +722,7 @@ estimate_R_func <- function(incid,
           b_prior, config$t_start, config$t_end
         ))
       config$si_distr <- cbind(
-        t(sapply(seq_len(config$n1), function(k) (temp[[k]])[[2]])),
+        t(vnapply(seq_len(config$n1), function(k) (temp[[k]])[[2]])),
         rep(0, config$n1)
       )
       r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
