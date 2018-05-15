@@ -12,12 +12,15 @@
 #'   \code{\link{wallinga_teunis}}, or a list of such outputs.  If a list, and
 #'   \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a
 #'   single graph.
+#'
 #' @param what A string specifying what to plot, namely the incidence time
 #'   series (\code{what='incid'}), the estimated reproduction number
 #'   (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or
 #'   all three (\code{what='all'})).
+#'
 #' @param add_imported_cases A boolean to specify whether, on the incidence time
 #'   series plot, to add the incidence of imported cases.
+#'
 #' @param options_I For what = "incid" or "all". A list of graphical options:
 #'   \describe{ \item{col}{A colour or vector of colours used for plotting
 #'   incid. By default uses the default R colours.}  \item{transp}{A numeric
@@ -26,6 +29,7 @@
 #'   \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
 #'   parameter similar to that in \code{par}, to monitor the limits of the
 #'   vertical axis} }
+#'
 #' @param options_R For what = "R" or "all". A list of graphical options:
 #'   \describe{ \item{col}{A colour or vector of colours used for plotting R. By
 #'   default uses the default R colours.}  \item{transp}{A numeric value between
@@ -33,6 +37,7 @@
 #'   \item{xlim}{A parameter similar to that in \code{par}, to monitor the
 #'   limits of the horizontal axis} \item{ylim}{A parameter similar to that in
 #'   \code{par}, to monitor the limits of the vertical axis} }
+#'
 #' @param options_SI For what = "SI" or "all". A list of graphical options:
 #'   \describe{ \item{prob_min}{A numeric value between 0 and 1. The SI
 #'   distributions explored are only shown from time 0 up to the time t so that
@@ -44,6 +49,7 @@
 #'   \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
 #'   parameter similar to that in \code{par}, to monitor the limits of the
 #'   vertical axis} }
+#'
 #' @param legend A boolean (TRUE by default) governing the presence / absence of
 #'   legends on the plots
 #'
@@ -77,7 +83,7 @@
 #'                 )
 #'
 #' ## visualise results
-#' plots(R_i, legend = FALSE)
+#' plot(R_i, legend = FALSE)
 #'
 #' ## estimate the instantaneous reproduction number
 #' ## (method "non_parametric_si")
@@ -89,12 +95,12 @@
 #' ## (with, on top of total incidence, the incidence of imported cases),
 #' ## estimated instantaneous and case reproduction numbers
 #' ## and serial interval distribution used
-#' p_I <- plots(R_i, "incid", add_imported_cases=TRUE) # plots the incidence
-#' p_SI <- plots(R_i, "SI") # plots the serial interval distribution
-#' p_Ri <- plots(R_i, "R",
+#' p_I <- plot(R_i, "incid", add_imported_cases=TRUE) # plots the incidence
+#' p_SI <- plot(R_i, "SI") # plots the serial interval distribution
+#' p_Ri <- plot(R_i, "R",
 #'           options_R = list(ylim=c(0,4)))
 #'           # plots the estimated instantaneous reproduction number
-#' p_Rc <- plots(R_c, "R",
+#' p_Rc <- plot(R_c, "R",
 #'           list(ylim=c(0,4)))
 #'           # plots the estimated case reproduction number
 #' gridExtra::grid.arrange(p_I,p_SI,p_Ri,p_Rc,ncol=2)
@@ -103,11 +109,16 @@
 #' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle
 #'   geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
 #'   scale_colour_manual scale_fill_manual scale_linetype_manual lims
+#'
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
+#'
 #' @importFrom graphics plot
+#'
 #' @importFrom incidence as.incidence
+#'
 #' @importFrom graphics plot
-plot.estimate_R <- function(x = NULL, what = c("all", "incid", "R", "SI"),
+#'
+plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
                   add_imported_cases = FALSE,
                   options_I = list(col = palette(), transp = 0.7,
                                    xlim = NULL, ylim = NULL),
@@ -117,9 +128,6 @@ plot.estimate_R <- function(x = NULL, what = c("all", "incid", "R", "SI"),
                                     col = "black", transp = 0.25,
                                     xlim = NULL, ylim = NULL),
                   legend = TRUE, ...) {
-  if (is.null(x)) {
-    stop("plots requires non NULL x input.")
-  }
 
   ## dealing with the fact that some options may be left to default but others
   ## may have been specified by user
