@@ -12,7 +12,7 @@ wallinga_teunis(incid, method = c("non_parametric_si", "parametric_si"),
 \item{incid}{One of the following \itemize{ \item{Vector (or a dataframe with
 a column named 'incid') of non-negative integers containing an incidence
 time series. If the dataframe contains a column \code{incid$dates}, this is
-used for plotting. \code{incid$dates} must contains only dates in a row.} 
+used for plotting. \code{incid$dates} must contains only dates in a row.}
 \item{An object of class \code{\link[incidence]{incidence}}} }}
 
 \item{method}{the method used to estimate R, one of "non_parametric_si",
@@ -47,7 +47,7 @@ then need to click where the legend needs to be written.} }}
   containing: the times of start and end of each time window considered ; the
   estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction
   number for each time window.} \item{si_distr}{: a vector containing the
-  discrete serial interval distribution used for estimation} 
+  discrete serial interval distribution used for estimation}
   \item{SI.Moments}{: a vector containing the mean and std of the discrete
   serial interval distribution(s) used for estimation} \item{I}{: the time
   series of total incidence} \item{I_local}{: the time series of incidence of
@@ -63,7 +63,7 @@ given the incidence time series and the serial interval distribution.
 \details{
 { Estimates of the case reproduction number for an epidemic over
 predefined time windows can be obtained, for a given discrete distribution of
-the serial interval, as proposed by Wallinga and Teunis (AJE, 2004). 
+the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
 Confidence intervals are obtained by simulating a number (config$n_sim) of
 possible transmission trees.
 
@@ -103,7 +103,7 @@ wallinga_teunis(Flu2009$incidence,
                  n_sim=100,
                  plot=TRUE))
 # the second plot produced shows, at each each day,
-# the estimate of the case reproduction number over the 7-day window 
+# the estimate of the case reproduction number over the 7-day window
 # finishing on that day.
 
 ## estimate the case reproduction number (method "parametric_si")
@@ -113,7 +113,7 @@ wallinga_teunis(Flu2009$incidence, method="parametric_si",
                  n_sim=100,
                  plot=TRUE))
 # the second plot produced shows, at each each day,
-# the estimate of the case reproduction number over the 7-day window 
+# the estimate of the case reproduction number over the 7-day window
 # finishing on that day.
 }
 \references{
