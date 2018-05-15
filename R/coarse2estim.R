@@ -1,8 +1,3 @@
-################################################################################
-# coarse2estim integates CoarseDataTools with EpiEstim using the amended version
-# of EstimateR called estimate_R #
-################################################################################
-
 #' Link coarseDataTools and EpiEstim
 #'
 #' \code{coarse2estim} Transforms outputs of

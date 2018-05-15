@@ -514,9 +514,9 @@ estimate_R <- function(incid,
   return(out)
 }
 
-#########################################################
-# estimate_R_func: Doing the heavy work in estimate_R     #
-#########################################################
+##########################################################
+## estimate_R_func: Doing the heavy work in estimate_R  ##
+##########################################################
 
 #'
 #' @importFrom stats median qgamma quantile rnorm sd
