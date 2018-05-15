@@ -300,8 +300,10 @@
 #'
 #' ## estimate the reproduction number (method "non_parametric_si")
 #' estimate_R(Flu2009$incidence, method="non_parametric_si",
-#'           config=list(t_start=2:26, t_end=8:32,
-#'           si_distr=Flu2009$si_distr, plot=TRUE))
+#'           config=list(t_start = seq(2, 26), 
+#'                    t_end = seq(8, 32),
+#'                    si_distr = Flu2009$si_distr, 
+#'                    plot = TRUE))
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the reproduction number over the 7-day window 
 #' # finishing on that day.
@@ -317,23 +319,29 @@
 #' incid <- incidence(data, groups = location)
 #' # Estimate R with assumptions on serial interval
 #' estimate_R(incid, method = "parametric_si",
-#'           config=list(t_start = 2:21, t_end = 8:27,
-#'           mean_si = 2.6, std_si = 1.5, plot = TRUE))
+#'           config=list(t_start = seq(2, 21), 
+#'                         t_end = seq(8, 27),
+#'                         mean_si = 2.6, std_si = 1.5, plot = TRUE))
 #'
 #' ## estimate the reproduction number (method "parametric_si")
 #' estimate_R(Flu2009$incidence, method="parametric_si",
-#'           config=list(t_start=2:26, t_end=8:32,
-#'           mean_si=2.6, std_si=1.5, plot=TRUE))
+#'           config=list(t_start = seq(2, 26), 
+#'                        t_end = seq(8, 32),
+#'                        mean_si = 2.6, std_si = 1.5, plot=TRUE))
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the reproduction number over the 7-day window 
 #' # finishing on that day.
 #'
 #' ## estimate the reproduction number (method "uncertain_si")
 #' estimate_R(Flu2009$incidence, method="uncertain_si",
-#'           config=list(t_start=2:26, t_end=8:32,
-#'           mean_si=2.6, std_mean_si=1, min_mean_si=1, max_mean_si=4.2,
-#'           std_si=1.5, std_std_si=0.5, min_std_si=0.5, max_std_si=2.5,
-#'           n1=100, n2=100, plot=TRUE))
+#'           config=list(t_start = seq(2, 26), 
+#'                        t_end = seq(8, 32),
+#'                        mean_si = 2.6, std_mean_si = 1, 
+#'                        min_mean_si = 1, max_mean_si = 4.2,
+#'                        std_si = 1.5, std_std_si = 0.5, 
+#'                        min_std_si = 0.5, max_std_si = 2.5, 
+#'                        n1 = 100, n2 = 100, 
+#'                        plot = TRUE))
 #' # the bottom left plot produced shows, at each each day,
 #' # the estimate of the reproduction number over the 7-day window 
 #' # finishing on that day.
@@ -352,24 +360,28 @@
 #' R_si_from_data <- estimate_R(MockRotavirus$incidence,
 #'                             method="si_from_data",
 #'                             si_data=MockRotavirus$si_data,
-#'                             config=list(t_start=2:47, t_end=8:53,
+#'                             config=list(t_start = seq(2, 47), 
+#'                                         t_end = seq(8, 53),
 #'                                         si_parametric_distr = "G",
 #'                                         mcmc_control = list(burnin = 1000,
-#'                                         thin=10, seed = MCMC_seed),
+#'                                         thin = 10, seed = MCMC_seed),
 #'                                         n1 = 500, n2 = 50,
 #'                                         seed = overall_seed,
-#'                                         plot=TRUE))
+#'                                         plot = TRUE))
 #' ## compare with version with no uncertainty
 #' R_Parametric <- estimate_R(MockRotavirus$incidence,
-#'                           method="parametric_si",
-#'                           config=list(t_start=2:47, t_end=8:53,
+#'                           method = "parametric_si",
+#'                           config = list(t_start = seq(2, 47), 
+#'                              t_end = seq(8, 53),
 #'                              mean_si = mean(R_si_from_data$SI.Moments$Mean),
 #'                              std_si = mean(R_si_from_data$SI.Moments$Std),
-#'                              plot=TRUE))
+#'                              plot = TRUE))
 #' ## generate plots
-#' p_uncertainty <- plots(R_si_from_data, "R", options_R=list(ylim=c(0, 1.5)))
-#' p_no_uncertainty <- plots(R_Parametric, "R", options_R=list(ylim=c(0, 1.5)))
-#' gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
+#' p_uncertainty <- plots(R_si_from_data, "R", 
+#'      options_R = list(ylim = c(0, 1.5)))
+#' p_no_uncertainty <- plots(R_Parametric, "R", 
+#'      options_R = list(ylim = c(0, 1.5)))
+#' gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty, ncol=2)
 #' # the left hand side graph is with uncertainty in the SI distribution, the 
 #' # right hand side without.
 #' # The credible intervals are wider when accounting for uncertainty in the SI 
@@ -387,10 +399,11 @@
 #' si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
 #' R_si_from_sample <- estimate_R(MockRotavirus$incidence,
 #'                  method = "si_from_sample", si_sample = si_sample,
-#'                  config = list(t_start = 2:47, t_end = 8:53,
-#'                  n2 = 50,
-#'                  seed = overall_seed,
-#'                  plot = TRUE))
+#'                  config = list(t_start = seq(2, 47), 
+#'                                t_end = seq(8, 53),
+#'                                n2 = 50, 
+#'                                seed = overall_seed,
+#'                                plot = TRUE))
 #'
 #' # check that R_si_from_sample is the same as R_si_from_data
 #' # since they were generated using the same MCMC algorithm to generate the SI 
@@ -502,8 +515,8 @@ estimate_R_func <- function(incid,
 
   calc_incidence_per_time_step <- function(incid, t_start, t_end) {
     nb_time_periods <- length(t_start)
-    incidence_per_time_step <- sapply(1:nb_time_periods, function(i) 
-      sum(incid[t_start[i]:t_end[i], c("local", "imported")]))
+    incidence_per_time_step <- vnapply(seq_len(nb_time_periods), function(i) 
+      sum(incid[seq(t_start[i], t_end[i]), c("local", "imported")]))
     return(incidence_per_time_step)
   }
 
@@ -516,21 +529,21 @@ estimate_R_func <- function(incid,
                                         t_start, t_end) {
     nb_time_periods <- length(t_start)
     lambda <- overall_infectivity(incid, si_distr)
-    final_mean_si <- sum(si_distr * (0:(length(si_distr) -
+    final_mean_si <- sum(si_distr * (seq(0, length(si_distr) -
       1)))
     a_posterior <- vector()
     b_posterior <- vector()
-    a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
+    a_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
         final_mean_si) {
-        a_prior + sum(incid[t_start[t]:t_end[t], "local"]) 
+        a_prior + sum(incid[seq(t_start[t], t_end[t]), "local"]) 
       ## only counting local cases on the "numerator"
       }
       else {
         NA
       })
-    b_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
+    b_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
         final_mean_si) {
-        1 / (1 / b_prior + sum(lambda[t_start[t]:t_end[t]]))
+        1 / (1 / b_prior + sum(lambda[seq(t_start[t], t_end[t])]))
       }
       else {
         NA
@@ -549,30 +562,30 @@ estimate_R_func <- function(incid,
     nb_time_periods <- length(t_start)
 
     if (is.null(si_distr)) {
-      si_distr <- discr_si(0:(T - 1), mean_si, std_si)
+      si_distr <- discr_si(seq(0, T - 1), mean_si, std_si)
     }
 
-    final_mean_si <- sum(si_distr * (0:(length(si_distr) -
+    final_mean_si <- sum(si_distr * (seq(0, length(si_distr) -
       1)))
     lambda <- overall_infectivity(incid, si_distr)
     a_posterior <- vector()
     b_posterior <- vector()
-    a_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
+    a_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
         final_mean_si) {
-        a_prior + sum(incid[t_start[t]:t_end[t], "local"]) 
+        a_prior + sum(incid[seq(t_start[t], t_end[t]), "local"]) 
       ## only counting local cases on the "numerator"
       }
       else {
         NA
       })
-    b_posterior <- sapply(1:(nb_time_periods), function(t) if (t_end[t] >
+    b_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
         final_mean_si) {
-        1 / (1 / b_prior + sum(lambda[t_start[t]:t_end[t]], na.rm = TRUE))
+        1 / (1 / b_prior + sum(lambda[seq(t_start[t], t_end[t])], na.rm = TRUE))
       }
       else {
         NA
       })
-    sample_r_posterior <- sapply(1:(nb_time_periods), function(t) 
+    sample_r_posterior <- vapply(seq_len(nb_time_periods), function(t) 
       if (!is.na(a_posterior[t])) {
         rgamma(sample_size,
           shape = unlist(a_posterior[t]),
@@ -581,7 +594,7 @@ estimate_R_func <- function(incid,
       }
       else {
         rep(NA, sample_size)
-      })
+      }, numeric(sample_size))
     if (sample_size == 1L) {
       sample_r_posterior <- matrix(sample_r_posterior, nrow = 1)
     }
@@ -636,7 +649,7 @@ estimate_R_func <- function(incid,
     if (parametric_si == "Y") {
       mean_si_sample <- rep(-1, config$n1)
       std_si_sample <- rep(-1, config$n1)
-      for (k in 1:config$n1) {
+      for (k in seq_len(config$n1)) {
         while (mean_si_sample[k] < config$min_mean_si || mean_si_sample[k] >
           config$max_mean_si) {
           mean_si_sample[k] <- rnorm(1,
@@ -650,18 +663,18 @@ estimate_R_func <- function(incid,
                                     sd = config$std_std_si)
         }
       }
-      temp <- lapply(1:config$n1, function(k) sample_from_posterior(config$n2,
+      temp <- lapply(seq_len(config$n1), function(k) sample_from_posterior(config$n2,
           incid, mean_si_sample[k], std_si_sample[k],
           si_distr = NULL, a_prior,
           b_prior, config$t_start, config$t_end
         ))
       config$si_distr <- cbind(
-        t(sapply(1:config$n1, function(k) (temp[[k]])[[2]])),
+        t(vapply(seq_len(config$n1), function(k) (temp[[k]])[[2]], numeric(T))),
         rep(0, config$n1)
       )
       r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
-      for (k in 1:config$n1) {
-        r_sample[((k - 1) * config$n2 + 1):(k * config$n2), which(config$t_end >
+      for (k in seq_len(config$n1)) {
+        r_sample[seq((k - 1) * config$n2 + 1, k * config$n2), which(config$t_end >
           mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
           mean_si_sample[k])]
       }
@@ -697,24 +710,24 @@ estimate_R_func <- function(incid,
       config$n1 <- dim(si_sample)[2]
       mean_si_sample <- rep(-1, config$n1)
       std_si_sample <- rep(-1, config$n1)
-      for (k in 1:config$n1) {
-        mean_si_sample[k] <- sum((1:dim(si_sample)[1] - 1) * si_sample[, k])
+      for (k in seq_len(config$n1)) {
+        mean_si_sample[k] <- sum((seq_len(dim(si_sample)[1]) - 1) * si_sample[, k])
         std_si_sample[k] <- sqrt(sum(si_sample[, k] * 
-                                       ((1:dim(si_sample)[1] - 1) - 
+                                       ((seq_len(dim(si_sample)[1]) - 1) - 
                                           mean_si_sample[k])^2))
       }
-      temp <- lapply(1:config$n1, function(k) sample_from_posterior(config$n2,
+      temp <- lapply(seq_len(config$n1), function(k) sample_from_posterior(config$n2,
           incid,
           mean_si = NULL, std_si = NULL, si_sample[, k], a_prior,
           b_prior, config$t_start, config$t_end
         ))
       config$si_distr <- cbind(
-        t(sapply(1:config$n1, function(k) (temp[[k]])[[2]])),
+        t(vnapply(seq_len(config$n1), function(k) (temp[[k]])[[2]])),
         rep(0, config$n1)
       )
       r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
-      for (k in 1:config$n1) {
-        r_sample[((k - 1) * config$n2 + 1):(k * config$n2), which(config$t_end >
+      for (k in seq_len(config$n1)) {
+        r_sample[seq((k - 1) * config$n2 + 1,k * config$n2), which(config$t_end >
           mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
           mean_si_sample[k])]
       }
@@ -749,14 +762,14 @@ estimate_R_func <- function(incid,
   } else {
     # CertainSI
     if (parametric_si == "Y") {
-      config$si_distr <- discr_si(0:(T - 1), config$mean_si, config$std_si)
+      config$si_distr <- discr_si(seq(0,T - 1), config$mean_si, config$std_si)
     }
     if (length(config$si_distr) < T + 1) {
-      config$si_distr[(length(config$si_distr) + 1):(T + 1)] <- 0
+      config$si_distr[seq(length(config$si_distr) + 1,T + 1)] <- 0
     }
-    final_mean_si <- sum(config$si_distr * (0:(length(config$si_distr) -
+    final_mean_si <- sum(config$si_distr * (seq(0,length(config$si_distr) -
       1)))
-    Finalstd_si <- sqrt(sum(config$si_distr * (0:(length(config$si_distr) -
+    Finalstd_si <- sqrt(sum(config$si_distr * (seq(0,length(config$si_distr) -
       1))^2) - final_mean_si^2)
     post <- posterior_from_si_distr(
       incid, config$si_distr, a_prior, b_prior,
@@ -812,9 +825,9 @@ estimate_R_func <- function(incid,
   results$method <- method
   results$si_distr <- config$si_distr
   if (is.matrix(results$si_distr)) {
-    colnames(results$si_distr) <- paste0("t", 0:(ncol(results$si_distr) - 1))
+    colnames(results$si_distr) <- paste0("t", seq(0,ncol(results$si_distr) - 1))
   } else {
-    names(results$si_distr) <- paste0("t", 0:(length(results$si_distr) - 1))
+    names(results$si_distr) <- paste0("t", seq(0,length(results$si_distr) - 1))
   }
   if (si_uncertainty == "Y") {
     results$SI.Moments <- as.data.frame(cbind(
@@ -833,7 +846,7 @@ estimate_R_func <- function(incid,
   if (!is.null(incid$dates)) {
     results$dates <- check_dates(incid)
   } else {
-    results$dates <- 1:T
+    results$dates <- seq_len(T)
   }
   results$I <- rowSums(incid[, c("local", "imported")])
   results$I_local <- incid$local

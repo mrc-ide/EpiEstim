@@ -48,9 +48,9 @@ overall_infectivity <- function(incid, si_distr) {
   check_si_distr(si_distr, "warning")
   lambda <- vector()
   lambda[1] <- NA
-  for (t in 2:T)
-    lambda[t] <- sum(si_distr[1:t] * 
-                       rowSums(incid[t:1, c("local", "imported")]), 
+  for (t in seq(2, T))
+    lambda[t] <- sum(si_distr[seq_len(t)] * 
+                       rowSums(incid[seq(t, 1), c("local", "imported")]), 
                      na.rm = TRUE)
   return(lambda)
 }

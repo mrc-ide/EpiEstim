@@ -98,19 +98,19 @@ data("Flu2009")
 ## estimate the case reproduction number (method "non_parametric_si")
 wallinga_teunis(Flu2009$incidence,
    method="non_parametric_si",
-   config = list(t_start=2:26, t_end=8:32,
+   config = list(t_start = seq(2, 26), t_end = seq(8, 32),
                  si_distr = Flu2009$si_distr,
-                 n_sim=100,
-                 plot=TRUE))
+                 n_sim = 100,
+                 plot = TRUE))
 # the second plot produced shows, at each each day,
 # the estimate of the case reproduction number over the 7-day window 
 # finishing on that day.
 
 ## estimate the case reproduction number (method "parametric_si")
 wallinga_teunis(Flu2009$incidence, method="parametric_si",
-   config = list(t_start=2:26, t_end=8:32,
-                 mean_si=2.6, std_si=1.5,
-                 n_sim=100,
+   config = list(t_start = seq(2, 26), t_end = seq(8, 32),
+                 mean_si = 2.6, std_si = 1.5,
+                 n_sim = 100,
                  plot=TRUE))
 # the second plot produced shows, at each each day,
 # the estimate of the case reproduction number over the 7-day window 
