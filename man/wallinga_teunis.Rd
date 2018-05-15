@@ -9,11 +9,15 @@ wallinga_teunis(incid, method = c("non_parametric_si", "parametric_si"),
   config)
 }
 \arguments{
-\item{incid}{One of the following \itemize{ \item{Vector (or a dataframe with
-a column named 'incid') of non-negative integers containing an incidence
-time series. If the dataframe contains a column \code{incid$dates}, this is
-used for plotting. \code{incid$dates} must contains only dates in a row.}
-\item{An object of class \code{\link[incidence]{incidence}}} }}
+\item{incid}{One of the following
+\itemize{
+\item Vector (or a dataframe with
+  a column named 'incid') of non-negative integers containing an incidence
+  time series. If the dataframe contains a column \code{incid$dates}, this is
+  used for plotting. \code{incid$dates} must contains only dates in a row.
+
+  \item An object of class \code{\link[incidence]{incidence}}
+}}
 
 \item{method}{the method used to estimate R, one of "non_parametric_si",
 "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
