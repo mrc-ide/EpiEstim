@@ -3,7 +3,7 @@
 \name{init_mcmc_params}
 \alias{init_mcmc_params}
 \title{init_mcmc_params Finds clever starting points for the MCMC to be used to estimate the serial interval, 
-e.g. when using option \code{si_from_data} in \code{estimate_r}}
+e.g. when using option \code{si_from_data} in \code{estimate_R}}
 \usage{
 init_mcmc_params(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
 }
@@ -67,7 +67,7 @@ converg_diag_naive
 
 }
 \seealso{
-\code{\link{estimate_r}}
+\code{\link{estimate_R}}
 }
 \author{
 Anne Cori

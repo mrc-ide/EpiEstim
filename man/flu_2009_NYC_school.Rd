@@ -8,7 +8,7 @@
 \describe{
   \item{incidence}{a dataframe with 14 lines containing dates in first column, and daily incidence in second column ,}
   \item{si_data}{a dataframe containing data on the generation time for 16 pairs of infector/infected individuals 
-  (see references and see argument \code{si_data} of function \code{estimate_r} for details on columns) }
+  (see references and see argument \code{si_data} of function \code{estimate_R} for details on columns) }
 }}
 \source{
 Lessler J. et al. (2009) Outbreak of 2009 pandemic influenza A (H1N1) at a New York City school. New Eng J Med 361: 2628-2636.
@@ -30,7 +30,7 @@ in a New York city school (see references).
 data("flu_2009_NYC_school")
 
 ## estimate the reproduction number (method "si_from_data")
-estimate_r(flu_2009_NYC_school$incidence, method="si_from_data",
+estimate_R(flu_2009_NYC_school$incidence, method="si_from_data",
          si_data = flu_2009_NYC_school$si_data,
           config=list(t_start=2:8, t_end=8:14,
                       si_parametric_distr = "G", 

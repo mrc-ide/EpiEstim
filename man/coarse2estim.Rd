@@ -24,7 +24,7 @@ A list with two elements:
 }
 }
 \description{
-\code{coarse2estim} Transforms outputs of \code{coarseDataTools::dic.fit.mcmc} to right format for input into \code{estimate_r}
+\code{coarse2estim} Transforms outputs of \code{coarseDataTools::dic.fit.mcmc} to right format for input into \code{estimate_R}
 }
 \examples{
 \dontrun{
@@ -42,12 +42,12 @@ SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
                              burnin = 1000, 
                              n.samples = 5000)
                              
-## use coarse2estim to turn this in the right format for estimate_r                             
+## use coarse2estim to turn this in the right format for estimate_R                             
 si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
 
-## use estimate_r to estimate the reproduction number 
+## use estimate_R to estimate the reproduction number 
 ## based on these estimates of the serial interval
-R_si_from_sample <- estimate_r(MockRotavirus$incidence, 
+R_si_from_sample <- estimate_R(MockRotavirus$incidence, 
                             method="si_from_sample", 
                             si_sample=si_sample,
                             config = list(t_start=2:47, t_end=8:53, 
@@ -57,7 +57,7 @@ R_si_from_sample <- estimate_r(MockRotavirus$incidence,
 
 }
 \seealso{
-\code{\link{estimate_r}}
+\code{\link{estimate_R}}
 }
 \author{
 The Hackout3 Parameter Estimation team.
