@@ -14,14 +14,14 @@ process_si_data <- function(si_data) {
   # entries with incorrect column names
   if (!all(c("EL", "ER", "SL", "SR") %in% names(si_data))) {
     names <- c("EL", "ER", "SL", "SR", "type")
-    names(si_data) <- names[1:num_cols]
+    names(si_data) <- names[seq_len(num_cols)]
     warning("column names for si_data were not as expected; they were 
             automatically interpreted as 'EL', 'ER', 'SL', 'SR', and 'type' 
             (the last one only if si_data had five columns). ")
   }
 
   # non integer entries in date columns
-  if (!all(sapply(1:4, function(e) class(si_data[, e]) == "integer"))) {
+  if (!all(sapply(seq_len(4), function(e) class(si_data[, e]) == "integer"))) {
     stop("si_data has entries for which EL, ER, SL or SR are non integers.")
   }
 

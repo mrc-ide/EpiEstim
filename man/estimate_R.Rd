@@ -302,8 +302,10 @@ data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
 estimate_R(Flu2009$incidence, method="non_parametric_si",
-          config=list(t_start=2:26, t_end=8:32,
-          si_distr=Flu2009$si_distr, plot=TRUE))
+          config=list(t_start = seq(2, 26), 
+                   t_end = seq(8, 32),
+                   si_distr = Flu2009$si_distr, 
+                   plot = TRUE))
 # the second plot produced shows, at each each day,
 # the estimate of the reproduction number over the 7-day window 
 # finishing on that day.
@@ -319,23 +321,29 @@ location[1] <- "imported" # forcing the first case to be imported
 incid <- incidence(data, groups = location)
 # Estimate R with assumptions on serial interval
 estimate_R(incid, method = "parametric_si",
-          config=list(t_start = 2:21, t_end = 8:27,
-          mean_si = 2.6, std_si = 1.5, plot = TRUE))
+          config=list(t_start = seq(2, 21), 
+                        t_end = seq(8, 27),
+                        mean_si = 2.6, std_si = 1.5, plot = TRUE))
 
 ## estimate the reproduction number (method "parametric_si")
 estimate_R(Flu2009$incidence, method="parametric_si",
-          config=list(t_start=2:26, t_end=8:32,
-          mean_si=2.6, std_si=1.5, plot=TRUE))
+          config=list(t_start = seq(2, 26), 
+                       t_end = seq(8, 32),
+                       mean_si = 2.6, std_si = 1.5, plot=TRUE))
 # the second plot produced shows, at each each day,
 # the estimate of the reproduction number over the 7-day window 
 # finishing on that day.
 
 ## estimate the reproduction number (method "uncertain_si")
 estimate_R(Flu2009$incidence, method="uncertain_si",
-          config=list(t_start=2:26, t_end=8:32,
-          mean_si=2.6, std_mean_si=1, min_mean_si=1, max_mean_si=4.2,
-          std_si=1.5, std_std_si=0.5, min_std_si=0.5, max_std_si=2.5,
-          n1=100, n2=100, plot=TRUE))
+          config=list(t_start = seq(2, 26), 
+                       t_end = seq(8, 32),
+                       mean_si = 2.6, std_mean_si = 1, 
+                       min_mean_si = 1, max_mean_si = 4.2,
+                       std_si = 1.5, std_std_si = 0.5, 
+                       min_std_si = 0.5, max_std_si = 2.5, 
+                       n1 = 100, n2 = 100, 
+                       plot = TRUE))
 # the bottom left plot produced shows, at each each day,
 # the estimate of the reproduction number over the 7-day window 
 # finishing on that day.
@@ -354,24 +362,28 @@ overall_seed <- 2
 R_si_from_data <- estimate_R(MockRotavirus$incidence,
                             method="si_from_data",
                             si_data=MockRotavirus$si_data,
-                            config=list(t_start=2:47, t_end=8:53,
+                            config=list(t_start = seq(2, 47), 
+                                        t_end = seq(8, 53),
                                         si_parametric_distr = "G",
                                         mcmc_control = list(burnin = 1000,
-                                        thin=10, seed = MCMC_seed),
+                                        thin = 10, seed = MCMC_seed),
                                         n1 = 500, n2 = 50,
                                         seed = overall_seed,
-                                        plot=TRUE))
+                                        plot = TRUE))
 ## compare with version with no uncertainty
 R_Parametric <- estimate_R(MockRotavirus$incidence,
-                          method="parametric_si",
-                          config=list(t_start=2:47, t_end=8:53,
+                          method = "parametric_si",
+                          config = list(t_start = seq(2, 47), 
+                             t_end = seq(8, 53),
                              mean_si = mean(R_si_from_data$SI.Moments$Mean),
                              std_si = mean(R_si_from_data$SI.Moments$Std),
-                             plot=TRUE))
+                             plot = TRUE))
 ## generate plots
-p_uncertainty <- plots(R_si_from_data, "R", options_R=list(ylim=c(0, 1.5)))
-p_no_uncertainty <- plots(R_Parametric, "R", options_R=list(ylim=c(0, 1.5)))
-gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
+p_uncertainty <- plots(R_si_from_data, "R", 
+     options_R = list(ylim = c(0, 1.5)))
+p_no_uncertainty <- plots(R_Parametric, "R", 
+     options_R = list(ylim = c(0, 1.5)))
+gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty, ncol=2)
 # the left hand side graph is with uncertainty in the SI distribution, the 
 # right hand side without.
 # The credible intervals are wider when accounting for uncertainty in the SI 
@@ -389,10 +401,11 @@ SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
 si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
 R_si_from_sample <- estimate_R(MockRotavirus$incidence,
                  method = "si_from_sample", si_sample = si_sample,
-                 config = list(t_start = 2:47, t_end = 8:53,
-                 n2 = 50,
-                 seed = overall_seed,
-                 plot = TRUE))
+                 config = list(t_start = seq(2, 47), 
+                               t_end = seq(8, 53),
+                               n2 = 50, 
+                               seed = overall_seed,
+                               plot = TRUE))
 
 # check that R_si_from_sample is the same as R_si_from_data
 # since they were generated using the same MCMC algorithm to generate the SI 

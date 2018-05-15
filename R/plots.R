@@ -73,8 +73,8 @@
 #' ## estimate the instantaneous reproduction number 
 #' ## (method "non_parametric_si")
 #' R_i <- estimate_R(Flu2009$incidence, method="non_parametric_si",
-#'                  config=list(t_start=2:26, t_end=8:32, 
-#'                              si_distr=Flu2009$si_distr, plot=FALSE)
+#'                  config=list(t_start = seq(2, 26), t_end = seq(8, 32), 
+#'                              si_distr = Flu2009$si_distr, plot = FALSE)
 #'                 )
 #'
 #' ## visualise results
@@ -83,8 +83,8 @@
 #' ## estimate the instantaneous reproduction number 
 #' ## (method "non_parametric_si")
 #' R_c <- wallinga_teunis(Flu2009$incidence, method="non_parametric_si",
-#'           config = list(t_start=2:26, t_end=8:32, 
-#'           si_distr=Flu2009$si_distr, plot=FALSE))
+#'           config = list(t_start = seq(2, 26), t_end = seq(8, 32), 
+#'           si_distr = Flu2009$si_distr, plot = FALSE))
 #'
 #' ## produce plot of the incidence 
 #'        ## (with, on top of total incidence, the incidence of imported cases), 
@@ -146,9 +146,9 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
       warnings("color vector too short, recycling colors.")
       options_R$col <- rep(options_R$col, 
                            ceiling(length(x_list) / length(options_R$col)))
-      options_R$col <- options_R$col[1:length(x_list)]
+      options_R$col <- options_R$col[seq_len(length(x_list))]
     } else {
-      options_R$col <- options_R$col[1:length(x_list)]
+      options_R$col <- options_R$col[seq_len(length(x_list))]
     }
   }
 
@@ -164,7 +164,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
   if (!is.null(x$dates)) {
     dates <- x$dates
   } else {
-    dates <- 1:T
+    dates <- seq_len(T)
   }
 
   ########################################################################
@@ -216,7 +216,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
   }
   if (what == "R" | what == "all") {
     time.points <- apply(x$R[, c("t_start", "t_end") ], 1, function(x) 
-      x[1]:(x[2] - 1))
+      seq(x[1], x[2] - 1))
     if (length(time.points) == length(unique(matrix(time.points, ncol = 1)))) {
       if (!multiple_input) {
         if (is.null(options_R$ylim)) {
@@ -232,7 +232,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
           lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
         ), id = c("meanR", "lower", "upper"))
-        df$group <- as.factor(rep(1:length(t_start), 
+        df$group <- as.factor(rep(seq_len(length(t_start)), 
                                   dim(df)[1] / length(t_start)))
 
         p2 <- ggplot(df, aes(x = value, y = as.numeric(meanR), 
@@ -257,14 +257,14 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
         id_tmp <- c("meanR", "lower", "upper")
         id <- id_tmp
 
-        for (i in 2:length(x_list))
+        for (i in seq(2, length(x_list)))
         {
           x2 <- x_list[[i]]
           t_start2 <- x2$R$t_start
           if (!is.null(x2$dates)) {
             dates2 <- x2$dates
           } else {
-            dates2 <- 1:T
+            dates2 <- seq_len(T)
           }
           mean_posterior2 <- x2$R[, "Mean(R)"]
           quantile_0.025_posterior2 <- x2$R[, "Quantile.0.025(R)"]
@@ -290,7 +290,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
         }
 
         df <- melt(df, id = id)
-        df$group <- as.factor(rep(1:length(t_start), 
+        df$group <- as.factor(rep(seq_len(length(t_start)), 
                                   dim(df)[1] / length(t_start)))
 
         p2 <- ggplot(df, aes(x = value, y = as.numeric(meanR), 
@@ -298,7 +298,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
           geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
           geom_line(aes(y = meanR, colour = "Mean"))
 
-        for (i in 2:length(x_list))
+        for (i in seq(2, length(x_list)))
         {
           p2 <- p2 + 
             geom_ribbon(aes_string(ymin = paste0("lower", i),
@@ -353,14 +353,14 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
         )
         df <- df_tmp
 
-        for (i in 2:length(x_list))
+        for (i in seq(2, length(x_list)))
         {
           x2 <- x_list[[i]]
           t_start2 <- x2$R$t_start
           if (!is.null(x2$dates)) {
             dates2 <- x2$dates
           } else {
-            dates2 <- 1:T
+            dates2 <- seq_len(T)
           }
           mean_posterior2 <- x2$R[, "Mean(R)"]
           quantile_0.025_posterior2 <- x2$R[, "Quantile.0.025(R)"]
@@ -387,7 +387,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
           geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
           geom_line(aes(y = meanR, colour = "Mean"))
 
-        for (i in 2:length(x_list))
+        for (i in seq(2, length(x_list)))
         {
           p2 <- p2 +
             geom_ribbon(aes_string(ymin = paste0("lower", i), 
@@ -415,10 +415,10 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
       tmp <- cumsum(apply(si_distr, 2, max) >= options_SI$prob_min)
       stop_at <- min(which(tmp == tmp[length(tmp)]))
 
-      si_distr_for_plot <- si_distr[, 1:stop_at]
+      si_distr_for_plot <- si_distr[, seq_len(stop_at)]
 
       dataL <- melt(t(si_distr_for_plot))
-      dataL$Var1 <- 0:(ncol(si_distr_for_plot) - 1)
+      dataL$Var1 <- seq(0, (ncol(si_distr_for_plot) - 1))
       p3 <- ggplot(dataL, aes_string(x = "Var1", y = "value", 
                                      group = "Var2")) +
         geom_line(col = options_SI$col, alpha = options_SI$transp) +
@@ -437,9 +437,9 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
       tmp <- cumsum(si_distr >= options_SI$prob_min)
       stop_at <- min(which(tmp == tmp[length(tmp)]))
 
-      si_distr_for_plot <- si_distr[1:stop_at]
+      si_distr_for_plot <- si_distr[seq_len(stop_at)]
 
-      dataL <- data.frame(Times = 0:(length(si_distr_for_plot) - 1), 
+      dataL <- data.frame(Times = seq(0, length(si_distr_for_plot) - 1), 
                           SIDistr = si_distr_for_plot)
       p3 <- ggplot(dataL, aes_string(x = "Times", y = "SIDistr")) +
         geom_line(col = options_SI$col, alpha = options_SI$transp) +
