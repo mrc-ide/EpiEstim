@@ -354,15 +354,6 @@ wallinga_teunis <- function(incid,
   results$I_local[1] <- 0
   results$I_imported <- c(incid[1], rep(0, length(incid) - 1))
 
-  if (!is.null(config$plot)) {
-    if (config$plot) {
-      if (is.null(config$legend)) {
-        config$legend <- FALSE
-      }
-      plots(results, what = "all", legend = config$legend)
-    }
-  }
-
   class(results) <- "estimate_R"
   return(results)
 }
