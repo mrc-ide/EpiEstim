@@ -39,12 +39,7 @@ of probabilities giving the discrete distribution of the serial interval,
 starting with \code{si_distr[1]} (probability that the serial interval is
 zero), which should be zero.} \item{n_sim: A positive integer giving the
 number of simulated epidemic trees used for computation of the confidence
-intervals of the case reproduction number (see details).} \item{plot:
-Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see
-value).} \item{legend: A boolean (TRUE by default) governing the presence /
-absence of legends on the plots This specifies the position of the legend
-in the plot. Alternatively, \code{locator(1)} can be used ; the user will
-then need to click where the legend needs to be written.} }}
+intervals of the case reproduction number (see details).} }}
 }
 \value{
 { a list with components: \itemize{ \item{R}{: a dataframe
@@ -92,25 +87,25 @@ derived automatically using \code{\link{discr_si}}.
 data("Flu2009")
 
 ## estimate the case reproduction number (method "non_parametric_si")
-wallinga_teunis(Flu2009$incidence,
+res <- wallinga_teunis(Flu2009$incidence,
    method="non_parametric_si",
    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
                  si_distr = Flu2009$si_distr,
-                 n_sim = 100,
-                 plot = TRUE))
-# the second plot produced shows, at each each day,
-# the estimate of the case reproduction number over the 7-day window
-# finishing on that day.
+                 n_sim = 100))
+plot(res)
+## the second plot produced shows, at each each day,
+## the estimate of the case reproduction number over the 7-day window
+## finishing on that day.
 
 ## estimate the case reproduction number (method "parametric_si")
-wallinga_teunis(Flu2009$incidence, method="parametric_si",
+res <- wallinga_teunis(Flu2009$incidence, method="parametric_si",
    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
                  mean_si = 2.6, std_si = 1.5,
-                 n_sim = 100,
-                 plot=TRUE))
-# the second plot produced shows, at each each day,
-# the estimate of the case reproduction number over the 7-day window
-# finishing on that day.
+                 n_sim = 100))
+plot(res)
+## the second plot produced shows, at each each day,
+## the estimate of the case reproduction number over the 7-day window
+## finishing on that day.
 }
 \references{
 { Cori, A. et al. A new framework and software to estimate

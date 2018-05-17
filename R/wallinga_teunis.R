@@ -38,12 +38,7 @@
 #'   starting with \code{si_distr[1]} (probability that the serial interval is
 #'   zero), which should be zero.} \item{n_sim: A positive integer giving the
 #'   number of simulated epidemic trees used for computation of the confidence
-#'   intervals of the case reproduction number (see details).} \item{plot:
-#'   Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see
-#'   value).} \item{legend: A boolean (TRUE by default) governing the presence /
-#'   absence of legends on the plots This specifies the position of the legend
-#'   in the plot. Alternatively, \code{locator(1)} can be used ; the user will
-#'   then need to click where the legend needs to be written.} }
+#'   intervals of the case reproduction number (see details).} }
 #' @return { a list with components: \itemize{ \item{R}{: a dataframe
 #'   containing: the times of start and end of each time window considered ; the
 #'   estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction
@@ -96,25 +91,25 @@
 #' data("Flu2009")
 #'
 #' ## estimate the case reproduction number (method "non_parametric_si")
-#' wallinga_teunis(Flu2009$incidence,
+#' res <- wallinga_teunis(Flu2009$incidence,
 #'    method="non_parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  si_distr = Flu2009$si_distr,
-#'                  n_sim = 100,
-#'                  plot = TRUE))
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the case reproduction number over the 7-day window
-#' # finishing on that day.
+#'                  n_sim = 100))
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the case reproduction number over the 7-day window
+#' ## finishing on that day.
 #'
 #' ## estimate the case reproduction number (method "parametric_si")
-#' wallinga_teunis(Flu2009$incidence, method="parametric_si",
+#' res <- wallinga_teunis(Flu2009$incidence, method="parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  mean_si = 2.6, std_si = 1.5,
-#'                  n_sim = 100,
-#'                  plot=TRUE))
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the case reproduction number over the 7-day window
-#' # finishing on that day.
+#'                  n_sim = 100))
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the case reproduction number over the 7-day window
+#' ## finishing on that day.
 wallinga_teunis <- function(incid,
                             method = c("non_parametric_si", "parametric_si"),
                             config) {
@@ -207,10 +202,6 @@ wallinga_teunis <- function(incid,
     if (config$std_si < 0) {
       stop("method parametric_si requires a >0 value for config$std_si.")
     }
-  }
-
-  if (config$plot != TRUE && config$plot != FALSE) {
-    stop("config$plot must be TRUE or FALSE.")
   }
 
   if (!is.numeric(config$n_sim)) {
