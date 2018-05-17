@@ -1,20 +1,26 @@
-################################################################################
-#wallinga_teunis function to estimate Rc the case reproduction number # 
-################################################################################
+##########################################################################
+## wallinga_teunis function to estimate Rc the case reproduction number ##
+##########################################################################
 
 #' Estimation of the case reproduction number using the Wallinga and Teunis
 #' method
-#' 
+#'
 #' \code{wallinga_teunis} estimates the case reproduction number of an epidemic,
 #' given the incidence time series and the serial interval distribution.
-#' 
-#' @param incid One of the following \itemize{ \item{Vector (or a dataframe with
+#'
+#' @param incid One of the following
+#' \itemize{
+#' \item Vector (or a dataframe with
 #'   a column named 'incid') of non-negative integers containing an incidence
 #'   time series. If the dataframe contains a column \code{incid$dates}, this is
-#'   used for plotting. \code{incid$dates} must contains only dates in a row.} 
-#'   \item{An object of class \code{\link[incidence]{incidence}}} }
+#'   used for plotting. \code{incid$dates} must contains only dates in a row.
+#'
+#'   \item An object of class \code{\link[incidence]{incidence}}
+#' }
+#'
 #' @param method the method used to estimate R, one of "non_parametric_si",
 #'   "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
+#'
 #' @param config a list with the following elements: \itemize{ \item{t_start:
 #'   Vector of positive integers giving the starting times of each window over
 #'   which the reproduction number will be estimated. These must be in ascending
@@ -32,17 +38,12 @@
 #'   starting with \code{si_distr[1]} (probability that the serial interval is
 #'   zero), which should be zero.} \item{n_sim: A positive integer giving the
 #'   number of simulated epidemic trees used for computation of the confidence
-#'   intervals of the case reproduction number (see details).} \item{plot:
-#'   Logical. If \code{TRUE} (default is \code{FALSE}), output is plotted (see
-#'   value).} \item{legend: A boolean (TRUE by default) governing the presence /
-#'   absence of legends on the plots This specifies the position of the legend
-#'   in the plot. Alternatively, \code{locator(1)} can be used ; the user will
-#'   then need to click where the legend needs to be written.} }
+#'   intervals of the case reproduction number (see details).} }
 #' @return { a list with components: \itemize{ \item{R}{: a dataframe
 #'   containing: the times of start and end of each time window considered ; the
 #'   estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction
 #'   number for each time window.} \item{si_distr}{: a vector containing the
-#'   discrete serial interval distribution used for estimation} 
+#'   discrete serial interval distribution used for estimation}
 #'   \item{SI.Moments}{: a vector containing the mean and std of the discrete
 #'   serial interval distribution(s) used for estimation} \item{I}{: the time
 #'   series of total incidence} \item{I_local}{: the time series of incidence of
@@ -50,35 +51,30 @@
 #'   the time series of incidence of imported cases (so that \code{I_local +
 #'   I_imported = I})} \item{dates}{: a vector of dates corresponding to the
 #'   incidence time series} } }
-#' @details{ Estimates of the case reproduction number for an epidemic over
+#'
+#' @details Estimates of the case reproduction number for an epidemic over
 #' predefined time windows can be obtained, for a given discrete distribution of
-#' the serial interval, as proposed by Wallinga and Teunis (AJE, 2004). 
+#' the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
 #' Confidence intervals are obtained by simulating a number (config$n_sim) of
 #' possible transmission trees.
-#' 
+#'
 #' The methods vary in the way the serial interval distribution is specified.
-#' 
+#'
 #' ----------------------- \code{method "non_parametric_si"}
 #' -----------------------
-#' 
+#'
 #' The discrete distribution of the serial interval is directly specified in the
 #' argument \code{config$si_distr}.
-#' 
-#' If \code{config$plot} is \code{TRUE}, 3 plots are produced. The first one
-#' shows the epidemic curve. The second one shows the posterior mean and 95\%
-#' credible interval of the reproduction number. The estimate for a time window
-#' is plotted at the end of the time window. The third plot shows the discrete
-#' distribution of the serial interval.
-#' 
+#'
+#'
 #' ----------------------- \code{method "parametric_si"} -----------------------
-#' 
+#'
 #' The mean and standard deviation of the continuous distribution of the serial
 #' interval are given in the arguments \code{config$mean_si} and
 #' \code{config$std_si}. The discrete distribution of the serial interval is
 #' derived automatically using \code{\link{discr_si}}.
-#' 
-#' If \code{config$plot} is \code{TRUE}, 3 plots are produced, which are
-#' identical to the ones for \code{method "non_parametric_si"} . }
+#'
+#'
 #' @seealso \code{\link{discr_si}}, \code{\link{estimate_R}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
 #' @references { Cori, A. et al. A new framework and software to estimate
@@ -93,27 +89,27 @@
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
 #' data("Flu2009")
-#' 
+#'
 #' ## estimate the case reproduction number (method "non_parametric_si")
-#' wallinga_teunis(Flu2009$incidence,
+#' res <- wallinga_teunis(Flu2009$incidence,
 #'    method="non_parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  si_distr = Flu2009$si_distr,
-#'                  n_sim = 100,
-#'                  plot = TRUE))
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the case reproduction number over the 7-day window 
-#' # finishing on that day.
-#' 
+#'                  n_sim = 100))
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the case reproduction number over the 7-day window
+#' ## finishing on that day.
+#'
 #' ## estimate the case reproduction number (method "parametric_si")
-#' wallinga_teunis(Flu2009$incidence, method="parametric_si",
+#' res <- wallinga_teunis(Flu2009$incidence, method="parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  mean_si = 2.6, std_si = 1.5,
-#'                  n_sim = 100,
-#'                  plot=TRUE))
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the case reproduction number over the 7-day window 
-#' # finishing on that day.
+#'                  n_sim = 100))
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the case reproduction number over the 7-day window
+#' ## finishing on that day.
 wallinga_teunis <- function(incid,
                             method = c("non_parametric_si", "parametric_si"),
                             config) {
@@ -130,13 +126,13 @@ wallinga_teunis <- function(incid,
     {
       if (length(which(Onset == t)) > 0) {
         if (length(possible_ances_time[[t]]) > 0) {
-          prob <- config$si_distr[t - possible_ances_time[[t]] + 1] * 
+          prob <- config$si_distr[t - possible_ances_time[[t]] + 1] *
             incid[possible_ances_time[[t]]]
           if (any(prob > 0)) {
             ot <- which(Onset == t)
-            res[ot] <- 
-              possible_ances_time[[t]][which(rmultinom(length(ot), 
-                                                       size = 1, prob = prob) 
+            res[ot] <-
+              possible_ances_time[[t]][which(rmultinom(length(ot),
+                                                       size = 1, prob = prob)
                                              == TRUE, arr.ind = TRUE)[, 1]]
           } else {
             res[ot] <- NA
@@ -165,7 +161,7 @@ wallinga_teunis <- function(incid,
   }
 
 
-  ### Adjusting t_start and t_end so that at least an incident case has been 
+  ### Adjusting t_start and t_end so that at least an incident case has been
   ### observed before t_start[1] ###
 
   i <- 1
@@ -193,11 +189,11 @@ wallinga_teunis <- function(incid,
 
   if (method == "parametric_si") {
     if (is.null(config$mean_si)) {
-      stop("method non_parametric_si requires to specify the config$mean_si 
+      stop("method non_parametric_si requires to specify the config$mean_si
            argument.")
     }
     if (is.null(config$std_si)) {
-      stop("method non_parametric_si requires to specify the config$std_si 
+      stop("method non_parametric_si requires to specify the config$std_si
            argument.")
     }
     if (config$mean_si < 1) {
@@ -206,10 +202,6 @@ wallinga_teunis <- function(incid,
     if (config$std_si < 0) {
       stop("method parametric_si requires a >0 value for config$std_si.")
     }
-  }
-
-  if (config$plot != TRUE && config$plot != FALSE) {
-    stop("config$plot must be TRUE or FALSE.")
   }
 
   if (!is.numeric(config$n_sim)) {
@@ -234,6 +226,7 @@ wallinga_teunis <- function(incid,
   if (length(config$si_distr) < T + 1) {
     config$si_distr[seq(length(config$si_distr) + 1, T + 1)] <- 0
   }
+
   final_mean_si <- sum(config$si_distr * (seq(0, length(config$si_distr) - 1)))
   final_std_si <- sqrt(sum(config$si_distr * 
                              (seq(0, length(config$si_distr) - 1))^2) - 
@@ -268,11 +261,12 @@ wallinga_teunis <- function(incid,
     sum_on_col_si_delay <- c(sum_on_col_si_delay, 
                              rep(sum_on_col_si_delay_tmp[t], incid[t]))
   }
-  mat_sum_on_col_si_delay <- matrix(rep(sum_on_col_si_delay_tmp, T), 
+  mat_sum_on_col_si_delay <- matrix(rep(sum_on_col_si_delay_tmp, T),
                                     nrow = T, ncol = T)
   p <- si_delay / (mat_sum_on_col_si_delay)
   p[which(is.na(p))] <- 0
   p[which(is.infinite(p))] <- 0
+
   mean_r_per_index_case_date <- vnapply(seq_len(ncol(p)), function(j) 
     sum(p[, j] * incid, na.rm = TRUE))
   mean_r_per_date_wt <- vnapply(seq_len(nb_time_periods), function(i) 
@@ -303,11 +297,11 @@ wallinga_teunis <- function(incid,
   std_wt <- apply(r_sim, 2, sd, na.rm = TRUE)
   std_wt <- std_wt[which(!is.na(std_wt))]
 
-  results <- list(R = as.data.frame(cbind(config$t_start, 
-                                          config$t_end, mean_r_per_date_wt, 
+  results <- list(R = as.data.frame(cbind(config$t_start,
+                                          config$t_end, mean_r_per_date_wt,
                                           std_wt, r025_wt, r975_wt)))
 
-  names(results$R) <- c("t_start", "t_end", "Mean(R)", "Std(R)", 
+  names(results$R) <- c("t_start", "t_end", "Mean(R)", "Std(R)",
                         "Quantile.0.025(R)", "Quantile.0.975(R)")
 
   results$method <- method
@@ -324,14 +318,6 @@ wallinga_teunis <- function(incid,
   results$I_local[1] <- 0
   results$I_imported <- c(incid[1], rep(0, length(incid) - 1))
 
-  if (!is.null(config$plot)) {
-    if (config$plot) {
-      if (is.null(config$legend)) {
-        config$legend <- FALSE
-      }
-      plots(results, what = "all", legend = config$legend)
-    }
-  }
-
+  class(results) <- "estimate_R"
   return(results)
 }

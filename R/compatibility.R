@@ -22,7 +22,7 @@
 #' @param Mean.Prior see \code{config$mean_prior} in \code{estimate_R}
 #' @param Std.Prior see \code{config$std_prior} in \code{estimate_R}
 #' @param CV.Posterior see \code{config$cv_posterior} in \code{estimate_R}
-#' @param plot see \code{config$plot} in \code{estimate_R}
+#' @param plot Not used anymore, only there for compatibility
 #' @param leg.pos Not used anymore, only there for compatibility
 #'
 #' @export
@@ -62,9 +62,7 @@ EstimateR <- function(I, T.Start, T.End,
     si_distr = SI.Distr,
     mean_prior = Mean.Prior,
     std_prior = Std.Prior, ### TO DO: change to sd_prior
-    cv_posterior = CV.Posterior,
-    plot = plot, ### TO DO: plot outside the function (always!)
-    legend = FALSE
+    cv_posterior = CV.Posterior
   )
 
   estimate_R(
@@ -125,7 +123,7 @@ OverallInfectivity <- function(I, SI.Distr) {
 #' @param Std.SI see \code{config$std_si} in \code{wallinga_teunis}
 #' @param SI.Distr see \code{config$si_distr} in \code{wallinga_teunis}
 #' @param nSim see \code{config$n_sim} in \code{wallinga_teunis}
-#' @param plot see \code{config$plot} in \code{wallinga_teunis}
+#' @param plot Not used anymore, only there for compatibility
 #' @param leg.pos Not used anymore, only there for compatibility
 #'
 #' @export
@@ -147,8 +145,7 @@ WT <- function(I, T.Start, T.End,
     mean_si = Mean.SI,
     std_si = Std.SI,
     si_distr = SI.Distr,
-    n_sim = nSim,
-    plot = plot
+    n_sim = nSim
   )
 
   wallinga_teunis(incid = I, method = method, config = config)

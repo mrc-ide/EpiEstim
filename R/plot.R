@@ -1,127 +1,134 @@
-#' Plotting the outputs of functions estimating the reproduction number from 
-#' incidence time series and assumptions regarding the serial interval 
-#' distribution
-#' 
-#' \code{plots} allows plotting the outputs of functions 
-#' \code{\link{estimate_R}} and \code{\link{wallinga_teunis}}
-#' 
-#' @param x The output of function \code{\link{estimate_R}} or function 
-#' \code{\link{wallinga_teunis}}, or a list of such outputs. 
-#' If a list, and \code{what='R'} or \code{what='all'}, all estimates of R are 
-#' plotted on a single graph. 
-#' @param what A string specifying what to plot, namely 
-#' the incidence time series (\code{what='incid'}), 
-#' the estimated reproduction number (\code{what='R'}), 
-#' the serial interval distribution (\code{what='SI'}, 
-#' or all three (\code{what='all'})). 
-#' @param add_imported_cases A boolean to specify whether, on the incidence 
-#' time series plot, to add the incidence of imported cases. 
-#' @param options_I For what = "incid" or "all". A list of graphical options: 
-#'  \describe{
-#' \item{col}{A colour or vector of colours used for plotting incid. By default 
-#' uses the default R colours.}
-#' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of
-#'  the bars plotted. Defaults to 0.7.}
-#' \item{xlim}{A parameter similar to that in \code{par}, to monitor the limits 
-#' of the horizontal axis}
-#' \item{ylim}{A parameter similar to that in \code{par}, to monitor the limits 
-#' of the vertical axis}
-#' } 
-#' @param options_R For what = "R" or "all". A list of graphical options: 
-#'  \describe{
-#' \item{col}{A colour or vector of colours used for plotting R. By default uses
-#'  the default R colours.}
-#' \item{transp}{A numeric value between 0 and 1 used to monitor transparency of
-#'  the 95\%CrI. Defaults to 0.2.}
-#' \item{xlim}{A parameter similar to that in \code{par}, to monitor the limits 
-#' of the horizontal axis}
-#' \item{ylim}{A parameter similar to that in \code{par}, to monitor the limits 
-#' of the vertical axis}
-#' } 
-#' @param options_SI For what = "SI" or "all". A list of graphical options: 
-#'  \describe{
-#' \item{prob_min}{A numeric value between 0 and 1. The SI distributions 
-#' explored are only shown from time 0 up to the time t so that each 
-#' distribution explored has probability < \code{prob_min} to be on any time 
-#' step after t. Defaults to 0.001.}
-#' \item{col}{A colour or vector of colours used for plotting the SI. Defaults 
-#' to black.}
-#' \item{transp}{A numeric value between 0 and 1 used to monitor transparency 
-#' of the lines. Defaults to 0.25}
-#' \item{xlim}{A parameter similar to that in \code{par}, to monitor the limits 
-#' of the horizontal axis}
-#' \item{ylim}{A parameter similar to that in \code{par}, to monitor the limits 
-#' of the vertical axis}
-#' } 
+#' Plot outputs of estimate_r
+#'
+#' The plot method of \code{estimate_r} objects can be used to visualise three
+#' types of information. The first one shows the epidemic curve. The second one
+#' shows the posterior mean and 95\% credible interval of the reproduction
+#' number. The estimate for a time window is plotted at the end of the time
+#' window. The third plot shows the discrete distribution(s) of the serial
+#' interval.
+#'
+#'
+#' @param x The output of function \code{\link{estimate_R}} or function
+#'   \code{\link{wallinga_teunis}}, or a list of such outputs.  If a list, and
+#'   \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a
+#'   single graph.
+#'
+#' @param what A string specifying what to plot, namely the incidence time
+#'   series (\code{what='incid'}), the estimated reproduction number
+#'   (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or
+#'   all three (\code{what='all'})).
+#'
+#' @param add_imported_cases A boolean to specify whether, on the incidence time
+#'   series plot, to add the incidence of imported cases.
+#'
+#' @param options_I For what = "incid" or "all". A list of graphical options:
+#'   \describe{ \item{col}{A colour or vector of colours used for plotting
+#'   incid. By default uses the default R colours.}  \item{transp}{A numeric
+#'   value between 0 and 1 used to monitor transparency of the bars
+#'   plotted. Defaults to 0.7.}  \item{xlim}{A parameter similar to that in
+#'   \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
+#'   parameter similar to that in \code{par}, to monitor the limits of the
+#'   vertical axis} }
+#'
+#' @param options_R For what = "R" or "all". A list of graphical options:
+#'   \describe{ \item{col}{A colour or vector of colours used for plotting R. By
+#'   default uses the default R colours.}  \item{transp}{A numeric value between
+#'   0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
+#'   \item{xlim}{A parameter similar to that in \code{par}, to monitor the
+#'   limits of the horizontal axis} \item{ylim}{A parameter similar to that in
+#'   \code{par}, to monitor the limits of the vertical axis} }
+#'
+#' @param options_SI For what = "SI" or "all". A list of graphical options:
+#'   \describe{ \item{prob_min}{A numeric value between 0 and 1. The SI
+#'   distributions explored are only shown from time 0 up to the time t so that
+#'   each distribution explored has probability < \code{prob_min} to be on any
+#'   time step after t. Defaults to 0.001.}  \item{col}{A colour or vector of
+#'   colours used for plotting the SI. Defaults to black.}  \item{transp}{A
+#'   numeric value between 0 and 1 used to monitor transparency of the
+#'   lines. Defaults to 0.25} \item{xlim}{A parameter similar to that in
+#'   \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
+#'   parameter similar to that in \code{par}, to monitor the limits of the
+#'   vertical axis} }
+#'
 #' @param legend A boolean (TRUE by default) governing the presence / absence of
-#'  legends on the plots
-#' @return a plot (if \code{what = "incid"}, \code{"R"}, or \code{"SI"}) or a 
-#' \code{\link{grob}} object (if \code{what = "all"}).
-# #' @details
+#'   legends on the plots
+#'
+#' @param ... further arguments passed to other methods.
+#'
+#' @return a plot (if \code{what = "incid"}, \code{"R"}, or \code{"SI"}) or a
+#'   \code{\link{grob}} object (if \code{what = "all"}).
+#'
 #' @seealso \code{\link{estimate_R}} and \code{\link{wallinga_teunis}}
-#' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori 
-#' \email{a.cori@imperial.ac.uk} 
-# #' @references 
+#'
+#' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori
+#'   \email{a.cori@imperial.ac.uk}; S3 method by Thibaut Jombart
+#'
 #' @importFrom ggplot2 aes aes_string theme
+#'
 #' @importFrom scales alpha
+#'
 #' @importFrom grDevices palette
+#'
 #' @export
-#' @examples 
+#'
+#' @examples
 #' ## load data on pandemic flu in a school in 2009
 #' data("Flu2009")
-#' 
-#' ## estimate the instantaneous reproduction number 
+#'
+#' ## estimate the instantaneous reproduction number
 #' ## (method "non_parametric_si")
-#' R_i <- estimate_R(Flu2009$incidence, method="non_parametric_si",
-#'                  config=list(t_start = seq(2, 26), t_end = seq(8, 32), 
-#'                              si_distr = Flu2009$si_distr, plot = FALSE)
-#'                 )
+#' R_i <- estimate_R(Flu2009$incidence, method = "non_parametric_si",
+#'                  config = list(t_start = seq(2, 26), t_end = seq(8, 32), 
+#'                              si_distr = Flu2009$si_distr))
 #'
 #' ## visualise results
-#' plots(R_i, legend = FALSE)
+#' plot(R_i, legend = FALSE)
 #'
-#' ## estimate the instantaneous reproduction number 
+#' ## estimate the instantaneous reproduction number
 #' ## (method "non_parametric_si")
-#' R_c <- wallinga_teunis(Flu2009$incidence, method="non_parametric_si",
+#' R_c <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
 #'           config = list(t_start = seq(2, 26), t_end = seq(8, 32), 
-#'           si_distr = Flu2009$si_distr, plot = FALSE))
+#'           si_distr = Flu2009$si_distr ))
 #'
-#' ## produce plot of the incidence 
-#'        ## (with, on top of total incidence, the incidence of imported cases), 
-#'        ## estimated instantaneous and case reproduction numbers 
-#'        ## and serial interval distribution used
-#' p_I <- plots(R_i, "incid", add_imported_cases=TRUE) # plots the incidence 
-#' p_SI <- plots(R_i, "SI") # plots the serial interval distribution
-#' p_Ri <- plots(R_i, "R", 
-#'           options_R = list(ylim=c(0,4))) 
+#' ## produce plot of the incidence
+#' ## (with, on top of total incidence, the incidence of imported cases),
+#' ## estimated instantaneous and case reproduction numbers
+#' ## and serial interval distribution used
+#' p_I <- plot(R_i, "incid", add_imported_cases=TRUE) # plots the incidence
+#' p_SI <- plot(R_i, "SI") # plots the serial interval distribution
+#' p_Ri <- plot(R_i, "R",
+#'           options_R = list(ylim = c(0, 4)))
 #'           # plots the estimated instantaneous reproduction number
-#' p_Rc <- plots(R_c, "R", 
-#'           list(ylim=c(0,4))) 
+#' p_Rc <- plot(R_c, "R",
+#'           list(ylim = c(0, 4)))
 #'           # plots the estimated case reproduction number
-#' gridExtra::grid.arrange(p_I,p_SI,p_Ri,p_Rc,ncol=2)
-#' 
+#' gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
+#'
 #' @import reshape2 grid gridExtra
-#' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle 
-#' geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram 
-#' scale_colour_manual scale_fill_manual scale_linetype_manual lims
+#' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle
+#'   geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
+#'   scale_colour_manual scale_fill_manual scale_linetype_manual lims
+#'
 #' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
+#'
 #' @importFrom graphics plot
+#'
 #' @importFrom incidence as.incidence
-plots <- function(x = NULL, what = c("all", "incid", "R", "SI"), 
+#'
+#' @importFrom graphics plot
+#'
+plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
                   add_imported_cases = FALSE,
-                  options_I = list(col = palette(), transp = 0.7, 
+                  options_I = list(col = palette(), transp = 0.7,
                                    xlim = NULL, ylim = NULL),
-                  options_R = list(col = palette(), transp = 0.2, 
+                  options_R = list(col = palette(), transp = 0.2,
                                    xlim = NULL, ylim = NULL),
-                  options_SI = list(prob_min = 0.001, 
-                                    col = "black", transp = 0.25, 
+                  options_SI = list(prob_min = 0.001,
+                                    col = "black", transp = 0.25,
                                     xlim = NULL, ylim = NULL),
-                  legend = TRUE) {
-  if (is.null(x)) {
-    stop("plots requires non NULL x input.")
-  }
+                  legend = TRUE, ...) {
 
-  ## dealing with the fact that some options may be left to default but others 
+  ## dealing with the fact that some options may be left to default but others
   ## may have been specified by user
   if (is.null(options_I$col)) options_I$col <- palette()
   if (is.null(options_I$transp)) options_I$transp <- 0.7
@@ -144,7 +151,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
     x <- x_list[[1]]
     if (length(x_list) > length(col)) {
       warnings("color vector too short, recycling colors.")
-      options_R$col <- rep(options_R$col, 
+      options_R$col <- rep(options_R$col,
                            ceiling(length(x_list) / length(options_R$col)))
       options_R$col <- options_R$col[seq_len(length(x_list))]
     } else {
@@ -187,7 +194,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
   si_distr.1 <- NULL
   ########################################################################
 
-  if (method == "uncertain_si" | method == "si_from_data" | 
+  if (method == "uncertain_si" | method == "si_from_data" |
       method == "si_from_sample") {
     mean_si.sample <- x$SI.Moments["Mean"]
     std_si.sample <- x$SI.Moments["Std"]
@@ -195,13 +202,13 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
   what <- match.arg(what)
   if (what == "incid" | what == "all") {
     if (add_imported_cases) {
-      p1 <- plot(as.incidence(incid, dates = x$dates), 
-                 ylab = "Incidence", xlab = "Time", 
+      p1 <- plot(as.incidence(incid, dates = x$dates),
+                 ylab = "Incidence", xlab = "Time",
                  color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     } else {
-      p1 <- plot(as.incidence(rowSums(incid), dates = x$dates), 
-                 ylab = "Incidence", xlab = "Time", 
+      p1 <- plot(as.incidence(rowSums(incid), dates = x$dates),
+                 ylab = "Incidence", xlab = "Time",
                  color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     }
@@ -228,14 +235,14 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
         }
 
         df <- melt(data.frame(
-          start = dates[t_start], end = dates[t_end], meanR = mean_posterior, 
+          start = dates[t_start], end = dates[t_end], meanR = mean_posterior,
           lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
         ), id = c("meanR", "lower", "upper"))
         df$group <- as.factor(rep(seq_len(length(t_start)), 
                                   dim(df)[1] / length(t_start)))
 
-        p2 <- ggplot(df, aes(x = value, y = as.numeric(meanR), 
+        p2 <- ggplot(df, aes(x = value, y = as.numeric(meanR),
                              group = as.factor(group))) +
           geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
           geom_line(aes(y = meanR, colour = "Mean")) +
@@ -244,12 +251,12 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
           xlim(options_R$xlim) +
           ylim(options_R$ylim) +
           scale_colour_manual("", values = options_R$col) +
-          scale_fill_manual("", values = alpha(options_R$col, 
+          scale_fill_manual("", values = alpha(options_R$col,
                                                options_R$transp)) +
           ggtitle("Estimated R")
       } else {
         df_tmp <- data.frame(
-          start = dates[t_start], end = dates[t_end], meanR = mean_posterior, 
+          start = dates[t_start], end = dates[t_end], meanR = mean_posterior,
           lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
         )
@@ -270,7 +277,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
           quantile_0.025_posterior2 <- x2$R[, "Quantile.0.025(R)"]
           quantile_0.975_posterior2 <- x2$R[, "Quantile.0.975(R)"]
           df_tmp2 <- data.frame(
-            start2 = dates2[t_start2], end2 = dates2[t_end], 
+            start2 = dates2[t_start2], end2 = dates2[t_end],
             meanR2 = mean_posterior2, lower2 = quantile_0.025_posterior2,
             upper2 = quantile_0.975_posterior2
           )
@@ -281,7 +288,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
         }
 
         if (is.null(options_R$ylim)) {
-          options_R$ylim <- c(0, max(df[, grep("upper", names(df))], 
+          options_R$ylim <- c(0, max(df[, grep("upper", names(df))],
                                      na.rm = TRUE))
         }
 
@@ -293,18 +300,18 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
         df$group <- as.factor(rep(seq_len(length(t_start)), 
                                   dim(df)[1] / length(t_start)))
 
-        p2 <- ggplot(df, aes(x = value, y = as.numeric(meanR), 
+        p2 <- ggplot(df, aes(x = value, y = as.numeric(meanR),
                              group = as.factor(group))) +
           geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
           geom_line(aes(y = meanR, colour = "Mean"))
 
         for (i in seq(2, length(x_list)))
         {
-          p2 <- p2 + 
+          p2 <- p2 +
             geom_ribbon(aes_string(ymin = paste0("lower", i),
                                    ymax = paste0("upper", i),
                                    fill = shQuote(paste0("95%CrI", i)))) +
-            geom_line(aes_string(y = paste0("meanR", i), 
+            geom_line(aes_string(y = paste0("meanR", i),
                                  colour = shQuote(paste0("Mean", i))))
         }
 
@@ -314,7 +321,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
           xlim(options_R$xlim) +
           ylim(options_R$ylim) +
           scale_colour_manual("", values = options_R$col) +
-          scale_fill_manual("", 
+          scale_fill_manual("",
                             values = alpha(options_R$col, options_R$transp)) +
           ggtitle("Estimated R")
       }
@@ -329,7 +336,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
         }
 
         p2 <- ggplot(data.frame(
-          start = dates[t_start], end = dates[t_end], meanR = mean_posterior, 
+          start = dates[t_start], end = dates[t_end], meanR = mean_posterior,
           lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
         ), aes(end, meanR)) +
@@ -347,7 +354,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
         ####
 
         df_tmp <- data.frame(
-          start = dates[t_start], end = dates[t_end], 
+          start = dates[t_start], end = dates[t_end],
           meanR = mean_posterior, lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
         )
@@ -366,7 +373,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
           quantile_0.025_posterior2 <- x2$R[, "Quantile.0.025(R)"]
           quantile_0.975_posterior2 <- x2$R[, "Quantile.0.975(R)"]
           df_tmp2 <- data.frame(
-            start2 = dates2[t_start2], end2 = dates2[t_end], 
+            start2 = dates2[t_start2], end2 = dates2[t_end],
             meanR2 = mean_posterior2, lower2 = quantile_0.025_posterior2,
             upper2 = quantile_0.975_posterior2
           )
@@ -375,7 +382,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
         }
 
         if (is.null(options_R$ylim)) {
-          options_R$ylim <- c(0, max(df[, grep("upper", names(df))], 
+          options_R$ylim <- c(0, max(df[, grep("upper", names(df))],
                                      na.rm = TRUE))
         }
 
@@ -390,10 +397,10 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
         for (i in seq(2, length(x_list)))
         {
           p2 <- p2 +
-            geom_ribbon(aes_string(ymin = paste0("lower", i), 
-                                   ymax = paste0("upper", i), 
+            geom_ribbon(aes_string(ymin = paste0("lower", i),
+                                   ymax = paste0("upper", i),
                                    fill = shQuote(paste0("95%CrI", i)))) +
-            geom_line(aes_string(y = paste0("meanR", i), 
+            geom_line(aes_string(y = paste0("meanR", i),
                                  colour = shQuote(paste0("Mean", i))))
         }
 
@@ -410,7 +417,7 @@ plots <- function(x = NULL, what = c("all", "incid", "R", "SI"),
     }
   }
   if (what == "SI" | what == "all") {
-    if (method == "uncertain_si" | method == "si_from_data" | 
+    if (method == "uncertain_si" | method == "si_from_data" |
         method == "si_from_sample") {
       tmp <- cumsum(apply(si_distr, 2, max) >= options_SI$prob_min)
       stop_at <- min(which(tmp == tmp[length(tmp)]))
