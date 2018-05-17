@@ -45,8 +45,8 @@
 check_cdt_samples_convergence <- function(cdt_samples) {
   ## checking convergence of the MCMC by using the Gelman-Rubin algorithm 
   ## between the first and second half of the MCMC sample
-  spl1 <- cdt_samples[1:floor(nrow(cdt_samples) / 2), ]
-  spl2 <- cdt_samples[(ceiling(nrow(cdt_samples) / 2) + 1):nrow(cdt_samples), ]
+  spl1 <- cdt_samples[seq_len(floor(nrow(cdt_samples) / 2)), ]
+  spl2 <- cdt_samples[seq(ceiling(nrow(cdt_samples) / 2) + 1, nrow(cdt_samples)), ]
   GRD <- gelman.diag(as.mcmc.list(list(as.mcmc(spl1), as.mcmc(spl2))))
   # Is any of the potential scale reduction factors >1.1 
   # (looking at the upper CI)?

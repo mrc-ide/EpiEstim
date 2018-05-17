@@ -36,12 +36,13 @@
 #' ## estimate the reproduction number (method "si_from_data")
 #' estimate_R(flu_2009_NYC_school$incidence, method="si_from_data",
 #'          si_data = flu_2009_NYC_school$si_data,
-#'           config=list(t_start=2:8, t_end=8:14,
+#'           config = list(t_start = seq(2, 8), 
+#'                       t_end = seq(8, 14),
 #'                       si_parametric_distr = "G",
 #'                       mcmc_control = list(burnin = 1000,
-#'                                  thin=10, seed = 1),
+#'                                  thin = 10, seed = 1),
 #'                       n1 = 1000, n2 = 50,
-#'                       plot=TRUE)
+#'                       plot = TRUE)
 #'           )
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the reproduction number
@@ -97,9 +98,10 @@ NULL
 #' ## estimate the reproduction number (method "non_parametric_si")
 #' estimate_R(Flu1918$incidence,
 #'           method="non_parametric_si",
-#'           config=list(t_start=2:86, t_end=8:92,
-#'                       si_distr=Flu1918$si_distr,
-#'                       plot=TRUE))
+#'           config=list(t_start = seq(2, 86), 
+#'                       t_end = seq(8, 92),
+#'                       si_distr = Flu1918$si_distr,
+#'                       plot = TRUE))
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the reproduction number
 #' # over the 7-day window finishing on that day.
@@ -149,9 +151,10 @@ NULL
 #' 
 #' ## estimate the reproduction number (method "non_parametric_si")
 #' estimate_R(Flu2009$incidence, method="non_parametric_si",
-#'           config=list(t_start=2:26, t_end=8:32,
-#'                       si_distr=Flu2009$si_distr,
-#'                       plot=TRUE)
+#'           config=list(t_start = seq(2, 26), 
+#'                       t_end = seq(8, 32),
+#'                       si_distr = Flu2009$si_distr,
+#'                       plot = TRUE)
 #'           )
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the reproduction number
@@ -165,12 +168,13 @@ NULL
 #' ## estimate the reproduction number (method "si_from_data")
 #' estimate_R(Flu2009$incidence, method="si_from_data",
 #'           si_data = Flu2009$si_data,
-#'           config=list(t_start=2:26, t_end=8:32,
+#'           config=list(t_start = seq(2, 26), 
+#'                       t_end = seq(8, 32),
 #'                       mcmc_control = list(burnin = 1000,
-#'                                  thin=10, seed = 1),
+#'                                  thin = 10, seed = 1),
 #'                       n1 = 1000, n2 = 50,
 #'                       si_parametric_distr = "G",
-#'                       plot=TRUE)
+#'                       plot = TRUE)
 #'           )
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the reproduction number
@@ -208,9 +212,10 @@ NULL
 #'
 #' ## estimate the reproduction number (method "non_parametric_si")
 #' estimate_R(Measles1861$incidence, method="non_parametric_si",
-#'           config=list(t_start=17:42, t_end=23:48,
-#'                 si_distr=Measles1861$si_distr,
-#'                 plot=TRUE)
+#'           config=list(t_start = seq(17, 42), 
+#'                 t_end = seq(23, 48),
+#'                 si_distr = Measles1861$si_distr,
+#'                 plot = TRUE)
 #'           )
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the reproduction number
@@ -252,9 +257,10 @@ NULL
 #'
 #' ## estimate the reproduction number (method "non_parametric_si")
 #' estimate_R(SARS2003$incidence, method="non_parametric_si",
-#'           config=list(t_start=14:101, t_end=20:107,
-#'                       si_distr=SARS2003$si_distr,
-#'                       plot=TRUE)
+#'           config=list(t_start = seq(14, 101), 
+#'                       t_end = seq(20, 107),
+#'                       si_distr = SARS2003$si_distr,
+#'                       plot = TRUE)
 #'           )
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the reproduction number
@@ -297,9 +303,10 @@ NULL
 #'
 #' ## estimate the reproduction number (method "non_parametric_si")
 #' estimate_R(Smallpox1972$incidence, method="non_parametric_si",
-#'           config=list(t_start=27:51, t_end=33:57,
-#'                       si_distr=Smallpox1972$si_distr,
-#'                       plot=TRUE)
+#'           config=list(t_start = seq(27, 51), 
+#'                       t_end = seq(33, 57),
+#'                       si_distr = Smallpox1972$si_distr,
+#'                       plot = TRUE)
 #'           )
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the reproduction number
@@ -345,11 +352,12 @@ NULL
 #'           method="si_from_data",
 #'           si_data=MockRotavirus$si_data,
 #'           config=list(
-#'             t_start=2:47, t_end=8:53,
+#'             t_start = seq(2, 47), 
+#'             t_end = seq(8, 53),
 #'             si_parametric_distr = "G",
-#'             mcmc_control = list(burnin = 3000, thin=10),
+#'             mcmc_control = list(burnin = 3000, thin = 10),
 #'             n1 = 500, n2 = 50,
-#'             plot=TRUE)
+#'             plot = TRUE)
 #'           )
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the reproduction number

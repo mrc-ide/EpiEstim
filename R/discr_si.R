@@ -44,8 +44,8 @@
 #' ## Computing the discrete serial interval of influenza
 #' mean_flu_si <- 2.6
 #' sd_flu_si <- 1.5
-#' dicrete_si_distr <- discr_si(0:20, mean_flu_si, sd_flu_si)
-#' plot(0:20, dicrete_si_distr, type = "h",
+#' dicrete_si_distr <- discr_si(seq(0, 20), mean_flu_si, sd_flu_si)
+#' plot(seq(0, 20), dicrete_si_distr, type = "h",
 #'           lwd = 10, lend = 1, xlab = "time (days)", ylab = "frequency")
 #' title(main = "Discrete distribution of the serial interval of influenza")
 discr_si <- function(k, mu, sigma) 
@@ -69,7 +69,7 @@ discr_si <- function(k, mu, sigma)
     (k - 2) * cdf_gamma(k - 2, a, b) - 2 * (k - 1) * cdf_gamma(k - 1, a, b)
   res <- res + a * b * (2 * cdf_gamma(k - 1, a + 1, b) - 
                           cdf_gamma(k - 2, a + 1, b) - cdf_gamma(k, a + 1, b))
-  res <- sapply(res, function(e) max(0, e))
+  res <- vnapply(res, function(e) max(0, e))
 
   return(res)
 }

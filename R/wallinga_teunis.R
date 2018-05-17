@@ -98,19 +98,19 @@
 #' ## estimate the case reproduction number (method "non_parametric_si")
 #' wallinga_teunis(Flu2009$incidence,
 #'    method="non_parametric_si",
-#'    config = list(t_start=2:26, t_end=8:32,
+#'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  si_distr = Flu2009$si_distr,
-#'                  n_sim=100,
-#'                  plot=TRUE))
+#'                  n_sim = 100,
+#'                  plot = TRUE))
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the case reproduction number over the 7-day window
 #' # finishing on that day.
 #'
 #' ## estimate the case reproduction number (method "parametric_si")
 #' wallinga_teunis(Flu2009$incidence, method="parametric_si",
-#'    config = list(t_start=2:26, t_end=8:32,
-#'                  mean_si=2.6, std_si=1.5,
-#'                  n_sim=100,
+#'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
+#'                  mean_si = 2.6, std_si = 1.5,
+#'                  n_sim = 100,
 #'                  plot=TRUE))
 #' # the second plot produced shows, at each each day,
 #' # the estimate of the case reproduction number over the 7-day window
@@ -127,7 +127,7 @@ wallinga_teunis <- function(incid,
 
   draw_one_set_of_ancestries <- function() {
     res <- vector()
-    for (t in config$t_start[1]:config$t_end[length(config$t_end)])
+    for (t in seq(config$t_start[1], config$t_end[length(config$t_end)]))
     {
       if (length(which(Onset == t)) > 0) {
         if (length(possible_ances_time[[t]]) > 0) {
@@ -162,7 +162,7 @@ wallinga_teunis <- function(incid,
   } else {
     incid <- process_I_vector(rowSums(incid[, c("local", "imported")]))
     T <- length(incid)
-    dates <- 1:T
+    dates <- seq_len(T)
   }
 
 
@@ -170,7 +170,7 @@ wallinga_teunis <- function(incid,
   ### observed before t_start[1] ###
 
   i <- 1
-  while (sum(incid[1:(config$t_start[i] - 1)]) == 0) {
+  while (sum(incid[seq_len(config$t_start[i] - 1)]) == 0) {
     i <- i + 1
   }
   temp <- which(config$t_start < i)
@@ -230,20 +230,26 @@ wallinga_teunis <- function(incid,
   }
 
   if (parametric_si == "Y") {
-    config$si_distr <- discr_si(0:(T - 1), config$mean_si, config$std_si)
+    config$si_distr <- discr_si(seq(0,T - 1), config$mean_si, config$std_si)
   }
   if (length(config$si_distr) < T + 1) {
-    config$si_distr[(length(config$si_distr) + 1):(T + 1)] <- 0
+    config$si_distr[seq(length(config$si_distr) + 1, T + 1)] <- 0
   }
+<<<<<<< HEAD
   final_mean_si <- sum(config$si_distr * (0:(length(config$si_distr) - 1)))
   final_std_si <- sqrt(sum(config$si_distr *
                              (0:(length(config$si_distr) - 1))^2) -
+=======
+  final_mean_si <- sum(config$si_distr * (seq(0, length(config$si_distr) - 1)))
+  final_std_si <- sqrt(sum(config$si_distr * 
+                             (seq(0, length(config$si_distr) - 1))^2) - 
+>>>>>>> new-version
                          final_mean_si^2)
 
   time_periods_with_no_incidence <- vector()
-  for (i in 1:nb_time_periods)
+  for (i in seq_len(nb_time_periods))
   {
-    if (sum(incid[config$t_start[i]:config$t_end[i]]) == 0) {
+    if (sum(incid[seq(config$t_start[i],config$t_end[i])]) == 0) {
       time_periods_with_no_incidence <- c(time_periods_with_no_incidence, i)
     }
   }
@@ -254,11 +260,12 @@ wallinga_teunis <- function(incid,
   }
 
   Onset <- vector()
-  for (t in 1:T) {
+  for (t in seq_len(T)) {
     Onset <- c(Onset, rep(t, incid[t]))
   }
   NbCases <- length(Onset)
 
+<<<<<<< HEAD
   delay <- outer(1:T, 1:T, "-")
   si_delay <- apply(delay, 2, function(x)
     config$si_distr[pmin(pmax(x + 1, 1), length(config$si_distr))])
@@ -267,6 +274,16 @@ wallinga_teunis <- function(incid,
   sum_on_col_si_delay <- vector()
   for (t in 1:T) {
     sum_on_col_si_delay <- c(sum_on_col_si_delay,
+=======
+  delay <- outer(seq_len(T), seq_len(T), "-")
+  si_delay <- apply(delay, 2, function(x) 
+    config$si_distr[pmin(pmax(x + 1, 1), length(config$si_distr))])
+  sum_on_col_si_delay_tmp <- vnapply(seq_len(nrow(si_delay)), function(i) 
+    sum(si_delay [i, ] * incid, na.rm = TRUE))
+  sum_on_col_si_delay <- vector()
+  for (t in seq_len(T)) {
+    sum_on_col_si_delay <- c(sum_on_col_si_delay, 
+>>>>>>> new-version
                              rep(sum_on_col_si_delay_tmp[t], incid[t]))
   }
   mat_sum_on_col_si_delay <- matrix(rep(sum_on_col_si_delay_tmp, T),
@@ -274,6 +291,7 @@ wallinga_teunis <- function(incid,
   p <- si_delay / (mat_sum_on_col_si_delay)
   p[which(is.na(p))] <- 0
   p[which(is.infinite(p))] <- 0
+<<<<<<< HEAD
   mean_r_per_index_case_date <- sapply(1:ncol(p), function(j)
     sum(p[, j] * incid, na.rm = TRUE))
   mean_r_per_date_wt <- sapply(1:nb_time_periods, function(i)
@@ -292,6 +310,30 @@ wallinga_teunis <- function(incid,
     rowSums((ancestries_time[, ] >= config$t_start[i]) *
               (ancestries_time[, ] <= config$t_end[i]), na.rm = TRUE) /
       sum(incid[config$t_start[i]:config$t_end[i]]))
+=======
+  mean_r_per_index_case_date <- vnapply(seq_len(ncol(p)), function(j) 
+    sum(p[, j] * incid, na.rm = TRUE))
+  mean_r_per_date_wt <- vnapply(seq_len(nb_time_periods), function(i) 
+    mean(rep(mean_r_per_index_case_date[which((seq_len(T) >= 
+                                                 config$t_start[i]) * 
+                                                (seq_len(T) <= 
+                                                   config$t_end[i]) == 1)],
+             incid[which((seq_len(T) >= config$t_start[i]) * 
+                           (seq_len(T) <= config$t_end[i]) == 1)])))
+
+  possible_ances_time <- lapply(seq_len(T), function(t) 
+    (t - (which(config$si_distr != 0)) + 
+       1)[which(t - (which(config$si_distr != 0)) + 1 > 0)])
+  
+  ancestries_time <- t(vapply(seq_len(config$n_sim), function(i) 
+    draw_one_set_of_ancestries(), numeric(sum(incid))))
+
+  r_sim <- vapply(seq_len(nb_time_periods), function(i) 
+    rowSums((ancestries_time[, ] >= config$t_start[i]) * 
+              (ancestries_time[, ] <= config$t_end[i]), na.rm = TRUE) / 
+      sum(incid[seq(config$t_start[i], config$t_end[i])]), 
+    numeric(config$n_sim))
+>>>>>>> new-version
 
   r025_wt <- apply(r_sim, 2, quantile, 0.025, na.rm = TRUE)
   r025_wt <- r025_wt[which(!is.na(r025_wt))]

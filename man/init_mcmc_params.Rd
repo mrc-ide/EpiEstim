@@ -56,15 +56,15 @@ clever_init_param <- init_mcmc_params(MockRotavirus$si_data, "G")
 ## estimate the serial interval from data using a clever starting point for 
 ## the MCMC chain
 SI_fit_clever <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-                             dist="G",
-                             init.pars=clever_init_param,
+                             dist = "G",
+                             init.pars = clever_init_param,
                              burnin = 1000,
                              n.samples = 5000)
 
 ## estimate the serial interval from data using a random starting point for 
 ## the MCMC chain
 SI_fit_naive <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-                             dist="G",
+                             dist = "G",
                              burnin = 1000,
                              n.samples = 5000)
 
