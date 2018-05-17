@@ -331,12 +331,9 @@ NULL
 #'   ER columns contain the lower an upper bounds of the dates of symptoms onset
 #'    in the infectors. SL and SR columns contain the lower an upper bounds of 
 #'    the dates of symptoms onset in the infected indiviuals. The type column 
-#'    corresponds to XXX TO BE COMPLETED XXX}
-#' }
-#' @source XXX TO BE COMPLETED XXX
-#' @references
-#' {
-#' XXX TO BE COMPLETED XXX
+#'    has entries 0, 1, or 2, corresponding to doubly interval-censored, single 
+#'    interval-censored or exact observations, respectively, see Reich et al. 
+#'    Statist. Med. 2009}
 #' }
 #' @examples
 #' \dontrun{

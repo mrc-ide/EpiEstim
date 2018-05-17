@@ -12,11 +12,10 @@
   ER columns contain the lower an upper bounds of the dates of symptoms onset
    in the infectors. SL and SR columns contain the lower an upper bounds of 
    the dates of symptoms onset in the infected indiviuals. The type column 
-   corresponds to XXX TO BE COMPLETED XXX}
+   has entries 0, 1, or 2, corresponding to doubly interval-censored, single 
+   interval-censored or exact observations, respectively, see Reich et al. 
+   Statist. Med. 2009}
 }}
-\source{
-XXX TO BE COMPLETED XXX
-}
 \description{
 This data set gives: 1/ the daily incidence of onset of symptoms in a mock
 outbreak of rotavirus , 2/ mock observations of symptom onset dates for 19
@@ -46,10 +45,5 @@ estimate_R(MockRotavirus$incidence,
 # the second plot produced shows, at each each day,
 # the estimate of the reproduction number
 # over the 7-day window finishing on that day.
-}
-}
-\references{
-{
-XXX TO BE COMPLETED XXX
 }
 }
