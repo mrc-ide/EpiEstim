@@ -77,29 +77,18 @@
 #'
 #' ## estimate the instantaneous reproduction number
 #' ## (method "non_parametric_si")
-#' R_i <- estimate_R(Flu2009$incidence, method="non_parametric_si",
-<<<<<<< HEAD:R/plot.R
-#'                  config=list(t_start=2:26, t_end=8:32,
-#'                              si_distr=Flu2009$si_distr, plot=FALSE)
-=======
-#'                  config=list(t_start = seq(2, 26), t_end = seq(8, 32), 
-#'                              si_distr = Flu2009$si_distr, plot = FALSE)
->>>>>>> new-version:R/plots.R
-#'                 )
+#' R_i <- estimate_R(Flu2009$incidence, method = "non_parametric_si",
+#'                  config = list(t_start = seq(2, 26), t_end = seq(8, 32), 
+#'                              si_distr = Flu2009$si_distr))
 #'
 #' ## visualise results
 #' plot(R_i, legend = FALSE)
 #'
 #' ## estimate the instantaneous reproduction number
 #' ## (method "non_parametric_si")
-<<<<<<< HEAD:R/plot.R
 #' R_c <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
-#'           config = list(t_start = 2:26, t_end = 8:32,
-=======
-#' R_c <- wallinga_teunis(Flu2009$incidence, method="non_parametric_si",
 #'           config = list(t_start = seq(2, 26), t_end = seq(8, 32), 
->>>>>>> new-version:R/plots.R
-#'           si_distr = Flu2009$si_distr, plot = FALSE))
+#'           si_distr = Flu2009$si_distr, ))
 #'
 #' ## produce plot of the incidence
 #' ## (with, on top of total incidence, the incidence of imported cases),
@@ -233,13 +222,8 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
     }
   }
   if (what == "R" | what == "all") {
-<<<<<<< HEAD:R/plot.R
-    time.points <- apply(x$R[, c("t_start", "t_end") ], 1, function(x)
-      x[1]:(x[2] - 1))
-=======
     time.points <- apply(x$R[, c("t_start", "t_end") ], 1, function(x) 
       seq(x[1], x[2] - 1))
->>>>>>> new-version:R/plots.R
     if (length(time.points) == length(unique(matrix(time.points, ncol = 1)))) {
       if (!multiple_input) {
         if (is.null(options_R$ylim)) {
@@ -255,11 +239,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
           lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
         ), id = c("meanR", "lower", "upper"))
-<<<<<<< HEAD:R/plot.R
-        df$group <- as.factor(rep(1:length(t_start),
-=======
         df$group <- as.factor(rep(seq_len(length(t_start)), 
->>>>>>> new-version:R/plots.R
                                   dim(df)[1] / length(t_start)))
 
         p2 <- ggplot(df, aes(x = value, y = as.numeric(meanR),
@@ -317,11 +297,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
         }
 
         df <- melt(df, id = id)
-<<<<<<< HEAD:R/plot.R
-        df$group <- as.factor(rep(1:length(t_start),
-=======
         df$group <- as.factor(rep(seq_len(length(t_start)), 
->>>>>>> new-version:R/plots.R
                                   dim(df)[1] / length(t_start)))
 
         p2 <- ggplot(df, aes(x = value, y = as.numeric(meanR),
@@ -449,13 +425,8 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
       si_distr_for_plot <- si_distr[, seq_len(stop_at)]
 
       dataL <- melt(t(si_distr_for_plot))
-<<<<<<< HEAD:R/plot.R
-      dataL$Var1 <- 0:(ncol(si_distr_for_plot) - 1)
-      p3 <- ggplot(dataL, aes_string(x = "Var1", y = "value",
-=======
       dataL$Var1 <- seq(0, (ncol(si_distr_for_plot) - 1))
       p3 <- ggplot(dataL, aes_string(x = "Var1", y = "value", 
->>>>>>> new-version:R/plots.R
                                      group = "Var2")) +
         geom_line(col = options_SI$col, alpha = options_SI$transp) +
         ggtitle("Explored SI distributions") +
@@ -475,11 +446,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
 
       si_distr_for_plot <- si_distr[seq_len(stop_at)]
 
-<<<<<<< HEAD:R/plot.R
-      dataL <- data.frame(Times = 0:(length(si_distr_for_plot) - 1),
-=======
       dataL <- data.frame(Times = seq(0, length(si_distr_for_plot) - 1), 
->>>>>>> new-version:R/plots.R
                           SIDistr = si_distr_for_plot)
       p3 <- ggplot(dataL, aes_string(x = "Times", y = "SIDistr")) +
         geom_line(col = options_SI$col, alpha = options_SI$transp) +

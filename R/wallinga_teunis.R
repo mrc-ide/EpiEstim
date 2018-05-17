@@ -235,15 +235,10 @@ wallinga_teunis <- function(incid,
   if (length(config$si_distr) < T + 1) {
     config$si_distr[seq(length(config$si_distr) + 1, T + 1)] <- 0
   }
-<<<<<<< HEAD
-  final_mean_si <- sum(config$si_distr * (0:(length(config$si_distr) - 1)))
-  final_std_si <- sqrt(sum(config$si_distr *
-                             (0:(length(config$si_distr) - 1))^2) -
-=======
+
   final_mean_si <- sum(config$si_distr * (seq(0, length(config$si_distr) - 1)))
   final_std_si <- sqrt(sum(config$si_distr * 
                              (seq(0, length(config$si_distr) - 1))^2) - 
->>>>>>> new-version
                          final_mean_si^2)
 
   time_periods_with_no_incidence <- vector()
@@ -265,16 +260,6 @@ wallinga_teunis <- function(incid,
   }
   NbCases <- length(Onset)
 
-<<<<<<< HEAD
-  delay <- outer(1:T, 1:T, "-")
-  si_delay <- apply(delay, 2, function(x)
-    config$si_distr[pmin(pmax(x + 1, 1), length(config$si_distr))])
-  sum_on_col_si_delay_tmp <- sapply(1:nrow(si_delay), function(i)
-    sum(si_delay [i, ] * incid, na.rm = TRUE))
-  sum_on_col_si_delay <- vector()
-  for (t in 1:T) {
-    sum_on_col_si_delay <- c(sum_on_col_si_delay,
-=======
   delay <- outer(seq_len(T), seq_len(T), "-")
   si_delay <- apply(delay, 2, function(x) 
     config$si_distr[pmin(pmax(x + 1, 1), length(config$si_distr))])
@@ -283,7 +268,6 @@ wallinga_teunis <- function(incid,
   sum_on_col_si_delay <- vector()
   for (t in seq_len(T)) {
     sum_on_col_si_delay <- c(sum_on_col_si_delay, 
->>>>>>> new-version
                              rep(sum_on_col_si_delay_tmp[t], incid[t]))
   }
   mat_sum_on_col_si_delay <- matrix(rep(sum_on_col_si_delay_tmp, T),
@@ -291,26 +275,7 @@ wallinga_teunis <- function(incid,
   p <- si_delay / (mat_sum_on_col_si_delay)
   p[which(is.na(p))] <- 0
   p[which(is.infinite(p))] <- 0
-<<<<<<< HEAD
-  mean_r_per_index_case_date <- sapply(1:ncol(p), function(j)
-    sum(p[, j] * incid, na.rm = TRUE))
-  mean_r_per_date_wt <- sapply(1:nb_time_periods, function(i)
-    mean(rep(mean_r_per_index_case_date[which((1:T >= config$t_start[i]) *
-                                                (1:T <= config$t_end[i]) == 1)],
-             incid[which((1:T >= config$t_start[i]) *
-                           (1:T <= config$t_end[i]) == 1)])))
 
-  possible_ances_time <- sapply(1:T, function(t)
-    (t - (which(config$si_distr != 0)) +
-       1)[which(t - (which(config$si_distr != 0)) + 1 > 0)])
-  ancestries_time <- t(sapply(1:config$n_sim, function(i)
-    draw_one_set_of_ancestries()))
-
-  r_sim <- sapply(1:nb_time_periods, function(i)
-    rowSums((ancestries_time[, ] >= config$t_start[i]) *
-              (ancestries_time[, ] <= config$t_end[i]), na.rm = TRUE) /
-      sum(incid[config$t_start[i]:config$t_end[i]]))
-=======
   mean_r_per_index_case_date <- vnapply(seq_len(ncol(p)), function(j) 
     sum(p[, j] * incid, na.rm = TRUE))
   mean_r_per_date_wt <- vnapply(seq_len(nb_time_periods), function(i) 
@@ -333,7 +298,6 @@ wallinga_teunis <- function(incid,
               (ancestries_time[, ] <= config$t_end[i]), na.rm = TRUE) / 
       sum(incid[seq(config$t_start[i], config$t_end[i])]), 
     numeric(config$n_sim))
->>>>>>> new-version
 
   r025_wt <- apply(r_sim, 2, quantile, 0.025, na.rm = TRUE)
   r025_wt <- r025_wt[which(!is.na(r025_wt))]
