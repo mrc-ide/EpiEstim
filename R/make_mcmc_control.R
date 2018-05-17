@@ -1,0 +1,100 @@
+#' make_mcmc_control Creates a list of mcmc control parameters to be used in 
+#' \code{config$mcmc_control}, where \code{config} is an argument of the 
+#' \code{estimate_R} function. This is used to configure the MCMC chain used to 
+#' estimate the serial interval within \code{estimate_R} (with method 
+#' "si_from_data").
+#'
+#' @param burnin A positive integer giving the burnin used in the MCMC when
+#'   estimating the serial interval distribution.
+#' @param thin A positive integer corresponding to thinning parameter; the MCMC
+#'   will be run for \code{burnin+n1*thin iterations}; 1 in \code{thin}
+#'   iterations will be recorded, after the burnin phase, so the posterior
+#'   sample size is n1.
+#' @param seed An integer used as the seed for the random number generator at
+#'   the start of the MCMC estimation; useful to get reproducible results.
+#' @param init_pars vector of size 2 corresponding to the initial values of
+#'   parameters to use for the SI distribution. This is the shape and scale for
+#'   all but the lognormal distribution, for which it is the meanlog and
+#'   sdlog. If not specified these are chosen automatically based on the 
+#'   arguments \code{si_data} and \code{dist} using function
+#'   \code{\link{init_mcmc_params}}.
+#' @param si_data Data on dates of symptoms of
+#'   pairs of infector/infected individuals to be used to estimate the serial
+#'   interval distribution (see details). Used to derive \code{init_pars} if not
+#'   specified
+#' @param si_parametric_distr The parametric
+#' distribution to use when estimating the serial interval from data on dates of
+#'  symptoms of pairs of infector/infected individuals (see details).
+#' Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
+#' shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal shifted
+#' by 1). Used to derive \code{init_pars} if not specified
+#'
+#' @details
+#' The argument \code{si_data}, should be a dataframe with 5
+#'  columns:
+#' \itemize{
+#' \item{EL: the lower bound of the symptom onset date of the infector (given as
+#'  an integer)}
+#' \item{ER: the upper bound of the symptom onset date of the infector (given as
+#'  an integer). Should be such that ER>=EL}
+#' \item{SL: the lower bound of the symptom onset date of the infected
+#' indivdiual (given as an integer)}
+#' \item{SR: the upper bound of the symptom onset date of the infected
+#' indivdiual (given as an integer). Should be such that SR>=SL}
+#' \item{type (optional): can have entries 0, 1, or 2, corresponding to doubly
+#' interval-censored, single interval-censored or exact observations,
+#' respectively, see Reich et al. Statist. Med. 2009. If not specified, this
+#' will be automatically computed from the dates}
+#' }
+#' Assuming a given parametric distribution for the serial interval distribution
+#'  (specified in \code{si_parametric_distr}),
+#' the posterior distribution of the serial interval is estimated directly fom
+#' these data using MCMC methods implemented in the package
+#' 
+#' @return A list with components burnin, thin, seed, init_pars, which can be 
+#' used as an argument of function \code{make_config}.  
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' ## Note the following examples use an MCMC routine
+#' ## to estimate the serial interval distribution from data,
+#' ## so they may take a few minutes to run
+#'
+#' ## load data on rotavirus
+#' data("MockRotavirus")
+#'
+#' ## estimate the reproduction number (method "si_from_data")
+#' mcmc_seed <- 1
+#' burnin <- 1000
+#' thin <- 10
+#' mcmc_control <- make_mcmc_control(burnin = burnin, thin = thin, 
+#'                      seed = mcmc_seed, si_data = MockRotavirus$si_data, 
+#'                      si_parametric_distr = "G")
+#' 
+#' overall_seed <- 2
+#' R_si_from_data <- estimate_R(MockRotavirus$incidence,
+#'                             method = "si_from_data",
+#'                             si_data = MockRotavirus$si_data,
+#'                             config = list(t_start = seq(2, 47), 
+#'                                         t_end = seq(8, 53),
+#'                                         si_parametric_distr = "G",
+#'                                         mcmc_control = mcmc_control,
+#'                                         n1 = 500, n2 = 50,
+#'                                         seed = overall_seed))
+#' }
+make_mcmc_control <- function(burnin = 3000, thin = 10, 
+                              seed = 1, 
+                              init_pars = c(1, 1), 
+                              si_data = NULL,
+                              si_parametric_distr = c("G", "W", "L", "off1G", 
+                                       "off1W", "off1L")){
+  if(!is.null(si_data))
+  {
+    si_parametric_distr <- match.arg(si_parametric_distr)
+    init_pars <- init_mcmc_params(si_data, si_parametric_distr)
+  }
+  mcmc_control <- list( init_pars = init_pars, burnin = burnin, thin = thin, 
+                        seed = seed )
+  return( mcmc_control )
+}
