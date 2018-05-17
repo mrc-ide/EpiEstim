@@ -26,7 +26,7 @@ where wallinga_teunis uses snake_case for the method names)}
 
 \item{nSim}{see \code{config$n_sim} in \code{wallinga_teunis}}
 
-\item{plot}{see \code{config$plot} in \code{wallinga_teunis}}
+\item{plot}{Not used anymore, only there for compatibility}
 
 \item{leg.pos}{Not used anymore, only there for compatibility}
 }

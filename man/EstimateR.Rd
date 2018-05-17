@@ -49,7 +49,7 @@ where estimate_R uses snake_case for the method names)}
 
 \item{CV.Posterior}{see \code{config$cv_posterior} in \code{estimate_R}}
 
-\item{plot}{see \code{config$plot} in \code{estimate_R}}
+\item{plot}{Not used anymore, only there for compatibility}
 
 \item{leg.pos}{Not used anymore, only there for compatibility}
 }
