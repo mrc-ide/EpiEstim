@@ -15,19 +15,7 @@
 #' @param init_pars vector of size 2 corresponding to the initial values of
 #'   parameters to use for the SI distribution. This is the shape and scale for
 #'   all but the lognormal distribution, for which it is the meanlog and
-#'   sdlog. If not specified these are chosen automatically based on the 
-#'   arguments \code{si_data} and \code{dist} using function
-#'   \code{\link{init_mcmc_params}}.
-#' @param si_data Data on dates of symptoms of
-#'   pairs of infector/infected individuals to be used to estimate the serial
-#'   interval distribution (see details). Used to derive \code{init_pars} if not
-#'   specified
-#' @param si_parametric_distr The parametric
-#' distribution to use when estimating the serial interval from data on dates of
-#'  symptoms of pairs of infector/infected individuals (see details).
-#' Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
-#' shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal shifted
-#' by 1). Used to derive \code{init_pars} if not specified
+#'   sdlog. 
 #'
 #' @details
 #' The argument \code{si_data}, should be a dataframe with 5
@@ -69,32 +57,30 @@
 #' burnin <- 1000
 #' thin <- 10
 #' mcmc_control <- make_mcmc_control(burnin = burnin, thin = thin, 
-#'                      seed = mcmc_seed, si_data = MockRotavirus$si_data, 
-#'                      si_parametric_distr = "G")
+#'                      seed = mcmc_seed)
 #' 
+#' incid <- MockRotavirus$incidence
+#' method <- "si_from_data"
 #' overall_seed <- 2
-#' R_si_from_data <- estimate_R(MockRotavirus$incidence,
-#'                             method = "si_from_data",
+#' config <- make_config(incid = incid, 
+#'                      method = method, 
+#'                      si_parametric_distr = "G",
+#'                      mcmc_control = mcmc_control,
+#'                      n1 = 500
+#'                      n2 = 50,
+#'                      seed = overall_seed)
+#' 
+#' R_si_from_data <- estimate_R(incid,
+#'                             method = method,
 #'                             si_data = MockRotavirus$si_data,
-#'                             config = list(t_start = seq(2, 47), 
-#'                                         t_end = seq(8, 53),
-#'                                         si_parametric_distr = "G",
-#'                                         mcmc_control = mcmc_control,
-#'                                         n1 = 500, n2 = 50,
-#'                                         seed = overall_seed))
+#'                             config = config)
 #' }
 make_mcmc_control <- function(burnin = 3000, thin = 10, 
-                              seed = 1, 
-                              init_pars = c(1, 1), 
-                              si_data = NULL,
-                              si_parametric_distr = c("G", "W", "L", "off1G", 
-                                       "off1W", "off1L")){
-  if(!is.null(si_data))
-  {
-    si_parametric_distr <- match.arg(si_parametric_distr)
-    init_pars <- init_mcmc_params(si_data, si_parametric_distr)
-  }
-  mcmc_control <- list( init_pars = init_pars, burnin = burnin, thin = thin, 
-                        seed = seed )
+                              seed = as.integer(Sys.time()), 
+                              init_pars = NULL){
+  mcmc_control <- list(init_pars = init_pars, 
+                       burnin = burnin, 
+                       thin = thin, 
+                       seed = seed )
   return( mcmc_control )
 }

@@ -261,17 +261,8 @@ process_config <- function(config) {
     config$cv_posterior <- 0.3
   }
 
-  if (!("plot" %in% names(config))) {
-    config$plot <- FALSE
-  }
-
-  if (!("legend" %in% names(config))) {
-    config$legend <- FALSE
-  }
-
   if (!("mcmc_control" %in% names(config))) {
-    config$mcmc_control <- list(init_pars = NULL, burnin = 3000, thin = 10, 
-                                seed = as.integer(Sys.time()))
+    config$mcmc_control <- make_mcmc_control()
   }
 
   return(config)
@@ -423,9 +414,6 @@ check_config <- function(config, method) {
   }
   if (config$cv_posterior < 0) {
     stop("config$cv_posterior must be >0.")
-  }
-  if (config$plot != TRUE && config$plot != FALSE) {
-    stop("config$plot must be TRUE or FALSE.")
   }
 }
 
