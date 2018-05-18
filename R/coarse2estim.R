@@ -57,8 +57,8 @@
 #'                             si_sample=si_sample,
 #'                             config = list(t_start = seq(2, 47), 
 #'                             t_end = seq(8, 53),
-#'                             n2 = 50,
-#'                             plot = TRUE))
+#'                             n2 = 50))
+#' plot(R_si_from_sample)
 #' }
 #'
 coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,

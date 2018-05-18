@@ -26,12 +26,12 @@ deviation 3.8 days and shift 1 day (see references).
 data("SARS2003")
 
 ## estimate the reproduction number (method "non_parametric_si")
-estimate_R(SARS2003$incidence, method="non_parametric_si",
+res <- estimate_R(SARS2003$incidence, method="non_parametric_si",
           config=list(t_start = seq(14, 101), 
                       t_end = seq(20, 107),
-                      si_distr = SARS2003$si_distr,
-                      plot = TRUE)
+                      si_distr = SARS2003$si_distr)
           )
+plot(res)
 # the second plot produced shows, at each each day,
 # the estimate of the reproduction number
 # over the 7-day window finishing on that day.

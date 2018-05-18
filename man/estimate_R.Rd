@@ -6,7 +6,7 @@
 \usage{
 estimate_R(incid, method = c("non_parametric_si", "parametric_si",
   "uncertain_si", "si_from_data", "si_from_sample"), si_data = NULL,
-  si_sample = NULL, config)
+  si_sample = NULL, config = make_config(incid = incid, method = method))
 }
 \arguments{
 \item{incid}{One of the following
@@ -120,9 +120,15 @@ serial interval distribution to use for estimation of R. This can be a useful
 data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
-res <- estimate_R(Flu2009$incidence, method="non_parametric_si",
-                  config=list(t_start = seq(2, 26), t_end = seq(8, 32),
-                  si_distr = Flu2009$si_distr))
+incid <- Flu2009$incidence
+method <- "non_parametric_si"
+## when not specifying t_start and t_end in config, they are set to estimate
+## the reproduction number on sliding weekly windows
+config <- make_config(incid = incid, method = method, 
+                         si_distr = Flu2009$si_distr)
+                         
+res <- estimate_R(incid = incid, method = method,
+                  config = config)
 plot(res)
 
 ## the second plot produced shows, at each each day,
