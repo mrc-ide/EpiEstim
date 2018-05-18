@@ -122,9 +122,15 @@
 #' data("Flu2009")
 #'
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' res <- estimate_R(Flu2009$incidence, method="non_parametric_si",
-#'                   config=list(t_start = seq(2, 26), t_end = seq(8, 32),
-#'                   si_distr = Flu2009$si_distr))
+#' incid <- Flu2009$incidence
+#' method <- "non_parametric_si"
+#' ## when not specifying t_start and t_end in config, they are set to estimate
+#' ## the reproduction number on sliding weekly windows
+#' config <- make_config(incid = incid, method = method, 
+#'                          si_distr = Flu2009$si_distr)
+#'                          
+#' res <- estimate_R(incid = incid, method = method,
+#'                   config = config)
 #' plot(res)
 #'
 #' ## the second plot produced shows, at each each day,
