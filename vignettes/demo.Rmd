@@ -375,9 +375,40 @@ plot(res_incid_class, "R")
 
 ## Specifying imported cases
 
-COMING SOON!
+All of the above assumes that all cases are linked by local transmission. 
+Sometimes you may have information (from field epidemiological investigations
+for instance) indicating that some cases are in fact imported (from another
+location, or from an animal reservoir). We allow to include such information, 
+when available, as illustrated in the example below: 
+
+```{r imports}
+# generating fake information on our cases:
+location <- sample(c("local","imported"), length(dates_onset), replace=TRUE)
+location[1] <- "imported" # forcing the first case to be imported
+
+## get incidence per group (location)
+incid <- incidence(dates_onset, groups = location)
+
+plot(incid)
+
+## Estimate R with assumptions on serial interval
+res_with_imports <- estimate_R(incid, method = "parametric_si",
+                   config = make_config(list(
+                   mean_si = 2.6, std_si = 1.5)))
+plot(res_with_imports, add_imported_cases=TRUE)
+
+```
+
+Note that in the above the estimated reproduction number is, as expected, much 
+lower than estimated before when assuming that all cases were linked by local
+transmission. 
+
+This feature is new to `EpiEstim` and described in a manuscript in preparation
+(Thompson et al.).
 
 ## EpiEstimApp
 
-COMING SOON!
-
+We have a shiny app in development which integrates all the features presented 
+above. You can follow its developments here: 
+[https://github.com/jstockwin/EpiEstimApp](https://github.com/jstockwin/EpiEstimApp)
+Please note the app is still in development!
