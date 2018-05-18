@@ -1,0 +1,190 @@
+---
+title: "EpiEstim: a demonstration"
+author: "Anne Cori"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{demonsration}
+  \usepackage[utf8]{inputenc}
+---
+
+
+
+```{r, echo = FALSE}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>", 
+  fig.width = 6, 
+  fig.height = 6, 
+  fig.path = "figs-demo/"
+)
+
+```
+
+## Overview
+
+This vignette provides a short demonstration of the package. 
+We consider a dataset containing information on pandemic influenza.
+The dataset contains:
+
+1. the daily incidence of onset of acute respiratory illness (ARI, defined as at
+least two symptoms among fever, cough, sore throat, and runny nose) amongst 
+children in a school in Pennsylvania during the 2009 H1N1 influenza pandemic 
+(see Cauchemez et al., PNAS, 2011),
+
+2. the discrete daily distribution of the serial interval (time interval between
+symptoms onset in a case and in their infector) for influenza, 
+assuming a shifted Gamma distribution with mean 2.6 days, standard deviation 
+1.5 days and shift 1 day (as in Ferguson et al., Nature, 2005).
+
+3. interval-censored serial interval data from the 2009 outbreak of H1N1 
+influenza in San Antonio, Texas, USA (from Morgan et al., EID 2010).
+
+```{r data}
+library(EpiEstim)
+library(ggplot2)
+
+## load data
+data(Flu2009)
+## incidence:
+head(Flu2009$incidence)
+## serial interval (SI) distribution:
+Flu2009$si_distr
+## interval-ceonsored serial interval data:
+## each line represents a transmission event, 
+## EL/ER show the lower/upper bound of the symptoms onset date in the infector
+## SL/SR show the same for the secondary case
+## type has entries 0 corresponding to doubly interval-censored data
+## (see Reich et al. Statist. Med. 2009).
+head(Flu2009$si_data)
+```
+
+We can use the `incidence` R package to easily plot the daily incidence data:
+
+```{r, incidence}
+library(incidence)
+plot(as.incidence(Flu2009$incidence$I, dates = Flu2009$incidence$dates))
+```
+
+We can run `estimate_R` on the incidence data to estimate the reproduction 
+number R. For this, we need to specify i) the time window(s) over which to 
+estimate R and ii) information on the distribution of the 
+serial interval.
+
+For i), the default behaviour is to estimate R over weekly sliding windows. 
+This can be changed through the `config$t_start` and `config$t_end` arguments 
+(see below, "Changing the time windows for estimation"). 
+For ii), there are several options, specified in the `method` argument. 
+
+The simplest is the `parametric_si` method, where you only specify the mean and
+standard deviation of the SI. 
+
+## Estimating R on sliding weekly windows, with a parametric serial interval
+
+In this example, we only specify the mean and standard deviation of the serial
+interval, as follows:
+```{r estimate_r_parametric_si}
+res_parametric_si <- estimate_R(Flu2009$incidence, 
+                  method="parametric_si",
+                  config = make_config(list(
+                    mean_si = 2.6, 
+                    std_si = 1.5))
+                  )
+
+head(res_parametric_si$R)
+```
+The output of the estimate_r function is a list containing a number of elements, 
+the most important of which is `R`, a data.frame containing details on the 
+estimated reproduction number. Each line corresponds to one time window. 
+
+The output can be plotted as follows:
+
+```{r plot_r_parametric_si}
+plot(res_parametric_si, legend = FALSE)
+# use `type = "R"`, `type = "incid"` or `type = "SI"` 
+# to generate only one of the 3 plots
+```
+
+This produces three graphs showing the incidence time series, the estimated 
+reproduction number (posterior mean and 95\\% credible interval, with estimates 
+for a time window plotted at the end of the time window) and the discrete 
+distribution of the serial interval. 
+
+## Estimating R with a non parametric serial interval distribution
+
+COMING SOON!
+
+## Estimating R accounting for uncertainty on the serial interval distribution
+
+COMING SOON!
+
+## Estimating R and the serial interval using data on pairs infector/infected
+
+COMING SOON!
+
+## Changing the time windows for estimation
+
+The time window can be specified through arguments `config$t_start` and 
+`config$t_end`. For instance, the default weekly sliding windows can also be 
+obtained by specifying:
+```{r estimate_r_weekly}
+T <- nrow(Flu2009$incidence)
+t_start <- seq(2, T-6) # starting at 2 as conditional on the past observations
+t_end <- t_start + 6 # adding 6 to get 7-day windows as bounds included in window
+res_weekly <- estimate_R(Flu2009$incidence, 
+                  method="parametric_si",
+                  config = make_config(list(
+                    t_start = t_start,
+                    t_end = t_end,
+                    mean_si = 2.6, 
+                    std_si = 1.5))
+                  )
+plot(res_weekly, "R") 
+```
+
+For biweekly estimates:
+```{r estimate_r_biweekly}
+t_start <- seq(2, T-13) # starting at 2 as conditional on the past observations
+t_end <- t_start + 13 
+res_biweekly <- estimate_R(Flu2009$incidence, 
+                  method="parametric_si",
+                  config = make_config(list(
+                    t_start = t_start,
+                    t_end = t_end,
+                    mean_si = 2.6, 
+                    std_si = 1.5))
+                  )
+plot(res_biweekly, "R") 
+```
+So far we have used estimates on sliding windows. Sometimes it may be useful to 
+consider consecutive non overlapping windows as well. 
+For instance, in the flu outbreak we are considering, the school closed from 
+14th to 20th May 2009, i.e. days 18 to 24 in our dataset. It is interesting to 
+estimate the reproduction number before during, and after the shcool cllosure 
+to assess whether this had an impact on transmissibility. 
+```{r estimate_r_before_during_after_closure}
+t_start <- c(2, 18, 25) # starting at 2 as conditional on the past observations
+t_end <- c(17, 24, 32)
+res_before_during_after_closure <- estimate_R(Flu2009$incidence, 
+                  method="parametric_si",
+                  config = make_config(list(
+                    t_start = t_start,
+                    t_end = t_end,
+                    mean_si = 2.6, 
+                    std_si = 1.5))
+                  )
+plot(res_before_during_after_closure, "R") +
+  geom_hline(aes(yintercept = 1), color = "red", lty = 2)
+```
+
+The results above suggest that the school closure was effective in terms of 
+reducing transmissibility, as the estimated reproduction number during the 
+school closure was significantly lower than that before closure, and was 
+estimated to be under the threshold value 1. 
+
+## Different ways of specifying the incidence
+
+COMING SOON!
+
