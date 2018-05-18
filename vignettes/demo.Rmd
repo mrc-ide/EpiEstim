@@ -158,12 +158,14 @@ res_biweekly <- estimate_R(Flu2009$incidence,
                   )
 plot(res_biweekly, "R") 
 ```
+
 So far we have used estimates on sliding windows. Sometimes it may be useful to 
 consider consecutive non overlapping windows as well. 
 For instance, in the flu outbreak we are considering, the school closed from 
-14th to 20th May 2009, i.e. days 18 to 24 in our dataset. It is interesting to 
-estimate the reproduction number before during, and after the shcool cllosure 
-to assess whether this had an impact on transmissibility. 
+14th to 20th May 2009, i.e. days 18 to 24 in our dataset (Cauchemez et al., 
+PNAS, 2011). It is interesting to estimate the reproduction number before, 
+during, and after the shcool closure to assess whether this had an impact on 
+transmissibility. 
 ```{r estimate_r_before_during_after_closure}
 t_start <- c(2, 18, 25) # starting at 2 as conditional on the past observations
 t_end <- c(17, 24, 32)
@@ -185,6 +187,59 @@ school closure was significantly lower than that before closure, and was
 estimated to be under the threshold value 1. 
 
 ## Different ways of specifying the incidence
+
+So far we have specified the `incid` argument using a table with two columns 
+indicating the dates and the number of incident cases for each date. 
+
+`estimate_R` accepts a range of formats for its `incid` argument. 
+
+This can be a table, as we've seen. In that case there needs to be a column 
+called `I` containing the numebr of incident cases. If a column `dates` is 
+present it is used in the x-axes when producing plots:
+```{r incid_table}
+head(Flu2009$incidence)
+config <- make_config(list(mean_si = 2.6, std_si = 1.5))
+res_incid_table <- estimate_R(Flu2009$incidence, 
+                  method="parametric_si",
+                  config = config)
+plot(res_incid_table, "R")
+```
+
+It can just be a vector (but then the x-axis in your plots is measured in time 
+steps since start of the outbreak)
+```{r incid_vector}
+res_incid_vector <- estimate_R(Flu2009$incidence$I, 
+                  method="parametric_si",
+                  config = config)
+plot(res_incid_vector, "R")
+```
+
+Finally, `incid` can be an object of the class `incidence`, as created for 
+instance by the function `incidence` of the `incidence` package. 
+
+Let's artificially create a line-list corresponding to our flu incidence data:
+
+```{r line_list}
+dates_onset <- Flu2009$incidence$dates[unlist(lapply(1:nrow(Flu2009$incidence), function(i) 
+  rep(i, Flu2009$incidence$I[i])))]
+```
+
+and now use the `incidence` function to generate an object that we feed to 
+`estimate_R`:
+
+```{r incid_class}
+last_date <- Flu2009$incidence$date[T]
+res_incid_class <- estimate_R(incidence(dates_onset, last_date = last_date), 
+                  method="parametric_si",
+                  config = config)
+plot(res_incid_class, "R")
+```
+
+## Specifying imported cases
+
+COMING SOON!
+
+## EpiEstimApp
 
 COMING SOON!
 
