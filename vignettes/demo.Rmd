@@ -214,8 +214,8 @@ MCMC_seed <- 1
 overall_seed <- 2
 mcmc_control <- make_mcmc_control(seed = MCMC_seed, 
                                   burnin = 1000)
-distr <- "G" # fitting a Gamma dsitribution for the SI
-config <- make_config(list(si_parametric_distr = distr,
+dist <- "G" # fitting a Gamma dsitribution for the SI
+config <- make_config(list(si_parametric_distr = dist,
                            mcmc_control = mcmc_control,
                            seed = overall_seed, 
                            n1 = 50, 
@@ -225,9 +225,41 @@ res_si_from_data <- estimate_R(Flu2009$incidence,
                                si_data = Flu2009$si_data,
                                config = config)
 
-plot(res_si_from_data)
+plot(res_si_from_data, legend = FALSE)
 ## the third plot now shows the posterior sample of SI distributions 
 ## that were integrated over
+```
+
+Now say you want to save your estimates of the serial interval first, 
+and then use them within `estimate_R`. This can be useful e.g. if you want
+to explore several time windows for R estimation, but based on the same SI data, 
+and so you don't want to run the MCMC to estimate the SI within `estimate_R`
+every time. You can do this as follow:
+
+```{r estimate_r_si_from_sample}
+## using the same random seeds as before to be able to compare results
+
+## first estimate the SI distribution using function dic.fit.mcmc fron 
+## coarseDataTools package:
+n_mcmc_samples <- config$n1*mcmc_control$thin
+SI_fit <- coarseDataTools::dic.fit.mcmc(dat = Flu2009$si_data,
+                  dist = dist,
+                  init.pars = init_mcmc_params(Flu2009$si_data, dist),
+                  burnin = mcmc_control$burnin,
+                  n.samples = n_mcmc_samples,
+                  seed = mcmc_control$seed)
+## thinning the output of the MCMC and converting using coarse2estim function
+si_sample <- coarse2estim(SI_fit, thin = mcmc_control$thin)$si_sample
+res_si_from_sample <- estimate_R(Flu2009$incidence,
+                                method = "si_from_sample",
+                                si_sample = si_sample,
+                                config = make_config(list(n2 = 50, 
+                                seed = overall_seed)))
+
+## check that res_si_from_sample is the same as res_si_from_data
+## since they were generated using the same MCMC algorithm to generate the SI
+## sample (either internally to EpiEstim or externally)
+all(res_si_from_sample$R$`Mean(R)` == res_si_from_data$R$`Mean(R)`)
 ```
 
 ## Changing the time windows for estimation
