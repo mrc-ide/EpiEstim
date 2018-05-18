@@ -34,19 +34,20 @@
 #' data("flu_2009_NYC_school")
 #'
 #' ## estimate the reproduction number (method "si_from_data")
-#' estimate_R(flu_2009_NYC_school$incidence, method="si_from_data",
+#' res <- estimate_R(flu_2009_NYC_school$incidence, method="si_from_data",
 #'          si_data = flu_2009_NYC_school$si_data,
-#'           config = list(t_start = seq(2, 8), 
+#'           config = make_config(list(
+#'                       t_start = seq(2, 8), 
 #'                       t_end = seq(8, 14),
 #'                       si_parametric_distr = "G",
-#'                       mcmc_control = list(burnin = 1000,
-#'                                  thin = 10, seed = 1),
-#'                       n1 = 1000, n2 = 50,
-#'                       plot = TRUE)
+#'                       mcmc_control = make_mcmc_control(list(burnin = 1000,
+#'                                  thin = 10, seed = 1)),
+#'                       n1 = 1000, n2 = 50))
 #'           )
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the reproduction number
-#' # over the 7-day window finishing on that day.
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the reproduction number
+#' ## over the 7-day window finishing on that day.
 #' }
 NULL
 
@@ -96,15 +97,13 @@ NULL
 #' data("Flu1918")
 #'
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' estimate_R(Flu1918$incidence,
-#'           method="non_parametric_si",
-#'           config=list(t_start = seq(2, 86), 
-#'                       t_end = seq(8, 92),
-#'                       si_distr = Flu1918$si_distr,
-#'                       plot = TRUE))
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the reproduction number
-#' # over the 7-day window finishing on that day.
+#' res <- estimate_R(Flu1918$incidence,
+#'           method = "non_parametric_si",
+#'           config = make_config(list(si_distr = Flu1918$si_distr)))
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the reproduction number
+#' ## over the 7-day window finishing on that day.
 NULL
 
 ################################################################################
@@ -150,15 +149,12 @@ NULL
 #' data("Flu2009")
 #' 
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' estimate_R(Flu2009$incidence, method="non_parametric_si",
-#'           config=list(t_start = seq(2, 26), 
-#'                       t_end = seq(8, 32),
-#'                       si_distr = Flu2009$si_distr,
-#'                       plot = TRUE)
-#'           )
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the reproduction number
-#' # over the 7-day window finishing on that day.
+#' res <- estimate_R(Flu2009$incidence, method="non_parametric_si",
+#'           config = make_config(list(si_distr = Flu2009$si_distr)))
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the reproduction number
+#' ## over the 7-day window finishing on that day.
 #' 
 #' \dontrun{
 #' ## Note the following examples use an MCMC routine
@@ -166,19 +162,17 @@ NULL
 #' ## so they may take a few minutes to run
 #'
 #' ## estimate the reproduction number (method "si_from_data")
-#' estimate_R(Flu2009$incidence, method="si_from_data",
+#' res <- estimate_R(Flu2009$incidence, method="si_from_data",
 #'           si_data = Flu2009$si_data,
-#'           config=list(t_start = seq(2, 26), 
-#'                       t_end = seq(8, 32),
-#'                       mcmc_control = list(burnin = 1000,
-#'                                  thin = 10, seed = 1),
+#'           config = make_config(list(mcmc_control = make_mcmc_control(list(
+#'                                  burnin = 1000,
+#'                                  thin = 10, seed = 1)),
 #'                       n1 = 1000, n2 = 50,
-#'                       si_parametric_distr = "G",
-#'                       plot = TRUE)
-#'           )
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the reproduction number
-#' # over the 7-day window finishing on that day.
+#'                       si_parametric_distr = "G")))
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the reproduction number
+#' ## over the 7-day window finishing on that day.
 #' }
 #'
 #'
@@ -211,15 +205,15 @@ NULL
 #' data("Measles1861")
 #'
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' estimate_R(Measles1861$incidence, method="non_parametric_si",
-#'           config=list(t_start = seq(17, 42), 
+#' res <- estimate_R(Measles1861$incidence, method="non_parametric_si",
+#'           config = make_config(list(
+#'                 t_start = seq(17, 42), 
 #'                 t_end = seq(23, 48),
-#'                 si_distr = Measles1861$si_distr,
-#'                 plot = TRUE)
-#'           )
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the reproduction number
-#' # over the 7-day window finishing on that day.
+#'                 si_distr = Measles1861$si_distr)))
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the reproduction number
+#' ## over the 7-day window finishing on that day.
 NULL
 
 ################################################################################
@@ -256,15 +250,15 @@ NULL
 #' data("SARS2003")
 #'
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' estimate_R(SARS2003$incidence, method="non_parametric_si",
-#'           config=list(t_start = seq(14, 101), 
+#' res <- estimate_R(SARS2003$incidence, method="non_parametric_si",
+#'           config = make_config(list(
+#'                       t_start = seq(14, 101), 
 #'                       t_end = seq(20, 107),
-#'                       si_distr = SARS2003$si_distr,
-#'                       plot = TRUE)
-#'           )
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the reproduction number
-#' # over the 7-day window finishing on that day.
+#'                       si_distr = SARS2003$si_distr)))
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the reproduction number
+#' ## over the 7-day window finishing on that day.
 NULL
 
 ################################################################################
@@ -302,15 +296,15 @@ NULL
 #' data("Smallpox1972")
 #'
 #' ## estimate the reproduction number (method "non_parametric_si")
-#' estimate_R(Smallpox1972$incidence, method="non_parametric_si",
-#'           config=list(t_start = seq(27, 51), 
+#' res <- estimate_R(Smallpox1972$incidence, method="non_parametric_si",
+#'           config = make_config(list(
+#'                       t_start = seq(27, 51), 
 #'                       t_end = seq(33, 57),
-#'                       si_distr = Smallpox1972$si_distr,
-#'                       plot = TRUE)
-#'           )
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the reproduction number
-#' # over the 7-day window finishing on that day.
+#'                       si_distr = Smallpox1972$si_distr)))
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the reproduction number
+#' ## over the 7-day window finishing on that day.
 NULL
 
 ################################################################################
@@ -345,19 +339,16 @@ NULL
 #' data("MockRotavirus")
 #'
 #' ## estimate the reproduction number (method "si_from_data")
-#' estimate_R(MockRotavirus$incidence,
-#'           method="si_from_data",
-#'           si_data=MockRotavirus$si_data,
-#'           config=list(
-#'             t_start = seq(2, 47), 
-#'             t_end = seq(8, 53),
+#' res <- estimate_R(MockRotavirus$incidence,
+#'           method = "si_from_data",
+#'           si_data = MockRotavirus$si_data,
+#'           config = make_config(list(
 #'             si_parametric_distr = "G",
-#'             mcmc_control = list(burnin = 3000, thin = 10),
-#'             n1 = 500, n2 = 50,
-#'             plot = TRUE)
-#'           )
-#' # the second plot produced shows, at each each day,
-#' # the estimate of the reproduction number
-#' # over the 7-day window finishing on that day.
+#'             mcmc_control = make_mcmc_control(list(burnin = 3000, thin = 10)),
+#'             n1 = 500, n2 = 50)))
+#' plot(res)
+#' ## the second plot produced shows, at each each day,
+#' ## the estimate of the reproduction number
+#' ## over the 7-day window finishing on that day.
 #' }
 NULL

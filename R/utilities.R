@@ -261,17 +261,8 @@ process_config <- function(config) {
     config$cv_posterior <- 0.3
   }
 
-  if (!("plot" %in% names(config))) {
-    config$plot <- FALSE
-  }
-
-  if (!("legend" %in% names(config))) {
-    config$legend <- FALSE
-  }
-
   if (!("mcmc_control" %in% names(config))) {
-    config$mcmc_control <- list(init_pars = NULL, burnin = 3000, thin = 10, 
-                                seed = as.integer(Sys.time()))
+    config$mcmc_control <- make_mcmc_control()
   }
 
   return(config)
@@ -424,9 +415,6 @@ check_config <- function(config, method) {
   if (config$cv_posterior < 0) {
     stop("config$cv_posterior must be >0.")
   }
-  if (config$plot != TRUE && config$plot != FALSE) {
-    stop("config$plot must be TRUE or FALSE.")
-  }
 }
 
 viapply <- function(X, FUN, ...) {
@@ -443,4 +431,16 @@ vnapply <- function(X, FUN, ...) {
 
 vcapply <- function(X, FUN, ...) {
   vapply(X, FUN, character(1), ...)
+}
+
+## This function was contributed by Rich Fitzjohn. It modifies default arguments
+## using user-provided values. The argument 'strict' triggers and error
+## behaviour: if strict==TRUE: all new values need to be part of the defaults.
+
+modify_defaults <- function(defaults, x, strict = TRUE) {
+  extra <- setdiff(names(x), names(defaults))
+  if (strict && (length(extra) > 0L)) {
+    stop("Additional invalid options: ", paste(extra, collapse=", "))
+  }
+  utils::modifyList(defaults, x, keep.null = TRUE) # keep.null is needed here
 }

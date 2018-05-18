@@ -42,23 +42,21 @@
 #'
 #' ## estimate the serial interval from data
 #' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-#'                      dist="G",
-#'                      init.pars=init_mcmc_params(MockRotavirus$si_data, "G"),
+#'                      dist = "G",
+#'                      init.pars = init_mcmc_params(MockRotavirus$si_data, "G"),
 #'                      burnin = 1000,
 #'                      n.samples = 5000)
 #'
 #' ## use coarse2estim to turn this in the right format for estimate_R
-#' si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
+#' si_sample <- coarse2estim(SI.fit, thin = 10)$si_sample
 #'
 #' ## use estimate_R to estimate the reproduction number
 #' ## based on these estimates of the serial interval
 #' R_si_from_sample <- estimate_R(MockRotavirus$incidence,
 #'                             method="si_from_sample",
 #'                             si_sample=si_sample,
-#'                             config = list(t_start = seq(2, 47), 
-#'                             t_end = seq(8, 53),
-#'                             n2 = 50,
-#'                             plot = TRUE))
+#'                             config = make_config(list(n2 = 50)))
+#' plot(R_si_from_sample)
 #' }
 #'
 coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,

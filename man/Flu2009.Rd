@@ -38,15 +38,12 @@ in San Antonio, Texas, USA (see references).
 data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
-estimate_R(Flu2009$incidence, method="non_parametric_si",
-          config=list(t_start = seq(2, 26), 
-                      t_end = seq(8, 32),
-                      si_distr = Flu2009$si_distr,
-                      plot = TRUE)
-          )
-# the second plot produced shows, at each each day,
-# the estimate of the reproduction number
-# over the 7-day window finishing on that day.
+res <- estimate_R(Flu2009$incidence, method="non_parametric_si",
+          config = make_config(list(si_distr = Flu2009$si_distr)))
+plot(res)
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number
+## over the 7-day window finishing on that day.
 
 \dontrun{
 ## Note the following examples use an MCMC routine
@@ -54,19 +51,17 @@ estimate_R(Flu2009$incidence, method="non_parametric_si",
 ## so they may take a few minutes to run
 
 ## estimate the reproduction number (method "si_from_data")
-estimate_R(Flu2009$incidence, method="si_from_data",
+res <- estimate_R(Flu2009$incidence, method="si_from_data",
           si_data = Flu2009$si_data,
-          config=list(t_start = seq(2, 26), 
-                      t_end = seq(8, 32),
-                      mcmc_control = list(burnin = 1000,
-                                 thin = 10, seed = 1),
+          config = make_config(list(mcmc_control = make_mcmc_control(list(
+                                 burnin = 1000,
+                                 thin = 10, seed = 1)),
                       n1 = 1000, n2 = 50,
-                      si_parametric_distr = "G",
-                      plot = TRUE)
-          )
-# the second plot produced shows, at each each day,
-# the estimate of the reproduction number
-# over the 7-day window finishing on that day.
+                      si_parametric_distr = "G")))
+plot(res)
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number
+## over the 7-day window finishing on that day.
 }
 
 

@@ -25,15 +25,15 @@ and shift 1 day (see references).
 data("Smallpox1972")
 
 ## estimate the reproduction number (method "non_parametric_si")
-estimate_R(Smallpox1972$incidence, method="non_parametric_si",
-          config=list(t_start = seq(27, 51), 
+res <- estimate_R(Smallpox1972$incidence, method="non_parametric_si",
+          config = make_config(list(
+                      t_start = seq(27, 51), 
                       t_end = seq(33, 57),
-                      si_distr = Smallpox1972$si_distr,
-                      plot = TRUE)
-          )
-# the second plot produced shows, at each each day,
-# the estimate of the reproduction number
-# over the 7-day window finishing on that day.
+                      si_distr = Smallpox1972$si_distr)))
+plot(res)
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number
+## over the 7-day window finishing on that day.
 }
 \references{
 {

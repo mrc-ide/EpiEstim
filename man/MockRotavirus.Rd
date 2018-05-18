@@ -31,19 +31,16 @@ pairs of infector/infected individuals.
 data("MockRotavirus")
 
 ## estimate the reproduction number (method "si_from_data")
-estimate_R(MockRotavirus$incidence,
-          method="si_from_data",
-          si_data=MockRotavirus$si_data,
-          config=list(
-            t_start = seq(2, 47), 
-            t_end = seq(8, 53),
+res <- estimate_R(MockRotavirus$incidence,
+          method = "si_from_data",
+          si_data = MockRotavirus$si_data,
+          config = make_config(list(
             si_parametric_distr = "G",
-            mcmc_control = list(burnin = 3000, thin = 10),
-            n1 = 500, n2 = 50,
-            plot = TRUE)
-          )
-# the second plot produced shows, at each each day,
-# the estimate of the reproduction number
-# over the 7-day window finishing on that day.
+            mcmc_control = make_mcmc_control(list(burnin = 3000, thin = 10)),
+            n1 = 500, n2 = 50)))
+plot(res)
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number
+## over the 7-day window finishing on that day.
 }
 }
