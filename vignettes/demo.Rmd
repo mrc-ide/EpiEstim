@@ -84,7 +84,9 @@ standard deviation of the SI.
 ## Estimating R on sliding weekly windows, with a parametric serial interval
 
 In this example, we only specify the mean and standard deviation of the serial
-interval, as follows:
+interval. In that case an offset gamma distribution is used for the serial 
+interval. In the following example, we use the mean and standard deviation of the serial 
+interval for flu from Ferguson et al., Nature, 2005:
 ```{r estimate_r_parametric_si}
 res_parametric_si <- estimate_R(Flu2009$incidence, 
                   method="parametric_si",
@@ -114,7 +116,27 @@ distribution of the serial interval.
 
 ## Estimating R with a non parametric serial interval distribution
 
-COMING SOON!
+If one already has a full distribution of the serial interval, and not only a 
+mean and standard deviation, this can be fed into `estimate_r` as follows: 
+
+```{r estimate_r_non_parametric_si}
+res_non_parametric_si <- estimate_R(Flu2009$incidence, 
+                  method="non_parametric_si",
+                  config = make_config(list(
+                    si_distr = Flu2009$si_distr))
+                  )
+# si_distr gives the probability mass function of the serial interval for 
+# time intervals 0, 1, 2, etc.
+plot(res_non_parametric_si, "R")
+```
+
+Note that you can obtain such a full distribution of the serial interval using 
+`discr_si` function (this is how `Flu2009$si_distr` was obtained, with 
+additional rounding): 
+
+```{r discr_si}
+discr_si(0:20, mu = 2.6, sigma = 1.5)
+```
 
 ## Estimating R accounting for uncertainty on the serial interval distribution
 
