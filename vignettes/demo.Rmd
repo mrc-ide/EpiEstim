@@ -8,9 +8,9 @@ vignette: >
   %\VignetteIndexEntry{demonsration}
   \usepackage[utf8]{inputenc}
 ---
-
-
-
+  
+  
+  
 ```{r, echo = FALSE}
 
 knitr::opts_chunk$set(
@@ -60,9 +60,9 @@ Flu2009$si_distr
 ## (see Reich et al. Statist. Med. 2009).
 head(Flu2009$si_data)
 ```
-
+  
 We can use the `incidence` R package to easily plot the daily incidence data:
-
+  
 ```{r, incidence}
 library(incidence)
 plot(as.incidence(Flu2009$incidence$I, dates = Flu2009$incidence$dates))
@@ -89,11 +89,11 @@ interval. In the following example, we use the mean and standard deviation of th
 interval for flu from Ferguson et al., Nature, 2005:
 ```{r estimate_r_parametric_si}
 res_parametric_si <- estimate_R(Flu2009$incidence, 
-                  method="parametric_si",
-                  config = make_config(list(
-                    mean_si = 2.6, 
-                    std_si = 1.5))
-                  )
+                                method="parametric_si",
+                                config = make_config(list(
+                                  mean_si = 2.6, 
+                                  std_si = 1.5))
+)
 
 head(res_parametric_si$R)
 ```
@@ -121,10 +121,10 @@ mean and standard deviation, this can be fed into `estimate_r` as follows:
 
 ```{r estimate_r_non_parametric_si}
 res_non_parametric_si <- estimate_R(Flu2009$incidence, 
-                  method="non_parametric_si",
-                  config = make_config(list(
-                    si_distr = Flu2009$si_distr))
-                  )
+                                    method="non_parametric_si",
+                                    config = make_config(list(
+                                      si_distr = Flu2009$si_distr))
+)
 # si_distr gives the probability mass function of the serial interval for 
 # time intervals 0, 1, 2, etc.
 plot(res_non_parametric_si, "R")
@@ -140,11 +140,95 @@ discr_si(0:20, mu = 2.6, sigma = 1.5)
 
 ## Estimating R accounting for uncertainty on the serial interval distribution
 
-COMING SOON!
+Sometimes, especially early in outbreaks, the serial interval distribution can 
+be poorly specified. Therefore `estimate_R` also allows integrating results over 
+various distributions of the serial interval. To do so, the mean and sd of the 
+serial interval are each drawn from truncated normal distributions, with 
+parameters specified by the user, as in the example below: 
+
+```{r estimate_r_uncertain_si}
+## we choose to draw:
+## - the mean of the SI in a Normal(2.6, 1), truncated at 1 and 4.2
+## - the sd of the SI in a Normal(1.5, 0.5), truncated at 0.5 and 2.5
+config <- make_config(list(mean_si = 2.6, std_mean_si = 1,
+                           min_mean_si = 1, max_mean_si = 4.2,
+                           std_si = 1.5, std_std_si = 0.5,
+                           min_std_si = 0.5, max_std_si = 2.5))
+res_uncertain_si <- estimate_R(Flu2009$incidence,
+                               method = "uncertain_si",
+                               config = config)
+plot(res_uncertain_si, legend = FALSE) 
+## the third plot now shows all the SI distributions considered
+```
+
+Note that the results above are obtained numerically and thus can be slower to 
+compute. You can adjust the parameters governing the sample sizes by altering
+the default values of `config$n1` and `config$n2` (`n1` is the number of pairs
+of mean and sd of the SI that are drawn and `n2` is the size of the posterior
+sample drawn for each pair of mean, sd of SI). 
 
 ## Estimating R and the serial interval using data on pairs infector/infected
 
-COMING SOON!
+Usually, the serial interval distribution is estimated using data on the date of 
+symptoms onset in pairs of infectors / infected individuals. The serial interval 
+distribution estimate is then fed into reproduction number estimates. 
+Typically, a single SI distribution is used to estimate the 
+reproduction number throughout an outbreak. 
+
+This approach doesn't account for uncertainty in the serial interval 
+distribution, and doesn't allow to incorporate data collected later in the 
+outbreak which could inform the 
+serial interval distribution. 
+
+In `estimate_R`, we now allow the serial interval distribution to be directly
+estimated, using MCMC, from interval censored exposure data. The reproduction 
+number is then estimated using the posterior distribution of the SI, hence 
+accounting for the uncertainty associated with this estimate. 
+
+As the epidemic progresses, newly collected exposure data can be incorporated
+to update the serial interval estimate. 
+
+This method is new to `EpiEstim` and described in a manuscript in preparation
+(Thompson et al.).
+
+The `Flu2009` dataset contains interval-censored serial interval data from the 
+2009 outbreak of H1N1 
+influenza in San Antonio, Texas, USA (from Morgan et al., EID 2010).
+
+```{r si_data}
+## interval-ceonsored serial interval data:
+## each line represents a transmission event, 
+## EL/ER show the lower/upper bound of the symptoms onset date in the infector
+## SL/SR show the same for the secondary case
+## type has entries 0 corresponding to doubly interval-censored data
+## (see Reich et al. Statist. Med. 2009).
+head(Flu2009$si_data)
+```
+
+These can be used to estimate the SI within `estimate_R`, and produce estimates
+of the reproduction number based on the full SI posterior distribution:
+
+```{r estimate_r_si_from_data}
+## fixing the random seeds
+MCMC_seed <- 1
+overall_seed <- 2
+mcmc_control <- make_mcmc_control(seed = MCMC_seed, 
+                                  burnin = 1000)
+distr <- "G" # fitting a Gamma dsitribution for the SI
+config <- make_config(list(si_parametric_distr = distr,
+                           mcmc_control = mcmc_control,
+                           seed = overall_seed, 
+                           n1 = 50, 
+                           n2 = 50))
+res_si_from_data <- estimate_R(Flu2009$incidence,
+                               method = "si_from_data",
+                               si_data = Flu2009$si_data,
+                               config = config)
+
+plot(res_si_from_data)
+## the third plot now shows the posterior sample of SI distributions 
+## that were integrated over
+```
 
 ## Changing the time windows for estimation
 
@@ -156,13 +240,13 @@ T <- nrow(Flu2009$incidence)
 t_start <- seq(2, T-6) # starting at 2 as conditional on the past observations
 t_end <- t_start + 6 # adding 6 to get 7-day windows as bounds included in window
 res_weekly <- estimate_R(Flu2009$incidence, 
-                  method="parametric_si",
-                  config = make_config(list(
-                    t_start = t_start,
-                    t_end = t_end,
-                    mean_si = 2.6, 
-                    std_si = 1.5))
-                  )
+                         method="parametric_si",
+                         config = make_config(list(
+                           t_start = t_start,
+                           t_end = t_end,
+                           mean_si = 2.6, 
+                           std_si = 1.5))
+)
 plot(res_weekly, "R") 
 ```
 
@@ -171,13 +255,13 @@ For biweekly estimates:
 t_start <- seq(2, T-13) # starting at 2 as conditional on the past observations
 t_end <- t_start + 13 
 res_biweekly <- estimate_R(Flu2009$incidence, 
-                  method="parametric_si",
-                  config = make_config(list(
-                    t_start = t_start,
-                    t_end = t_end,
-                    mean_si = 2.6, 
-                    std_si = 1.5))
-                  )
+                           method="parametric_si",
+                           config = make_config(list(
+                             t_start = t_start,
+                             t_end = t_end,
+                             mean_si = 2.6, 
+                             std_si = 1.5))
+)
 plot(res_biweekly, "R") 
 ```
 
@@ -192,13 +276,13 @@ transmissibility.
 t_start <- c(2, 18, 25) # starting at 2 as conditional on the past observations
 t_end <- c(17, 24, 32)
 res_before_during_after_closure <- estimate_R(Flu2009$incidence, 
-                  method="parametric_si",
-                  config = make_config(list(
-                    t_start = t_start,
-                    t_end = t_end,
-                    mean_si = 2.6, 
-                    std_si = 1.5))
-                  )
+                                              method="parametric_si",
+                                              config = make_config(list(
+                                                t_start = t_start,
+                                                t_end = t_end,
+                                                mean_si = 2.6, 
+                                                std_si = 1.5))
+)
 plot(res_before_during_after_closure, "R") +
   geom_hline(aes(yintercept = 1), color = "red", lty = 2)
 ```
@@ -222,8 +306,8 @@ present it is used in the x-axes when producing plots:
 head(Flu2009$incidence)
 config <- make_config(list(mean_si = 2.6, std_si = 1.5))
 res_incid_table <- estimate_R(Flu2009$incidence, 
-                  method="parametric_si",
-                  config = config)
+                              method="parametric_si",
+                              config = config)
 plot(res_incid_table, "R")
 ```
 
@@ -231,8 +315,8 @@ It can just be a vector (but then the x-axis in your plots is measured in time
 steps since start of the outbreak)
 ```{r incid_vector}
 res_incid_vector <- estimate_R(Flu2009$incidence$I, 
-                  method="parametric_si",
-                  config = config)
+                               method="parametric_si",
+                               config = config)
 plot(res_incid_vector, "R")
 ```
 
@@ -252,8 +336,8 @@ and now use the `incidence` function to generate an object that we feed to
 ```{r incid_class}
 last_date <- Flu2009$incidence$date[T]
 res_incid_class <- estimate_R(incidence(dates_onset, last_date = last_date), 
-                  method="parametric_si",
-                  config = config)
+                              method="parametric_si",
+                              config = config)
 plot(res_incid_class, "R")
 ```
 
