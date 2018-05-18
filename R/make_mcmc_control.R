@@ -39,7 +39,8 @@
 #' the posterior distribution of the serial interval is estimated directly fom
 #' these data using MCMC methods implemented in the package
 #' 
-#' @return A list with components burnin, thin, seed, init_pars, which can be 
+#' @return An object of class \code{estimate_R_mcmc_control} with components 
+#' burnin, thin, seed, init_pars. This can be 
 #' used as an argument of function \code{make_config}.  
 #' @export
 #'
@@ -82,5 +83,6 @@ make_mcmc_control <- function(burnin = 3000, thin = 10,
                        burnin = burnin, 
                        thin = thin, 
                        seed = seed )
+  class(mcmc_control) <- "estimate_R_mcmc_control"
   return( mcmc_control )
 }

@@ -34,7 +34,8 @@
 #'   pairs of infector/infected individuals to be used to estimate the serial
 #'   interval distribution (see details).
 #'
-#' @param config A list as those returned by function \code{make_config}. 
+#' @param config An object of class \code{estimate_R_config}, as returned by 
+#' function \code{make_config}. 
 #'
 #' @return {
 #' a list with components:
@@ -205,10 +206,10 @@
 #'                             method = "si_from_data",
 #'                             si_data = MockRotavirus$si_data,
 #'                             config = make_config(list(si_parametric_distr = "G",
-#'                                         mcmc_control = list(burnin = 1000,
+#'                                         mcmc_control = make_mcmc_control(list(burnin = 1000,
 #'                                         thin = 10, seed = MCMC_seed),
 #'                                         n1 = 500, n2 = 50,
-#'                                         seed = overall_seed)))
+#'                                         seed = overall_seed))))
 #'
 #' ## compare with version with no uncertainty
 #' R_Parametric <- estimate_R(MockRotavirus$incidence,
@@ -240,7 +241,7 @@
 #'                                method = "si_from_sample",
 #'                                si_sample = si_sample,
 #'                                config = make_config(list(n2 = 50, 
-#'                                seed = overall_seed))
+#'                                seed = overall_seed)))
 #' plot(R_si_from_sample)
 #'
 #' ## check that R_si_from_sample is the same as R_si_from_data

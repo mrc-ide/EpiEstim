@@ -28,14 +28,12 @@ data("Flu1918")
 
 ## estimate the reproduction number (method "non_parametric_si")
 res <- estimate_R(Flu1918$incidence,
-          method="non_parametric_si",
-          config=list(t_start = seq(2, 86), 
-                      t_end = seq(8, 92),
-                      si_distr = Flu1918$si_distr))
+          method = "non_parametric_si",
+          config = make_config(list(si_distr = Flu1918$si_distr)))
 plot(res)
-# the second plot produced shows, at each each day,
-# the estimate of the reproduction number
-# over the 7-day window finishing on that day.
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number
+## over the 7-day window finishing on that day.
 }
 \references{
 {

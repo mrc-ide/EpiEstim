@@ -26,14 +26,14 @@ data("Measles1861")
 
 ## estimate the reproduction number (method "non_parametric_si")
 res <- estimate_R(Measles1861$incidence, method="non_parametric_si",
-          config=list(t_start = seq(17, 42), 
+          config = make_config(list(
+                t_start = seq(17, 42), 
                 t_end = seq(23, 48),
-                si_distr = Measles1861$si_distr)
-          )
+                si_distr = Measles1861$si_distr)))
 plot(res)
-# the second plot produced shows, at each each day,
-# the estimate of the reproduction number
-# over the 7-day window finishing on that day.
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number
+## over the 7-day window finishing on that day.
 }
 \references{
 Groendyke C. et al. (2011) Bayesian Inference for Contact 

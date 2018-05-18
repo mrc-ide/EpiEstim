@@ -40,7 +40,8 @@ interval distribution (see details).}
 \item{si_sample}{For method "si_from_sample" ; a matrix where each column
 gives one distribution of the serial interval to be explored (see details).}
 
-\item{config}{A list as those returned by function \code{make_config}.}
+\item{config}{An object of class \code{estimate_R_config}, as returned by 
+function \code{make_config}.}
 }
 \value{
 {
@@ -120,19 +121,31 @@ serial interval distribution to use for estimation of R. This can be a useful
 data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
-incid <- Flu2009$incidence
-method <- "non_parametric_si"
 ## when not specifying t_start and t_end in config, they are set to estimate
-## the reproduction number on sliding weekly windows
-config <- make_config(incid = incid, method = method, 
-                         si_distr = Flu2009$si_distr)
-                         
-res <- estimate_R(incid = incid, method = method,
-                  config = config)
+## the reproduction number on sliding weekly windows                          
+res <- estimate_R(incid = Flu2009$incidence, 
+                  method = "non_parametric_si",
+                  config = make_config(list(si_distr = Flu2009$si_distr)))
 plot(res)
 
 ## the second plot produced shows, at each each day,
 ## the estimate of the reproduction number over the 7-day window 
+## finishing on that day.
+
+## to specify t_start and t_end in config, e.g. to have biweekly sliding
+## windows      
+t_start <- seq(2, nrow(Flu2009$incidence)-13)   
+t_end <- t_start + 13                 
+res <- estimate_R(incid = Flu2009$incidence, 
+                  method = "non_parametric_si",
+                  config = make_config(list(
+                      si_distr = Flu2009$si_distr, 
+                      t_start = t_start, 
+                      t_end = t_end)))
+plot(res)
+
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number over the 14-day window 
 ## finishing on that day.
 
 ## example with an incidence object
@@ -148,8 +161,8 @@ incid <- incidence(data, groups = location)
 
 ## Estimate R with assumptions on serial interval
 res <- estimate_R(incid, method = "parametric_si",
-                  config = list(t_start = seq(2, 21), t_end = seq(8, 27),
-                  mean_si = 2.6, std_si = 1.5))
+                  config = make_config(list(
+                  mean_si = 2.6, std_si = 1.5)))
 plot(res)
 ## the second plot produced shows, at each each day,
 ## the estimate of the reproduction number over the 7-day window
@@ -157,8 +170,7 @@ plot(res)
 
 ## estimate the reproduction number (method "parametric_si")
 res <- estimate_R(Flu2009$incidence, method = "parametric_si",
-                  config = list(t_start = seq(2, 26), t_end = seq(8, 32),
-                  mean_si = 2.6, std_si = 1.5))
+                  config = make_config(list(mean_si = 2.6, std_si = 1.5)))
 plot(res)
 ## the second plot produced shows, at each each day,
 ## the estimate of the reproduction number over the 7-day window
@@ -166,12 +178,12 @@ plot(res)
 
 ## estimate the reproduction number (method "uncertain_si")
 res <- estimate_R(Flu2009$incidence, method = "uncertain_si",
-                  config = list(t_start = seq(2, 26), t_end = seq(8, 32),
+                  config = make_config(list(
                   mean_si = 2.6, std_mean_si = 1,
                   min_mean_si = 1, max_mean_si = 4.2,
                   std_si = 1.5, std_std_si = 0.5,
                   min_std_si = 0.5, max_std_si = 2.5,
-                  n1 = 100, n2 = 100))
+                  n1 = 100, n2 = 100)))
 plot(res)
 ## the bottom left plot produced shows, at each each day,
 ## the estimate of the reproduction number over the 7-day window
@@ -191,24 +203,21 @@ overall_seed <- 2
 R_si_from_data <- estimate_R(MockRotavirus$incidence,
                             method = "si_from_data",
                             si_data = MockRotavirus$si_data,
-                            config = list(t_start = seq(2, 47), 
-                                        t_end = seq(8, 53),
-                                        si_parametric_distr = "G",
-                                        mcmc_control = list(burnin = 1000,
+                            config = make_config(list(si_parametric_distr = "G",
+                                        mcmc_control = make_mcmc_control(list(burnin = 1000,
                                         thin = 10, seed = MCMC_seed),
                                         n1 = 500, n2 = 50,
-                                        seed = overall_seed))
+                                        seed = overall_seed))))
 
 ## compare with version with no uncertainty
 R_Parametric <- estimate_R(MockRotavirus$incidence,
                           method = "parametric_si",
-                          config = list(t_start = seq(2, 47), 
-                             t_end = seq(8, 53),
-                             mean_si = mean(R_si_from_data$SI.Moments$Mean),
-                             std_si = mean(R_si_from_data$SI.Moments$Std)))
+                          config = make_config(list(
+                          mean_si = mean(R_si_from_data$SI.Moments$Mean),
+                             std_si = mean(R_si_from_data$SI.Moments$Std))))
 ## generate plots
-p_uncertainty <- plots(R_si_from_data, "R", options_R=list(ylim=c(0, 1.5)))
-p_no_uncertainty <- plots(R_Parametric, "R", options_R=list(ylim=c(0, 1.5)))
+p_uncertainty <- plot(R_si_from_data, "R", options_R=list(ylim=c(0, 1.5)))
+p_no_uncertainty <- plot(R_Parametric, "R", options_R=list(ylim=c(0, 1.5)))
 gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
 
 ## the left hand side graph is with uncertainty in the SI distribution, the
@@ -225,13 +234,12 @@ SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
                  burnin = 1000,
                  n.samples = 5000,
                  seed = MCMC_seed)
-si_sample <- coarse2estim(SI.fit, thin=10)$si_sample
+si_sample <- coarse2estim(SI.fit, thin = 10)$si_sample
 R_si_from_sample <- estimate_R(MockRotavirus$incidence,
                                method = "si_from_sample",
                                si_sample = si_sample,
-                               config = list(t_start = seq(2, 47), 
-                               t_end = seq(8, 53),
-                               n2 = 50, seed = overall_seed))
+                               config = make_config(list(n2 = 50, 
+                               seed = overall_seed)))
 plot(R_si_from_sample)
 
 ## check that R_si_from_sample is the same as R_si_from_data

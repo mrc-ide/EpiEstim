@@ -26,14 +26,14 @@ data("Smallpox1972")
 
 ## estimate the reproduction number (method "non_parametric_si")
 res <- estimate_R(Smallpox1972$incidence, method="non_parametric_si",
-          config=list(t_start = seq(27, 51), 
+          config = make_config(list(
+                      t_start = seq(27, 51), 
                       t_end = seq(33, 57),
-                      si_distr = Smallpox1972$si_distr)
-          )
+                      si_distr = Smallpox1972$si_distr)))
 plot(res)
-# the second plot produced shows, at each each day,
-# the estimate of the reproduction number
-# over the 7-day window finishing on that day.
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number
+## over the 7-day window finishing on that day.
 }
 \references{
 {
