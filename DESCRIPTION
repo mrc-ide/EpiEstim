@@ -22,7 +22,8 @@ Imports:
     coda,
     incidence,
     scales,
-    grDevices
+    grDevices,
+    knitr
 Remotes:
     reconhub/incidence,
     nickreich/coarseDataTools@hackout3
