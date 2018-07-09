@@ -56,7 +56,7 @@
 #' predefined time windows can be obtained, for a given discrete distribution of
 #' the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
 #' Confidence intervals are obtained by simulating a number (config$n_sim) of
-#' possible transmission trees.
+#' possible transmission trees (only done if config$n_sim > 0).
 #'
 #' The methods vary in the way the serial interval distribution is specified.
 #'
@@ -113,13 +113,13 @@
 wallinga_teunis <- function(incid,
                             method = c("non_parametric_si", "parametric_si"),
                             config) {
-
+  
   ### Functions ###
-
+  
   #########################################################
   # Draws a possile transmission tree                     #
   #########################################################
-
+  
   draw_one_set_of_ancestries <- function() {
     res <- vector()
     for (t in seq(config$t_start[1], config$t_end[length(config$t_end)]))
@@ -144,11 +144,11 @@ wallinga_teunis <- function(incid,
     }
     return(res)
   }
-
+  
   ### Error messages ###
-
+  
   method <- match.arg(method)
-
+  
   incid <- process_I(incid)
   if (!is.null(incid$dates)) {
     dates <- check_dates(incid)
@@ -159,11 +159,11 @@ wallinga_teunis <- function(incid,
     T <- length(incid)
     dates <- seq_len(T)
   }
-
-
+  
+  
   ### Adjusting t_start and t_end so that at least an incident case has been
   ### observed before t_start[1] ###
-
+  
   i <- 1
   while (sum(incid[seq_len(config$t_start[i] - 1)]) == 0) {
     i <- i + 1
@@ -173,20 +173,20 @@ wallinga_teunis <- function(incid,
     config$t_start <- config$t_start[-temp]
     config$t_end <- config$t_end[-temp]
   }
-
+  
   check_times(config$t_start, config$t_end, T)
   nb_time_periods <- length(config$t_start)
-
+  
   if (is.null(config$n_sim)) {
     config$n_sim <- 10
     warning("setting config$n_sim to 10 as config$n_sim was not specified. ")
   }
-
+  
   if (method == "non_parametric_si") {
     check_si_distr(config$si_distr)
     config$si_distr <- c(config$si_distr, 0)
   }
-
+  
   if (method == "parametric_si") {
     if (is.null(config$mean_si)) {
       stop("method non_parametric_si requires to specify the config$mean_si
@@ -203,35 +203,35 @@ wallinga_teunis <- function(incid,
       stop("method parametric_si requires a >0 value for config$std_si.")
     }
   }
-
+  
   if (!is.numeric(config$n_sim)) {
     stop("config$n_sim must be a positive integer.")
   }
-  if (config$n_sim <= 0) {
+  if (config$n_sim < 0) {
     stop("config$n_sim must be a positive integer.")
   }
-
+  
   ### What does each method do ###
-
+  
   if (method == "non_parametric_si") {
     parametric_si <- "N"
   }
   if (method == "parametric_si") {
     parametric_si <- "Y"
   }
-
+  
   if (parametric_si == "Y") {
     config$si_distr <- discr_si(seq(0,T - 1), config$mean_si, config$std_si)
   }
   if (length(config$si_distr) < T + 1) {
     config$si_distr[seq(length(config$si_distr) + 1, T + 1)] <- 0
   }
-
+  
   final_mean_si <- sum(config$si_distr * (seq(0, length(config$si_distr) - 1)))
   final_std_si <- sqrt(sum(config$si_distr * 
                              (seq(0, length(config$si_distr) - 1))^2) - 
                          final_mean_si^2)
-
+  
   time_periods_with_no_incidence <- vector()
   for (i in seq_len(nb_time_periods))
   {
@@ -244,13 +244,13 @@ wallinga_teunis <- function(incid,
     config$t_end <- config$t_end[-time_periods_with_no_incidence]
     nb_time_periods <- length(config$t_start)
   }
-
+  
   Onset <- vector()
   for (t in seq_len(T)) {
     Onset <- c(Onset, rep(t, incid[t]))
   }
   NbCases <- length(Onset)
-
+  
   delay <- outer(seq_len(T), seq_len(T), "-")
   si_delay <- apply(delay, 2, function(x) 
     config$si_distr[pmin(pmax(x + 1, 1), length(config$si_distr))])
@@ -266,7 +266,7 @@ wallinga_teunis <- function(incid,
   p <- si_delay / (mat_sum_on_col_si_delay)
   p[which(is.na(p))] <- 0
   p[which(is.infinite(p))] <- 0
-
+  
   mean_r_per_index_case_date <- vnapply(seq_len(ncol(p)), function(j) 
     sum(p[, j] * incid, na.rm = TRUE))
   mean_r_per_date_wt <- vnapply(seq_len(nb_time_periods), function(i) 
@@ -276,40 +276,49 @@ wallinga_teunis <- function(incid,
                                                    config$t_end[i]) == 1)],
              incid[which((seq_len(T) >= config$t_start[i]) * 
                            (seq_len(T) <= config$t_end[i]) == 1)])))
-
-  possible_ances_time <- lapply(seq_len(T), function(t) 
-    (t - (which(config$si_distr != 0)) + 
-       1)[which(t - (which(config$si_distr != 0)) + 1 > 0)])
   
-  ancestries_time <- t(vapply(seq_len(config$n_sim), function(i) 
-    draw_one_set_of_ancestries(), numeric(sum(incid))))
-
-  r_sim <- vapply(seq_len(nb_time_periods), function(i) 
-    rowSums((ancestries_time[, ] >= config$t_start[i]) * 
-              (ancestries_time[, ] <= config$t_end[i]), na.rm = TRUE) / 
-      sum(incid[seq(config$t_start[i], config$t_end[i])]), 
-    numeric(config$n_sim))
-
-  r025_wt <- apply(r_sim, 2, quantile, 0.025, na.rm = TRUE)
-  r025_wt <- r025_wt[which(!is.na(r025_wt))]
-  r975_wt <- apply(r_sim, 2, quantile, 0.975, na.rm = TRUE)
-  r975_wt <- r975_wt[which(!is.na(r975_wt))]
-  std_wt <- apply(r_sim, 2, sd, na.rm = TRUE)
-  std_wt <- std_wt[which(!is.na(std_wt))]
-
+  if(config$n_sim>0)
+  {
+    possible_ances_time <- lapply(seq_len(T), function(t) 
+      (t - (which(config$si_distr != 0)) + 
+         1)[which(t - (which(config$si_distr != 0)) + 1 > 0)])
+    
+    
+    ancestries_time <- t(vapply(seq_len(config$n_sim), function(i) 
+      draw_one_set_of_ancestries(), numeric(sum(incid))))
+    
+    r_sim <- vapply(seq_len(nb_time_periods), function(i) 
+      rowSums((ancestries_time[, ] >= config$t_start[i]) * 
+                (ancestries_time[, ] <= config$t_end[i]), na.rm = TRUE) / 
+        sum(incid[seq(config$t_start[i], config$t_end[i])]), 
+      numeric(config$n_sim))
+    
+    r025_wt <- apply(r_sim, 2, quantile, 0.025, na.rm = TRUE)
+    r025_wt <- r025_wt[which(!is.na(r025_wt))]
+    r975_wt <- apply(r_sim, 2, quantile, 0.975, na.rm = TRUE)
+    r975_wt <- r975_wt[which(!is.na(r975_wt))]
+    std_wt <- apply(r_sim, 2, sd, na.rm = TRUE)
+    std_wt <- std_wt[which(!is.na(std_wt))]
+  }else
+  {
+    r025_wt <- rep(NA, length(mean_r_per_date_wt))
+    r975_wt <- rep(NA, length(mean_r_per_date_wt))
+    std_wt <- rep(NA, length(mean_r_per_date_wt))
+  }
+  
   results <- list(R = as.data.frame(cbind(config$t_start,
                                           config$t_end, mean_r_per_date_wt,
                                           std_wt, r025_wt, r975_wt)))
-
+  
   names(results$R) <- c("t_start", "t_end", "Mean(R)", "Std(R)",
                         "Quantile.0.025(R)", "Quantile.0.975(R)")
-
+  
   results$method <- method
   results$si_distr <- config$si_distr
-
+  
   results$SI.Moments <- as.data.frame(cbind(final_mean_si, final_std_si))
   names(results$SI.Moments) <- c("Mean", "Std")
-
+  
   if (!is.null(dates)) {
     results$dates <- dates
   }
@@ -317,7 +326,7 @@ wallinga_teunis <- function(incid,
   results$I_local <- incid
   results$I_local[1] <- 0
   results$I_imported <- c(incid[1], rep(0, length(incid) - 1))
-
+  
   class(results) <- "estimate_R"
   return(results)
 }
