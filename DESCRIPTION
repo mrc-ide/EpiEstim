@@ -1,8 +1,8 @@
-Package: EpiEstim
+Package: EpiEstimUncertaintyI
 Version: 1.0-0
 Date: 2012/01/17
-Title: EpiEstim: a package to estimate time varying reproduction
-    numbers from epidemic curves
+Title: EpiEstimUncertaintyI: a package to estimate time varying reproduction
+    numbers from a range of epidemic curves
 Author: Anne Cori <a.cori@imperial.ac.uk>
 Maintainer: Anne Cori <a.cori@imperial.ac.uk>
 Description: This package provides tools to quantify transmissibility throughout
@@ -28,4 +28,4 @@ Remotes:
 License: GPL (>=2)
 LazyLoad: yes
 Packaged: 2012-05-30 10:35:03 UTC; acori
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

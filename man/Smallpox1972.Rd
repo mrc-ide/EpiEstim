@@ -39,4 +39,3 @@ Gani R. and S. Leach (2001) Transmission potential of smallpox in contemporary p
 Riley S. and N. M. Ferguson (2006) Smallpox transmission and control: spatial dynamics in Great Britain. Proc Natl Acad Sci U S A 103(33): 12637-12642.
 }
 }
-

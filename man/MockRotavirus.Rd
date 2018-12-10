@@ -45,4 +45,3 @@ EstimateR(MockRotavirus$Incidence,
 XXX TO BE COMPLETED XXX
 }
 }
-

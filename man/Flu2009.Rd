@@ -39,4 +39,3 @@ Cauchemez S. et al. (2011) Role of social networks in shaping disease transmissi
 Ferguson N.M. et al. (2005) Strategies for containing an emerging influenza pandemic in Southeast Asia. Nature 437(7056), 209-214.
 }
 }
-

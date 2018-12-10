@@ -58,10 +58,9 @@ p_Rc <- plots(R_c, "R", ylim=c(0,4)) # plots the estimated case reproduction num
 gridExtra::grid.arrange(p_I,p_SI,p_Ri,p_Rc,ncol=2)
 
 }
-\author{
-Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori \email{a.cori@imperial.ac.uk}
-}
 \seealso{
 \code{\link{EstimateR}} and \code{\link{WT}}
 }
-
+\author{
+Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori \email{a.cori@imperial.ac.uk}
+}

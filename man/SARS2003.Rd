@@ -37,4 +37,3 @@ Cori A. et al. (2009) Temporal variability and social heterogeneity in disease t
 Lipsitch M. et al. (2003) Transmission dynamics and control of severe acute respiratory syndrome. Science 300(5627): 1966-1970.
 }
 }
-

@@ -54,10 +54,9 @@ R_SIFromSample <- EstimateR(MockRotavirus$Incidence,
 }
 
 }
-\author{
-The Hackout3 Parameter Estimation team.
-}
 \seealso{
 \code{\link{EstimateR}}
 }
-
+\author{
+The Hackout3 Parameter Estimation team.
+}

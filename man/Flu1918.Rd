@@ -45,4 +45,3 @@ Vynnycky E. et al. (2007) Estimates of the reproduction numbers of Spanish influ
 White L.F. and M. Pagano (2008) Transmissibility of the influenza virus in the 1918 pandemic. PLoS One 3(1): e1498.
 }
 }
-

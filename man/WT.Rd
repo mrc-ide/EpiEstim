@@ -88,9 +88,6 @@ WT(Flu2009$Incidence, T.Start=2:26, T.End=8:32, method="ParametricSI",
 # the second plot produced shows, at each each day, 
 # the estimate of the cqse reproduction number over the 7-day window finishing on that day.
 }
-\author{
-Anne Cori \email{a.cori@imperial.ac.uk}
-}
 \references{
 {
 Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
@@ -100,4 +97,6 @@ Wallinga, J. and P. Teunis. Different epidemic curves for severe acute respirato
 \seealso{
 \code{\link{DiscrSI}}, \code{\link{EstimateR}}
 }
-
+\author{
+Anne Cori \email{a.cori@imperial.ac.uk}
+}

@@ -285,9 +285,6 @@ all(R_SIFromSample$R$`Mean(R)` == R_SIFromData$R$`Mean(R)`)
 }
 
 }
-\author{
-Anne Cori \email{a.cori@imperial.ac.uk}
-}
 \references{
 {
 Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
@@ -298,4 +295,6 @@ Reich, N.G. et al. Estimating incubation period distributions with coarse data (
 \seealso{
 \code{\link{DiscrSI}}
 }
-
+\author{
+Anne Cori \email{a.cori@imperial.ac.uk}
+}

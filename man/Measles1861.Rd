@@ -33,4 +33,3 @@ EstimateR(Measles1861$Incidence,
 \references{
 Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 }
-
