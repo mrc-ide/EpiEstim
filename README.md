@@ -1,4 +1,9 @@
 # EpiEstim
+
+<!-- badges: start -->
+[![Travis build status](https://travis-ci.org/annecori/EpiEstim.svg?branch=master)](https://travis-ci.org/annecori/EpiEstim)
+<!-- badges: end -->
+
 A tool to estimate time varying instantaneous reproduction number during epidemics
 
 This tool is described in the following paper: 
