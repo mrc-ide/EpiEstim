@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/annecori/EpiEstim.svg?branch=master)](https://travis-ci.org/annecori/EpiEstim)
+[![Codecov test coverage](https://codecov.io/gh/annecori/EpiEstim/branch/master/graph/badge.svg)](https://codecov.io/gh/annecori/EpiEstim?branch=master)
 <!-- badges: end -->
 
 A tool to estimate time varying instantaneous reproduction number during epidemics
