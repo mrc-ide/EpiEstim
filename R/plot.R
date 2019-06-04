@@ -109,8 +109,6 @@
 #'   geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
 #'   scale_colour_manual scale_fill_manual scale_linetype_manual lims
 #'
-#' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
-#'
 #' @importFrom graphics plot
 #'
 #' @importFrom incidence as.incidence

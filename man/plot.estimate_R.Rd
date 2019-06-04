@@ -5,10 +5,11 @@
 \title{Plot outputs of estimate_r}
 \usage{
 \method{plot}{estimate_R}(x, what = c("all", "incid", "R", "SI"),
-  add_imported_cases = FALSE, options_I = list(col = palette(), transp =
-  0.7, xlim = NULL, ylim = NULL), options_R = list(col = palette(), transp =
-  0.2, xlim = NULL, ylim = NULL), options_SI = list(prob_min = 0.001, col =
-  "black", transp = 0.25, xlim = NULL, ylim = NULL), legend = TRUE, ...)
+  add_imported_cases = FALSE, options_I = list(col = palette(), transp
+  = 0.7, xlim = NULL, ylim = NULL), options_R = list(col = palette(),
+  transp = 0.2, xlim = NULL, ylim = NULL), options_SI = list(prob_min =
+  0.001, col = "black", transp = 0.25, xlim = NULL, ylim = NULL),
+  legend = TRUE, ...)
 }
 \arguments{
 \item{x}{The output of function \code{\link{estimate_R}} or function

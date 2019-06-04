@@ -64,7 +64,7 @@ Estimates of the case reproduction number for an epidemic over
 predefined time windows can be obtained, for a given discrete distribution of
 the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
 Confidence intervals are obtained by simulating a number (config$n_sim) of
-possible transmission trees.
+possible transmission trees (only done if config$n_sim > 0).
 
 The methods vary in the way the serial interval distribution is specified.
 

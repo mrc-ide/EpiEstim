@@ -82,10 +82,9 @@
 #'   and P. Teunis. Different epidemic curves for severe acute respiratory
 #'   syndrome reveal similar impacts of control measures (AJE 2004). }
 #' @export
-#' @import reshape2 grid gridExtra
+#' @import reshape2 gridExtra
 #' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon
 #'   geom_line xlab ylab xlim geom_hline ylim geom_histogram
-#' @importFrom plotly layout mutate arrange rename summarise filter ggplotly
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
 #' data("Flu2009")

@@ -8,8 +8,8 @@
 estimate the serial interval within \code{estimate_R} (with method 
 "si_from_data").}
 \usage{
-make_mcmc_control(burnin = 3000, thin = 10, seed = as.integer(Sys.time()),
-  init_pars = NULL)
+make_mcmc_control(burnin = 3000, thin = 10,
+  seed = as.integer(Sys.time()), init_pars = NULL)
 }
 \arguments{
 \item{burnin}{A positive integer giving the burnin used in the MCMC when

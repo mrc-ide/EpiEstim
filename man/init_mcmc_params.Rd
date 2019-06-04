@@ -6,7 +6,8 @@
 estimate the serial interval, e.g. when using option \code{si_from_data} in 
 \code{estimate_R}}
 \usage{
-init_mcmc_params(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
+init_mcmc_params(si_data, dist = c("G", "W", "L", "off1G", "off1W",
+  "off1L"))
 }
 \arguments{
 \item{si_data}{the data on dates of symptoms of pairs of infector/infected
