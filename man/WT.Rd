@@ -15,7 +15,8 @@ WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
 
 \item{T.End}{see \code{config$t_end} in \code{wallinga_teunis}}
 
-\item{method}{see method in \code{wallinga_teunis} (but WT uses CamelCase where wallinga_teunis uses snake_case for the method names)}
+\item{method}{see method in \code{wallinga_teunis} (but WT uses CamelCase 
+where wallinga_teunis uses snake_case for the method names)}
 
 \item{Mean.SI}{see \code{config$mean_si} in \code{wallinga_teunis}}
 
@@ -25,7 +26,7 @@ WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
 
 \item{nSim}{see \code{config$n_sim} in \code{wallinga_teunis}}
 
-\item{plot}{see \code{config$plot} in \code{wallinga_teunis}}
+\item{plot}{Not used anymore, only there for compatibility}
 
 \item{leg.pos}{Not used anymore, only there for compatibility}
 }

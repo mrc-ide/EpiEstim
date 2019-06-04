@@ -4,37 +4,45 @@
 \name{SARS2003}
 \alias{SARS2003}
 \title{Data on the 2003 SARS epidemic in Hong Kong.}
-\format{A list of two elements: 
+\format{A list of two elements:
 \describe{
   \item{incidence}{a vector containing 107 days of observation,}
   \item{si_distr}{a vector containing a set of 25 probabilities.}
 }}
 \source{
-Cori A. et al. (2009) Temporal variability and social heterogeneity in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): e1000471.
+Cori A. et al. (2009) Temporal variability and social heterogeneity 
+in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8)
+: e1000471.
 }
 \description{
-This data set gives:
-1/ the daily incidence of onset of symptoms in Hong Kong during the 2003 severe acute respiratory syndrome (SARS) epidemic (see source and references),
-2/ the discrete daily distribution of the serial interval for SARS, assuming a shifted Gamma distribution with mean 8.4 days, standard deviation 3.8 days and shift 1 day (see references).
+This data set gives: 1/ the daily incidence of onset of symptoms in Hong Kong
+during the 2003 severe acute respiratory syndrome (SARS) epidemic (see source
+and references), 2/ the discrete daily distribution of the serial interval
+for SARS, assuming a shifted Gamma distribution with mean 8.4 days, standard
+deviation 3.8 days and shift 1 day (see references).
 }
 \examples{
 ## load data on SARS in Hong Kong in 2003
 data("SARS2003")
 
 ## estimate the reproduction number (method "non_parametric_si")
-estimate_r(SARS2003$incidence, method="non_parametric_si",
-          config=list(t_start=14:101, t_end=20:107, 
-                      si_distr=SARS2003$si_distr, 
-                      plot=TRUE)
-          )
-# the second plot produced shows, at each each day, 
-# the estimate of the reproduction number 
-# over the 7-day window finishing on that day.
+res <- estimate_R(SARS2003$incidence, method="non_parametric_si",
+          config = make_config(list(
+                      t_start = seq(14, 101), 
+                      t_end = seq(20, 107),
+                      si_distr = SARS2003$si_distr)))
+plot(res)
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number
+## over the 7-day window finishing on that day.
 }
 \references{
 {
-Cori A. et al. (2009) Temporal variability and social heterogeneity in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): e1000471.
+Cori A. et al. (2009) Temporal variability and social heterogeneity in 
+disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): 
+e1000471.
 
-Lipsitch M. et al. (2003) Transmission dynamics and control of severe acute respiratory syndrome. Science 300(5627): 1966-1970.
+Lipsitch M. et al. (2003) Transmission dynamics and control of severe acute 
+respiratory syndrome. Science 300(5627): 1966-1970.
 }
 }

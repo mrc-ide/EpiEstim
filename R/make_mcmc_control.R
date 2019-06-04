@@ -1,0 +1,88 @@
+#' make_mcmc_control Creates a list of mcmc control parameters to be used in 
+#' \code{config$mcmc_control}, where \code{config} is an argument of the 
+#' \code{estimate_R} function. This is used to configure the MCMC chain used to 
+#' estimate the serial interval within \code{estimate_R} (with method 
+#' "si_from_data").
+#'
+#' @param burnin A positive integer giving the burnin used in the MCMC when
+#'   estimating the serial interval distribution.
+#' @param thin A positive integer corresponding to thinning parameter; the MCMC
+#'   will be run for \code{burnin+n1*thin iterations}; 1 in \code{thin}
+#'   iterations will be recorded, after the burnin phase, so the posterior
+#'   sample size is n1.
+#' @param seed An integer used as the seed for the random number generator at
+#'   the start of the MCMC estimation; useful to get reproducible results.
+#' @param init_pars vector of size 2 corresponding to the initial values of
+#'   parameters to use for the SI distribution. This is the shape and scale for
+#'   all but the lognormal distribution, for which it is the meanlog and
+#'   sdlog. 
+#'
+#' @details
+#' The argument \code{si_data}, should be a dataframe with 5
+#'  columns:
+#' \itemize{
+#' \item{EL: the lower bound of the symptom onset date of the infector (given as
+#'  an integer)}
+#' \item{ER: the upper bound of the symptom onset date of the infector (given as
+#'  an integer). Should be such that ER>=EL}
+#' \item{SL: the lower bound of the symptom onset date of the infected
+#' indivdiual (given as an integer)}
+#' \item{SR: the upper bound of the symptom onset date of the infected
+#' indivdiual (given as an integer). Should be such that SR>=SL}
+#' \item{type (optional): can have entries 0, 1, or 2, corresponding to doubly
+#' interval-censored, single interval-censored or exact observations,
+#' respectively, see Reich et al. Statist. Med. 2009. If not specified, this
+#' will be automatically computed from the dates}
+#' }
+#' Assuming a given parametric distribution for the serial interval distribution
+#'  (specified in \code{si_parametric_distr}),
+#' the posterior distribution of the serial interval is estimated directly fom
+#' these data using MCMC methods implemented in the package
+#' 
+#' @return An object of class \code{estimate_R_mcmc_control} with components 
+#' burnin, thin, seed, init_pars. This can be 
+#' used as an argument of function \code{make_config}.  
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' ## Note the following examples use an MCMC routine
+#' ## to estimate the serial interval distribution from data,
+#' ## so they may take a few minutes to run
+#'
+#' ## load data on rotavirus
+#' data("MockRotavirus")
+#'
+#' ## estimate the reproduction number (method "si_from_data")
+#' mcmc_seed <- 1
+#' burnin <- 1000
+#' thin <- 10
+#' mcmc_control <- make_mcmc_control(burnin = burnin, thin = thin, 
+#'                      seed = mcmc_seed)
+#' 
+#' incid <- MockRotavirus$incidence
+#' method <- "si_from_data"
+#' overall_seed <- 2
+#' config <- make_config(incid = incid, 
+#'                      method = method, 
+#'                      si_parametric_distr = "G",
+#'                      mcmc_control = mcmc_control,
+#'                      n1 = 500
+#'                      n2 = 50,
+#'                      seed = overall_seed)
+#' 
+#' R_si_from_data <- estimate_R(incid,
+#'                             method = method,
+#'                             si_data = MockRotavirus$si_data,
+#'                             config = config)
+#' }
+make_mcmc_control <- function(burnin = 3000, thin = 10, 
+                              seed = as.integer(Sys.time()), 
+                              init_pars = NULL){
+  mcmc_control <- list(init_pars = init_pars, 
+                       burnin = burnin, 
+                       thin = thin, 
+                       seed = seed )
+  class(mcmc_control) <- "estimate_R_mcmc_control"
+  return( mcmc_control )
+}

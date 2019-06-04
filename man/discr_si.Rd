@@ -2,47 +2,63 @@
 % Please edit documentation in R/discr_si.R
 \name{discr_si}
 \alias{discr_si}
-\title{Discretized Generation Time Distribution Assuming A Shifted Gamma Distribution}
+\title{Discretized Generation Time Distribution Assuming A Shifted Gamma 
+Distribution}
 \usage{
 discr_si(k, mu, sigma)
 }
 \arguments{
-\item{k}{Positive integer, or vector of positive ingerers for which the discrete distribution is desired.}
+\item{k}{Positive integer, or vector of positive ingerers for which the 
+discrete distribution is desired.}
 
 \item{mu}{A positive real giving the mean of the Gamma distribution.}
 
-\item{sigma}{A non-negative real giving the standard deviation of the Gamma distribution.}
+\item{sigma}{A non-negative real giving the standard deviation of the Gamma 
+distribution.}
 }
 \value{
-Gives the discrete probability \eqn{w_k} that the serial interval is equal to \eqn{k}.
+Gives the discrete probability \eqn{w_k} that the serial interval is 
+equal to \eqn{k}.
 }
 \description{
-\code{discr_si} computes the discrete distribution of the serial interval, assuming that the serial interval is shifted Gamma distributed, with shift 1.
+\code{discr_si} computes the discrete distribution of the serial interval, 
+assuming that the serial interval is shifted Gamma distributed, with shift 1.
 }
 \details{
 {
-Assuming that the serial interval is shifted Gamma distributed with mean \eqn{\mu}, standard deviation \eqn{\sigma} and shift \eqn{1}, 
-the discrete probability \eqn{w_k} that the serial interval is equal to \eqn{k} is: 
+Assuming that the serial interval is shifted Gamma distributed with mean 
+\eqn{\mu}, standard deviation \eqn{\sigma} and shift \eqn{1},
+the discrete probability \eqn{w_k} that the serial interval is equal to 
+\eqn{k} is:
 
-\deqn{w_k = kF_{\{\mu-1,\sigma\}}(k)+(k-2)F_{\{\mu-1,\sigma\}}(k-2)-2(k-1)F_{\{\mu-1,\sigma\}}(k-1)\\+(\mu-1)(2F_{\{\mu-1+\frac{\sigma^2}{\mu-1},\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-1)-F_{\{\mu-1+\frac{\sigma^2}{\mu-1},\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-2)-F_{\{\mu-1+\frac{\sigma^2}{\mu-1},\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k))}
+\deqn{w_k = kF_{\{\mu-1,\sigma\}}(k)+(k-2)F_{\{\mu-1,\sigma\}}
+(k-2)-2(k-1)F_{\{\mu-1,\sigma\}}(k-1)\\
++(\mu-1)(2F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
+\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-1)-
+F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
+\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-2)-
+F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
+\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k))}
 
-where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma distribution with mean \eqn{\mu} and standard deviation \eqn{\sigma}.
+where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma 
+distribution with mean \eqn{\mu} and standard deviation \eqn{\sigma}.
 }
 }
 \examples{
 ## Computing the discrete serial interval of influenza
 mean_flu_si <- 2.6
 sd_flu_si <- 1.5
-dicrete_si_distr <- discr_si(0:20, mean_flu_si, sd_flu_si)
-plot(0:20, dicrete_si_distr, type = "h", 
+dicrete_si_distr <- discr_si(seq(0, 20), mean_flu_si, sd_flu_si)
+plot(seq(0, 20), dicrete_si_distr, type = "h",
           lwd = 10, lend = 1, xlab = "time (days)", ylab = "frequency")
 title(main = "Discrete distribution of the serial interval of influenza")
 }
 \references{
-Cori, A. et al. A new framework and software to estimate time-varying reproduction numbers during epidemics (AJE 2013).
+Cori, A. et al. A new framework and software to estimate 
+time-varying reproduction numbers during epidemics (AJE 2013).
 }
 \seealso{
-\code{\link{overall_infectivity}}, \code{\link{estimate_r}}
+\code{\link{overall_infectivity}}, \code{\link{estimate_R}}
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}

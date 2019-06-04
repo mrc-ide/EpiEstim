@@ -4,39 +4,46 @@
 \name{Smallpox1972}
 \alias{Smallpox1972}
 \title{Data on the 1972 smallpox epidemic in Kosovo}
-\format{A list of two elements: 
+\format{A list of two elements:
 \describe{
   \item{incidence}{a vector containing 57 days of observation,}
   \item{si_distr}{a vector containing a set of 46 probabilities.}
 }}
 \source{
-Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health Organization.
+Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World 
+Health Organization.
 }
 \description{
-This data set gives:
-1/ the daily incidence of onset of symptoms in Kosovo during the 1972 smallpox epidemic (see source and references),
-2/ the discrete daily distribution of the serial interval for smallpox, assuming a shifted Gamma distribution with mean 22.4 days, standard deviation 6.1 days and shift 1 day (see references).
+This data set gives: 1/ the daily incidence of onset of symptoms in Kosovo
+during the 1972 smallpox epidemic (see source and references), 2/ the
+discrete daily distribution of the serial interval for smallpox, assuming a
+shifted Gamma distribution with mean 22.4 days, standard deviation 6.1 days
+and shift 1 day (see references).
 }
 \examples{
 ## load data on smallpox in Kosovo in 1972
 data("Smallpox1972")
 
 ## estimate the reproduction number (method "non_parametric_si")
-estimate_r(Smallpox1972$incidence, method="non_parametric_si",
-          config=list(t_start=27:51, t_end=33:57, 
-                      si_distr=Smallpox1972$si_distr, 
-                      plot=TRUE)
-          )
-# the second plot produced shows, at each each day, 
-# the estimate of the reproduction number 
-# over the 7-day window finishing on that day.
+res <- estimate_R(Smallpox1972$incidence, method="non_parametric_si",
+          config = make_config(list(
+                      t_start = seq(27, 51), 
+                      t_end = seq(33, 57),
+                      si_distr = Smallpox1972$si_distr)))
+plot(res)
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number
+## over the 7-day window finishing on that day.
 }
 \references{
 {
-Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health Organization.
+Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health 
+Organization.
 
-Gani R. and S. Leach (2001) Transmission potential of smallpox in contemporary populations. Nature 414(6865): 748-751.
+Gani R. and S. Leach (2001) Transmission potential of smallpox in 
+contemporary populations. Nature 414(6865): 748-751.
 
-Riley S. and N. M. Ferguson (2006) Smallpox transmission and control: spatial dynamics in Great Britain. Proc Natl Acad Sci U S A 103(33): 12637-12642.
+Riley S. and N. M. Ferguson (2006) Smallpox transmission and control: spatial
+ dynamics in Great Britain. Proc Natl Acad Sci U S A 103(33): 12637-12642.
 }
 }
