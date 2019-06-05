@@ -1,5 +1,5 @@
 Package: EpiEstim
-Version: 2.1-0
+Version: 2.2-0
 Title: EpiEstim: a package to estimate time varying reproduction
     numbers from epidemic curves
 Author: Anne Cori <a.cori@imperial.ac.uk>
