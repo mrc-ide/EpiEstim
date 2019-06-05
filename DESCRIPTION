@@ -23,7 +23,6 @@ Remotes:
     nickreich/coarseDataTools
 Suggests:
     testthat,
-    compare,
     utils,
     vdiffr,
     covr
