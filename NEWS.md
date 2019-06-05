@@ -1,4 +1,4 @@
-# EpiEstim 2.1-0
+# EpiEstim 2.2-0
 
 ## MISC
 
@@ -7,3 +7,11 @@
 * Remove un-used dependencies that were added during hackout3: plyr, grid, 
   and plotly (#74, @zkamvar)
 * Remove compare package from suggests and use test_that version. (#74, @zkamvar)
+
+# EpiEstim 2.1-0
+
+* TBD
+
+# EpiEstim 2.0-0
+
+* TBD
