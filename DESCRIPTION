@@ -1,5 +1,5 @@
 Package: EpiEstim
-Version: 2.1-0
+Version: 2.2-0
 Title: EpiEstim: a package to estimate time varying reproduction
     numbers from epidemic curves
 Author: Anne Cori <a.cori@imperial.ac.uk>
@@ -13,10 +13,7 @@ Imports:
     graphics,
     reshape2,
     ggplot2,
-    plyr,
-    grid,
     gridExtra,
-    plotly,
     fitdistrplus,
     coda,
     incidence,
@@ -26,10 +23,9 @@ Remotes:
     nickreich/coarseDataTools
 Suggests:
     testthat,
-    compare,
     utils,
+    vdiffr,
     covr
 License: GPL (>=2)
 LazyLoad: yes
-Packaged: 2012-05-30 10:35:03 UTC; acori
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.1

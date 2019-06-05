@@ -6,7 +6,8 @@
 \usage{
 estimate_R(incid, method = c("non_parametric_si", "parametric_si",
   "uncertain_si", "si_from_data", "si_from_sample"), si_data = NULL,
-  si_sample = NULL, config = make_config(incid = incid, method = method))
+  si_sample = NULL, config = make_config(incid = incid, method =
+  method))
 }
 \arguments{
 \item{incid}{One of the following
