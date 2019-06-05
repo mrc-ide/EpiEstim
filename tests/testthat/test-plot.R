@@ -1,4 +1,4 @@
-
+set.seed(5000)
 data("Flu2009")
 ## estimate the instantaneous reproduction number
 ## (method "non_parametric_si")
