@@ -25,6 +25,7 @@ Suggests:
     testthat,
     compare,
     utils,
+    vdiffr,
     covr
 License: GPL (>=2)
 LazyLoad: yes

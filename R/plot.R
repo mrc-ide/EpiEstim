@@ -53,7 +53,7 @@
 #' @param legend A boolean (TRUE by default) governing the presence / absence of
 #'   legends on the plots
 #'
-#' @param ... further arguments passed to other methods.
+#' @param ... further arguments passed to other methods (currently unused).
 #'
 #' @return a plot (if \code{what = "incid"}, \code{"R"}, or \code{"SI"}) or a
 #'   \code{\link{grob}} object (if \code{what = "all"}).
@@ -77,18 +77,26 @@
 #'
 #' ## estimate the instantaneous reproduction number
 #' ## (method "non_parametric_si")
-#' R_i <- estimate_R(Flu2009$incidence, method = "non_parametric_si",
-#'                  config = list(t_start = seq(2, 26), t_end = seq(8, 32), 
-#'                              si_distr = Flu2009$si_distr))
+#' R_i <- estimate_R(Flu2009$incidence,
+#'                   method = "non_parametric_si",
+#'                   config = list(t_start = seq(2, 26), 
+#'                                 t_end = seq(8, 32), 
+#'                                 si_distr = Flu2009$si_distr
+#'                                )
+#'                  )
 #'
 #' ## visualise results
 #' plot(R_i, legend = FALSE)
 #'
 #' ## estimate the instantaneous reproduction number
 #' ## (method "non_parametric_si")
-#' R_c <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
-#'           config = list(t_start = seq(2, 26), t_end = seq(8, 32), 
-#'           si_distr = Flu2009$si_distr ))
+#' R_c <- wallinga_teunis(Flu2009$incidence, 
+#'                        method = "non_parametric_si",
+#'                        config = list(t_start = seq(2, 26), 
+#'                                      t_end = seq(8, 32), 
+#'                                      si_distr = Flu2009$si_distr
+#'                                     )
+#'                       )
 #'
 #' ## produce plot of the incidence
 #' ## (with, on top of total incidence, the incidence of imported cases),
@@ -97,11 +105,11 @@
 #' p_I <- plot(R_i, "incid", add_imported_cases=TRUE) # plots the incidence
 #' p_SI <- plot(R_i, "SI") # plots the serial interval distribution
 #' p_Ri <- plot(R_i, "R",
-#'           options_R = list(ylim = c(0, 4)))
-#'           # plots the estimated instantaneous reproduction number
+#'              options_R = list(ylim = c(0, 4)))
+#'         # plots the estimated instantaneous reproduction number
 #' p_Rc <- plot(R_c, "R",
-#'           list(ylim = c(0, 4)))
-#'           # plots the estimated case reproduction number
+#'              options_R = list(ylim = c(0, 4)))
+#'         # plots the estimated case reproduction number
 #' gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
 #'
 #' @import reshape2 grid gridExtra
