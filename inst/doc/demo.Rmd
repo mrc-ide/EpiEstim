@@ -36,8 +36,8 @@ children in a school in Pennsylvania during the 2009 H1N1 influenza pandemic
 
 2. the discrete daily distribution of the serial interval (time interval between
 symptoms onset in a case and in their infector) for influenza, 
-assuming a shifted Gamma distribution with mean 2.6 days, standard deviation 
-1.5 days and shift 1 day (as in Ferguson et al., Nature, 2005).
+assuming a shifted Gamma distribution with mean 2.6 days, standard deviation 1.5
+days and shift 1 day (as in Ferguson et al., Nature, 2005).
 
 3. interval-censored serial interval data from the 2009 outbreak of H1N1 
 influenza in San Antonio, Texas, USA (from Morgan et al., EID 2010).
@@ -87,6 +87,7 @@ In this example, we only specify the mean and standard deviation of the serial
 interval. In that case an offset gamma distribution is used for the serial 
 interval. In the following example, we use the mean and standard deviation of the serial 
 interval for flu from Ferguson et al., Nature, 2005:
+
 ```{r estimate_r_parametric_si}
 res_parametric_si <- estimate_R(Flu2009$incidence, 
                                 method="parametric_si",
@@ -97,6 +98,7 @@ res_parametric_si <- estimate_R(Flu2009$incidence,
 
 head(res_parametric_si$R)
 ```
+
 The output of the estimate_r function is a list containing a number of elements, 
 the most important of which is `R`, a data.frame containing details on the 
 estimated reproduction number. Each line corresponds to one time window. 
@@ -267,6 +269,7 @@ all(res_si_from_sample$R$`Mean(R)` == res_si_from_data$R$`Mean(R)`)
 The time window can be specified through arguments `config$t_start` and 
 `config$t_end`. For instance, the default weekly sliding windows can also be 
 obtained by specifying:
+
 ```{r estimate_r_weekly}
 T <- nrow(Flu2009$incidence)
 t_start <- seq(2, T-6) # starting at 2 as conditional on the past observations
@@ -283,6 +286,7 @@ plot(res_weekly, "R")
 ```
 
 For biweekly estimates:
+
 ```{r estimate_r_biweekly}
 t_start <- seq(2, T-13) # starting at 2 as conditional on the past observations
 t_end <- t_start + 13 
@@ -304,6 +308,7 @@ For instance, in the flu outbreak we are considering, the school closed from
 PNAS, 2011). It is interesting to estimate the reproduction number before, 
 during, and after the shcool closure to assess whether this had an impact on 
 transmissibility. 
+
 ```{r estimate_r_before_during_after_closure}
 t_start <- c(2, 18, 25) # starting at 2 as conditional on the past observations
 t_end <- c(17, 24, 32)
@@ -334,6 +339,7 @@ indicating the dates and the number of incident cases for each date.
 This can be a table, as we've seen. In that case there needs to be a column 
 called `I` containing the numebr of incident cases. If a column `dates` is 
 present it is used in the x-axes when producing plots:
+
 ```{r incid_table}
 head(Flu2009$incidence)
 config <- make_config(list(mean_si = 2.6, std_si = 1.5))
@@ -345,6 +351,7 @@ plot(res_incid_table, "R")
 
 It can just be a vector (but then the x-axis in your plots is measured in time 
 steps since start of the outbreak)
+
 ```{r incid_vector}
 res_incid_vector <- estimate_R(Flu2009$incidence$I, 
                                method="parametric_si",
