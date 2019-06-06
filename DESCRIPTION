@@ -8,7 +8,7 @@ Description: This package provides tools to quantify transmissibility throughout
     an epidemic from the analysis of time series of incidence.
 Depends: R (>= 2.10)
 Imports:
-    coarseDataTools,
+    coarseDataTools (>= 0.6-4),
     stats,
     graphics,
     reshape2,
@@ -19,8 +19,6 @@ Imports:
     incidence,
     scales,
     grDevices
-Remotes:
-    nickreich/coarseDataTools
 Suggests:
     testthat,
     utils,
