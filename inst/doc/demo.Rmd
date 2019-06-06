@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{demonsration}
+  %\VignetteIndexEntry{EpiEstim demonstration}
   %\usepackage[utf8]{inputenc}
 ---
   
