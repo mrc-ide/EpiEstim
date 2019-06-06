@@ -23,7 +23,10 @@ Suggests:
     testthat,
     utils,
     vdiffr,
-    covr
+    covr,
+    knitr,
+    rmarkdown
 License: GPL (>=2)
 LazyLoad: yes
 RoxygenNote: 6.1.1
+VignetteBuilder: knitr
