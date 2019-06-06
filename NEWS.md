@@ -7,6 +7,7 @@
 * Remove un-used dependencies that were added during hackout3: plyr, grid, 
   and plotly (#74, @zkamvar)
 * Remove compare package from suggests and use test_that version. (#74, @zkamvar)
+* Bump minimum required version of coarseDataTools to 0.6-4 (#71, @zkamvar)
 
 # EpiEstim 2.1-0
 
