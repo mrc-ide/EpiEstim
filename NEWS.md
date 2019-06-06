@@ -1,5 +1,10 @@
 # EpiEstim 2.2-0
 
+## NEW FUNCTIONS
+
+* `sample_posterior_R()` samples values of R from the posterior distribution of
+  an `estimate_R` object (#70, @acori)
+
 ## MISC
 
 * Added a `NEWS.md` file to track changes to the package. (#74, @zkamvar)
