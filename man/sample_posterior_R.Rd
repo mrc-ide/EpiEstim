@@ -7,7 +7,7 @@
 sample_posterior_R(R, n = 1000, window = 1L)
 }
 \arguments{
-\item{R}{an \code{estimate_R} object from the \code{\link{estimate_r}} 
+\item{R}{an \code{estimate_R} object from the estimate_r function
 function.}
 
 \item{n}{an integer specifying the number of samples to be taken from the

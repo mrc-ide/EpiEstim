@@ -1,6 +1,6 @@
 #' sample from the posterior R distribution
 #'
-#' @param R an \code{estimate_R} object from the \code{\link{estimate_r}} 
+#' @param R an \code{estimate_R} object from the estimate_r function
 #'   function.
 #' 
 #' @param n an integer specifying the number of samples to be taken from the
