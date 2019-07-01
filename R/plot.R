@@ -238,6 +238,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
     time.points <- apply(x$R[, c("t_start", "t_end") ], 1, function(x) 
       seq(x[1], x[2] - 1))
     if (length(time.points) == length(unique(matrix(time.points, ncol = 1)))) {
+      # non sliding windows
       if (!multiple_input) {
         if (is.null(options_R$ylim)) {
           options_R$ylim <- c(0, max(quantile_0.975_posterior, na.rm = TRUE))
@@ -248,7 +249,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
         }
 
         df <- melt(data.frame(
-          start = dates[t_start], end = dates[t_end], meanR = mean_posterior,
+          start = dates[t_start]-0.5, end = dates[t_end]+0.5, meanR = mean_posterior,
           lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
         ), id = c("meanR", "lower", "upper"))
