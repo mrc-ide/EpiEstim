@@ -9,9 +9,8 @@
 #'
 #'
 #' @param x The output of function \code{\link{estimate_R}} or function
-#'   \code{\link{wallinga_teunis}}, or a list of such outputs.  If a list, and
-#'   \code{what='R'} or \code{what='all'}, all estimates of R are plotted on a
-#'   single graph.
+#'   \code{\link{wallinga_teunis}}. To plot simultaneous outputs on the same 
+#'   plot use \code{\link{estimate_R_plots}} function
 #'
 #' @param what A string specifying what to plot, namely the incidence time
 #'   series (\code{what='incid'}), the estimated reproduction number
@@ -56,9 +55,11 @@
 #' @param ... further arguments passed to other methods (currently unused).
 #'
 #' @return a plot (if \code{what = "incid"}, \code{"R"}, or \code{"SI"}) or a
-#'   \code{\link{grob}} object (if \code{what = "all"}).
+#'   \code{\link[grid]{grob}} object (if \code{what = "all"}).
 #'
-#' @seealso \code{\link{estimate_R}} and \code{\link{wallinga_teunis}}
+#' @seealso \code{\link{estimate_R}}, 
+#'   \code{\link{wallinga_teunis}} and 
+#'   \code{\link{estimate_R_plots}}
 #'
 #' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori
 #'   \email{a.cori@imperial.ac.uk}; S3 method by Thibaut Jombart
@@ -153,6 +154,12 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
     options_R$col <- options_R$col[1]
   } else {
     multiple_input <- TRUE
+    if(length(unique(sapply(x, function(e) nrow(e$R)))) > 1) 
+    {
+      stop("R estimates cannot be plotted simulatneously because 
+           they are of different sizes, i.e. they were obtained using 
+           t_start or t_end of different lengths")
+    }
     x_list <- x
     x <- x_list[[1]]
     if (length(x_list) > length(col)) {

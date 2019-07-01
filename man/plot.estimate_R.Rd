@@ -13,9 +13,8 @@
 }
 \arguments{
 \item{x}{The output of function \code{\link{estimate_R}} or function
-\code{\link{wallinga_teunis}}, or a list of such outputs.  If a list, and
-\code{what='R'} or \code{what='all'}, all estimates of R are plotted on a
-single graph.}
+\code{\link{wallinga_teunis}}. To plot simultaneous outputs on the same 
+plot use \code{\link{estimate_R_plots}} function}
 
 \item{what}{A string specifying what to plot, namely the incidence time
 series (\code{what='incid'}), the estimated reproduction number
@@ -61,7 +60,7 @@ legends on the plots}
 }
 \value{
 a plot (if \code{what = "incid"}, \code{"R"}, or \code{"SI"}) or a
-  \code{\link{grob}} object (if \code{what = "all"}).
+  \code{\link[grid]{grob}} object (if \code{what = "all"}).
 }
 \description{
 The plot method of \code{estimate_r} objects can be used to visualise three
@@ -114,7 +113,9 @@ gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
 
 }
 \seealso{
-\code{\link{estimate_R}} and \code{\link{wallinga_teunis}}
+\code{\link{estimate_R}}, 
+  \code{\link{wallinga_teunis}} and 
+  \code{\link{estimate_R_plots}}
 }
 \author{
 Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori

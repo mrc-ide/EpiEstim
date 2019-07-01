@@ -24,7 +24,7 @@ and \code{incid$imported} contains the incidence of imported cases (with
 contains a column \code{incid$dates}, this is used for plotting.
 \code{incid$dates} must contains only dates in a row.}
 
-\item{An object of class \code{\link[incidence]{incidence}}}
+\item{An object of class \code{\link{incidence}}}
 
 }
 
@@ -46,7 +46,7 @@ function \code{make_config}.}
 }
 \value{
 {
-a list with components:
+an object of class \code{estimate_R}, with components:
 \itemize{
 
 \item{R}{: a dataframe containing:
@@ -261,7 +261,7 @@ data (Statis. Med. 2009)
 }
 }
 \seealso{
-\code{\link{discr_si}} \code{make_config}
+\code{\link{discr_si}} \code{\link{make_config}}
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}
