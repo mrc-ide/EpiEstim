@@ -38,7 +38,7 @@
 #' function \code{make_config}. 
 #'
 #' @return {
-#' a list with components:
+#' an object of class \code{estimate_R}, with components:
 #' \itemize{
 #'
 #' \item{R}{: a dataframe containing:
