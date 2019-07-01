@@ -18,6 +18,7 @@
 
 * Changed function names to snake_case (only exception is that R remains capital letter to avoid confusion between the reproduction number R and the growth rate 
 r) and to be more explicit; so `EstimateR` becomes `estimate_R`, `OverallInfectivity` becomes `oberall_infectivity`, `WT` becomes `wallinga_teunis`, and `DiscrSI` becomes `discr_si`. 
-* Compatibility with `incidence` package: in the function `estimate_R`, the first argument, i.e. the incidence from which the reproduction number is calculated, can now be either a vector of case counts (as in version 1.0-0) or an `incidence` object (see R package `incidence`).
+* Compatibility with `incidence` package: in the function `estimate_R`, the first argument, i.e. the incidence from which the reproduction number is calculated, can now be, either a vector of case counts (as in version 1.0-0) or an `incidence` object (see R package `incidence`).
+* Accounting for imported cases:in the function `estimate_R`, the first argument, i.e. the incidence from which the reproduction number can now provide information about known imported cases: by specifying the first argument as either a dataframe with columns "local" and "imported", or an `incidence` object with two groups (local and imported, see R package `incidence`).
 * Additional methods available for function `estimate_R`: in addition to `non_parametric_si`, `parametric_si` and `uncertain_si`, which were already available in EpiEstim 1.0-0, two new methods have been added: `si_from_data` or `si_from_sample`. These allow feeding function `estimate_R` data on observed serial intervals (method `si_from_data`) or posterior samples of serial interval distributions obtained from such data (method `si_from_sample`). 
  
