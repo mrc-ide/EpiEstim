@@ -27,7 +27,10 @@
 #'   plotted. Defaults to 0.7.}  \item{xlim}{A parameter similar to that in
 #'   \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
 #'   parameter similar to that in \code{par}, to monitor the limits of the
-#'   vertical axis} }
+#'   vertical axis} \item{interval}{An integer or character indicating the 
+#'   (fixed) size of the time interval used for plotting the incidence; 
+#'   defaults to 1 day.} \item{xlab, ylab}{Labels for the axes of the 
+#'   incidence plot}}
 #'
 #' @param options_R For what = "R" or "all". A list of graphical options:
 #'   \describe{ \item{col}{A colour or vector of colours used for plotting R. By
@@ -35,7 +38,8 @@
 #'   0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
 #'   \item{xlim}{A parameter similar to that in \code{par}, to monitor the
 #'   limits of the horizontal axis} \item{ylim}{A parameter similar to that in
-#'   \code{par}, to monitor the limits of the vertical axis} }
+#'   \code{par}, to monitor the limits of the vertical axis} 
+#'   \item{xlab, ylab}{Labels for the axes of the R plot}}
 #'
 #' @param options_SI For what = "SI" or "all". A list of graphical options:
 #'   \describe{ \item{prob_min}{A numeric value between 0 and 1. The SI
@@ -47,7 +51,8 @@
 #'   lines. Defaults to 0.25} \item{xlim}{A parameter similar to that in
 #'   \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
 #'   parameter similar to that in \code{par}, to monitor the limits of the
-#'   vertical axis} }
+#'   vertical axis} \item{xlab, ylab}{Labels for the axes of the serial interval
+#'    distribution plot}}
 #'
 #' @param legend A boolean (TRUE by default) governing the presence / absence of
 #'   legends on the plots
@@ -127,25 +132,40 @@
 plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
                   add_imported_cases = FALSE,
                   options_I = list(col = palette(), transp = 0.7,
-                                   xlim = NULL, ylim = NULL),
+                                   xlim = NULL, ylim = NULL,
+                                   interval = 1L,
+                                   xlab = "Time",
+                                   ylab = "Incidence"),
                   options_R = list(col = palette(), transp = 0.2,
-                                   xlim = NULL, ylim = NULL),
+                                   xlim = NULL, ylim = NULL,
+                                   xlab = "Time",
+                                   ylab = "R"),
                   options_SI = list(prob_min = 0.001,
                                     col = "black", transp = 0.25,
-                                    xlim = NULL, ylim = NULL),
+                                    xlim = NULL, ylim = NULL,
+                                    xlab = "Time",
+                                    ylab = "Frequency"),
                   legend = TRUE, ...) {
 
   ## dealing with the fact that some options may be left to default but others
   ## may have been specified by user
   if (is.null(options_I$col)) options_I$col <- palette()
   if (is.null(options_I$transp)) options_I$transp <- 0.7
+  if (is.null(options_I$xlab)) options_I$xlab <- "Time"
+  if (is.null(options_I$ylab)) options_I$ylab <- "Incidence"
+  if (is.null(options_I$interval)) options_I$interval <- 1L
 
   if (is.null(options_R$col)) options_R$col <- palette()
   if (is.null(options_R$transp)) options_R$transp <- 0.2
+  if (is.null(options_R$xlab)) options_R$xlab <- "Time"
+  if (is.null(options_R$ylab)) options_R$ylab <- "R"
+  
 
   if (is.null(options_SI$prob_min)) options_SI$prob_min <- 0.001
   if (is.null(options_SI$col)) options_SI$col <- "black"
   if (is.null(options_SI$transp)) options_SI$transp <- 0.25
+  if (is.null(options_SI$xlab)) options_SI$xlab <- "Time"
+  if (is.null(options_SI$ylab)) options_SI$ylab <- "Frequency"
 
   # check if x is a single output of EpiEstim or a list of such outputs
   if (is.data.frame(x[[1]])) # x is a single output of EpiEstim
@@ -215,13 +235,15 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
   what <- match.arg(what)
   if (what == "incid" | what == "all") {
     if (add_imported_cases) {
-      p1 <- plot(as.incidence(incid, dates = x$dates),
-                 ylab = "Incidence", xlab = "Time",
+      p1 <- plot(as.incidence(incid, dates = x$dates, 
+                              interval = options_I$interval),
+                 ylab = options_I$ylab, xlab = options_I$xlab,
                  color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     } else {
-      p1 <- plot(as.incidence(rowSums(incid), dates = x$dates),
-                 ylab = "Incidence", xlab = "Time",
+      p1 <- plot(as.incidence(rowSums(incid), dates = x$dates, 
+                              interval = options_I$interval),
+                 ylab = options_I$ylab, xlab = options_I$xlab,
                  color = options_I$col, alpha = options_I$transp) +
         ggtitle("Epidemic curve")
     }
@@ -260,8 +282,8 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
                              group = as.factor(group))) +
           geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
           geom_line(aes(y = meanR, colour = "Mean")) +
-          xlab("Time") +
-          ylab("R") +
+          xlab(options_R$xlab) +
+          ylab(options_R$ylab) +
           xlim(options_R$xlim) +
           ylim(options_R$ylim) +
           scale_colour_manual("", values = options_R$col) +
@@ -330,8 +352,8 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
         }
 
         p2 <- p2 +
-          xlab("Time") +
-          ylab("R") +
+          xlab(options_R$xlab) +
+          ylab(options_R$ylab) +
           xlim(options_R$xlim) +
           ylim(options_R$ylim) +
           scale_colour_manual("", values = options_R$col) +
@@ -357,8 +379,8 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
           geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
           geom_line(aes(colour = "Mean")) +
           geom_hline(yintercept = 1, linetype = "dotted") +
-          xlab("Time") +
-          ylab("R") +
+          xlab(options_R$xlab) +
+          ylab(options_R$ylab) +
           xlim(options_R$xlim) +
           ylim(options_R$ylim) +
           ggtitle("Estimated R") +
@@ -420,8 +442,8 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
 
         p2 <- p2 +
           geom_hline(yintercept = 1, linetype = "dotted") +
-          xlab("Time") +
-          ylab("R") +
+          xlab(options_R$xlab) +
+          ylab(options_R$ylab) +
           xlim(options_R$xlim) +
           ylim(options_R$ylim) +
           ggtitle("Estimated R") +
@@ -444,8 +466,8 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
                                      group = "Var2")) +
         geom_line(col = options_SI$col, alpha = options_SI$transp) +
         ggtitle("Explored SI distributions") +
-        xlab("Time") +
-        ylab("Frequency")
+        xlab(options_SI$xlab) +
+        ylab(options_SI$ylab)
 
       if (!is.null(options_SI$xlim)) {
         p3 <- p3 + lims(x = options_SI$xlim)
@@ -465,8 +487,8 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
       p3 <- ggplot(dataL, aes_string(x = "Times", y = "SIDistr")) +
         geom_line(col = options_SI$col, alpha = options_SI$transp) +
         ggtitle("Explored SI distribution") +
-        xlab("Time") +
-        ylab("Frequency")
+        xlab(options_SI$xlab) +
+        ylab(options_SI$ylab)
 
       if (!is.null(options_SI$xlim)) {
         p3 <- p3 + lims(x = options_SI$xlim)
