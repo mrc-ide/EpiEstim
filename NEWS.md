@@ -16,4 +16,6 @@
 
 # EpiEstim 2.0-0
 
-* TBD
+* Changed function names to snake_case (only exception is that R remains capital letter to avoid confusion between the reproduction number R and the growth rate 
+r) and to be more explicit; so `EstimateR` becomes `estimate_R`, `OverallInfectivity` becomes `oberall_infectivity`, `WT` becomes `wallinga_teunis`, and `DiscrSI` becomes `discr_si`
+* Additional methods available for estimate_R: in addition to `non_parametric_si`, `parametric_si` and `uncertain_si`, which were already available in EpiEstim 1.0-0, two new methods have been added: `si_from_data` or `si_from_sample`. These allow feeding function `estimate_R` data on observed serial intervals (method `si_from_data`) or posterior samples of serial interval distributions obtained from such data (method `si_from_sample`). 
