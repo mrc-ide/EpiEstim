@@ -42,7 +42,7 @@ win <- 1L
 R_median <- res$R$`Median(R)`[win]
 R_CrI <- c(res$R$`Quantile.0.025(R)`[win], res$R$`Quantile.0.975(R)`[win])
 
-set.seed(2019-06-06)
+set.seed(2019-06-06) # fixing the random seed for reproducibility
 R_sample <- sample_posterior_R(res, n = 1000, window = win)
 hist(R_sample, col = "grey", main = "R sampled from the first weekly window")
 abline(v = R_median, col = "red")       # show the median estimated R
