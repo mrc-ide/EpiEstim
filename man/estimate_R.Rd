@@ -2,7 +2,10 @@
 % Please edit documentation in R/estimate_r.R
 \name{estimate_R}
 \alias{estimate_R}
-\title{Estimated Instantaneous Reproduction Number}
+\title{Estimated Instantaneous Reproduction Number
+
+\code{estimate_R} estimates the reproduction number of an epidemic, given the
+incidence time series and the serial interval distribution.}
 \usage{
 estimate_R(incid, method = c("non_parametric_si", "parametric_si",
   "uncertain_si", "si_from_data", "si_from_sample"), si_data = NULL,
@@ -81,6 +84,8 @@ showing whether the Gelman-Rubin MCMC convergence diagnostic was successful
 }
 }
 \description{
+Estimated Instantaneous Reproduction Number
+
 \code{estimate_R} estimates the reproduction number of an epidemic, given the
 incidence time series and the serial interval distribution.
 }

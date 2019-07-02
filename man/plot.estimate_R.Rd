@@ -6,10 +6,12 @@
 \usage{
 \method{plot}{estimate_R}(x, what = c("all", "incid", "R", "SI"),
   add_imported_cases = FALSE, options_I = list(col = palette(), transp
-  = 0.7, xlim = NULL, ylim = NULL), options_R = list(col = palette(),
-  transp = 0.2, xlim = NULL, ylim = NULL), options_SI = list(prob_min =
-  0.001, col = "black", transp = 0.25, xlim = NULL, ylim = NULL),
-  legend = TRUE, ...)
+  = 0.7, xlim = NULL, ylim = NULL, interval = 1L, xlab = "Time", ylab =
+  "Incidence"), options_R = list(col = palette(), transp = 0.2, xlim =
+  NULL, ylim = NULL, xlab = "Time", ylab = "R"),
+  options_SI = list(prob_min = 0.001, col = "black", transp = 0.25, xlim
+  = NULL, ylim = NULL, xlab = "Time", ylab = "Frequency"), legend = TRUE,
+  ...)
 }
 \arguments{
 \item{x}{The output of function \code{\link{estimate_R}} or function
@@ -31,7 +33,10 @@ value between 0 and 1 used to monitor transparency of the bars
 plotted. Defaults to 0.7.}  \item{xlim}{A parameter similar to that in
 \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
 parameter similar to that in \code{par}, to monitor the limits of the
-vertical axis} }}
+vertical axis} \item{interval}{An integer or character indicating the 
+(fixed) size of the time interval used for plotting the incidence; 
+defaults to 1 day.} \item{xlab, ylab}{Labels for the axes of the 
+incidence plot}}}
 
 \item{options_R}{For what = "R" or "all". A list of graphical options:
 \describe{ \item{col}{A colour or vector of colours used for plotting R. By
@@ -39,7 +44,8 @@ default uses the default R colours.}  \item{transp}{A numeric value between
 0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
 \item{xlim}{A parameter similar to that in \code{par}, to monitor the
 limits of the horizontal axis} \item{ylim}{A parameter similar to that in
-\code{par}, to monitor the limits of the vertical axis} }}
+\code{par}, to monitor the limits of the vertical axis} 
+\item{xlab, ylab}{Labels for the axes of the R plot}}}
 
 \item{options_SI}{For what = "SI" or "all". A list of graphical options:
 \describe{ \item{prob_min}{A numeric value between 0 and 1. The SI
@@ -51,7 +57,8 @@ numeric value between 0 and 1 used to monitor transparency of the
 lines. Defaults to 0.25} \item{xlim}{A parameter similar to that in
 \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
 parameter similar to that in \code{par}, to monitor the limits of the
-vertical axis} }}
+vertical axis} \item{xlab, ylab}{Labels for the axes of the serial interval
+ distribution plot}}}
 
 \item{legend}{A boolean (TRUE by default) governing the presence / absence of
 legends on the plots}
