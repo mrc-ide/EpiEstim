@@ -59,12 +59,14 @@ process_si_data <- function(si_data) {
 
 
 process_I <- function(incid) {
-  if (class(incid) == "incidence") {
-    I_inc <- incid
-    incid <- as.data.frame(I_inc)
-    incid$I <- rowSums(I_inc$counts)
+  # If the input is an incidence object, we want to convert it to a data frame
+  # that EpiEstim understands, which contains a single column for the I counts.
+  if (inherits(incid, "incidence")) {
+    I_inc   <- incid
+    incid   <- as.data.frame(I_inc)
+    incid$I <- rowSums(incidence::get_counts(I_inc))
   }
-  vector_I <- FALSE
+  vector_I        <- FALSE
   single_col_df_I <- FALSE
   if (is.vector(incid)) {
     vector_I <- TRUE
@@ -75,12 +77,12 @@ process_I <- function(incid) {
   }
   if (vector_I | single_col_df_I) {
     if (single_col_df_I) {
-      I_tmp <- as.vector(incid[, 1])
+      I_tmp <- incid[[1]]
     } else {
       I_tmp <- incid
     }
-    incid <- data.frame(local = I_tmp, imported = rep(0, length(I_tmp)))
-    I_init <- sum(incid[1, ])
+    incid      <- data.frame(local = I_tmp, imported = rep(0, length(I_tmp)))
+    I_init     <- sum(incid[1, ])
     incid[1, ] <- c(0, I_init)
   } else {
     if (!is.data.frame(incid) | 
@@ -91,7 +93,7 @@ process_I <- function(incid) {
     }
     if (("I" %in% names(incid)) & 
         !all(c("local", "imported") %in% names(incid))) {
-      incid$local <- incid$I
+      incid$local    <- incid$I
       incid$local[1] <- 0
       incid$imported <- c(incid$I[1], rep(0, nrow(incid) - 1))
     }
@@ -120,8 +122,9 @@ process_I <- function(incid) {
 }
 
 process_I_vector <- function(incid) {
-  if (class(incid) == "incidence") {
-    incid <- rowSums(incid$counts)
+  # here, the incident counts are being forced into a vector.
+  if (inherits(incid, "incidence")) {
+    incid <- rowSums(incidence::get_counts(incid))
   }
   if (!is.vector(incid)) {
     if (is.data.frame(incid)) {

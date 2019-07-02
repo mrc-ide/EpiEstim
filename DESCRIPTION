@@ -16,7 +16,7 @@ Imports:
     gridExtra,
     fitdistrplus,
     coda,
-    incidence,
+    incidence (>= 1.7.0),
     scales,
     grDevices
 Suggests:
