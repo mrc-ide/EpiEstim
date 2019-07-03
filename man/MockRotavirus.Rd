@@ -5,21 +5,24 @@
 \alias{MockRotavirus}
 \title{Mock data on a rotavirus epidemic.}
 \format{A list of two elements:
-\describe{
-  \item{incidence}{a vector containing 53 days of observation,}
-  \item{si_distr}{a dataframe containing a set of 19 observations; each 
-  observation corresponds to a pair of infector/infected individuals. EL and 
-  ER columns contain the lower an upper bounds of the dates of symptoms onset
-   in the infectors. SL and SR columns contain the lower an upper bounds of 
-   the dates of symptoms onset in the infected indiviuals. The type column 
-   has entries 0, 1, or 2, corresponding to doubly interval-censored, single 
-   interval-censored or exact observations, respectively, see Reich et al. 
-   Statist. Med. 2009}
+\itemize{
+\item \strong{incidence:} a vector containing 53 days of observation,
+\item \strong{si_distr:} a dataframe containing a set of 19 observations; each
+observation corresponds to a pair of infector/infected individuals. EL
+and ER columns contain the lower an upper bounds of the dates of
+symptoms onset in the infectors. SL and SR columns contain the lower an
+upper bounds of the dates of symptoms onset in the infected indiviuals.
+The type column has entries 0, 1, or 2, corresponding to doubly
+interval-censored, single interval-censored or exact observations,
+respectively, see Reich et al.  Statist. Med. 2009
 }}
 \description{
-This data set gives: 1/ the daily incidence of onset of symptoms in a mock
-outbreak of rotavirus , 2/ mock observations of symptom onset dates for 19
-pairs of infector/infected individuals.
+This data set gives:
+\enumerate{
+\item the daily incidence of onset of symptoms in a mock outbreak of rotavirus,
+\item mock observations of symptom onset dates for 19 pairs of
+infector/infected individuals.
+}
 }
 \examples{
 \dontrun{
