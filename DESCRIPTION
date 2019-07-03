@@ -6,16 +6,16 @@ Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("a
   person("Simon", "Cauchemez", role = "ctb"),
   person("Neil M.", "Ferguson", role = "ctb"),
   person("Christophe", "Fraser", role = "ctb"),
-  person("Thibaut", "Jombart", role = "ctb"),
-  person("Jake", "Stockwin", role = "ctb"),
-  person("Zhian N.", "Kamvar", role = "ctb"),
-  person("Robin", "Thompson", role = "ctb"),
-  person("Rolina", "van Gaalen", role = "ctb"),
-  person("Jonathan A.", "Polonsky", role = "ctb"),
-  person("P. Alex", "Demarsh", role = "ctb"),
   person("Elisabeth", "Dahlqwist", role = "ctb"),
+  person("P. Alex", "Demarsh", role = "ctb"),
+  person("Thibaut", "Jombart", role = "ctb"),
+  person("Zhian N.", "Kamvar", role = "ctb"),
+  person("Justin", "Lessler", role = "ctb"),
   person("Shikun", "Li", role = "ctb"),
-  person("Justin", "Lessler", role = "ctb")
+  person("Jonathan A.", "Polonsky", role = "ctb"),
+  person("Jake", "Stockwin", role = "ctb"),
+  person("Robin", "Thompson", role = "ctb"),
+  person("Rolina", "van Gaalen", role = "ctb")
   )
 Maintainer: Anne Cori <a.cori@imperial.ac.uk>
 Description: This package provides tools to quantify transmissibility throughout
