@@ -5,25 +5,26 @@
 \alias{flu_2009_NYC_school}
 \title{Data on the 2009 H1N1 influenza pandemic in a school in New York city}
 \format{A list of two elements:
-\describe{
-  \item{incidence}{a dataframe with 14 lines containing dates in first 
-  column, and daily incidence in second column ,}
-  \item{si_data}{a dataframe containing data on the generation time for 16 
-  pairs of infector/infected individuals
-  (see references and see argument \code{si_data} of function 
-  \code{estimate_R} for details on columns) }
+\itemize{
+\item \strong{incidence}: a dataframe with 14 lines containing dates in first column,
+and daily incidence in second column ,
+\item \strong{si_data}: a dataframe containing data on the generation time for 16
+pairs of infector/infected individuals (see references and see argument
+\code{si_data} of function \code{\link[=estimate_R]{estimate_R()}} for details on columns)
 }}
 \source{
 Lessler J. et al. (2009) Outbreak of 2009 pandemic influenza A (H1N1)
- at a New York City school. New Eng J Med 361: 2628-2636.
+at a New York City school. New Eng J Med 361: 2628-2636.
 }
 \description{
 This data set gives:
-1/ the daily incidence of self-reported and laboratory-confirmed cases of 
-influenza amongst children in a school in New York city during the 2009 H1N1 
-influenza pandemic (see source and references),
-2/ interval-censored serial interval data from the 2009 outbreak of H1N1 
+\enumerate{
+\item the daily incidence of self-reported and laboratory-confirmed cases of
+influenza amongst children in a school in New York city during the 2009
+H1N1 influenza pandemic (see source and references),
+\item interval-censored serial interval data from the 2009 outbreak of H1N1
 influenza in a New York city school (see references).
+}
 }
 \examples{
 \dontrun{
@@ -52,7 +53,6 @@ plot(res)
 }
 }
 \references{
-{
-Lessler J. et al. (2009) Outbreak of 2009 pandemic influenza A (H1N1) at a 
-New York City school. New Eng J Med 361: 2628-2636. }
+Lessler J. et al. (2009) Outbreak of 2009 pandemic influenza A (H1N1) at a
+New York City school. New Eng J Med 361: 2628-2636.
 }

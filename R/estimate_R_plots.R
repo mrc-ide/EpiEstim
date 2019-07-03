@@ -4,7 +4,7 @@
 #' be plotted at the same time. 
 #'
 #' @param ... Arguments of 
-#'   \code{\link{EpiEstim:::plot.estimate_R}}, but in addition,
+#'   \code{\link{plot.estimate_R}}, but in addition,
 #'   parameter \code{x} can be a objects of class \code{estimate_R} (obtained as 
 #'   outputs of functions \code{\link{estimate_R}} or 
 #'   \code{\link{wallinga_teunis}}.  
@@ -22,7 +22,7 @@
 #'
 #' @seealso \code{\link{plot.estimate_R}} 
 #'
-#' @author Zhian Khamvar
+#' @author Anne Cori, Zhian Kamvar
 #'
 #' @export
 #'
