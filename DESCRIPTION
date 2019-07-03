@@ -5,8 +5,8 @@ Author: Anne Cori <a.cori@imperial.ac.uk>
 Maintainer: Anne Cori <a.cori@imperial.ac.uk>
 Description: This package provides tools to quantify transmissibility throughout
     an epidemic from the analysis of time series of incidence as described in
-    Wallinga and Teunis (2004) <doi:10.1093/aje/kwh255> and Cori et al. (2013) 
-    <doi:10.1093/aje/kwt133>.
+    Cori et al. (2013) <doi:10.1093/aje/kwt133> and Wallinga and Teunis (2004) 
+    <doi:10.1093/aje/kwh255>.
 Depends: R (>= 2.10)
 Imports:
     coarseDataTools (>= 0.6-4),
