@@ -137,7 +137,7 @@ Note that you can obtain such a full distribution of the serial interval using
 additional rounding): 
 
 ```{r discr_si}
-discr_si(seq(0, 20, 1), mu = 2.6, sigma = 1.5)
+discr_si(seq(0, 20), mu = 2.6, sigma = 1.5)
 ```
 
 ## Estimating R accounting for uncertainty on the serial interval distribution

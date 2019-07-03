@@ -445,8 +445,8 @@ NULL
 #'                           config = make_config(
 #'                           mean_si = mers_2014_15$si$mean_si,
 #'                           std_si = mers_2014_15$si$std_si,
-#'                           t_start = 2:(nrow(mers_2014_15$incidence)-8*7),
-#'                           t_end = (2:(nrow(mers_2014_15$incidence)-8*7)) + 8*7))
+#'                           t_start = seq(2, (nrow(mers_2014_15$incidence)-8*7),
+#'                           t_end = seq(2, (nrow(mers_2014_15$incidence)-8*7)) + 8*7))
 #' 
 #' plot(bimonthly_R, legend = FALSE, add_imported_cases = TRUE,
 #'                           options_I = list(col = c("local" = "black", 

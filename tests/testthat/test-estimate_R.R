@@ -5,7 +5,7 @@ data("Flu2009")
 
 test_that("Example 1 matches saved output", {
   out <- estimate_R(Flu2009$incidence, method = "non_parametric_si",
-                    config = list(t_start = seq(2, 26, 1), t_end = seq(8, 32, 1),
+                    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
                                   si_distr = Flu2009$si_distr, 
                                   seed = 1))
   expect_equal_to_reference(out, "../expected_output/Example1.rda", update = FALSE)
@@ -21,8 +21,8 @@ test_that("Example 2 matches saved output", {
   # get incidence per group (location)
   incid <- incidence::incidence(data, groups = location)
   out <- estimate_R(incid, method = "parametric_si",
-                    config = list(t_start = seq(2, 21, 1), 
-                                  t_end = seq(8, 27, 1),
+                    config = list(t_start = seq(2, 21), 
+                                  t_end = seq(8, 27),
                                   mean_si = 2.6, 
                                   std_si = 1.5, 
                                   seed = 1)
@@ -33,8 +33,8 @@ test_that("Example 2 matches saved output", {
 test_that("Example 3 matches saved output", {
   ## estimate the reproduction number (method "parametric_si")
   out <- estimate_R(Flu2009$incidence, method = "parametric_si",
-                    config = list(t_start = seq(2, 26, 1), 
-                                  t_end = seq(8, 32, 1),
+                    config = list(t_start = seq(2, 26), 
+                                  t_end = seq(8, 32),
                                   mean_si = 2.6, 
                                   std_si = 1.5, 
                                   seed = 1)
@@ -45,8 +45,8 @@ test_that("Example 3 matches saved output", {
 test_that("Example 4 matches saved output", {
   ## estimate the reproduction number (method "uncertain_si")
   out <- estimate_R(Flu2009$incidence, method = "uncertain_si",
-                    config = list(t_start = seq(2, 26, 1), 
-                                  t_end = seq(8, 32, 1),
+                    config = list(t_start = seq(2, 26), 
+                                  t_end = seq(8, 32),
                                   mean_si = 2.6, 
                                   std_mean_si = 1,
                                   min_mean_si = 1,
