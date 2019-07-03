@@ -1,7 +1,22 @@
 Package: EpiEstim
 Version: 2.2-0
+<<<<<<< HEAD
 Title: Estimate Time Varying Reproduction Numbers From Epidemic Curves
-Author: Anne Cori <a.cori@imperial.ac.uk>
+Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-8443-9162")), 
+  person("Simon", "Cauchemez", role = "ctb"),
+  person("Neil M.", "Ferguson", role = "ctb", comment = c(ORCID = "0000-0002-1154-8093")),
+  person("Christophe", "Fraser", role = "ctb", comment = c(ORCID = "0000-0003-2399-9657")),
+  person("Elisabeth", "Dahlqwist", role = "ctb", comment = c(ORCID = "0000-0001-5797-6803")),
+  person("P. Alex", "Demarsh", role = "ctb"),
+  person("Thibaut", "Jombart", role = "ctb", comment = c(ORCID = "0000-0003-2226-8692")),
+  person("Zhian N.", "Kamvar", role = "ctb", comment = c(ORCID = "0000-0003-1458-7108")),
+  person("Justin", "Lessler", role = "ctb", comment = c(ORCID = "0000-0002-9741-8109")),
+  person("Shikun", "Li", role = "ctb"),
+  person("Jonathan A.", "Polonsky", role = "ctb", comment = c(ORCID = "0000-0002-8634-4255")),
+  person("Jake", "Stockwin", role = "ctb"),
+  person("Robin", "Thompson", role = "ctb", comment = c(ORCID = "0000-0001-8545-5212")),
+  person("Rolina", "van Gaalen", role = "ctb")
+  )
 Maintainer: Anne Cori <a.cori@imperial.ac.uk>
 Description: This package provides tools to quantify transmissibility throughout
     an epidemic from the analysis of time series of incidence as described in

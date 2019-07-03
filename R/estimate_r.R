@@ -1,4 +1,4 @@
-#' Estimated Instantaneous Reproduction Number
+#' @title Estimated Instantaneous Reproduction Number
 #'
 #' \code{estimate_R} estimates the reproduction number of an epidemic, given the
 #' incidence time series and the serial interval distribution.
@@ -17,7 +17,7 @@
 #' contains a column \code{incid$dates}, this is used for plotting.
 #' \code{incid$dates} must contains only dates in a row.}
 #'
-#' \item{An object of class \code{\link[incidence]{incidence}}}
+#' \item{An object of class \code{\link{incidence}}}
 #'
 #' }
 #'
@@ -38,7 +38,7 @@
 #' function \code{make_config}. 
 #'
 #' @return {
-#' a list with components:
+#' an object of class \code{estimate_R}, with components:
 #' \itemize{
 #'
 #' \item{R}{: a dataframe containing:
@@ -105,7 +105,7 @@
 #'  estimate_R is called.}
 #' }
 #' 
-#' @seealso \code{\link{discr_si}} \code{make_config}
+#' @seealso \code{\link{discr_si}} \code{\link{make_config}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
 #' @references {
 #' Cori, A. et al. A new framework and software to estimate time-varying
@@ -117,6 +117,7 @@
 #' }
 #' @importFrom coarseDataTools dic.fit.mcmc
 #' @importFrom coda as.mcmc.list as.mcmc
+#' @importFrom incidence incidence
 #' @export
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
