@@ -174,7 +174,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
     options_R$col <- options_R$col[1]
   } else {
     multiple_input <- TRUE
-    if(length(unique(sapply(x, function(e) nrow(e$R)))) > 1) 
+    if (length(unique(vapply(x, function(e) nrow(e$R), integer(1)))) > 1)
     {
       stop("R estimates cannot be plotted simulatneously because 
            they are of different sizes, i.e. they were obtained using 
