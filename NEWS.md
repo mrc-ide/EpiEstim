@@ -12,10 +12,6 @@
 
 # EpiEstim 2.1-0
 
-* TBD
-
-# EpiEstim 2.0-0
-
 * Changed function names to snake_case (only exception is that R remains
   capital letter to avoid confusion between the reproduction number R and the
   growth rate r) and to be more explicit; so `EstimateR` becomes `estimate_R`,
