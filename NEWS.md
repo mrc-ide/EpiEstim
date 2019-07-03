@@ -29,4 +29,4 @@
       - `coarseDataTools`, `fitdistrplus`, `coda` (used for the new methods `si_from_data` and `si_from_sample` in `estimate_R` function to estimate the serial interval from data). 
       - `incidence` (so that `estimate_R` can take an `incidence` object as first argument)
       - `graphics`, `reshape2`, `ggplot2`, `gridExtra`, `scales`, `grDevices` (to make new plots of outputs of `estimate_R` and `wallinga_teunis` functions)
-      
+* Added a vignette to illustrate main features of the package.
