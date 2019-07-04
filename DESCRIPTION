@@ -1,7 +1,5 @@
 Package: EpiEstim
 Version: 2.2-0
-Title: EpiEstim: a Package to Estimate Time Varying Reproduction
-    Numbers from Epidemic Curves
 Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-8443-9162")), 
   person("Simon", "Cauchemez", role = "ctb"),
   person("Neil M.", "Ferguson", role = "ctb", comment = c(ORCID = "0000-0002-1154-8093")),
