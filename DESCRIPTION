@@ -1,5 +1,6 @@
 Package: EpiEstim
 Version: 2.2-0
+Title: Estimate Time Varying Reproduction Numbers From Epidemic Curves
 Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-8443-9162")), 
   person("Simon", "Cauchemez", role = "ctb"),
   person("Neil M.", "Ferguson", role = "ctb", comment = c(ORCID = "0000-0002-1154-8093")),
@@ -17,7 +18,9 @@ Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("a
   )
 Maintainer: Anne Cori <a.cori@imperial.ac.uk>
 Description: This package provides tools to quantify transmissibility throughout
-    an epidemic from the analysis of time series of incidence.
+    an epidemic from the analysis of time series of incidence as described in
+    Cori et al. (2013) <doi:10.1093/aje/kwt133> and Wallinga and Teunis (2004) 
+    <doi:10.1093/aje/kwh255>.
 Depends: R (>= 2.10)
 Imports:
     coarseDataTools (>= 0.6-4),
