@@ -17,7 +17,7 @@ Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("a
   person("Rolina", "van Gaalen", role = "ctb")
   )
 Maintainer: Anne Cori <a.cori@imperial.ac.uk>
-Description: This package provides tools to quantify transmissibility throughout
+Description: Tools to quantify transmissibility throughout
     an epidemic from the analysis of time series of incidence as described in
     Cori et al. (2013) <doi:10.1093/aje/kwt133> and Wallinga and Teunis (2004) 
     <doi:10.1093/aje/kwh255>.
