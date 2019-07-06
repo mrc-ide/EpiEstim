@@ -21,8 +21,8 @@
 #'   series plot, to add the incidence of imported cases.
 #'
 #' @param options_I For what = "incid" or "all". A list of graphical options:
-#'   \describe{ \item{col}{A colour or vector of colours used for plotting
-#'   incid. By default uses the default R colours.}  \item{transp}{A numeric
+#'   \describe{ \item{col}{A color or vector of colors used for plotting
+#'   incid. By default uses the default R colors.}  \item{transp}{A numeric
 #'   value between 0 and 1 used to monitor transparency of the bars
 #'   plotted. Defaults to 0.7.}  \item{xlim}{A parameter similar to that in
 #'   \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
@@ -33,8 +33,8 @@
 #'   incidence plot}}
 #'
 #' @param options_R For what = "R" or "all". A list of graphical options:
-#'   \describe{ \item{col}{A colour or vector of colours used for plotting R. By
-#'   default uses the default R colours.}  \item{transp}{A numeric value between
+#'   \describe{ \item{col}{A color or vector of colors used for plotting R. By
+#'   default uses the default R colors.}  \item{transp}{A numeric value between
 #'   0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
 #'   \item{xlim}{A parameter similar to that in \code{par}, to monitor the
 #'   limits of the horizontal axis} \item{ylim}{A parameter similar to that in
@@ -45,8 +45,8 @@
 #'   \describe{ \item{prob_min}{A numeric value between 0 and 1. The SI
 #'   distributions explored are only shown from time 0 up to the time t so that
 #'   each distribution explored has probability < \code{prob_min} to be on any
-#'   time step after t. Defaults to 0.001.}  \item{col}{A colour or vector of
-#'   colours used for plotting the SI. Defaults to black.}  \item{transp}{A
+#'   time step after t. Defaults to 0.001.}  \item{col}{A color or vector of
+#'   colors used for plotting the SI. Defaults to black.}  \item{transp}{A
 #'   numeric value between 0 and 1 used to monitor transparency of the
 #'   lines. Defaults to 0.25} \item{xlim}{A parameter similar to that in
 #'   \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
