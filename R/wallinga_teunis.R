@@ -32,7 +32,7 @@
 #'   \code{t_start[i]<=t_end[i]}.} \item{method: One of "non_parametric_si" or
 #'   "parametric_si" (see details).} \item{mean_si: For method "parametric_si" ;
 #'   positive real giving the mean serial interval.} \item{std_si: For method
-#'   "parametric_si" ; non negative real giving the stadard deviation of the
+#'   "parametric_si" ; non negative real giving the standard deviation of the
 #'   serial interval.} \item{si_distr: For method "non_parametric_si" ; vector
 #'   of probabilities giving the discrete distribution of the serial interval,
 #'   starting with \code{si_distr[1]} (probability that the serial interval is

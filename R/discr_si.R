@@ -9,7 +9,7 @@
 #' \code{discr_si} computes the discrete distribution of the serial interval, 
 #' assuming that the serial interval is shifted Gamma distributed, with shift 1.
 #'
-#' @param k Positive integer, or vector of positive ingerers for which the 
+#' @param k Positive integer, or vector of positive interers for which the 
 #' discrete distribution is desired.
 #' @param mu A positive real giving the mean of the Gamma distribution.
 #' @param sigma A non-negative real giving the standard deviation of the Gamma 

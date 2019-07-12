@@ -5,7 +5,7 @@
 #' This data set gives:
 #'
 #' 1. the daily incidence of self-reported and laboratory-confirmed cases of 
-#'    influenza amongst children in a school in New York city during the 2009
+#'    influenza among children in a school in New York city during the 2009
 #'    H1N1 influenza pandemic (see source and references),
 #' 2. interval-censored serial interval data from the 2009 outbreak of H1N1 
 #'    influenza in a New York city school (see references).
@@ -123,7 +123,7 @@ NULL
 #'
 #' 1. the daily incidence of onset of acute respiratory illness
 #'    (ARI, defined as at least two symptoms among fever, cough, sore throat,
-#'    and runny nose) amongst children in a school in Pennsylvania during the
+#'    and runny nose) among children in a school in Pennsylvania during the
 #'    2009 H1N1 influenza pandemic (see source and references),
 #' 2. the discrete daily distribution of the serial interval for influenza, 
 #'    assuming a shifted Gamma distribution with mean 2.6 days, standard
@@ -361,7 +361,7 @@ NULL
 #'     observation corresponds to a pair of infector/infected individuals. EL
 #'     and ER columns contain the lower an upper bounds of the dates of
 #'     symptoms onset in the infectors. SL and SR columns contain the lower an
-#'     upper bounds of the dates of symptoms onset in the infected indiviuals.
+#'     upper bounds of the dates of symptoms onset in the infected individuals.
 #'     The type column has entries 0, 1, or 2, corresponding to doubly
 #'     interval-censored, single interval-censored or exact observations,
 #'     respectively, see Reich et al.  Statist. Med. 2009
@@ -401,7 +401,7 @@ NULL
 #' 1. the daily incidence of onset of symptoms of laboratory confirmed human
 #'    infections with MERS-CoV in Saudi Arabia between the beginning of July
 #'    2014 and the end of December 2015, and 
-#' 2. estimates of the mean and standrad deviation of the serial interval for
+#' 2. estimates of the mean and standard deviation of the serial interval for
 #'    MERS.
 #'
 #' @name mers_2014_15

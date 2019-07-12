@@ -73,7 +73,7 @@ number R. For this, we need to specify i) the time window(s) over which to
 estimate R and ii) information on the distribution of the 
 serial interval.
 
-For i), the default behaviour is to estimate R over weekly sliding windows. 
+For i), the default behavior is to estimate R over weekly sliding windows. 
 This can be changed through the `config$t_start` and `config$t_end` arguments 
 (see below, "Changing the time windows for estimation"). 
 For ii), there are several options, specified in the `method` argument. 
@@ -337,7 +337,7 @@ indicating the dates and the number of incident cases for each date.
 `estimate_R` accepts a range of formats for its `incid` argument. 
 
 This can be a table, as we've seen. In that case there needs to be a column 
-called `I` containing the numebr of incident cases. If a column `dates` is 
+called `I` containing the number of incident cases. If a column `dates` is 
 present it is used in the x-axes when producing plots:
 
 ```{r incid_table}
