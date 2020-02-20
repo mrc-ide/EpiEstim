@@ -8,8 +8,12 @@
 estimate the serial interval within \code{estimate_R} (with method 
 "si_from_data").}
 \usage{
-make_mcmc_control(burnin = 3000, thin = 10,
-  seed = as.integer(Sys.time()), init_pars = NULL)
+make_mcmc_control(
+  burnin = 3000,
+  thin = 10,
+  seed = as.integer(Sys.time()),
+  init_pars = NULL
+)
 }
 \arguments{
 \item{burnin}{A positive integer giving the burnin used in the MCMC when
@@ -49,9 +53,9 @@ The argument \code{si_data}, should be a dataframe with 5
 \item{ER: the upper bound of the symptom onset date of the infector (given as
  an integer). Should be such that ER>=EL}
 \item{SL: the lower bound of the symptom onset date of the infected
-indivdiual (given as an integer)}
+individual (given as an integer)}
 \item{SR: the upper bound of the symptom onset date of the infected
-indivdiual (given as an integer). Should be such that SR>=SL}
+individual (given as an integer). Should be such that SR>=SL}
 \item{type (optional): can have entries 0, 1, or 2, corresponding to doubly
 interval-censored, single interval-censored or exact observations,
 respectively, see Reich et al. Statist. Med. 2009. If not specified, this

@@ -4,11 +4,15 @@
 \alias{make_config}
 \title{Set and check parameter settings of estimate_R}
 \usage{
-make_config(..., incid = NULL, method = c("non_parametric_si",
-  "parametric_si", "uncertain_si", "si_from_data", "si_from_sample"))
+make_config(
+  ...,
+  incid = NULL,
+  method = c("non_parametric_si", "parametric_si", "uncertain_si", "si_from_data",
+    "si_from_sample")
+)
 }
 \arguments{
-\item{...}{Acceptables arguments for ... are:
+\item{...}{Acceptable arguments for ... are:
 
 \describe{
 
@@ -35,7 +39,7 @@ giving the mean serial interval (method "parametric_si") or the average mean
 serial interval (method "uncertain_si", see details).}
 
 \item{std_si}{For method "parametric_si" and "uncertain_si" ; non negative
-real giving the stadard deviation of the serial interval
+real giving the standard deviation of the serial interval
 (method "parametric_si") or the average standard deviation of the serial
 interval (method "uncertain_si", see details).}
 
@@ -183,7 +187,7 @@ Warnings are produced when the truncated normal distributions are not
 symmetric around the mean.
 For each pair \eqn{(\mu^{(k)},\sigma^{(k)})}, we then draw a sample of size
 \code{n2} in the posterior distribution of the reproduction number over each
-time window, conditionnally on this serial interval distribution.
+time window, conditionally on this serial interval distribution.
 After pooling, a sample of size \eqn{\code{n1}\times\code{n2}} of the joint
 posterior distribution of the reproduction number over each time window is
 obtained.
@@ -209,9 +213,9 @@ This data, specified in argument \code{si_data}, should be a dataframe with 5
 \item{ER: the upper bound of the symptom onset date of the infector (given as
  an integer). Should be such that ER>=EL}
 \item{SL: the lower bound of the symptom onset date of the infected
-indivdiual (given as an integer)}
+individual (given as an integer)}
 \item{SR: the upper bound of the symptom onset date of the infected
-indivdiual (given as an integer). Should be such that SR>=SL}
+individual (given as an integer). Should be such that SR>=SL}
 \item{type (optional): can have entries 0, 1, or 2, corresponding to doubly
 interval-censored, single interval-censored or exact observations,
 respectively, see Reich et al. Statist. Med. 2009. If not specified, this
@@ -219,7 +223,7 @@ will be automatically computed from the dates}
 }
 Assuming a given parametric distribution for the serial interval distribution
  (specified in si_parametric_distr),
-the posterior distribution of the serial interval is estimated directly fom
+the posterior distribution of the serial interval is estimated directly from
 these data using MCMC methods implemented in the package
 \code{coarsedatatools}.
 The argument \code{mcmc_control} is a list of characteristics which control
@@ -232,7 +236,7 @@ so that the posterior sample size is \code{n1}.
 For each element in the posterior sample of serial interval distribution,
 we then draw a sample of size \code{n2} in the posterior distribution of the
 reproduction number over each time window,
-conditionnally on this serial interval distribution.
+conditionally on this serial interval distribution.
 After pooling, a sample of size \eqn{\code{n1}\times\code{n2}} of the joint
 posterior distribution of
 the reproduction number over each time window is obtained.

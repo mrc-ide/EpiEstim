@@ -4,13 +4,28 @@
 \alias{EstimateR}
 \title{Function to ensure compatibility with EpiEstim versions <2.0}
 \usage{
-EstimateR(I, T.Start, T.End, method = c("NonParametricSI",
-  "ParametricSI", "UncertainSI"), n1 = NULL, n2 = NULL,
-  Mean.SI = NULL, Std.SI = NULL, Std.Mean.SI = NULL,
-  Min.Mean.SI = NULL, Max.Mean.SI = NULL, Std.Std.SI = NULL,
-  Min.Std.SI = NULL, Max.Std.SI = NULL, SI.Distr = NULL,
-  Mean.Prior = 5, Std.Prior = 5, CV.Posterior = 0.3, plot = FALSE,
-  leg.pos = "topright")
+EstimateR(
+  I,
+  T.Start,
+  T.End,
+  method = c("NonParametricSI", "ParametricSI", "UncertainSI"),
+  n1 = NULL,
+  n2 = NULL,
+  Mean.SI = NULL,
+  Std.SI = NULL,
+  Std.Mean.SI = NULL,
+  Min.Mean.SI = NULL,
+  Max.Mean.SI = NULL,
+  Std.Std.SI = NULL,
+  Min.Std.SI = NULL,
+  Max.Std.SI = NULL,
+  SI.Distr = NULL,
+  Mean.Prior = 5,
+  Std.Prior = 5,
+  CV.Posterior = 0.3,
+  plot = FALSE,
+  leg.pos = "topright"
+)
 }
 \arguments{
 \item{I}{see \code{incid} in \code{estimate_R}}

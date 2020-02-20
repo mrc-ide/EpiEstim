@@ -14,12 +14,20 @@ al, 2005),
 data collected in a household study in San Antonio, Texas throughout the
 2009 H1N1 outbreak (Morgan et al., 2010).
 }}
+\source{
+Cauchemez S. et al. (2011) Role of social networks in shaping
+disease transmission during a community outbreak of 2009 H1N1 pandemic
+influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
+
+Morgan O.W. et al. (2010) Household transmission of pandemic (H1N1) 2009, San
+Antonio, Texas, USA, April-May 2009. Emerg Infect Dis 16: 631-637.
+}
 \description{
 This data set gives:
 \enumerate{
 \item the daily incidence of onset of acute respiratory illness
 (ARI, defined as at least two symptoms among fever, cough, sore throat,
-and runny nose) amongst children in a school in Pennsylvania during the
+and runny nose) among children in a school in Pennsylvania during the
 2009 H1N1 influenza pandemic (see source and references),
 \item the discrete daily distribution of the serial interval for influenza,
 assuming a shifted Gamma distribution with mean 2.6 days, standard
@@ -60,4 +68,12 @@ plot(res)
 }
 
 
+}
+\references{
+Cauchemez S. et al. (2011) Role of social networks in shaping
+disease transmission during a community outbreak of 2009 H1N1 pandemic
+influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
+
+Ferguson N.M. et al. (2005) Strategies for containing an emerging influenza
+pandemic in Southeast Asia. Nature 437(7056), 209-214.
 }

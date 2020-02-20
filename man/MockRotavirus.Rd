@@ -11,7 +11,7 @@
 observation corresponds to a pair of infector/infected individuals. EL
 and ER columns contain the lower an upper bounds of the dates of
 symptoms onset in the infectors. SL and SR columns contain the lower an
-upper bounds of the dates of symptoms onset in the infected indiviuals.
+upper bounds of the dates of symptoms onset in the infected individuals.
 The type column has entries 0, 1, or 2, corresponding to doubly
 interval-censored, single interval-censored or exact observations,
 respectively, see Reich et al.  Statist. Med. 2009

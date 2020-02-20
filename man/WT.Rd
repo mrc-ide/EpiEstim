@@ -4,9 +4,18 @@
 \alias{WT}
 \title{Function to ensure compatibility with EpiEstim versions <2.0}
 \usage{
-WT(I, T.Start, T.End, method = c("NonParametricSI", "ParametricSI"),
-  Mean.SI = NULL, Std.SI = NULL, SI.Distr = NULL, nSim = 10,
-  plot = FALSE, leg.pos = "topright")
+WT(
+  I,
+  T.Start,
+  T.End,
+  method = c("NonParametricSI", "ParametricSI"),
+  Mean.SI = NULL,
+  Std.SI = NULL,
+  SI.Distr = NULL,
+  nSim = 10,
+  plot = FALSE,
+  leg.pos = "topright"
+)
 }
 \arguments{
 \item{I}{see \code{incid} in \code{wallinga_teunis}}
