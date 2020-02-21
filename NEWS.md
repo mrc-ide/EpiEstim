@@ -1,4 +1,4 @@
-# EpiEstim 2.2-1.9000
+# EpiEstim 2.2-2
 
 ## MISC
 
@@ -91,4 +91,3 @@ This release contains various spelling fixes for CRAN maintenance.
    argument)
  - `graphics`, `reshape2`, `ggplot2`, `gridExtra`, `scales`, `grDevices` (to
    make new plots of outputs of `estimate_R` and `wallinga_teunis` functions)
-
