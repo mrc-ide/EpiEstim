@@ -2,7 +2,7 @@
 
 ## MISC
 
-* Plotting no longer displays TableGrob output (#86, @timchurches).
+* Plotting no longer displays TableGrob output (#87, @zkamvar).
 
 # EpiEstim 2.2-1
 
