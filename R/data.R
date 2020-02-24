@@ -150,9 +150,9 @@ NULL
 #' influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
 #' 
 #' Morgan O.W. et al. (2010) Household transmission of pandemic (H1N1) 2009, San
-#' Antonio, Texas, USA, April-May 2009. Emerg Infect Dis 16: 631-637. }
+#' Antonio, Texas, USA, April-May 2009. Emerg Infect Dis 16: 631-637. 
 #'
-#' @references { Cauchemez S. et al. (2011) Role of social networks in shaping
+#' @references Cauchemez S. et al. (2011) Role of social networks in shaping
 #' disease transmission during a community outbreak of 2009 H1N1 pandemic
 #' influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
 #' 

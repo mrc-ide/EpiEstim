@@ -9,8 +9,6 @@ matrix:
         - R_CODECOV=true
     - os: linux
       r: devel
-    - os: linux
-      r: oldrel
     - os: osx
       osx_image: xcode8.3
 

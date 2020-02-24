@@ -6,8 +6,7 @@
 estimate the serial interval, e.g. when using option \code{si_from_data} in 
 \code{estimate_R}}
 \usage{
-init_mcmc_params(si_data, dist = c("G", "W", "L", "off1G", "off1W",
-  "off1L"))
+init_mcmc_params(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
 }
 \arguments{
 \item{si_data}{the data on dates of symptoms of pairs of infector/infected
@@ -16,9 +15,9 @@ should be a dataframe with 5 columns: \itemize{ \item{EL: the lower bound
 of the symptom onset date of the infector (given as an integer)} \item{ER:
 the upper bound of the symptom onset date of the infector (given as an
 integer). Should be such that ER>=EL} \item{SL: the lower bound of the
-symptom onset date of the infected indivdiual (given as an integer)} 
+symptom onset date of the infected individual (given as an integer)} 
 \item{SR: the upper bound of the symptom onset date of the infected
-indivdiual (given as an integer). Should be such that SR>=SL} \item{type
+individual (given as an integer). Should be such that SR>=SL} \item{type
 (optional): can have entries 0, 1, or 2, corresponding to doubly
 interval-censored, single interval-censored or exact observations, 
 respectively, see Reich et al. Statist. Med. 2009. If not specified, this
@@ -36,10 +35,10 @@ A vector containing the initial values for the two parameters of the
 }
 \description{
 \code{init_mcmc_params} Finds values of the serial interval distribution 
-parameters, used to initalise the MCMC estimation of the serial interval 
+parameters, used to initialise the MCMC estimation of the serial interval 
 distribution. Initial values are computed based on the observed mean and 
 standard deviation of the sample from which the parameters are to be 
-estiamted.
+estimated.
 }
 \examples{
 \dontrun{

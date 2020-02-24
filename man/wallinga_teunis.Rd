@@ -5,8 +5,11 @@
 \title{Estimation of the case reproduction number using the Wallinga and Teunis
 method}
 \usage{
-wallinga_teunis(incid, method = c("non_parametric_si", "parametric_si"),
-  config)
+wallinga_teunis(
+  incid,
+  method = c("non_parametric_si", "parametric_si"),
+  config
+)
 }
 \arguments{
 \item{incid}{One of the following
@@ -33,7 +36,7 @@ in ascending order, and so that for all \code{i},
 \code{t_start[i]<=t_end[i]}.} \item{method: One of "non_parametric_si" or
 "parametric_si" (see details).} \item{mean_si: For method "parametric_si" ;
 positive real giving the mean serial interval.} \item{std_si: For method
-"parametric_si" ; non negative real giving the stadard deviation of the
+"parametric_si" ; non negative real giving the standard deviation of the
 serial interval.} \item{si_distr: For method "non_parametric_si" ; vector
 of probabilities giving the discrete distribution of the serial interval,
 starting with \code{si_distr[1]} (probability that the serial interval is

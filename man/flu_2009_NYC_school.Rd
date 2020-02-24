@@ -20,7 +20,7 @@ at a New York City school. New Eng J Med 361: 2628-2636.
 This data set gives:
 \enumerate{
 \item the daily incidence of self-reported and laboratory-confirmed cases of
-influenza amongst children in a school in New York city during the 2009
+influenza among children in a school in New York city during the 2009
 H1N1 influenza pandemic (see source and references),
 \item interval-censored serial interval data from the 2009 outbreak of H1N1
 influenza in a New York city school (see references).

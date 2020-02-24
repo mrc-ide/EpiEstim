@@ -518,10 +518,6 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
       p2 <- p2 + theme(legend.position = "none")
       p3 <- p3 + theme(legend.position = "none")
     }
-
-    out <- list(incid = p1, R = p2, SI = p3)
-    out.grid <- arrangeGrob(grobs = out, nrow = 3, ncol = 1)
-    grid.arrange(out.grid, newpage = FALSE)
-    return(out.grid)
+    return(grid.arrange(incide = p1, R = p2, SI = p3, ncol = 1))
   }
 }

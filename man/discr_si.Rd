@@ -8,7 +8,7 @@ Distribution}
 discr_si(k, mu, sigma)
 }
 \arguments{
-\item{k}{Positive integer, or vector of positive ingerers for which the 
+\item{k}{Positive integer, or vector of positive integers for which the 
 discrete distribution is desired.}
 
 \item{mu}{A positive real giving the mean of the Gamma distribution.}

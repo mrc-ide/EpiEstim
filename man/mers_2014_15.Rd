@@ -28,7 +28,7 @@ This data set gives:
 \item the daily incidence of onset of symptoms of laboratory confirmed human
 infections with MERS-CoV in Saudi Arabia between the beginning of July
 2014 and the end of December 2015, and
-\item estimates of the mean and standrad deviation of the serial interval for
+\item estimates of the mean and standard deviation of the serial interval for
 MERS.
 }
 }

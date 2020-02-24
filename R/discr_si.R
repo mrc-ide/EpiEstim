@@ -9,7 +9,7 @@
 #' \code{discr_si} computes the discrete distribution of the serial interval, 
 #' assuming that the serial interval is shifted Gamma distributed, with shift 1.
 #'
-#' @param k Positive integer, or vector of positive interers for which the 
+#' @param k Positive integer, or vector of positive integers for which the 
 #' discrete distribution is desired.
 #' @param mu A positive real giving the mean of the Gamma distribution.
 #' @param sigma A non-negative real giving the standard deviation of the Gamma 
@@ -38,7 +38,6 @@
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
 #' @references Cori, A. et al. A new framework and software to estimate 
 #' time-varying reproduction numbers during epidemics (AJE 2013).
-# #' @import stats
 #' @export
 #' @examples
 #' ## Computing the discrete serial interval of influenza
@@ -63,7 +62,7 @@ discr_si <- function(k, mu, sigma)
   a <- ((mu - 1) / sigma)^2
   b <- sigma^2 / (mu - 1)
 
-  cdf_gamma <- function(k, a, b) pgamma(k, shape = a, scale = b)
+  cdf_gamma <- function(k, a, b) stats::pgamma(k, shape = a, scale = b)
 
   res <- k * cdf_gamma(k, a, b) + 
     (k - 2) * cdf_gamma(k - 2, a, b) - 2 * (k - 1) * cdf_gamma(k - 1, a, b)
