@@ -1,3 +1,8 @@
+# Unreleased
+
+## FIXED
+* Fixed incorrect quantiles (issue #88) (#89, @jstockwin)
+
 # EpiEstim 2.2-2
 
 ## MISC
