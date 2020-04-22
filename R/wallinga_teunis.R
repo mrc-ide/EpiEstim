@@ -121,7 +121,7 @@ wallinga_teunis <- function(incid,
   
   draw_one_set_of_ancestries <- function() {
     res <- vector()
-    for (t in seq(config$t_start[1], config$t_end[length(config$t_end)]))
+    for (t in seq_len(T))
     {
       if (length(which(Onset == t)) > 0) {
         if (length(possible_ances_time[[t]]) > 0) {
