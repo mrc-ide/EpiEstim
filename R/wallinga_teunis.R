@@ -127,8 +127,8 @@ wallinga_teunis <- function(incid,
         if (length(possible_ances_time[[t]]) > 0) {
           prob <- config$si_distr[t - possible_ances_time[[t]] + 1] *
             incid[possible_ances_time[[t]]]
+          ot <- which(Onset == t)
           if (any(prob > 0)) {
-            ot <- which(Onset == t)
             res[ot] <-
               possible_ances_time[[t]][which(rmultinom(length(ot),
                                                        size = 1, prob = prob)
