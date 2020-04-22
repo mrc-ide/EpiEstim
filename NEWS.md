@@ -1,6 +1,7 @@
 # Unreleased
 
 ## FIXED
+* Fixed bugs in draw_one_set_of_ancestries resulting from incorrect lengths and an undefined variable (issue #92) (#93, @jstockwin)
 * Fixed incorrect quantiles (issue #88) (#89, @jstockwin)
 
 # EpiEstim 2.2-2
