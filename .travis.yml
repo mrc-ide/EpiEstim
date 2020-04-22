@@ -10,7 +10,10 @@ matrix:
     - os: linux
       r: devel
     - os: osx
-      osx_image: xcode8.3
+      osx_image: xcode9.4
+
+before_install: if [ "$TRAVIS_OS_NAME" = "osx" ]; then sudo tlmgr install inconsolata; fi
+
 
 warnings_are_errors: true
 
