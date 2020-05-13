@@ -4,14 +4,19 @@
 \alias{plot.estimate_R}
 \title{Plot outputs of estimate_r}
 \usage{
-\method{plot}{estimate_R}(x, what = c("all", "incid", "R", "SI"),
-  add_imported_cases = FALSE, options_I = list(col = palette(), transp
-  = 0.7, xlim = NULL, ylim = NULL, interval = 1L, xlab = "Time", ylab =
-  "Incidence"), options_R = list(col = palette(), transp = 0.2, xlim =
-  NULL, ylim = NULL, xlab = "Time", ylab = "R"),
-  options_SI = list(prob_min = 0.001, col = "black", transp = 0.25, xlim
-  = NULL, ylim = NULL, xlab = "Time", ylab = "Frequency"), legend = TRUE,
-  ...)
+\method{plot}{estimate_R}(
+  x,
+  what = c("all", "incid", "R", "SI"),
+  add_imported_cases = FALSE,
+  options_I = list(col = palette(), transp = 0.7, xlim = NULL, ylim = NULL, interval =
+    1L, xlab = "Time", ylab = "Incidence"),
+  options_R = list(col = palette(), transp = 0.2, xlim = NULL, ylim = NULL, xlab =
+    "Time", ylab = "R"),
+  options_SI = list(prob_min = 0.001, col = "black", transp = 0.25, xlim = NULL, ylim =
+    NULL, xlab = "Time", ylab = "Frequency"),
+  legend = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{The output of function \code{\link{estimate_R}} or function
@@ -27,8 +32,8 @@ all three (\code{what='all'})).}
 series plot, to add the incidence of imported cases.}
 
 \item{options_I}{For what = "incid" or "all". A list of graphical options:
-\describe{ \item{col}{A colour or vector of colours used for plotting
-incid. By default uses the default R colours.}  \item{transp}{A numeric
+\describe{ \item{col}{A color or vector of colors used for plotting
+incid. By default uses the default R colors.}  \item{transp}{A numeric
 value between 0 and 1 used to monitor transparency of the bars
 plotted. Defaults to 0.7.}  \item{xlim}{A parameter similar to that in
 \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
@@ -39,8 +44,8 @@ defaults to 1 day.} \item{xlab, ylab}{Labels for the axes of the
 incidence plot}}}
 
 \item{options_R}{For what = "R" or "all". A list of graphical options:
-\describe{ \item{col}{A colour or vector of colours used for plotting R. By
-default uses the default R colours.}  \item{transp}{A numeric value between
+\describe{ \item{col}{A color or vector of colors used for plotting R. By
+default uses the default R colors.}  \item{transp}{A numeric value between
 0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
 \item{xlim}{A parameter similar to that in \code{par}, to monitor the
 limits of the horizontal axis} \item{ylim}{A parameter similar to that in
@@ -51,8 +56,8 @@ limits of the horizontal axis} \item{ylim}{A parameter similar to that in
 \describe{ \item{prob_min}{A numeric value between 0 and 1. The SI
 distributions explored are only shown from time 0 up to the time t so that
 each distribution explored has probability < \code{prob_min} to be on any
-time step after t. Defaults to 0.001.}  \item{col}{A colour or vector of
-colours used for plotting the SI. Defaults to black.}  \item{transp}{A
+time step after t. Defaults to 0.001.}  \item{col}{A color or vector of
+colors used for plotting the SI. Defaults to black.}  \item{transp}{A
 numeric value between 0 and 1 used to monitor transparency of the
 lines. Defaults to 0.25} \item{xlim}{A parameter similar to that in
 \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A

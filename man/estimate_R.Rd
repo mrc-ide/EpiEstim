@@ -7,10 +7,14 @@
 \code{estimate_R} estimates the reproduction number of an epidemic, given the
 incidence time series and the serial interval distribution.}
 \usage{
-estimate_R(incid, method = c("non_parametric_si", "parametric_si",
-  "uncertain_si", "si_from_data", "si_from_sample"), si_data = NULL,
-  si_sample = NULL, config = make_config(incid = incid, method =
-  method))
+estimate_R(
+  incid,
+  method = c("non_parametric_si", "parametric_si", "uncertain_si", "si_from_data",
+    "si_from_sample"),
+  si_data = NULL,
+  si_sample = NULL,
+  config = make_config(incid = incid, method = method)
+)
 }
 \arguments{
 \item{incid}{One of the following
@@ -118,7 +122,7 @@ serial interval distribution to use for estimation of R. This can be a useful
  alternative to the previous method, where the MCMC estimation of the serial
  interval distribution could be run once, and the same estimated SI
  distribution then used in estimate_R in different contexts, e.g. with
- different time windows, hence avoiding to rerun the MCMC everytime
+ different time windows, hence avoiding to rerun the MCMC every time
  estimate_R is called.}
 }
 }

@@ -101,7 +101,7 @@
 #'  alternative to the previous method, where the MCMC estimation of the serial
 #'  interval distribution could be run once, and the same estimated SI
 #'  distribution then used in estimate_R in different contexts, e.g. with
-#'  different time windows, hence avoiding to rerun the MCMC everytime
+#'  different time windows, hence avoiding to rerun the MCMC every time
 #'  estimate_R is called.}
 #' }
 #' 

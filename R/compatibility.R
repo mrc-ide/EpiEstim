@@ -102,7 +102,11 @@ DiscrSI <- function(k, mu, sigma) {
 
 #' @export
 OverallInfectivity <- function(I, SI.Distr) {
-  .Deprecated("overall_infectivity")
+  # We will eventually properly deprecate this, but it is being used in other 
+  # packages at the moment, so soft deprecate for now.
+  if (interactive()) {
+    .Deprecated("overall_infectivity")
+  }
   overall_infectivity(incid = I, si_distr = SI.Distr)
 }
 

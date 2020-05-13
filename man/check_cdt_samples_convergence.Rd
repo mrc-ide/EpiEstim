@@ -20,7 +20,7 @@ otherwise
 }
 \details{
 {
-This function splits an MCMC chain in two halfs and uses the Gelman-Rubin 
+This function splits an MCMC chain in two halves and uses the Gelman-Rubin 
 algorithm to assess convergence of the chain by comparing its two halves.
 }
 }
