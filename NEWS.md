@@ -1,4 +1,4 @@
-# Unreleased
+# EpiEstim 2.2-3
 
 ## FIXED
 * Fixed incorrect quantiles (issue #88) (#89, @jstockwin)
