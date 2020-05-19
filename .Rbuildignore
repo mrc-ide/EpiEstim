@@ -5,3 +5,4 @@ fitRotavirus.R
 ^codecov\.yml$
 ^CRAN-RELEASE$
 ^cran-comments\.md$
+^\.github$
