@@ -7,6 +7,8 @@ on:
     branches:
       - main
       - master
+  schedule:
+  - cron: '0 6 * * 1' # Run every Monday at 06:00 (UTC)
 
 name: test-coverage
 
