@@ -105,6 +105,14 @@
 #'  estimate_R is called.}
 #' }
 #' 
+#' R is estimated within a Bayesian framework, using a Gamma distributed prior, 
+#' with mean and standard deviation which can be set using the `mean_prior` 
+#' and `std_prior` arguments within the `make_config` function, which can then
+#' be used to specify `config` in the `estimate_R` function. 
+#' Default values are a mean prior of 5 and standard deviation of 5. 
+#' This was set to a high prior value with large uncertainty so that if one 
+#' estimates R to be below 1, the result is strongly data-driven. 
+#' 
 #' @seealso \code{\link{discr_si}} \code{\link{make_config}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
 #' @references {
