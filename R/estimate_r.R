@@ -131,6 +131,10 @@
 #' This was set to a high prior value with large uncertainty so that if one 
 #' estimates R to be below 1, the result is strongly data-driven. 
 #' 
+#' R is estimated on time windows specified through the `config` argument. 
+#' These can be overlapping or not (see `make_config` function and vignette
+#' for examples).
+#' 
 #' @seealso \code{\link{discr_si}} \code{\link{make_config}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
 #' @references {
