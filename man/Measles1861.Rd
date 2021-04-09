@@ -4,11 +4,13 @@
 \name{Measles1861}
 \alias{Measles1861}
 \title{Data on the 1861 measles epidemic in Hagelloch, Germany.}
-\format{A list of two elements:
+\format{
+A list of two elements:
 \itemize{
 \item \strong{incidence:} a vector containing 48 days of observation,
 \item \strong{si_distr:} a vector containing a set of 38 probabilities.
-}}
+}
+}
 \source{
 Groendyke C. et al. (2011) Bayesian Inference for Contact Networks
 Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
