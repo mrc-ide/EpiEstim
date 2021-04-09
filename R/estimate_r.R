@@ -200,17 +200,21 @@
 #' ## load data on rotavirus
 #' data("MockRotavirus")
 #'
-#' ## estimate the reproduction number (method "si_from_data")
-#' MCMC_seed <- 1
-#' overall_seed <- 2
-#' R_si_from_data <- estimate_R(MockRotavirus$incidence,
-#'                             method = "si_from_data",
-#'                             si_data = MockRotavirus$si_data,
-#'                             config = make_config(list(si_parametric_distr = "G",
-#'                                         mcmc_control = make_mcmc_control(list(burnin = 1000,
-#'                                         thin = 10, seed = MCMC_seed),
-#'                                         n1 = 500, n2 = 50,
-#'                                         seed = overall_seed))))
+#'################
+#' mcmc_control <- make_mcmc_control(
+#'   burnin = 1000, # first 1000 iterations discarded as burn-in
+#'   thin = 10, # every 10th iteration will be kept, the rest discarded
+#'   seed = 1) # set the seed to make the process reproducible
+#'  
+#' R_si_from_data <- estimate_R(
+#'   incid = MockRotavirus$incidence,
+#'   method = "si_from_data",
+#'   si_data = MockRotavirus$si_data, # symptom onset data
+#'   config = make_config(si_parametric_distr = "G", # gamma dist. for SI
+#'      mcmc_control = mcmc_control,
+#'      n1 = 500, # number of posterior samples of SI dist.
+#'      n2 = 50, # number of posterior samples of Rt dist.
+#'      seed = 2)) # set seed for reproducibility
 #'
 #' ## compare with version with no uncertainty
 #' R_Parametric <- estimate_R(MockRotavirus$incidence,
