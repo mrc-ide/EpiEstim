@@ -14,8 +14,8 @@ Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("a
   person("Jonathan A.", "Polonsky", role = "ctb", comment = c(ORCID = "0000-0002-8634-4255")),
   person("Jake", "Stockwin", role = "ctb"),
   person("Robin", "Thompson", role = "ctb", comment = c(ORCID = "0000-0001-8545-5212")),
-  person("Rolina", "van Gaalen", role = "ctb")
-  )
+  person("Rolina", "van Gaalen", role = "ctb"),
+  person("Rebecca", "Nash", role = "ctb", comment = c(ORCID = "0000-0002-5213-4364"))
 Maintainer: Anne Cori <a.cori@imperial.ac.uk>
 Description: Tools to quantify transmissibility throughout
     an epidemic from the analysis of time series of incidence as described in
