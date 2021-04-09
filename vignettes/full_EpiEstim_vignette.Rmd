@@ -14,6 +14,16 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+require(kableExtra)
+require(hrbrthemes)
+require(gghighlight)
+require(MCMCglmm)
+require(projections)
+require(EpiEstim) 
+require(ggplot2)
+require(incidence)
+require(dplyr)
+require(gridExtra)
 ```
 
 The `EpiEstim` package allows you to estimate the time varying reproduction number (R~t~) from epidemic data. This vignette will take you through the key stages in the process of estimating R~t~ and also introduce some additional packages (`incidence` and `projections`) that can work alongside EpiEstim in a typical outbreak analysis workflow. Please also see the 'Examples' and 'FAQs' sections.
@@ -23,7 +33,7 @@ The `EpiEstim` package allows you to estimate the time varying reproduction numb
 </div>
 
 ```{r, echo=FALSE, out.width="90%"}
-knitr::include_graphics("/Users/rebeccanash/Desktop/EpiEstim_Vignette_Directory/Illustration_of_process.png")
+knitr::include_graphics("./figs/Illustration_of_process.png")
 ```
 
 
@@ -62,7 +72,7 @@ This feature was recently incorporated into EpiEstim by Thompson et al 2019. If 
 <div style="margin-top:20px;">
 <div style="margin-bottom:20px;">
 ```{r, echo=FALSE, out.width="90%"}
-knitr::include_graphics("/Users/rebeccanash/Desktop/EpiEstim_Vignette_Directory/Serial interval with uncertainty.png")
+knitr::include_graphics("./figs/Serial interval with uncertainty.png")
 ```
 </div>
 </div>
@@ -86,7 +96,7 @@ In an ideal world we would have access to data in the format above, where dates 
 <div style="margin-top:20px;">
 
 ```{r fig.align="center", echo=FALSE, out.width="40%"}
-knitr::include_graphics("/Users/rebeccanash/Desktop/EpiEstim_Vignette_Directory/interval-censored example.png",
+knitr::include_graphics("./figs/interval-censored example.png",
                         auto_pdf = getOption("knitr.graphics.auto_pdf", FALSE))
 ```
 </div>
@@ -114,11 +124,6 @@ It is important to note that, particularly for outbreaks of emerging diseases, t
 
 The package `incidence` can be used to easily plot incidence, as shown in the following example using a pre-loaded `EpiEstim` dataset of an Influenza outbreak in 2009 ("Flu2009").
 
-```{r, results="hide", warning=FALSE}
-library(EpiEstim) # contains the Flu2009 example dataset
-library(ggplot2)  # a package that aids data visualisation
-```
-
 ```{r}
 data("Flu2009") # load example dataset
 head(Flu2009$incidence) # displays the first n rows of the Flu2009$incidence data 
@@ -127,7 +132,6 @@ head(Flu2009$incidence) # displays the first n rows of the Flu2009$incidence dat
 For instance, in this example, incidence (I) is a count of individuals with a symptom onset on a particular date. We can plot this using `incidence` as follows:
 
 ```{r, warning=FALSE, fig.align="center",fig.width=5}
-library(incidence)
 plot(as.incidence(Flu2009$incidence$I, dates = Flu2009$incidence$dates))
 ```
 
@@ -148,7 +152,6 @@ Incid_import <- c(3,2,1,4,"...")
 
 df <- data.frame(Date,Incid_overall,Incid_local,Incid_import)
 table2 <- knitr::kable(df, "html",col.names = c("Date","Incidence Overall","Incidence Local","Incidence Imported"))
-library("kableExtra")
 column_spec(table2,1:4,width="5.5cm")
 ```
 
@@ -158,7 +161,7 @@ Once you have an incidence object (based on the dates of symptom onset) and info
 
 
 ```{r, echo=FALSE, out.width="100%"}
-knitr::include_graphics("/Users/rebeccanash/Desktop/EpiEstim_Vignette_Directory/Renewal equation v2.png")
+knitr::include_graphics("./figs/Renewal equation v2.png")
 ```
 
 Here I~t~ represents the incidence of symptom onset at time t, which is approximated by a Poisson process using the renewal equation. R~t~ is what we want to estimate, I~t-s~ is the past indidence and $\omega$ is the serial interval distribution.
@@ -183,9 +186,7 @@ As mentioned, the serial interval (SI) can be defined using one of the following
 **Parametric** - `"parametric_si"` uses the mean and standard deviation. Ex. The user can supply `mean_si=3` and `std_si=1`, which generates an offset gamma distribution as the default:
 
 ```{r fig.align="center", echo=FALSE, out.width="30%"}
-#library(ggfortify)
-#ggdistribution(dnorm, seq(0, 8, 0.1), mean = 3, sd = 1)
-library(hrbrthemes)
+#ggdistribution(dnorm, seq(0, 8, 0.1), mean = 3, sd = 1)=
 x_lower_norm <- 0
 x_upper_norm <- 7
 ggplot(data.frame(x = c(x_lower_norm , x_upper_norm)), aes(x = x)) + 
@@ -209,7 +210,6 @@ ggplot(data.frame(x = c(x_lower_norm , x_upper_norm)), aes(x = x)) +
 **Non-parametric** - `"non_parametric_si"` uses the discrete distribution of the SI. Ex. The user can supply `si_distr=c(0.000,0.233,0.359,0.198,0.103,0.053,0.027,0.014,0.007,0.003,0.002,0.001)`, which generates:
 
 ```{r fig.align="center", echo=FALSE, out.width="30%"}
-library(hrbrthemes)
 y = c(0.000,0.233,0.359,0.198,0.103,0.053,0.027,0.014,0.007,0.003,0.002,0.001) 
 x = seq(0,8,length=12)
 spline_int <- as.data.frame(spline(x, y))
@@ -234,13 +234,6 @@ ggplot(data.frame(x = x, y=y), aes(x = x, y=y)) +
 **Uncertain** - If we are particularly uncertain about the parameters of the SI distribution, then we can use `"uncertain_si"` to draw the mean and standard deviation from truncated normal distributions and generate multiple potential SI distributions and integrate the results. 
     
 Ex. Here, the mean of the SI will be drawn from a normal distribution with a mean of 3 and SD of 1, truncated at 1 and 4 (left). The SD of the SI will be drawn from a normal distribution with a mean of 1.5 and SD of 0.5, truncated at 0.5 and 2.5 (centre). The drawn values will parameterise multiple SI distributions to be considered, but for clarity, the example below only displays 5 (right).
-
-```{r, echo=FALSE, message = FALSE, results="hide", warning=FALSE}
-library(gghighlight)
-library(dplyr)
-library(hrbrthemes)
-library(gridExtra)
-```
 
 ```{r, dpi=300, figures-side, fig.show="hold", out.width="30%", echo=FALSE, message=FALSE, warning=FALSE}
 df <- data.frame(x = seq(0, 6, length.out = 100)) %>% mutate(y = dnorm(x, mean=3,sd=1))
@@ -277,8 +270,6 @@ stdev.plot <-ggplot(df2, aes(x, y)) + geom_area(fill = "sky blue") + gghighlight
 
 mean.plot
 stdev.plot
-
-library(MCMCglmm)
 
 # means = list()
 # for(i in 1:5){
@@ -372,7 +363,7 @@ As described above in 'Step A: Serial Interval', you may know the exact day of s
 <div style="margin-bottom:20px;">
 <p align="center">
 ```{r, echo=FALSE, out.width="40%"}
-knitr::include_graphics("/Users/rebeccanash/Desktop/EpiEstim_Vignette_Directory/Infector-infected exact.png")
+knitr::include_graphics("./figs/Infector-infected exact.png")
 ```
 </p>
 </div>
@@ -396,7 +387,7 @@ Or instead you may have data that gives you a range of potential symptom onset d
 <div style="margin-bottom:20px;">
 <p align="center">
 ```{r, echo=FALSE, out.width="40%"}
-knitr::include_graphics("/Users/rebeccanash/Desktop/EpiEstim_Vignette_Directory/Infector-infected intervals 2.png")
+knitr::include_graphics("./figs/Infector-infected intervals 2.png")
 ```
 </p>
 </div>
@@ -457,7 +448,7 @@ See examples A-E in the Examples section to demonstrate `estimate_R()` with data
 <div style="margin-bottom:20px;">
 <p align="center">
 ```{r, echo=FALSE, out.width="40%"}
-knitr::include_graphics("/Users/rebeccanash/Desktop/EpiEstim_Vignette_Directory/Weekly sliding windows.png")
+knitr::include_graphics("./figs/Weekly sliding windows.png")
 ```
 </p>
 </div>
@@ -569,8 +560,6 @@ Res <- estimate_R(incid = trunc_incidence,
 We can then supply the incidence, median estimate of R, and the SI distribution to the `project()` function in the `projections` package.
 
 ```{r, eval=FALSE}
-library(projections)
-
 # Use the project function
 proj <- project(trunc_incidence, # truncated incidence object
                 R = Res$R$`Median(R)`, # median R estimate
@@ -601,7 +590,10 @@ We will be using the data from a simulated outbreak of Ebola Virus Disease (EVD)
 **Incidence**
 
 ```{r, echo=FALSE}
-linelist <- read.csv("~/Desktop/EpiEstim_Vignette_Directory/Ebola_linelist.csv")
+temp <- tempfile(fileext = ".xlsx")
+dataURL <- "https://github.com/reconhub/learn/raw/master/static/data/linelist_20140701.xlsx"
+download.file(dataURL, destfile=temp, mode='wb')
+linelist <- readxl::read_xlsx(temp)
 ```
 
 Let us say we have line list data in the format below, where each row corresponds to a reported case of EVD.
@@ -613,10 +605,8 @@ head(linelist)
 We can create an incidence object for all the cases of EVD with a known date of symptom onset (date_of_onset) using the `incidence` package:
 
 ```{r, fig.width=6}
-library(incidence) # load the incidence package
-
 # linelist$date_of_onset is class 'character', but we need it to be a date:
-linelist$date_of_onset <- as.Date(linelist$date_of_onset, format="%d/%m/%Y")
+linelist$date_of_onset <- as.Date(linelist$date_of_onset, format="%Y-%m-%d")
 
 # Create an incidence object:
 evd_incid <- incidence(linelist$date_of_onset)
@@ -632,8 +622,6 @@ Now that we have an incidence object we need to supply `EpiEstim` with the SI di
 We supply `estimate_R()` with the incidence object and parameters for the parametric SI and this generates the following 3 panel plot:
 
 ```{r, results='hide', warning=FALSE, message=FALSE, fig.height=7,fig.width=5}
-library(EpiEstim)
-
 R_si_parametric <- estimate_R(incid = evd_incid, 
                              method = "parametric_si",
                              config = make_config(mean_si=14.2, std_si=9.6))
@@ -650,9 +638,6 @@ You will notice in the "Estimated R" panel that there is a lot of uncertainty ar
 The `projections` package takes the estimated reproduction number, serial interval distribution and incidence object to simulate epidemic trajectories using branching processes.
 
 ```{r, message=FALSE, fig.width=6}
-library(projections)
-library(dplyr)
-
 # Truncate the linelist so that the last 7 days of data are not included
 # (some people who have become symptomatic are yet to be reported)
 trunc_date <- max(linelist$date_of_onset)-7
@@ -796,7 +781,6 @@ plot(R_diff_prior, "R", legend=FALSE)
 Below, both the estimate with the default prior from example A and the modified prior from this example are plotted together. After changing the prior to a mean of 2 and standard deviation of 1 the initial estimate for R~t~ is lower than the initial estimate using the default prior. Once there is more data (mid-May) the R estimates converge regardless of the prior. It is important to be aware of the weight the prior can have on your estimate when incidence is low.
 
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE, fig.width=7}
-library(ggplot2)
 test = rbind(R_diff_prior$R,R_si_parametric$R)
 test$type=c(rep("Mean prior 2",77),rep("Mean prior 5",77))
 test$dates=rep(R_si_parametric$dates[8:84],2)
@@ -855,7 +839,7 @@ Remember that R~t~ is plotted on the last day of each time window, so although t
     During an outbreak there tends to be a delay in the reporting of cases, which is known as right censoring. I.e. There are often cases with a recent symptom onset date that are yet to be reported, so the latest incidence is under-estimated when you're analysing data in real-time. If you estimate R~t~ without accounting for this delay, then it could make R~t~ appear lower than it actually is. This is why in Example A we have chosen to not include the last 7 days of data in the recent time window used to estimate R and make projections.
 
 ```{r, echo=FALSE, out.width="50%", fig.cap = "Figure courtesy of Anne Cori"}
-knitr::include_graphics("/Users/rebeccanash/Desktop/EpiEstim_Vignette_Directory/Anne's figure.png")
+knitr::include_graphics("./figs/Anne's figure.png")
 ```
 
 <div style="margin-top:20px;">
@@ -867,7 +851,7 @@ knitr::include_graphics("/Users/rebeccanash/Desktop/EpiEstim_Vignette_Directory/
 </div>  
 
 ```{r, echo=FALSE, out.width="100%"}
-knitr::include_graphics("/Users/rebeccanash/Desktop/EpiEstim_Vignette_Directory/Time-varying reporting 3.png")
+knitr::include_graphics("./figs/Time-varying reporting 3.png")
 ```
 
 * **Why are the estimates of R from `estimate_R()` different from what I expect?**
