@@ -72,7 +72,7 @@ This feature was recently incorporated into EpiEstim by Thompson et al 2019. If 
 <div style="margin-top:20px;">
 <div style="margin-bottom:20px;">
 ```{r, echo=FALSE, out.width="90%"}
-knitr::include_graphics("./figs/Serial interval with uncertainty.png")
+knitr::include_graphics("./figs/Serial_interval_with_uncertainty.png")
 ```
 </div>
 </div>
@@ -96,7 +96,7 @@ In an ideal world we would have access to data in the format above, where dates 
 <div style="margin-top:20px;">
 
 ```{r fig.align="center", echo=FALSE, out.width="40%"}
-knitr::include_graphics("./figs/interval-censored example.png",
+knitr::include_graphics("./figs/interval_censored_example.png",
                         auto_pdf = getOption("knitr.graphics.auto_pdf", FALSE))
 ```
 </div>
@@ -161,7 +161,7 @@ Once you have an incidence object (based on the dates of symptom onset) and info
 
 
 ```{r, echo=FALSE, out.width="100%"}
-knitr::include_graphics("./figs/Renewal equation v2.png")
+knitr::include_graphics("./figs/Renewal_equation.png")
 ```
 
 Here I~t~ represents the incidence of symptom onset at time t, which is approximated by a Poisson process using the renewal equation. R~t~ is what we want to estimate, I~t-s~ is the past indidence and $\omega$ is the serial interval distribution.
@@ -363,7 +363,7 @@ As described above in 'Step A: Serial Interval', you may know the exact day of s
 <div style="margin-bottom:20px;">
 <p align="center">
 ```{r, echo=FALSE, out.width="40%"}
-knitr::include_graphics("./figs/Infector-infected exact.png")
+knitr::include_graphics("./figs/Infector_infected_exact.png")
 ```
 </p>
 </div>
@@ -387,7 +387,7 @@ Or instead you may have data that gives you a range of potential symptom onset d
 <div style="margin-bottom:20px;">
 <p align="center">
 ```{r, echo=FALSE, out.width="40%"}
-knitr::include_graphics("./figs/Infector-infected intervals 2.png")
+knitr::include_graphics("./figs/Infector_infected_intervals.png")
 ```
 </p>
 </div>
@@ -448,7 +448,7 @@ See examples A-E in the Examples section to demonstrate `estimate_R()` with data
 <div style="margin-bottom:20px;">
 <p align="center">
 ```{r, echo=FALSE, out.width="40%"}
-knitr::include_graphics("./figs/Weekly sliding windows.png")
+knitr::include_graphics("./figs/Weekly_sliding_windows.png")
 ```
 </p>
 </div>
@@ -839,7 +839,7 @@ Remember that R~t~ is plotted on the last day of each time window, so although t
     During an outbreak there tends to be a delay in the reporting of cases, which is known as right censoring. I.e. There are often cases with a recent symptom onset date that are yet to be reported, so the latest incidence is under-estimated when you're analysing data in real-time. If you estimate R~t~ without accounting for this delay, then it could make R~t~ appear lower than it actually is. This is why in Example A we have chosen to not include the last 7 days of data in the recent time window used to estimate R and make projections.
 
 ```{r, echo=FALSE, out.width="50%", fig.cap = "Figure courtesy of Anne Cori"}
-knitr::include_graphics("./figs/Anne's figure.png")
+knitr::include_graphics("./figs/Delays_in_reporting.png")
 ```
 
 <div style="margin-top:20px;">
@@ -851,7 +851,7 @@ knitr::include_graphics("./figs/Anne's figure.png")
 </div>  
 
 ```{r, echo=FALSE, out.width="100%"}
-knitr::include_graphics("./figs/Time-varying reporting 3.png")
+knitr::include_graphics("./figs/Time_varying_reporting.png")
 ```
 
 * **Why are the estimates of R from `estimate_R()` different from what I expect?**
