@@ -32,7 +32,25 @@
 #'
 #' @param si_data For method "si_from_data" ; the data on dates of symptoms of
 #'   pairs of infector/infected individuals to be used to estimate the serial
-#'   interval distribution (see details).
+#'   interval distribution This should be a dataframe with 5 columns: 
+#'   \itemize{ 
+#'   \item{EL: the lower bound
+#'   of the symptom onset date of the infector (given as an integer)} 
+#'   \item{ER:
+#'   the upper bound of the symptom onset date of the infector (given as an
+#'   integer). Should be such that ER>=EL. If the dates are known exactly use
+#'   ER = EL} 
+#'   \item{SL: the lower bound of the
+#'   symptom onset date of the infected individual (given as an integer)} 
+#'   \item{SR: the upper bound of the symptom onset date of the infected
+#'   individual (given as an integer). Should be such that SR>=SL. If the dates 
+#'   are known exactly use SR = SL} 
+#'   \item{type
+#'   (optional): can have entries 0, 1, or 2, corresponding to doubly
+#'   interval-censored, single interval-censored or exact observations, 
+#'   respectively, see Reich et al. Statist. Med. 2009. If not specified, this
+#'   will be automatically computed from the dates} 
+#'   }
 #'
 #' @param config An object of class \code{estimate_R_config}, as returned by 
 #' function \code{make_config}. 
