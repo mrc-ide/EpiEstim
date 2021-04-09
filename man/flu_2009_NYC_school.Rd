@@ -4,14 +4,16 @@
 \name{flu_2009_NYC_school}
 \alias{flu_2009_NYC_school}
 \title{Data on the 2009 H1N1 influenza pandemic in a school in New York city}
-\format{A list of two elements:
+\format{
+A list of two elements:
 \itemize{
 \item \strong{incidence}: a dataframe with 14 lines containing dates in first column,
 and daily incidence in second column ,
 \item \strong{si_data}: a dataframe containing data on the generation time for 16
 pairs of infector/infected individuals (see references and see argument
 \code{si_data} of function \code{\link[=estimate_R]{estimate_R()}} for details on columns)
-}}
+}
+}
 \source{
 Lessler J. et al. (2009) Outbreak of 2009 pandemic influenza A (H1N1)
 at a New York City school. New Eng J Med 361: 2628-2636.
