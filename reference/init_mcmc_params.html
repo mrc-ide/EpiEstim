@@ -163,11 +163,13 @@ should be a dataframe with 5 columns:</p><ul>
 of the symptom onset date of the infector (given as an integer)</p></li>
 <li><p>ER:
 the upper bound of the symptom onset date of the infector (given as an
-integer). Should be such that ER&gt;=EL</p></li>
+integer). Should be such that ER&gt;=EL. If the dates are known exactly use
+ER = EL</p></li>
 <li><p>SL: the lower bound of the
 symptom onset date of the infected individual (given as an integer)</p></li>
 <li><p>SR: the upper bound of the symptom onset date of the infected
-individual (given as an integer). Should be such that SR&gt;=SL</p></li>
+individual (given as an integer). Should be such that SR&gt;=SL. If the dates 
+are known exactly use SR = SL</p></li>
 <li><p>type
 (optional): can have entries 0, 1, or 2, corresponding to doubly
 interval-censored, single interval-censored or exact observations, 
