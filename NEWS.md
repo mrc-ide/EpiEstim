@@ -1,3 +1,7 @@
+# EpiEstim 2.2-5
+
+* New vignette
+
 # EpiEstim 2.2-3
 
 ## FIXED
