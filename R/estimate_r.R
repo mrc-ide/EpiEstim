@@ -32,7 +32,7 @@
 #'
 #' @param si_data For method "si_from_data" ; the data on dates of symptoms of
 #'   pairs of infector/infected individuals to be used to estimate the serial
-#'   interval distribution This should be a dataframe with 5 columns: 
+#'   interval distribution should be a dataframe with 5 columns: 
 #'   \itemize{ 
 #'   \item{EL: the lower bound
 #'   of the symptom onset date of the infector (given as an integer)} 
