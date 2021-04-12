@@ -43,7 +43,25 @@ imported cases.}
 
 \item{si_data}{For method "si_from_data" ; the data on dates of symptoms of
 pairs of infector/infected individuals to be used to estimate the serial
-interval distribution (see details).}
+interval distribution This should be a dataframe with 5 columns: 
+\itemize{ 
+\item{EL: the lower bound
+of the symptom onset date of the infector (given as an integer)} 
+\item{ER:
+the upper bound of the symptom onset date of the infector (given as an
+integer). Should be such that ER>=EL. If the dates are known exactly use
+ER = EL} 
+\item{SL: the lower bound of the
+symptom onset date of the infected individual (given as an integer)} 
+\item{SR: the upper bound of the symptom onset date of the infected
+individual (given as an integer). Should be such that SR>=SL. If the dates 
+are known exactly use SR = SL} 
+\item{type
+(optional): can have entries 0, 1, or 2, corresponding to doubly
+interval-censored, single interval-censored or exact observations, 
+respectively, see Reich et al. Statist. Med. 2009. If not specified, this
+will be automatically computed from the dates} 
+}}
 
 \item{si_sample}{For method "si_from_sample" ; a matrix where each column
 gives one distribution of the serial interval to be explored (see details).}
@@ -125,6 +143,18 @@ serial interval distribution to use for estimation of R. This can be a useful
  different time windows, hence avoiding to rerun the MCMC every time
  estimate_R is called.}
 }
+
+R is estimated within a Bayesian framework, using a Gamma distributed prior, 
+with mean and standard deviation which can be set using the `mean_prior` 
+and `std_prior` arguments within the `make_config` function, which can then
+be used to specify `config` in the `estimate_R` function. 
+Default values are a mean prior of 5 and standard deviation of 5. 
+This was set to a high prior value with large uncertainty so that if one 
+estimates R to be below 1, the result is strongly data-driven. 
+
+R is estimated on time windows specified through the `config` argument. 
+These can be overlapping or not (see `make_config` function and vignette
+for examples).
 }
 \examples{
 ## load data on pandemic flu in a school in 2009
@@ -207,17 +237,21 @@ plot(res)
 ## load data on rotavirus
 data("MockRotavirus")
 
-## estimate the reproduction number (method "si_from_data")
-MCMC_seed <- 1
-overall_seed <- 2
-R_si_from_data <- estimate_R(MockRotavirus$incidence,
-                            method = "si_from_data",
-                            si_data = MockRotavirus$si_data,
-                            config = make_config(list(si_parametric_distr = "G",
-                                        mcmc_control = make_mcmc_control(list(burnin = 1000,
-                                        thin = 10, seed = MCMC_seed),
-                                        n1 = 500, n2 = 50,
-                                        seed = overall_seed))))
+################
+mcmc_control <- make_mcmc_control(
+  burnin = 1000, # first 1000 iterations discarded as burn-in
+  thin = 10, # every 10th iteration will be kept, the rest discarded
+  seed = 1) # set the seed to make the process reproducible
+ 
+R_si_from_data <- estimate_R(
+  incid = MockRotavirus$incidence,
+  method = "si_from_data",
+  si_data = MockRotavirus$si_data, # symptom onset data
+  config = make_config(si_parametric_distr = "G", # gamma dist. for SI
+     mcmc_control = mcmc_control,
+     n1 = 500, # number of posterior samples of SI dist.
+     n2 = 50, # number of posterior samples of Rt dist.
+     seed = 2)) # set seed for reproducibility
 
 ## compare with version with no uncertainty
 R_Parametric <- estimate_R(MockRotavirus$incidence,
