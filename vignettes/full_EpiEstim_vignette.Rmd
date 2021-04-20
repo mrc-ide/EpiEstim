@@ -24,6 +24,7 @@ require(ggplot2)
 require(incidence)
 require(dplyr)
 require(gridExtra)
+require(readxl)
 ```
 
 The `EpiEstim` package allows you to estimate the time varying reproduction number (R~t~) from epidemic data. This vignette will take you through the key stages in the process of estimating R~t~ and also introduce some additional packages (`incidence` and `projections`) that can work alongside EpiEstim in a typical outbreak analysis workflow. Please also see the 'Examples' and 'FAQs' sections.
@@ -105,8 +106,6 @@ knitr::include_graphics("./figs/interval_censored_example.png",
 This type of data may look like this: 
 
 ```{r, echo=FALSE}
-#Case_ID <- c(299,302,341,389,"...")
-#Infector_ID <- c(208,272,301,312,"...")
 Time_inf_symp_LB <- c("21","23","34","46","...")
 Time_inf_symp_UB <- c("25","26","39","52","...")
 Time_rec_symp_LB <- c("26","26","41","54","...")
@@ -186,7 +185,6 @@ As mentioned, the serial interval (SI) can be defined using one of the following
 **Parametric** - `"parametric_si"` uses the mean and standard deviation. Ex. The user can supply `mean_si=3` and `std_si=1`, which generates an offset gamma distribution as the default:
 
 ```{r fig.align="center", echo=FALSE, out.width="30%"}
-#ggdistribution(dnorm, seq(0, 8, 0.1), mean = 3, sd = 1)=
 x_lower_norm <- 0
 x_upper_norm <- 7
 ggplot(data.frame(x = c(x_lower_norm , x_upper_norm)), aes(x = x)) + 
@@ -271,16 +269,7 @@ stdev.plot <-ggplot(df2, aes(x, y)) + geom_area(fill = "sky blue") + gghighlight
 mean.plot
 stdev.plot
 
-# means = list()
-# for(i in 1:5){
-#   means[[i]] <- rtnorm(n=1, mean=3, sd=1, lower=1, upper=4)
-# }
 means = c(3.341865,2.100418,3.681627,2.147153,1.939799)
-
-# sds = list()
-# for(i in 1:5){
-#   sds[[i]] <- rtnorm(n=1, mean=1.5, sd=0.5, lower=0.5, upper=2.5)
-# }
 sds = c(1.466131,1.193257,2.39984,1.524076,1.59843)
 
 x_lower_norm <- 0
@@ -563,7 +552,7 @@ We can then supply the incidence, median estimate of R, and the SI distribution 
 # Use the project function
 proj <- project(trunc_incidence, # truncated incidence object
                 R = Res$R$`Median(R)`, # median R estimate
-                si = Res$si_distr, # serial interval distribution
+                si = Res$si_distr[-1], # serial interval distribution
                 n_sim = 1000, # number of trajectories to simulate e.g. 1000
                 n_days = 30, # number of days to make projections over e.g. 30 
                 R_fix_within = TRUE) # whether to keep the same value of R every day (TRUE/FALSE)
@@ -656,7 +645,7 @@ R_si_parametric_recent <- estimate_R(incid = evd_incid_trunc,
 # Project future incidence over 30 days since last day in truncated incidence
 proj <- project(evd_incid_trunc, # truncated incidence object
                 R = R_si_parametric_recent$R$`Median(R)`, # R estimate
-                si = R_si_parametric_recent$si_distr, # serial interval distribution
+                si = R_si_parametric_recent$si_distr[-1], # serial interval distribution
                 n_sim = 1000, # simulate 1000 trajectories
                 n_days = 30, # over 30 days
                 R_fix_within = TRUE) # keep the same value of R every day
