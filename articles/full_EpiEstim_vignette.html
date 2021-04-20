@@ -89,7 +89,7 @@
       <h1 data-toc-skip>EpiEstim Vignette</h1>
                         <h4 class="author">Rebecca Nash</h4>
             
-            <h4 class="date">2021-04-12</h4>
+            <h4 class="date">2021-04-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/master/vignettes/full_EpiEstim_vignette.Rmd"><code>vignettes/full_EpiEstim_vignette.Rmd</code></a></small>
       <div class="hidden name"><code>full_EpiEstim_vignette.Rmd</code></div>
@@ -762,12 +762,12 @@ dd/mm/yy
                   config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span>mean_si<span class="op">=</span><span class="va">mean_si</span>, std_si<span class="op">=</span><span class="va">std_si</span>,
                                        t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">trunc_incidence</span><span class="op">)</span><span class="op">-</span><span class="fl">14</span>,
                                        t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">trunc_incidence</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># 2 week window that ended a week ago</span></code></pre></div>
-<p>We can then supply the incidence, median estimate of R, and the SI distribution to the <code>project()</code> function in the <code>projections</code> package.</p>
+<p>We can then supply the incidence, median estimate of R, and the SI distribution to the <code>project()</code> function in the <code>projections</code> package. Note: The <code>project()</code> function requires that the distribution of the serial interval starts on day 1, not on day 0 as in EpiEstim.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Use the project function</span>
 <span class="va">proj</span> <span class="op">&lt;-</span> <span class="fu">project</span><span class="op">(</span><span class="va">trunc_incidence</span>, <span class="co"># truncated incidence object</span>
                 R <span class="op">=</span> <span class="va">Res</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Median(R)`</span>, <span class="co"># median R estimate</span>
-                si <span class="op">=</span> <span class="va">Res</span><span class="op">$</span><span class="va">si_distr</span>, <span class="co"># serial interval distribution</span>
+                si <span class="op">=</span> <span class="va">Res</span><span class="op">$</span><span class="va">si_distr</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="co"># serial interval distribution (starts day 1)</span>
                 n_sim <span class="op">=</span> <span class="fl">1000</span>, <span class="co"># number of trajectories to simulate e.g. 1000</span>
                 n_days <span class="op">=</span> <span class="fl">30</span>, <span class="co"># number of days to make projections over e.g. 30 </span>
                 R_fix_within <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># whether to keep the same value of R every day (TRUE/FALSE)</span></code></pre></div>
@@ -823,7 +823,7 @@ dd/mm/yy
 <p>The top panel shows the epidemic curve with the incidence of reported cases over time. The middle panel is the estimated value of R over weekly sliding windows and how it varies over time (R<sub>t</sub>), the mean is shown by the solid black line and the 95% credible intervals are represented by the grey shaded area. The final panel is the explored SI distribution that we parameterised and used to estimate R<sub>t</sub>.</p>
 <p>You will notice in the “Estimated R” panel that there is a lot of uncertainty around the initial estimates for R<sub>t</sub> in the outbreak due to very little data. This is why we recommend that you do not try to estimate R<sub>t</sub> until there have been <em>at least</em> 10 cases so that you can be confident that your estimates reflect the data (Cori 2013).</p>
 <p><strong>Make Projections</strong></p>
-<p>The <code>projections</code> package takes the estimated reproduction number, serial interval distribution and incidence object to simulate epidemic trajectories using branching processes.</p>
+<p>The <code>projections</code> package takes the estimated reproduction number, serial interval distribution and incidence object to simulate epidemic trajectories using branching processes. Note: The <code>project()</code> function requires that the distribution of the serial interval starts on day 1, not on day 0 as in EpiEstim.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Truncate the linelist so that the last 7 days of data are not included</span>
 <span class="co"># (some people who have become symptomatic are yet to be reported)</span>
@@ -843,7 +843,7 @@ dd/mm/yy
 <span class="co"># Project future incidence over 30 days since last day in truncated incidence</span>
 <span class="va">proj</span> <span class="op">&lt;-</span> <span class="fu">project</span><span class="op">(</span><span class="va">evd_incid_trunc</span>, <span class="co"># truncated incidence object</span>
                 R <span class="op">=</span> <span class="va">R_si_parametric_recent</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Median(R)`</span>, <span class="co"># R estimate</span>
-                si <span class="op">=</span> <span class="va">R_si_parametric_recent</span><span class="op">$</span><span class="va">si_distr</span>, <span class="co"># serial interval distribution</span>
+                si <span class="op">=</span> <span class="va">R_si_parametric_recent</span><span class="op">$</span><span class="va">si_distr</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>, <span class="co"># SI distribution (starting on day 1)</span>
                 n_sim <span class="op">=</span> <span class="fl">1000</span>, <span class="co"># simulate 1000 trajectories</span>
                 n_days <span class="op">=</span> <span class="fl">30</span>, <span class="co"># over 30 days</span>
                 R_fix_within <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># keep the same value of R every day</span>
