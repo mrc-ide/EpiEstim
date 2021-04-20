@@ -546,13 +546,13 @@ Res <- estimate_R(incid = trunc_incidence,
                                        t_end = length(trunc_incidence))) # 2 week window that ended a week ago
 ```
 
-We can then supply the incidence, median estimate of R, and the SI distribution to the `project()` function in the `projections` package.
+We can then supply the incidence, median estimate of R, and the SI distribution to the `project()` function in the `projections` package. Note: The `project()` function requires that the distribution of the serial interval starts on day 1, not on day 0 as in EpiEstim.
 
 ```{r, eval=FALSE}
 # Use the project function
 proj <- project(trunc_incidence, # truncated incidence object
                 R = Res$R$`Median(R)`, # median R estimate
-                si = Res$si_distr[-1], # serial interval distribution
+                si = Res$si_distr[-1], # serial interval distribution (starts day 1)
                 n_sim = 1000, # number of trajectories to simulate e.g. 1000
                 n_days = 30, # number of days to make projections over e.g. 30 
                 R_fix_within = TRUE) # whether to keep the same value of R every day (TRUE/FALSE)
@@ -624,7 +624,7 @@ You will notice in the "Estimated R" panel that there is a lot of uncertainty ar
 
 **Make Projections**
 
-The `projections` package takes the estimated reproduction number, serial interval distribution and incidence object to simulate epidemic trajectories using branching processes.
+The `projections` package takes the estimated reproduction number, serial interval distribution and incidence object to simulate epidemic trajectories using branching processes. Note: The `project()` function requires that the distribution of the serial interval starts on day 1, not on day 0 as in EpiEstim.
 
 ```{r, message=FALSE, fig.width=6}
 # Truncate the linelist so that the last 7 days of data are not included
@@ -645,7 +645,7 @@ R_si_parametric_recent <- estimate_R(incid = evd_incid_trunc,
 # Project future incidence over 30 days since last day in truncated incidence
 proj <- project(evd_incid_trunc, # truncated incidence object
                 R = R_si_parametric_recent$R$`Median(R)`, # R estimate
-                si = R_si_parametric_recent$si_distr[-1], # serial interval distribution
+                si = R_si_parametric_recent$si_distr[-1], # SI distribution (starting on day 1)
                 n_sim = 1000, # simulate 1000 trajectories
                 n_days = 30, # over 30 days
                 R_fix_within = TRUE) # keep the same value of R every day
