@@ -39,9 +39,20 @@ default_priors <- function() {
 #' # change to run for 10 times longer
 #' mcmc_controls$n_iter <- mcmc_controls$n_iter * 10
 #'
+
 default_mcmc_controls <- function() {
-  ## TODO: check n_iter, burnin, thin are positive integers
-  ## TODO: check n_iter > burnin + thin
+  if (n_iter < 0 | !is.integer(n_iter)){
+    stop("n_iter must be a positive integer")
+  }
+  if (burnin < 0 | !is.integer(burnin)){
+    stop("burnin must be a positive integer")
+  }
+  if (thin < 0 | !is.integer(thin)){
+    stop("thin must be a positive integer")
+  }
+  if (n_iter < burnin + thin){
+    stop("n_iter must be greater than burnin + thin")
+  }
   list(n_iter = 1100, burnin = 10, thin = 10)
 }
 
