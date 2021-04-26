@@ -41,19 +41,9 @@ default_priors <- function() {
 #'
 
 default_mcmc_controls <- function() {
-  if (n_iter < 0 | !is.integer(n_iter)){
-    stop("n_iter must be a positive integer")
-  }
-  if (burnin < 0 | !is.integer(burnin)){
-    stop("burnin must be a positive integer")
-  }
-  if (thin < 0 | !is.integer(thin)){
-    stop("thin must be a positive integer")
-  }
-  if (n_iter < burnin + thin){
-    stop("n_iter must be greater than burnin + thin")
-  }
-  list(n_iter = 1100, burnin = 10, thin = 10)
+  list(n_iter = as.integer(1100), 
+       burnin = as.integer(10), 
+       thin = as.integer(10))
 }
 
 
@@ -394,16 +384,16 @@ estimate_joint <- function(incid, si_distr, priors,
     stop("si_distr must be >=0")
   }
   if (mcmc_control$n_iter < 0 | !is.integer(mcmc_control$n_iter)){
-    stop("n_iter must be a positive integer")
+    stop("n_iter in mcmc_control must be a positive integer")
   }
   if (mcmc_control$burnin < 0 | !is.integer(mcmc_control$burnin)){
-    stop("burnin must be a positive integer")
+    stop("burnin in mcmc_control must be a positive integer")
   }
   if (mcmc_control$thin < 0 | !is.integer(mcmc_control$thin)){
-    stop("thin must be a positive integer")
+    stop("thin in mcmc_control must be a positive integer")
   }
   if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
-    stop("n_iter must be greater than burnin + thin")
+    stop("In mcmc_control, n_iter must be greater than burnin + thin")
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
 
