@@ -18,7 +18,7 @@ default_priors <- function() {
 }
 
 
-#' Set default for MCMC controls
+#' Set default for MCMC control
 #'
 #' @return a list of default MCMC control parameters, containing:
 #'
@@ -35,15 +35,15 @@ default_priors <- function() {
 #' @export
 #'
 #' @examples
-#' mcmc_controls <- default_mcmc_controls()
+#' mcmc_control<- default_mcmc_controls()
 #' # change to run for 10 times longer
-#' mcmc_controls$n_iter <- mcmc_controls$n_iter * 10
+#' mcmc_control$n_iter <- mcmc_control$n_iter * 10
 #'
 
 default_mcmc_controls <- function() {
-  list(n_iter = as.integer(1100), 
-       burnin = as.integer(10), 
-       thin = as.integer(10))
+  list(n_iter = 1100, 
+       burnin = 10, 
+       thin = 10)
 }
 
 
@@ -298,7 +298,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #'   `default_priors`. The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
-#' @param mcmc_controls a list of default MCMC control parameters, as obtained
+#' @param mcmc_control a list of default MCMC control parameters, as obtained
 #'   for example from function `default_mcmc_controls`
 #'
 #' @param t_min an integer >1 giving the minimum time step to consider in the
@@ -358,7 +358,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #'      xlab = "Iteration", ylab = "R time 30 location 3")
 #'
 estimate_joint <- function(incid, si_distr, priors,
-                           mcmc_controls = default_mcmc_controls(),
+                           mcmc_control = default_mcmc_controls(),
                            t_min = 2, t_max = nrow(incid),
                            seed = NULL
 ) {
@@ -383,17 +383,17 @@ estimate_joint <- function(incid, si_distr, priors,
   if (all(si_distr < 0)){
     stop("si_distr must be >=0")
   }
-  if (mcmc_controls$n_iter < 0 | !is.integer(mcmc_controls$n_iter)){
-    stop("n_iter in mcmc_controls must be a positive integer")
+  if (mcmc_control$n_iter < 0 | !is.integer(mcmc_control$n_iter)){
+    stop("n_iter in mcmc_control must be a positive integer")
   }
-  if (mcmc_controls$burnin < 0 | !is.integer(mcmc_controls$burnin)){
-    stop("burnin in mcmc_controls must be a positive integer")
+  if (mcmc_control$burnin < 0 | !is.integer(mcmc_control$burnin)){
+    stop("burnin in mcmc_control must be a positive integer")
   }
-  if (mcmc_controls$thin < 0 | !is.integer(mcmc_controls$thin)){
-    stop("thin in mcmc_controls must be a positive integer")
+  if (mcmc_control$thin < 0 | !is.integer(mcmc_control$thin)){
+    stop("thin in mcmc_control must be a positive integer")
   }
-  if (mcmc_controls$n_iter < mcmc_controls$burnin + mcmc_controls$thin){
-    stop("In mcmc_controls, n_iter must be greater than burnin + thin")
+  if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
+    stop("In mcmc_control, n_iter must be greater than burnin + thin")
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
 
@@ -412,14 +412,14 @@ estimate_joint <- function(incid, si_distr, priors,
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
-                        ncol = mcmc_controls$n_iter + 1)
+                        ncol = mcmc_control$n_iter + 1)
   epsilon_out[, 1] <- epsilon_init
-  R_init <- draw_R(mcmc_controls$n_iter, incid, lambda, priors,
+  R_init <- draw_R(mcmc_control$n_iter, incid, lambda, priors,
                    t_min = t_min, t_max = t_max)
-  R_out <- array(NA, dim= c(T, n_loc, mcmc_controls$n_iter + 1))
+  R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
 
-  for (i in seq_len(mcmc_controls$n_iter)) {
+  for (i in seq_len(mcmc_control$n_iter)) {
     R_out[, , i + 1] <- draw_R(epsilon_out[, i], incid, lambda, priors,
                                t_min = t_min, t_max = t_max)
     epsilon_out[, i + 1] <- draw_epsilon(R_out[, , i + 1], incid, lambda, priors,
@@ -427,7 +427,7 @@ estimate_joint <- function(incid, si_distr, priors,
   }
 
   # remove burnin and thin
-  keep <- seq(mcmc_controls$burnin, mcmc_controls$n_iter, mcmc_controls$thin)
+  keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
   epsilon_out <- epsilon_out[, keep]
   R_out <- R_out[, , keep]
 
