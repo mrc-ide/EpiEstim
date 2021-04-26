@@ -92,10 +92,17 @@ default_mcmc_controls <- function() {
 #' w_v <- c(0, 0.2, 0.5, 0.3)
 #' si_distr <- cbind(w_v, w_v)
 #' lambda <- compute_lambda(incid, si_distr)
+
 compute_lambda <- function(incid, si_distr) {
-  ## TODO: check that si_distr[1, ] == 0
-  ## TODO: check that all(colSums(si_distr) == 1)
-  ## TODO: check that all(si_distr >= 0)
+  if (all(si_distr[1,] != 0)){
+    stop("Values in the first row of si_distr must be 0")
+  }
+  if (all(colSums(si_distr) != 1)){
+    stop("The sum of each column in si_distr should be equal to 1")
+  }
+  if (all(si_distr < 0)){
+    stop("si_distr must be >=0")
+  }
   lambda <- array(NA, dim = dim(incid))
   for(l in seq_len(dim(incid)[2])) {
     for(v in seq_len(dim(incid)[3])) {
