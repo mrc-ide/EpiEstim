@@ -258,9 +258,21 @@ draw_epsilon <- function(R, incid, lambda, priors,
 draw_R <- function(epsilon, incid, lambda, priors,
                    t_min = 2, t_max = nrow(incid),
                    seed = NULL) {
-  ## TODO: check t_min and t_max are integers, >=2 and <= nrow(incid)
-  ## TODO: check seed is a numeric value
-  ## TODO: check epsilon >0
+  if (!is.integer(t_min) | !is.integer(t_max)){
+    stop("t_min and t_max must be integers")
+  }
+  if (t_min < 2 | t_max < 2){
+    stop("t_min and t_max must be >=2")
+  }
+  if(t_min > nrow(incid) | t_max > nrow(incid)){
+    stop("t_min and t_max must be <= nrow(incid)")
+  }
+  if (!is.numeric(seed)){
+    stop("seed must be numeric")
+  }
+  if (epsilon < 0){
+    stop("epsilon must be > 0")
+  }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
   shape <- apply(incid[t, , ], c(1, 2), sum) + priors$R$shape ## TODO: precalculate this
