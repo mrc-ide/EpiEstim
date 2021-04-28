@@ -41,8 +41,8 @@ default_priors <- function() {
 #'
 
 default_mcmc_controls <- function() {
-  list(n_iter = 1100, 
-       burnin = 10, 
+  list(n_iter = 1100,
+       burnin = 10,
        thin = 10)
 }
 
@@ -362,39 +362,6 @@ estimate_joint <- function(incid, si_distr, priors,
                            t_min = 2, t_max = nrow(incid),
                            seed = NULL
 ) {
-  if (!is.integer(t_min) | !is.integer(t_max)){
-    stop("t_min and t_max must be integers")
-  }
-  if (t_min < 2 | t_max < 2){
-    stop("t_min and t_max must be >=2")
-  }
-  if(t_min > nrow(incid) | t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
-  }
-  if (!is.numeric(seed)){
-    stop("seed must be numeric")
-  }
-  if (all(si_distr[1,] != 0)){
-    stop("Values in the first row of si_distr must be 0")
-  }
-  if (all(colSums(si_distr) != 1)){
-    stop("The sum of each column in si_distr should be equal to 1")
-  }
-  if (all(si_distr < 0)){
-    stop("si_distr must be >=0")
-  }
-  if (mcmc_control$n_iter < 0 | !is.integer(mcmc_control$n_iter)){
-    stop("n_iter in mcmc_control must be a positive integer")
-  }
-  if (mcmc_control$burnin < 0 | !is.integer(mcmc_control$burnin)){
-    stop("burnin in mcmc_control must be a positive integer")
-  }
-  if (mcmc_control$thin < 0 | !is.integer(mcmc_control$thin)){
-    stop("thin in mcmc_control must be a positive integer")
-  }
-  if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
-    stop("In mcmc_control, n_iter must be greater than burnin + thin")
-  }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
 
