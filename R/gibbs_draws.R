@@ -18,7 +18,7 @@ default_priors <- function() {
 }
 
 
-#' Set default for MCMC control
+#' Set default for MCMC controls
 #'
 #' @return a list of default MCMC control parameters, containing:
 #'
@@ -35,15 +35,14 @@ default_priors <- function() {
 #' @export
 #'
 #' @examples
-#' mcmc_control<- default_mcmc_controls()
+#' mcmc_controls <- default_mcmc_controls()
 #' # change to run for 10 times longer
-#' mcmc_control$n_iter <- mcmc_control$n_iter * 10
+#' mcmc_controls$n_iter <- mcmc_controls$n_iter * 10
 #'
-
 default_mcmc_controls <- function() {
-  list(n_iter = 1100,
-       burnin = 10,
-       thin = 10)
+  ## TODO: check n_iter, burnin, thin are positive integers
+  ## TODO: check n_iter > burnin + thin
+  list(n_iter = 1100, burnin = 10, thin = 10)
 }
 
 
@@ -82,17 +81,10 @@ default_mcmc_controls <- function() {
 #' w_v <- c(0, 0.2, 0.5, 0.3)
 #' si_distr <- cbind(w_v, w_v)
 #' lambda <- compute_lambda(incid, si_distr)
-
 compute_lambda <- function(incid, si_distr) {
-  if (any(si_distr[1,] != 0)){
-    stop("Values in the first row of si_distr must be 0")
-  }
-  if (any(colSums(si_distr) != 1)){
-    stop("The sum of each column in si_distr should be equal to 1")
-  }
-  if (any(si_distr < 0)){
-    stop("si_distr must be >=0")
-  }
+  ## TODO: check that si_distr[1, ] == 0
+  ## TODO: check that all(colSums(si_distr) == 1)
+  ## TODO: check that all(si_distr >= 0)
   lambda <- array(NA, dim = dim(incid))
   for(l in seq_len(dim(incid)[2])) {
     for(v in seq_len(dim(incid)[3])) {
@@ -163,21 +155,9 @@ compute_lambda <- function(incid, si_distr) {
 draw_epsilon <- function(R, incid, lambda, priors,
                          t_min = 2, t_max = nrow(incid),
                          seed = NULL) {
-  if (!is.integer(t_min) | !is.integer(t_max)){
-    stop("t_min and t_max must be integers")
-  }
-  if (t_min < 2 | t_max < 2){
-    stop("t_min and t_max must be >=2")
-  }
-  if(t_min > nrow(incid) | t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
-  }
-  if (any(R < 0)){
-    stop("R must be >=0")
-  }
-  if (!is.numeric(seed)){
-    stop("seed must be numeric")
-  }
+  ## TODO: check t_min and t_max are integers, >=2 and <= nrow(incid)
+  ## TODO: check seed is a numeric value
+  ## TODO: check R >=0
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
   shape <- EpiEstim:::vnapply(seq(2, dim(lambda)[3]), function(e)
@@ -248,21 +228,9 @@ draw_epsilon <- function(R, incid, lambda, priors,
 draw_R <- function(epsilon, incid, lambda, priors,
                    t_min = 2, t_max = nrow(incid),
                    seed = NULL) {
-  if (!is.integer(t_min) | !is.integer(t_max)){
-    stop("t_min and t_max must be integers")
-  }
-  if (t_min < 2 | t_max < 2){
-    stop("t_min and t_max must be >=2")
-  }
-  if(t_min > nrow(incid) | t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
-  }
-  if (!is.numeric(seed)){
-    stop("seed must be numeric")
-  }
-  if (epsilon < 0){
-    stop("epsilon must be > 0")
-  }
+  ## TODO: check t_min and t_max are integers, >=2 and <= nrow(incid)
+  ## TODO: check seed is a numeric value
+  ## TODO: check epsilon >0
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
   shape <- apply(incid[t, , ], c(1, 2), sum) + priors$R$shape ## TODO: precalculate this
@@ -362,6 +330,10 @@ estimate_joint <- function(incid, si_distr, priors,
                            t_min = 2, t_max = nrow(incid),
                            seed = NULL
 ) {
+  ## TODO: check t_min and t_max are integers, >=2 and <= nrow(incid)
+  ## TODO: check seed is a numeric value
+  ## TODO: check si_distr has the right format
+  ## TODO: check mcmc_control has the correct format
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
 
