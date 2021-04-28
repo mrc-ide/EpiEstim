@@ -84,7 +84,7 @@ default_mcmc_controls <- function() {
 #' lambda <- compute_lambda(incid, si_distr)
 
 compute_lambda <- function(incid, si_distr) {
-  if (si_distr[1,] != 0){
+  if (all(si_distr[1,] != 0)){
     stop("Values in the first row of si_distr must be 0")
   }
   if (all(colSums(si_distr) != 1)){
@@ -394,6 +394,7 @@ estimate_joint <- function(incid, si_distr, priors,
   }
   if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
     stop("In mcmc_control, n_iter must be greater than burnin + thin")
+  }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
 
