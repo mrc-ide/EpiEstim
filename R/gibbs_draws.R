@@ -84,7 +84,7 @@ default_mcmc_controls <- function() {
 #' lambda <- compute_lambda(incid, si_distr)
 
 compute_lambda <- function(incid, si_distr) {
-  if (all(si_distr[1,] != 0)){
+  if (si_distr[1,] != 0){
     stop("Values in the first row of si_distr must be 0")
   }
   if (all(colSums(si_distr) != 1)){
