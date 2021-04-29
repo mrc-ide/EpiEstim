@@ -41,9 +41,9 @@ default_priors <- function() {
 #'
 
 default_mcmc_controls <- function() {
-  list(n_iter = 1100, 
-       burnin = 10, 
-       thin = 10)
+  list(n_iter = 1100L, 
+       burnin = 10L, 
+       thin = 10L)
 }
 
 
