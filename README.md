@@ -6,9 +6,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3871387.svg)](https://doi.org/10.5281/zenodo.3871387)
 <!-- badges: end -->
 
-A tool to estimate time varying instantaneous reproduction number during epidemics
-
-This tool is described in the following paper: 
+A tool to estimate time varying instantaneous reproduction number during epidemics. It is described in the following paper: 
 
 > @article{Cori2013,
  author={Cori, A and Ferguson, NM and Fraser, C and Cauchemez, S},  
