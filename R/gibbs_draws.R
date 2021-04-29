@@ -175,7 +175,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
   if (any(R < 0)){
     stop("R must be >=0")
   }
-  if (!is.numeric(seed)){
+  if (!is.null(seed) & !is.numeric(seed)){
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
@@ -260,7 +260,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
   if (epsilon < 0){
     stop("epsilon must be > 0")
   }
-  if (!is.numeric(seed)){
+  if (!is.null(seed) & !is.numeric(seed)){
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
@@ -392,7 +392,7 @@ estimate_joint <- function(incid, si_distr, priors,
   if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
     stop("In mcmc_control, n_iter must be greater than burnin + thin")
   }
-  if (!is.numeric(seed)){
+  if (!is.null(seed) & !is.numeric(seed)){
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
