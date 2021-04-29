@@ -3,7 +3,7 @@
 * New vignette
 
 # EpiEstim 2.2-3
-
+* This release is also available at https://zenodo.org/record/3871387 which is the source of the DOI for this codebase; for v2.2-3 that is doi:10.5281/zenodo.3871387. Also added as a link to the top-right of the landing page. Don't forget to update in the next release!
 ## FIXED
 * Fixed bugs in draw_one_set_of_ancestries resulting from incorrect lengths and an undefined variable (issue #92) (#93, @jstockwin)
 * Fixed incorrect quantiles (issue #88) (#89, @jstockwin)
