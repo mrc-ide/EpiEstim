@@ -257,11 +257,11 @@ draw_R <- function(epsilon, incid, lambda, priors,
   if(t_min > nrow(incid) | t_max > nrow(incid)){
     stop("t_min and t_max must be <= nrow(incid)")
   }
-  if (!is.numeric(seed)){
-    stop("seed must be numeric")
-  }
   if (epsilon < 0){
     stop("epsilon must be > 0")
+  }
+  if (!is.numeric(seed)){
+    stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
