@@ -172,9 +172,6 @@ draw_epsilon <- function(R, incid, lambda, priors,
   if(t_min > nrow(incid) | t_max > nrow(incid)){
     stop("t_min and t_max must be <= nrow(incid)")
   }
-  if (any(!is.na(R)) & any(R < 0)){
-    stop("R must be >=0")
-  }
   if (!is.null(seed) & !is.numeric(seed)){
     stop("seed must be numeric")
   }
