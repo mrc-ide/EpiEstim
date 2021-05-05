@@ -87,7 +87,7 @@ compute_lambda <- function(incid, si_distr) {
   if (any(si_distr[1,] != 0)){
     stop("Values in the first row of si_distr must be 0")
   }
-  if (any(colSums(si_distr) != 1)){
+  if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
     stop("The sum of each column in si_distr should be equal to 1")
   }
   if (any(si_distr < 0)){
@@ -376,7 +376,7 @@ estimate_joint <- function(incid, si_distr, priors,
   if (any(si_distr[1,] != 0)){
     stop("Values in the first row of si_distr must be 0")
   }
-  if (any(colSums(si_distr) != 1)){
+  if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
     stop("The sum of each column in si_distr should be equal to 1")
   }
   if (any(si_distr < 0)){
