@@ -161,7 +161,7 @@ compute_lambda <- function(incid, si_distr) {
 #' draw_epsilon(R, incid, lambda, priors, seed = 1)
 #'
 draw_epsilon <- function(R, incid, lambda, priors,
-                         t_min = 2, t_max = nrow(incid),
+                         t_min = 2L, t_max = nrow(incid),
                          seed = NULL) {
   if (!is.integer(t_min) | !is.integer(t_max)){
     stop("t_min and t_max must be integers")
@@ -243,7 +243,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #' draw_R(epsilon, incid, lambda, priors, seed = 1)
 #'
 draw_R <- function(epsilon, incid, lambda, priors,
-                   t_min = 2, t_max = nrow(incid),
+                   t_min = 2L, t_max = nrow(incid),
                    seed = NULL) {
   if (!is.integer(t_min) | !is.integer(t_max)){
     stop("t_min and t_max must be integers")
@@ -254,7 +254,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
   if(t_min > nrow(incid) | t_max > nrow(incid)){
     stop("t_min and t_max must be <= nrow(incid)")
   }
-  if (epsilon < 0){
+  if (any(epsilon < 0)){
     stop("epsilon must be > 0")
   }
   if (!is.null(seed) & !is.numeric(seed)){
@@ -262,9 +262,10 @@ draw_R <- function(epsilon, incid, lambda, priors,
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
-  shape <- apply(incid[t, , ], c(1, 2), sum) + priors$R$shape ## TODO: precalculate this
+  shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape ## TODO: precalculate this
   shape_flat <- as.numeric(shape) ## TODO: precalculate this
-  rate <- lambda[t, , 1] + apply(epsilon * lambda[t, , -1], c(1, 2), sum) +
+  rate <- lambda[t, , 1] +
+    apply(epsilon * lambda[t, , -1, drop = FALSE], c(1, 2), sum) +
     1 / priors$R$scale
   scale <- 1 / rate
   scale_flat <- as.numeric(scale)
@@ -321,6 +322,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #' @export
 #'
 #' @importFrom("stats", "median", "rgamma")
+#' @importFrom("abind", "adrop")
 #'
 #' @examples
 #'
@@ -356,7 +358,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #'
 estimate_joint <- function(incid, si_distr, priors,
                            mcmc_control = default_mcmc_controls(),
-                           t_min = 2, t_max = nrow(incid),
+                           t_min = 2L, t_max = nrow(incid),
                            seed = NULL
 ) {
   if (!is.integer(t_min) | !is.integer(t_max)){
@@ -394,19 +396,19 @@ estimate_joint <- function(incid, si_distr, priors,
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
-
+  
   T <- nrow(incid)
   n_loc <- ncol(incid)
-
+  
   lambda <- compute_lambda(incid, si_distr)
-
+  
   ## find clever initial values, based on ratio of reproduction numbers
   ## in first location
   R_init <- lapply(seq_len(dim(incid)[3]), function(i) suppressWarnings(
     EpiEstim::estimate_R(incid[, 1, i], method = "non_parametric_si",
                          config = EpiEstim::make_config(si_distr = si_distr[, i],
-                                              t_start = t,
-                                              t_end = t)))$R$'Mean(R)')
+                                                        t_start = t,
+                                                        t_end = t)))$R$'Mean(R)')
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
@@ -416,21 +418,23 @@ estimate_joint <- function(incid, si_distr, priors,
                    t_min = t_min, t_max = t_max)
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
-
+  
   for (i in seq_len(mcmc_control$n_iter)) {
     R_out[, , i + 1] <- draw_R(epsilon_out[, i], incid, lambda, priors,
                                t_min = t_min, t_max = t_max)
-    epsilon_out[, i + 1] <- draw_epsilon(R_out[, , i + 1], incid, lambda, priors,
-                                       t_min = t_min, t_max = t_max)
+    epsilon_out[, i + 1] <- draw_epsilon(
+      abind::adrop(R_out[, , i + 1, drop = FALSE], drop = 3),
+      incid, lambda, priors,
+      t_min = t_min, t_max = t_max)
   }
-
+  
   # remove burnin and thin
   keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
   epsilon_out <- epsilon_out[, keep]
-  R_out <- R_out[, , keep]
-
+  R_out <- R_out[, , keep, drop = FALSE]
+  
   list(epsilon = epsilon_out, R = R_out)
-
+  
 }
 
 
