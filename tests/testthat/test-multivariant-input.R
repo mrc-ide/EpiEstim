@@ -59,10 +59,12 @@ test_that("tmin and tmax are specified correctly", {
   # R test
 
 test_that("R is specified correctly",{
-  expect_error(draw_epsilon(R=-1, incid=incid, lambda=lambda, priors=priors,
+  Rneg <- R
+  Rneg[1,1] <- -1
+  expect_error(draw_epsilon(R=Rneg, incid=incid, lambda=lambda, priors=priors,
                             t_min = 2L, t_max = nrow(incid),
                             seed = NULL),
-               "R must be >=0")
+               "R must be >= 0")
 })
 
   # seed test
