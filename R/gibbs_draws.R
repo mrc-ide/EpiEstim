@@ -405,13 +405,15 @@ estimate_joint <- function(incid, si_distr, priors,
   
   lambda <- compute_lambda(incid, si_distr)
   
-  ## find clever initial values, based on ratio of reproduction numbers
-  ## in first location
+  ## find clever initial values, based on ratio of reproduction numbers 
+  ## over the whole time period, across all locations together
   R_init <- lapply(seq_len(dim(incid)[3]), function(i) suppressWarnings(
-    EpiEstim::estimate_R(incid[, 1, i], method = "non_parametric_si",
-                         config = EpiEstim::make_config(si_distr = si_distr[, i],
-                                                        t_start = t,
-                                                        t_end = t)))$R$'Mean(R)')
+    EpiEstim::estimate_R(apply(incid[, , i, drop = FALSE], c(1, 3), sum)[,1],
+                         method = "non_parametric_si",
+                         config = EpiEstim::make_config(
+                           si_distr = si_distr[, i],
+                           t_start = t_min,
+                           t_end = t_max)))$R$'Mean(R)')
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
