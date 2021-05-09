@@ -462,8 +462,8 @@ estimate_joint <- function(incid, si_distr, priors,
 
   list(
     epsilon = epsilon_out, R = R_out,
-    r_posterior_params = r_posterior_params,
-    eps_posterior_params = eps_posterior_params
+    r_posterior_params = r_posterior_params[keep],
+    eps_posterior_params = eps_posterior_params[keep, ]
   )
 }
 
