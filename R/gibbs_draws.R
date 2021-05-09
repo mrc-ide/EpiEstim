@@ -426,14 +426,28 @@ estimate_joint <- function(incid, si_distr, priors,
                    t_min = t_min, t_max = t_max)[["draws"]]
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
-
+  eps_posterior_params <- data.frame(
+    shape = numeric(mcmc_control$n_iter), scale = numeric(mcmc_control$n_iter)
+  )
+  r_posterior_params <- data.frame(
+    shape = numeric(mcmc_control$n_iter), scale = numeric(mcmc_control$n_iter)
+  )
   for (i in seq_len(mcmc_control$n_iter)) {
-    R_out[, , i + 1] <- draw_R(epsilon_out[, i], incid, lambda, priors,
-                               t_min = t_min, t_max = t_max)[["draws"]]
-    epsilon_out[, i + 1] <- draw_epsilon(
+    r <- draw_R(epsilon_out[, i], incid, lambda, priors,
+                t_min = t_min, t_max = t_max)
+    epsilon <- draw_epsilon(
       abind::adrop(R_out[, , i + 1, drop = FALSE], drop = 3),
       incid, lambda, priors,
-      t_min = t_min, t_max = t_max)[["draws"]]
+      t_min = t_min, t_max = t_max
+    )
+    R_out[, , i + 1] <- r[["draws"]]
+    r_posterior_params$shape[i] <- r$shape[i]
+    r_posterior_params$scale[i] <- r$scale[i]
+
+    epsilon_out[, i + 1] <- epsilon[["draws"]]
+    eps_posterior_params$shape[i] <- epsilon$shape[i]
+    eps_posterior_params$scale[i] <- epsilon$scale[i]
+
   }
 
   # remove burnin and thin
@@ -441,8 +455,11 @@ estimate_joint <- function(incid, si_distr, priors,
   epsilon_out <- epsilon_out[, keep]
   R_out <- R_out[, , keep, drop = FALSE]
 
-  list(epsilon = epsilon_out, R = R_out)
-
+  list(
+    epsilon = epsilon_out, R = R_out,
+    r_posterior_params = r_posterior_params,
+    eps_posterior_params = eps_posterior_params
+  )
 }
 
 
