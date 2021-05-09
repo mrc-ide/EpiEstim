@@ -183,6 +183,8 @@ draw_epsilon <- function(R, incid, lambda, priors,
   rate <- EpiEstim:::vnapply(seq(2, dim(lambda)[3]), function(e)
     sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
   scale <- 1 / rate
+  if (is.na(shape)) warning("In draw_epsilon shape is NA")
+  if (is.na(scale)) warning("In draw_epsilon scale is NA")
   out <- rgamma(dim(lambda)[3] - 1, shape = shape, scale = scale)
   list(
     draws = out, shape = shape, scale = scale
@@ -273,12 +275,14 @@ draw_R <- function(epsilon, incid, lambda, priors,
     1 / priors$R$scale
   scale <- 1 / rate
   scale_flat <- as.numeric(scale)
+  if (any(is.na(shape_flat))) warning("In draw_R shape is NA")
+  if (any(is.na(scale_flat))) warning("In draw_R scale is NA")
   R_flat <- rgamma(length(shape_flat), shape = shape_flat, scale = scale_flat)
   R_fill <- matrix(R_flat, nrow = nrow(shape), ncol = ncol(shape))
   R <- matrix(NA, nrow(incid), ncol(incid))
   R[t, ] <- R_fill
   list(
-    draws = R, shape = shape_flat, scale = scale_flat
+    draws = R, shape = shape, scale = scale
   )
 }
 
@@ -429,22 +433,22 @@ estimate_joint <- function(incid, si_distr, priors,
   eps_posterior_params <- data.frame(
     shape = numeric(mcmc_control$n_iter), scale = numeric(mcmc_control$n_iter)
   )
-  r_posterior_params <- data.frame(
-    shape = numeric(mcmc_control$n_iter), scale = numeric(mcmc_control$n_iter)
+  r_posterior_params <- vector(
+    mode = "list", length = mcmc_control$n_iter
   )
   for (i in seq_len(mcmc_control$n_iter)) {
     r <- draw_R(epsilon_out[, i], incid, lambda, priors,
                 t_min = t_min, t_max = t_max)
+    R_out[, , i + 1] <- r[["draws"]]
     epsilon <- draw_epsilon(
       abind::adrop(R_out[, , i + 1, drop = FALSE], drop = 3),
       incid, lambda, priors,
       t_min = t_min, t_max = t_max
     )
-    R_out[, , i + 1] <- r[["draws"]]
-    r_posterior_params$shape[i] <- r$shape[i]
-    r_posterior_params$scale[i] <- r$scale[i]
-
     epsilon_out[, i + 1] <- epsilon[["draws"]]
+
+    r_posterior_params[[i]][["shape"]] <- r[["shape"]]
+    r_posterior_params[[i]][["scale"]] <- r[["scale"]]
     eps_posterior_params$shape[i] <- epsilon$shape[i]
     eps_posterior_params$scale[i] <- epsilon$scale[i]
 
