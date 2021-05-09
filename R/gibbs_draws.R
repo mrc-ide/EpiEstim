@@ -137,7 +137,7 @@ compute_lambda <- function(incid, si_distr) {
 #' @return a value or vector of values for epsilon for each non reference
 #'   pathogen/strain/variant, drawn from the marginal posterior distribution
 #'
-#' @importFrom("stats", "median", "rgamma")
+#' @importFrom stats median rgamma
 #'
 #' @export
 #'
@@ -228,7 +228,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'
 #' @export
 #'
-#' @importFrom("stats", "median", "rgamma")
+#' @importFrom stats median rgamma
 #'
 #' @examples
 #'
@@ -327,8 +327,8 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #'
 #' @export
 #'
-#' @importFrom("stats", "median", "rgamma")
-#' @importFrom("abind", "adrop")
+#' @importFrom stats median rgamma
+#' @importFrom abind adrop
 #'
 #' @examples
 #'
