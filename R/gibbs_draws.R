@@ -431,7 +431,8 @@ estimate_joint <- function(incid, si_distr, priors,
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
   eps_posterior_params <- data.frame(
-    shape = numeric(mcmc_control$n_iter), scale = numeric(mcmc_control$n_iter)
+    shape = numeric(mcmc_control$n_iter),
+    scale = numeric(mcmc_control$n_iter)
   )
   r_posterior_params <- vector(
     mode = "list", length = mcmc_control$n_iter
@@ -449,8 +450,8 @@ estimate_joint <- function(incid, si_distr, priors,
 
     r_posterior_params[[i]][["shape"]] <- r[["shape"]]
     r_posterior_params[[i]][["scale"]] <- r[["scale"]]
-    eps_posterior_params$shape[i] <- epsilon$shape[i]
-    eps_posterior_params$scale[i] <- epsilon$scale[i]
+    eps_posterior_params$shape[i] <- epsilon[["shape"]]
+    eps_posterior_params$scale[i] <- epsilon[["scale"]]
 
   }
 
