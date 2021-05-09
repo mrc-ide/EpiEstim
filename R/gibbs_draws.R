@@ -40,8 +40,8 @@ default_priors <- function() {
 #' mcmc_controls$n_iter <- mcmc_controls$n_iter * 10
 #'
 default_mcmc_controls <- function() {
-  list(n_iter = 1100L, 
-       burnin = 10L, 
+  list(n_iter = 1100L,
+       burnin = 10L,
        thin = 10L)
 }
 
@@ -183,7 +183,10 @@ draw_epsilon <- function(R, incid, lambda, priors,
   rate <- EpiEstim:::vnapply(seq(2, dim(lambda)[3]), function(e)
     sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
   scale <- 1 / rate
-  rgamma(dim(lambda)[3] - 1, shape = shape, scale = scale)
+  out <- rgamma(dim(lambda)[3] - 1, shape = shape, scale = scale)
+  list(
+    draws = out, shape = shape, scale = scale
+  )
 }
 
 #' Draw R from marginal posterior distribution
@@ -274,7 +277,9 @@ draw_R <- function(epsilon, incid, lambda, priors,
   R_fill <- matrix(R_flat, nrow = nrow(shape), ncol = ncol(shape))
   R <- matrix(NA, nrow(incid), ncol(incid))
   R[t, ] <- R_fill
-  R
+  list(
+    draws = R, shape = shape_flat, scale = scale_flat
+  )
 }
 
 
@@ -397,13 +402,13 @@ estimate_joint <- function(incid, si_distr, priors,
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
-  
+
   T <- nrow(incid)
   n_loc <- ncol(incid)
-  
+
   lambda <- compute_lambda(incid, si_distr)
-  
-  ## find clever initial values, based on ratio of reproduction numbers 
+
+  ## find clever initial values, based on ratio of reproduction numbers
   ## over the whole time period, across all locations together
   R_init <- lapply(seq_len(dim(incid)[3]), function(i) suppressWarnings(
     EpiEstim::estimate_R(apply(incid[, , i, drop = FALSE], c(1, 3), sum)[,1],
@@ -418,26 +423,26 @@ estimate_joint <- function(incid, si_distr, priors,
                         ncol = mcmc_control$n_iter + 1)
   epsilon_out[, 1] <- epsilon_init
   R_init <- draw_R(mcmc_control$n_iter, incid, lambda, priors,
-                   t_min = t_min, t_max = t_max)
+                   t_min = t_min, t_max = t_max)[["draws"]]
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
-  
+
   for (i in seq_len(mcmc_control$n_iter)) {
     R_out[, , i + 1] <- draw_R(epsilon_out[, i], incid, lambda, priors,
-                               t_min = t_min, t_max = t_max)
+                               t_min = t_min, t_max = t_max)[["draws"]]
     epsilon_out[, i + 1] <- draw_epsilon(
       abind::adrop(R_out[, , i + 1, drop = FALSE], drop = 3),
       incid, lambda, priors,
-      t_min = t_min, t_max = t_max)
+      t_min = t_min, t_max = t_max)[["draws"]]
   }
-  
+
   # remove burnin and thin
   keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
   epsilon_out <- epsilon_out[, keep]
   R_out <- R_out[, , keep, drop = FALSE]
-  
+
   list(epsilon = epsilon_out, R = R_out)
-  
+
 }
 
 
