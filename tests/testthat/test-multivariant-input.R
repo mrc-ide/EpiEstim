@@ -9,6 +9,7 @@ n_v <- 2 # 2 variants
 n_loc <- 3 # 3 locations
 T <- 100 # 100 time steps
 incid <- array(10, dim = c(T, n_loc, n_v)) # constant incidence 10 per day everywhere
+incid_processed <- process_I_multivariant(incid)
 
   # si distr tests
 
@@ -17,11 +18,11 @@ sidistr_2=cbind(c(0,0.1,0.5,0.3),c(0,0.2,0.5,0.3)) # sum of first SI doesn't equ
 sidistr_3=cbind(c(0,-0.1,0.7,0.4),c(0,0.2,0.5,0.3)) # negative value
 
 test_that("si_distr is specified correctly", {
-  expect_error(compute_lambda(incid=incid, si_distr=sidistr_1),
+  expect_error(compute_lambda(incid=incid_processed, si_distr=sidistr_1),
                "Values in the first row of si_distr must be 0")
-  expect_error(compute_lambda(incid=incid, si_distr=sidistr_2),
+  expect_error(compute_lambda(incid=incid_processed, si_distr=sidistr_2),
                "The sum of each column in si_distr should be equal to 1")
-  expect_error(compute_lambda(incid=incid, si_distr=sidistr_3),
+  expect_error(compute_lambda(incid=incid_processed, si_distr=sidistr_3),
                "si_distr must be >=0")
 })
   
@@ -32,7 +33,7 @@ test_that("si_distr is specified correctly", {
 R <- matrix(1, nrow = T, ncol = n_loc)
 w_v <- c(0, 0.2, 0.5, 0.3)
 si_distr <- cbind(w_v, w_v, w_v)
-lambda <- compute_lambda(incid, si_distr)
+lambda <- compute_lambda(incid_processed, si_distr)
 priors <- default_priors()
 
   # tmin/tmax tests
@@ -84,9 +85,10 @@ test_that("seed is specified correctly",{
 
 epsilon <- 1
 incid <- array(10, dim = c(T, n_loc, n_v))
+incid_processed <- process_I_multivariant(incid)
 w_v <- c(0, 0.2, 0.5, 0.3)
 si_distr <- cbind(w_v, w_v)
-lambda <- compute_lambda(incid, si_distr)
+lambda <- compute_lambda(incid_processed, si_distr)
 priors <- default_priors()
 
   # tmin/max tests
@@ -140,6 +142,7 @@ test_that("epsilon is specified correctly",{
 ################################
 
 incid <- array(10, dim = c(T, n_loc, n_v))
+incid_processed <- process_I_multivariant(incid)
 w_v <- c(0, 0.2, 0.5, 0.3)
 si_distr <- cbind(w_v, w_v)
 priors <- default_priors()
