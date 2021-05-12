@@ -447,6 +447,15 @@ estimate_joint <- function(incid, si_distr, priors,
                            t_start = t_min,
                            t_end = t_max)))$R$'Mean(R)'
     })
+  
+  max_transmiss <- which.max(R_init)
+  # reorder variants so most transmissible is first
+  incid_reordered <- array(NA, dim = dim(incid$local))
+  incid_reordered[,,1] <- incid$local[,,max_transmiss]
+  incid_reordered[,,-1] <- incid$local[,, -max_transmiss]
+  
+  incid$local <- incid_reordered
+  
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
@@ -471,8 +480,8 @@ estimate_joint <- function(incid, si_distr, priors,
   epsilon_out <- epsilon_out[, keep]
   R_out <- R_out[, , keep, drop = FALSE]
   
-  list(epsilon = epsilon_out, R = R_out)
-  
+  list(epsilon = 1/epsilon_out, R = R_out) 
+  # Not sure if this will be the same for >2 variants
 }
 
 #' @param incid a multidimensional array containing values of the incidence
