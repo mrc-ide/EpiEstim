@@ -41,16 +41,16 @@ default_priors <- function() {
 #'
 
 default_mcmc_controls <- function() {
-  list(n_iter = 1100L, 
-       burnin = 10L, 
+  list(n_iter = 1100L,
+       burnin = 10L,
        thin = 10L)
 }
 
 
 #' Compute the overall infectivity
 #'
-#' @param incid a list (as obtained from function `process_I_multivariant`) 
-#'   of two multidimensional arrays ("local" and "imported") 
+#' @param incid a list (as obtained from function `process_I_multivariant`)
+#'   of two multidimensional arrays ("local" and "imported")
 #'   containing values of the incidence
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension)
@@ -206,7 +206,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   of the "new" pathogen/strain/variant(s) compared to the reference
 #'   pathogen/strain/variant
 #'
-#' @param incid a multidimensional array containing values of the (local) 
+#' @param incid a multidimensional array containing values of the (local)
 #'   incidence
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension)
@@ -325,15 +325,15 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #'
 #' @param seed a numeric value used to fix the random seed
 #'
-#' @param incid_imported an optional multidimensional array containing values 
-#'   of the incidence of imported cases 
+#' @param incid_imported an optional multidimensional array containing values
+#'   of the incidence of imported cases
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension). `incid - incid_imported` is
 #'   therefore the incidence of locally infected cases. If `incid_imported` is
 #'   NULL this means there are no
 #'   known imported cases and all cases other than on those from the first
-#'   time step will be considered locally infected. 
-#'   
+#'   time step will be considered locally infected.
+#'
 #' @return a list with two elements.
 #'   1) `epsilon` is a matrix containing the MCMC chain (thinned and after
 #'   burnin) for the relative transmissibility of the "new"
@@ -423,17 +423,17 @@ estimate_joint <- function(incid, si_distr, priors,
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
-  
+
   T <- nrow(incid)
   n_loc <- ncol(incid)
-  
+
   incid <- process_I_multivariant(incid, incid_imported)
-  
+
   lambda <- compute_lambda(incid, si_distr)
-  
-  ## find clever initial values, based on ratio of reproduction numbers 
+
+  ## find clever initial values, based on ratio of reproduction numbers
   ## over the whole time period, across all locations together
-  
+
   R_init <- sapply(seq_len(dim(incid$local)[3]), function(i) {
     tmp_df <- data.frame(local = apply(incid$local[, , i, drop = FALSE],
                                        c(1, 3), sum)[,1],
@@ -447,15 +447,15 @@ estimate_joint <- function(incid, si_distr, priors,
                            t_start = t_min,
                            t_end = t_max)))$R$'Mean(R)'
     })
-  
+
   max_transmiss <- which.max(R_init)
   # reorder variants so most transmissible is first
   incid_reordered <- array(NA, dim = dim(incid$local))
   incid_reordered[,,1] <- incid$local[,,max_transmiss]
   incid_reordered[,,-1] <- incid$local[,, -max_transmiss]
-  
+
   incid$local <- incid_reordered
-  
+
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
@@ -465,7 +465,7 @@ estimate_joint <- function(incid, si_distr, priors,
                    t_min = t_min, t_max = t_max)
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
-  
+
   for (i in seq_len(mcmc_control$n_iter)) {
     R_out[, , i + 1] <- draw_R(epsilon_out[, i], incid$local, lambda, priors,
                                t_min = t_min, t_max = t_max)
@@ -474,36 +474,45 @@ estimate_joint <- function(incid, si_distr, priors,
       incid$local, lambda, priors,
       t_min = t_min, t_max = t_max)
   }
-  
+
   # remove burnin and thin
   keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
   epsilon_out <- epsilon_out[, keep]
   R_out <- R_out[, , keep, drop = FALSE]
-  
-  list(epsilon = 1/epsilon_out, R = R_out) 
+  ## IF we have not re-ordered, we don't need to
+  ## divide. Caution: this will only work for
+  ## 2 variants at the moment.
+  if (max_transmiss != 1) {
+    epsilon_out <- epsilon_out / epsilon_out[, 1]
+  }
+  ## TODO: Very importamt - do we need to fix
+  ## ordering of R as well i.e. we have reshuffled the incidence
+  ## but R should be returned in the order of the
+  ## original incidence?
+  list(epsilon = epsilon_out, R = R_out)
   # Not sure if this will be the same for >2 variants
 }
 
 #' @param incid a multidimensional array containing values of the incidence
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension)
-#'   
-#' @param incid_imported an optional multidimensional array containing values 
-#'   of the incidence of imported cases 
+#'
+#' @param incid_imported an optional multidimensional array containing values
+#'   of the incidence of imported cases
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension). `incid - incid_imported` is
 #'   therefore the incidence of locally infected cases. If `incid_imported` is
 #'   NULL this means there are no
 #'   known imported cases and all cases other than on those from the first
-#'   time step will be considered locally infected. 
-#'   
+#'   time step will be considered locally infected.
+#'
 #' @return a list with two elements.
 #'   1) `local` a multidimensional array containing values of the incidence
-#'   of locally infected cases 
+#'   of locally infected cases
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension)
 #'   2) `imported` a multidimensional array containing values of the incidence
-#'   of imported cases 
+#'   of imported cases
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension)
 #'
@@ -515,8 +524,8 @@ estimate_joint <- function(incid, si_distr, priors,
 #' T <- 100 # 100 time steps
 #' # constant incidence 10 per day everywhere
 #' incid <- array(10, dim = c(T, n_loc, n_v))
-#' process_I_multivariant(incid) 
-#' 
+#' process_I_multivariant(incid)
+#'
 process_I_multivariant <- function(incid, incid_imported = NULL) {
   if (is.null(incid_imported)) {
     incid_imported <- incid
