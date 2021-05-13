@@ -434,7 +434,7 @@ estimate_joint <- function(incid, si_distr, priors,
   ## find clever initial values, based on ratio of reproduction numbers 
   ## over the whole time period, across all locations together
   
-  R_init <- lapply(seq_len(dim(incid$local)[3]), function(i) {
+  R_init <- sapply(seq_len(dim(incid$local)[3]), function(i) {
     tmp_df <- data.frame(local = apply(incid$local[, , i, drop = FALSE],
                                        c(1, 3), sum)[,1],
                          imported = apply(incid$imported[, , i, drop = FALSE],
