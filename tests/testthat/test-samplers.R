@@ -33,25 +33,25 @@ test_that("draw_epsilon produces expected results (2 variants, 1 location)", {
   n_v <- 2 # 2 variants
   n_loc <- 1 # 1 location
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
   incid <- process_I_multivariant(incid)
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
   lambda <- compute_lambda(incid, si_distr)
-  
+
   # Constant reproduction number of 1
   R <- matrix(1, nrow = T, ncol = n_loc)
   R[1, ] <- NA # no estimates of R on first time step
-  
+
   set.seed(1)
   x <- sapply(1:1000, function(e) draw_epsilon(R, incid$local, lambda, priors))
-  
+
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   expect_equal(mean(x), 1, tolerance = 0.05)
@@ -91,25 +91,25 @@ test_that("draw_epsilon produces expected results (>2 variants, 1 location)", {
   n_v <- 3 # 3 variants
   n_loc <- 1 # 1 location
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
   incid <- process_I_multivariant(incid)
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
   lambda <- compute_lambda(incid, si_distr)
-  
+
   # Constant reproduction number of 1
   R <- matrix(1, nrow = T, ncol = n_loc)
   R[1, ] <- NA # no estimates of R on first time step
-  
+
   set.seed(1)
   x <- sapply(1:1000, function(e) draw_epsilon(R, incid$local, lambda, priors))
-  
+
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   expect_equal(mean(x), 1, tolerance = 0.05)
@@ -150,25 +150,25 @@ test_that("draw_R produces expected results (2 variants, 1 location)", {
   n_v <- 2 # 2 variants
   n_loc <- 1 # 1 locations
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
   incid <- process_I_multivariant(incid)
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
   lambda <- compute_lambda(incid, si_distr)
-  
+
   # Epsilon = 1 i.e. no transmission advantage
   epsilon <- 1
-  
+
   set.seed(1)
   x <- lapply(1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors))
   x_mean <- Reduce("+", x) / length(x)
-  
+
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
@@ -210,25 +210,25 @@ test_that("draw_R produces expected results (>2 variants, 1 location)", {
   n_v <- 3 # 3 variants
   n_loc <- 1 # 1 locations
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
   incid <- process_I_multivariant(incid)
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
   lambda <- compute_lambda(incid, si_distr)
-  
+
   # Epsilon = 1 i.e. no transmission advantage
   epsilon <- c(1, 1)
-  
+
   set.seed(1)
   x <- lapply(1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors))
   x_mean <- Reduce("+", x) / length(x)
-  
+
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
@@ -267,21 +267,21 @@ test_that("estimate_joint produces expected results (2 variants 1 location)", {
   n_v <- 2 # 2 variants
   n_loc <- 1 # 1 locations
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
-  
+
   x <- estimate_joint(incid, si_distr, priors, seed = 1)
-  
+
   ## epsilon should be approximately 1
   expect_equal(mean(x$epsilon), 1, tolerance = 0.05)
-  
+
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
@@ -321,21 +321,21 @@ test_that("estimate_joint produces expected results (>2 variants 1 loc)", {
   n_v <- 3 # 3 variants
   n_loc <- 1 # 1 location
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
-  
+
   x <- estimate_joint(incid, si_distr, priors, seed = 1)
-  
+
   ## epsilon should be approximately 1
   expect_equal(mean(x$epsilon), 1, tolerance = 0.05)
-  
+
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
@@ -348,11 +348,11 @@ test_that("process_I_multivariant rejects wrong inputs", {
   n_v <- 3 # 3 variants
   n_loc <- 1 # 1 location
   T <- 100 # 100 time steps
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
   incid_imported <- array(1, dim = c(T, n_loc, n_v))
-  
+
   expect_error(process_I_multivariant(incid, incid_imported[-1, , ]),
                "'incid' and 'incid_imported' have incompatible dimensions")
 })
@@ -362,16 +362,16 @@ test_that("process_I_multivariant works as expected", {
   n_v <- 3 # 3 variants
   n_loc <- 1 # 1 location
   T <- 100 # 100 time steps
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
   incid_imported <- array(1, dim = c(T, n_loc, n_v))
-  
+
   ## specifying imported cases
   incid_processed <- process_I_multivariant(incid, incid_imported)
   expect_equal(incid_processed$local + incid_processed$imported, incid)
   expect_equal(incid_processed$imported, incid_imported)
-  
+
   ## with the default
   incid_processed <- process_I_multivariant(incid)
   expect_equal(incid_processed$local + incid_processed$imported, incid)
@@ -386,13 +386,13 @@ test_that("compute_lambda rejects invalid incid inputs", {
   n_v <- 3 # 3 variants
   n_loc <- 1 # 1 location
   T <- 100 # 100 time steps
-  
+
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  
+
   expect_error(compute_lambda(incid, si_distr),
       "'incid 'should be an 'incid_multivariant' object.")
 })
@@ -402,9 +402,9 @@ test_that("estimate_joint produces expected results (>2var, 1loc, imports)", {
   n_v <- 3 # 3 variants
   n_loc <- 1 # 1 location
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
   incid_imported <- array(0, dim = c(T, n_loc, n_v))
@@ -412,17 +412,17 @@ test_that("estimate_joint produces expected results (>2var, 1loc, imports)", {
   incid_imported[, , 2:n_v] <- incid[, , 2:n_v]
   # all cases at first time step must be imported
   incid_imported[1, , ] <- incid[1, , ]
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
-  
+
   x <- estimate_joint(incid, si_distr, priors, seed = 1,
                       incid_imported = incid_imported)
-  
+
   ## epsilon should be approximately 0
   expect_equal(mean(1/x$epsilon), 0, tolerance = 0.05)
-  
+
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
@@ -435,9 +435,9 @@ test_that("estimate_joint produces expected results (>2var, 4loc, imports)", {
   n_v <- 3 # 3 variants
   n_loc <- 4 # 4 locations
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
   incid_imported <- array(0, dim = c(T, n_loc, n_v))
@@ -445,17 +445,17 @@ test_that("estimate_joint produces expected results (>2var, 4loc, imports)", {
   incid_imported[, , 2:n_v] <- incid[, , 2:n_v]
   # all cases at first time step must be imported
   incid_imported[1, , ] <- incid[1, , ]
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
-  
+
   x <- estimate_joint(incid, si_distr, priors, seed = 1,
                       incid_imported = incid_imported)
-  
+
   ## epsilon should be approximately 0
   expect_equal(mean(x$epsilon), 0, tolerance = 0.05)
-  
+
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
@@ -468,9 +468,9 @@ test_that("estimate_joint produces expected results (2var, 1loc, imports)", {
   n_v <- 2 # 2 variants
   n_loc <- 1 # 1 location
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
   incid_imported <- array(0, dim = c(T, n_loc, n_v))
@@ -478,17 +478,17 @@ test_that("estimate_joint produces expected results (2var, 1loc, imports)", {
   incid_imported[, , 2] <- incid[, , 2]
   # all cases at first time step must be imported
   incid_imported[1, , ] <- incid[1, , ]
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
-  
+
   x <- estimate_joint(incid, si_distr, priors, seed = 1,
                       incid_imported = incid_imported)
-  
+
   ## epsilon should be approximately 0
   expect_equal(mean(1/x$epsilon), 0, tolerance = 0.05)
-  
+
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
@@ -501,9 +501,9 @@ test_that("estimate_joint produces expected results (2var, 4loc, imports)", {
   n_v <- 2 # 2 variants
   n_loc <- 4 # 4 locations
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
   incid_imported <- array(0, dim = c(T, n_loc, n_v))
@@ -511,17 +511,17 @@ test_that("estimate_joint produces expected results (2var, 4loc, imports)", {
   incid_imported[, , 2] <- incid[, , 2]
   # all cases at first time step must be imported
   incid_imported[1, , ] <- incid[1, , ]
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
-  
+
   x <- estimate_joint(incid, si_distr, priors, seed = 1,
                       incid_imported = incid_imported)
-  
+
   ## epsilon should be approximately 0
   expect_equal(mean(x$epsilon), 0, tolerance = 0.05)
-  
+
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
@@ -534,22 +534,22 @@ test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1, R
   n_v <- 2 # 2 variants
   n_loc <- 2 # 2 locations
   T <- 100 # 100 time steps
-  
+
   # R in loc 1 = 1 and R in loc 2 = 2
   R_loc1 <- 1
   R_loc2 <- 2
   R <- array(NA, dim = c(T, n_loc, n_v))
   R[,,1] <- rep(R_loc1, each=T)
   R[,,2] <- rep(R_loc2, each=T)
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
-  
+
   # simulate incidence
   incid_init <- incidence::incidence(rep(1, 20))
   incid <- array(NA, dim = c(T, n_loc, n_v))
-  
+
   for (loc in seq_len(n_loc)) {
     for (v in seq_len(n_v)) {
       incid[, loc, v] <- rbind(
@@ -570,12 +570,13 @@ test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1, R
       )
     }
   }
-  incid
-  
+
+
   priors <- default_priors()
-  
-  x <- estimate_joint(incid, si_distr, priors, seed = 1)
-  
+  x <- estimate_joint(
+    incid, si_distr, priors, seed = 1
+  )
+
   ## R should be approx 1 for loc1 and 2 for loc2
   ## incomplete (need to fix estimate_joint to get output)
   mean_R_loc1 <- apply(x$R[,,1], c(1, 2), mean)

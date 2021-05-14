@@ -455,6 +455,18 @@ estimate_joint <- function(incid, si_distr, priors,
   incid_reordered[,,-1] <- incid$local[,, -max_transmiss]
 
   incid$local <- incid_reordered
+  ## Re-order R_init so that they are in the same
+  ## order as the incidence
+  R_init_reord <- R_init
+  R_init_reord[1] <- R_init[max_transmiss]
+  R_init_reord[-1] <- R_init[-max_transmiss]
+  R_init <- R_init_reord
+
+  ## Re-order lambda
+  lambda_reordered <- lambda
+  lambda_reordered[, , 1] <- lambda[, , max_transmiss]
+  lambda_reordered[, , -1] <- lambda[, , -max_transmiss]
+  lambda <- lambda_reordered
 
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
@@ -465,7 +477,6 @@ estimate_joint <- function(incid, si_distr, priors,
                    t_min = t_min, t_max = t_max)
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
-
   for (i in seq_len(mcmc_control$n_iter)) {
     R_out[, , i + 1] <- draw_R(epsilon_out[, i], incid$local, lambda, priors,
                                t_min = t_min, t_max = t_max)
@@ -473,17 +484,23 @@ estimate_joint <- function(incid, si_distr, priors,
       abind::adrop(R_out[, , i + 1, drop = FALSE], drop = 3),
       incid$local, lambda, priors,
       t_min = t_min, t_max = t_max)
+
   }
 
   # remove burnin and thin
   keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
-  epsilon_out <- epsilon_out[, keep]
+  epsilon_out <- epsilon_out[, keep, drop = FALSE]
   R_out <- R_out[, , keep, drop = FALSE]
   ## IF we have not re-ordered, we don't need to
   ## divide. Caution: this will only work for
   ## 2 variants at the moment.
   if (max_transmiss != 1) {
-    epsilon_out <- epsilon_out / epsilon_out[, 1]
+    epsilon_out[1 , ] <-  1 / epsilon_out[1 , ]
+    if (nrow(epsilon_out) > 1) {
+      for (row in 2:nrow(epsilon_out)) {
+        epsilon_out[row, ] <- epsilon_out[row, ] *  epsilon_out[1, ]
+      }
+    }
   }
   ## TODO: Very importamt - do we need to fix
   ## ordering of R as well i.e. we have reshuffled the incidence
