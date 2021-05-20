@@ -530,18 +530,26 @@ test_that("estimate_joint produces expected results (2var, 4loc, imports)", {
 })
 
 
-test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1, R_loc2 = 2)", {
+test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1.1, R_loc2 = 1.5)", {
   n_v <- 2 # 2 variants
   n_loc <- 2 # 2 locations
   T <- 100 # 100 time steps
 
-  # R in loc 1 = 1 and R in loc 2 = 2
-  R_loc1 <- 1
-  R_loc2 <- 2
+  transm_adv <- 1.5 # Var 2 has TA of 1.5
+  R_loc1 <- 1.1
+  R_loc2 <- 1.5
+  
+  R_L1V1 <- R_loc1
+  R_L1V2 <- R_loc1*transm_adv
+  R_L2V1 <- R_loc2
+  R_L2V2 <- R_loc2*transm_adv
+  
   R <- array(NA, dim = c(T, n_loc, n_v))
-  R[,,1] <- rep(R_loc1, each=T)
-  R[,,2] <- rep(R_loc2, each=T)
-
+  R[,1,1] <- rep(R_L1V1, each=T)
+  R[,2,1] <- rep(R_L2V1, each=T)
+  R[,1,2] <- rep(R_L1V2, each=T)
+  R[,2,2] <- rep(R_L2V2, each=T)
+  
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
@@ -577,9 +585,8 @@ test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1, R
     incid, si_distr, priors, seed = 1
   )
 
-  ## R should be approx 1 for loc1 and 2 for loc2
-  ## incomplete (need to fix estimate_joint to get output)
-  mean_R_loc1 <- apply(x$R[,,1], c(1, 2), mean)
-  mean_R_loc2 <- apply(x$R[,,2], c(1, 2), mean)
-
+  ## R should be approx 1.1 for loc1 and 1.5 for loc2
+  expect_equal(mean(x$R[,1,], na.rm=T), 1.1, tolerance = 0.5)   
+  expect_equal(mean(x$R[,2,], na.rm=T), 1.5, tolerance = 0.5) 
+  
 })
