@@ -547,7 +547,7 @@ process_I_multivariant <- function(incid, incid_imported = NULL) {
   if (is.null(incid_imported)) {
     incid_imported <- incid
     ## only cases at first time step are imported
-    incid_imported[-1, , ] <- 0
+    incid_imported[-1, , ,drop=FALSE]  <- 0
   }
   dim1 <- dim(incid)
   dim2 <- dim(incid_imported)
