@@ -486,7 +486,6 @@ estimate_joint <- function(incid, si_distr, priors,
       t_min = t_min, t_max = t_max)
 
   }
-
   # remove burnin and thin
   keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
   epsilon_out <- epsilon_out[, keep, drop = FALSE]
@@ -545,9 +544,9 @@ estimate_joint <- function(incid, si_distr, priors,
 #'
 process_I_multivariant <- function(incid, incid_imported = NULL) {
   if (is.null(incid_imported)) {
-    incid_imported <- incid
+    incid_imported <- array(0, dim = dim(incid))
     ## only cases at first time step are imported
-    incid_imported[-1, ,drop=FALSE]  <- 0
+    incid_imported[1, , ] <- incid[1, , , drop = FALSE]
   }
   dim1 <- dim(incid)
   dim2 <- dim(incid_imported)
