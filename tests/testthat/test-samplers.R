@@ -421,7 +421,7 @@ test_that("estimate_joint produces expected results (>2var, 1loc, imports)", {
                       incid_imported = incid_imported)
 
   ## epsilon should be approximately 0
-  expect_equal(mean(1/x$epsilon), 0, tolerance = 0.05)
+  expect_equal(mean(x$epsilon), 0, tolerance = 0.05)
 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
@@ -487,7 +487,7 @@ test_that("estimate_joint produces expected results (2var, 1loc, imports)", {
                       incid_imported = incid_imported)
 
   ## epsilon should be approximately 0
-  expect_equal(mean(1/x$epsilon), 0, tolerance = 0.05)
+  expect_equal(mean(x$epsilon), 0, tolerance = 0.05)
 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
