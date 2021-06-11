@@ -448,25 +448,25 @@ estimate_joint <- function(incid, si_distr, priors,
                            t_end = t_max)))$R$'Mean(R)'
     })
 
-  max_transmiss <- which.max(R_init)
-  # reorder variants so most transmissible is first
-  incid_reordered <- array(NA, dim = dim(incid$local))
-  incid_reordered[,,1] <- incid$local[,,max_transmiss]
-  incid_reordered[,,-1] <- incid$local[,, -max_transmiss]
-
-  incid$local <- incid_reordered
-  ## Re-order R_init so that they are in the same
-  ## order as the incidence
-  R_init_reord <- R_init
-  R_init_reord[1] <- R_init[max_transmiss]
-  R_init_reord[-1] <- R_init[-max_transmiss]
-  R_init <- R_init_reord
-
-  ## Re-order lambda
-  lambda_reordered <- lambda
-  lambda_reordered[, , 1] <- lambda[, , max_transmiss]
-  lambda_reordered[, , -1] <- lambda[, , -max_transmiss]
-  lambda <- lambda_reordered
+  # max_transmiss <- which.max(R_init)
+  # # reorder variants so most transmissible is first
+  # incid_reordered <- array(NA, dim = dim(incid$local))
+  # incid_reordered[,,1] <- incid$local[,,max_transmiss]
+  # incid_reordered[,,-1] <- incid$local[,, -max_transmiss]
+  # 
+  # incid$local <- incid_reordered
+  # ## Re-order R_init so that they are in the same
+  # ## order as the incidence
+  # R_init_reord <- R_init
+  # R_init_reord[1] <- R_init[max_transmiss]
+  # R_init_reord[-1] <- R_init[-max_transmiss]
+  # R_init <- R_init_reord
+  # 
+  # ## Re-order lambda
+  # lambda_reordered <- lambda
+  # lambda_reordered[, , 1] <- lambda[, , max_transmiss]
+  # lambda_reordered[, , -1] <- lambda[, , -max_transmiss]
+  # lambda <- lambda_reordered
 
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
@@ -491,17 +491,17 @@ estimate_joint <- function(incid, si_distr, priors,
   keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
   epsilon_out <- epsilon_out[, keep, drop = FALSE]
   R_out <- R_out[, , keep, drop = FALSE]
-  ## IF we have not re-ordered, we don't need to
-  ## divide. Caution: this will only work for
-  ## 2 variants at the moment.
-  if (max_transmiss != 1) {
-    epsilon_out[1 , ] <-  1 / epsilon_out[1 , ]
-    if (nrow(epsilon_out) > 1) {
-      for (row in 2:nrow(epsilon_out)) {
-        epsilon_out[row, ] <- epsilon_out[row, ] *  epsilon_out[1, ]
-      }
-    }
-  }
+  # ## IF we have not re-ordered, we don't need to
+  # ## divide. Caution: this will only work for
+  # ## 2 variants at the moment.
+  # if (max_transmiss != 1) {
+  #   epsilon_out[1 , ] <-  1 / epsilon_out[1 , ]
+  #   if (nrow(epsilon_out) > 1) {
+  #     for (row in 2:nrow(epsilon_out)) {
+  #       epsilon_out[row, ] <- epsilon_out[row, ] *  epsilon_out[1, ]
+  #     }
+  #   }
+  # }
   ## TODO: Very importamt - do we need to fix
   ## ordering of R as well i.e. we have reshuffled the incidence
   ## but R should be returned in the order of the
