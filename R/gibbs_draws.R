@@ -281,9 +281,14 @@ draw_R <- function(epsilon, incid, lambda, priors,
   t <- seq(t_min, t_max, 1)
   shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape ## TODO: precalculate this
   shape_flat <- as.numeric(shape) ## TODO: precalculate this
-  rate <- lambda[t, , 1] +
-    apply(epsilon * lambda[t, , -1, drop = FALSE], c(1, 2), sum) +
-    1 / priors$R$scale
+  # rate <- lambda[t, , 1] +
+  #   apply(epsilon * lambda[t, , -1, drop = FALSE], c(1, 2), sum) + # something fishy here with the sum given epsilon can be >1Dim
+  #   1 / priors$R$scale
+  temp <- lambda[t, , 1]
+  for(i in 2:dim(incid)[3]){
+    temp <- temp + epsilon[i-1]*lambda[t, , i]
+  }
+  rate <- temp + 1 / priors$R$scale
   scale <- 1 / rate
   scale_flat <- as.numeric(scale)
   R_flat <- rgamma(length(shape_flat), shape = shape_flat, scale = scale_flat)
@@ -473,7 +478,8 @@ estimate_joint <- function(incid, si_distr, priors,
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
                         ncol = mcmc_control$n_iter + 1)
   epsilon_out[, 1] <- epsilon_init
-  R_init <- draw_R(mcmc_control$n_iter, incid$local, lambda, priors,
+  R_init <- draw_R(epsilon = epsilon_init, incid = incid$local, lambda = lambda, # corrected epsilon here
+                  priors = priors, 
                    t_min = t_min, t_max = t_max)
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
