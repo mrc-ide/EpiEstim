@@ -281,9 +281,14 @@ draw_R <- function(epsilon, incid, lambda, priors,
   t <- seq(t_min, t_max, 1)
   shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape ## TODO: precalculate this
   shape_flat <- as.numeric(shape) ## TODO: precalculate this
-  rate <- lambda[t, , 1] +
-    apply(epsilon * lambda[t, , -1, drop = FALSE], c(1, 2), sum) +
-    1 / priors$R$scale
+  ## Fix for issue 123.
+  ## overall infectivity for
+  temp <- lambda[t, , 1]
+  for(var in 2:dim(incid)[3]){
+    ## We want lambda_1 + e_v lambda_v for all t
+    temp <- temp + epsilon[var - 1] * lambda[t, , var]
+  }
+  rate <- temp + 1 / priors$R$scale
   scale <- 1 / rate
   scale_flat <- as.numeric(scale)
   R_flat <- rgamma(length(shape_flat), shape = shape_flat, scale = scale_flat)
