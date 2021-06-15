@@ -473,8 +473,11 @@ estimate_joint <- function(incid, si_distr, priors,
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
                         ncol = mcmc_control$n_iter + 1)
   epsilon_out[, 1] <- epsilon_init
-  R_init <- draw_R(mcmc_control$n_iter, incid$local, lambda, priors,
-                   t_min = t_min, t_max = t_max)
+  R_init <- draw_R(
+    epsilon = epsilon_init, incid = incid$local, lambda = lambda,
+    priors = priors,t_min = t_min, t_max = t_max
+  )
+
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
   for (i in seq_len(mcmc_control$n_iter)) {
