@@ -4,11 +4,13 @@
 \name{Smallpox1972}
 \alias{Smallpox1972}
 \title{Data on the 1972 smallpox epidemic in Kosovo}
-\format{A list of two elements:
+\format{
+A list of two elements:
 \itemize{
 \item \strong{incidence:} a vector containing 57 days of observation,
 \item \strong{si_distr:} a vector containing a set of 46 probabilities.
-}}
+}
+}
 \source{
 Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World
 Health Organization.
