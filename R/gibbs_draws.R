@@ -284,7 +284,8 @@ draw_R <- function(epsilon, incid, lambda, priors,
   ## Fix for issue 123.
   ## overall infectivity for
   temp <- lambda[t, , 1]
-  for(var in 2:dim(incid)[3]){
+  idx <- seq(2, dim(incid)[3], 1)
+  for(var in idx){
     ## We want lambda_1 + e_v lambda_v for all t
     temp <- temp + epsilon[var - 1] * lambda[t, , var]
   }
