@@ -88,7 +88,7 @@
       <h1 data-toc-skip>EpiEstim: a demonstration</h1>
                         <h4 class="author">Anne Cori</h4>
             
-            <h4 class="date">2021-04-30</h4>
+            <h4 class="date">2021-06-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/master/vignettes/short_demo.Rmd"><code>vignettes/short_demo.Rmd</code></a></small>
       <div class="hidden name"><code>short_demo.Rmd</code></div>
@@ -141,7 +141,9 @@
 <p>We can use the <code>incidence</code> R package to easily plot the daily incidence data:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.repidemicsconsortium.org/incidence/">incidence</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/conversions.html">as.incidence</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">I</span>, dates <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">dates</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/conversions.html">as.incidence</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">I</span>, dates <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">dates</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Warning: It is deprecated to specify `guide = FALSE` to remove a guide. Please</span>
+<span class="co">#&gt; use `guide = "none"` instead.</span></code></pre></div>
 <p><img src="figs-demo/incidence-1.png" width="576"></p>
 <p>We can run <code>estimate_R</code> on the incidence data to estimate the reproduction number R. For this, we need to specify i) the time window(s) over which to estimate R and ii) information on the distribution of the serial interval.</p>
 <p>For i), the default behavior is to estimate R over weekly sliding windows. This can be changed through the <code>config$t_start</code> and <code>config$t_end</code> arguments (see below, “Changing the time windows for estimation”). For ii), there are several options, specified in the <code>method</code> argument.</p>

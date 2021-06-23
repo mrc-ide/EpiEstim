@@ -89,7 +89,7 @@
       <h1 data-toc-skip>EpiEstim Vignette</h1>
                         <h4 class="author">Rebecca Nash</h4>
             
-            <h4 class="date">2021-04-30</h4>
+            <h4 class="date">2021-06-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/master/vignettes/full_EpiEstim_vignette.Rmd"><code>vignettes/full_EpiEstim_vignette.Rmd</code></a></small>
       <div class="hidden name"><code>full_EpiEstim_vignette.Rmd</code></div>
@@ -808,7 +808,9 @@ dd/mm/yy
 <span class="va">evd_incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/incidence.html">incidence</a></span><span class="op">(</span><span class="va">linelist</span><span class="op">$</span><span class="va">date_of_onset</span><span class="op">)</span>
 
 <span class="co"># Plot the incidence:</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">evd_incid</span>, xlab<span class="op">=</span><span class="st">"Date"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">evd_incid</span>, xlab<span class="op">=</span><span class="st">"Date"</span><span class="op">)</span>
+<span class="co">#&gt; Warning: It is deprecated to specify `guide = FALSE` to remove a guide. Please</span>
+<span class="co">#&gt; use `guide = "none"` instead.</span></code></pre></div>
 <p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-34-1.png" width="576"></p>
 <p><strong>Estimate R<sub>t</sub> using parametric SI distribution</strong></p>
 <p>Now that we have an incidence object we need to supply <code>EpiEstim</code> with the SI distribution. As explained above, when we estimate R<sub>t</sub> using a parametric SI distribution we only need to supply a mean and standard deviation. We will assume that the mean of the SI distribution is 14.2 and that the SD is 9.6 using an estimate found in the literature (WHO Ebola Response Team, 2015).</p>
@@ -849,7 +851,9 @@ dd/mm/yy
                 R_fix_within <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># keep the same value of R every day</span>
 
 <span class="co"># Use the pipe operator (%&gt;%) from the dplyr package to add the projections over all incidence data</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">evd_incid</span>, xlab<span class="op">=</span><span class="st">"Date of Symptom Onset"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">add_projections</span><span class="op">(</span><span class="va">proj</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">evd_incid</span>, xlab<span class="op">=</span><span class="st">"Date of Symptom Onset"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">add_projections</span><span class="op">(</span><span class="va">proj</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Warning: It is deprecated to specify `guide = FALSE` to remove a guide. Please</span>
+<span class="co">#&gt; use `guide = "none"` instead.</span></code></pre></div>
 <p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-36-1.png" width="576"></p>
 <p>Here, we have plotted the original untruncated incidence object to illustrate that the projections have started over the uncertain week of data.</p>
 </div>
