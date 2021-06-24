@@ -83,7 +83,9 @@ test_that("draw_epsilon produces expected results (>2 variants, 4 locations)", {
 
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
-  expect_equal(mean(x), 1, tolerance = 0.05)
+  expect_equal(
+    apply(x, 1, mean), c(1, 1), tolerance = 0.05
+  )
 })
 
 
@@ -112,7 +114,7 @@ test_that("draw_epsilon produces expected results (>2 variants, 1 location)", {
 
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
-  expect_equal(mean(x), 1, tolerance = 0.05)
+  expect_equal(apply(x, 1, mean), c(1, 1), tolerance = 0.05)
 })
 
 
@@ -309,7 +311,10 @@ test_that("estimate_joint produces expected results (>2 variants 4 locs)", {
   ## epsilon should be approximately 1
   ## FIXME this should be apply(x$epsilon, 1, mean)
   ## as 2 epsilons are returned here.
-  expect_equal(mean(x$epsilon), 1, tolerance = 0.05)
+
+  expect_equal(
+    apply(x$epsilon, 1, mean), c(1, 1), tolerance = 0.05
+  )
 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
@@ -336,7 +341,9 @@ test_that("estimate_joint produces expected results (>2 variants 1 loc)", {
   x <- estimate_joint(incid, si_distr, priors, seed = 1)
 
   ## epsilon should be approximately 1
-  expect_equal(mean(x$epsilon), 1, tolerance = 0.05)
+  expect_equal(
+    apply(x$epsilon, 1, mean), c(1, 1), tolerance = 0.05
+  )
 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
@@ -344,6 +351,8 @@ test_that("estimate_joint produces expected results (>2 variants 1 loc)", {
   mean_R <- apply(x$R, c(1, 2), mean)
   expect_true(max(abs(mean_R[-c(1, 2, 3), ] - 1)) < 0.1)
 })
+
+
 
 
 test_that("process_I_multivariant rejects wrong inputs", {
@@ -423,7 +432,9 @@ test_that("estimate_joint produces expected results (>2var, 1loc, imports)", {
                       incid_imported = incid_imported)
 
   ## epsilon should be approximately 0
-  expect_equal(mean(x$epsilon), 0, tolerance = 0.05)
+  expect_equal(
+    apply(x$epsilon, 1, mean), c(0, 0), tolerance = 0.05
+  )
 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
@@ -456,7 +467,9 @@ test_that("estimate_joint produces expected results (>2var, 4loc, imports)", {
                       incid_imported = incid_imported)
 
   ## epsilon should be approximately 0
-  expect_equal(mean(x$epsilon), 0, tolerance = 0.05)
+  expect_equal(
+    apply(x$epsilon, 1, mean), c(0, 0), tolerance = 0.05
+  )
 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
@@ -590,5 +603,53 @@ test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1.1,
   ## R should be approx 1.1 for loc1 and 1.5 for loc2
   expect_equal(mean(x$R[,1,], na.rm=T), 1.1, tolerance = 0.5)
   expect_equal(mean(x$R[,2,], na.rm=T), 1.5, tolerance = 0.5)
+
+})
+
+
+test_that("estimate_joint produces expected results (3 var, 1 loc, different transmission advantages)", {
+  n_v <- 3
+  n_loc <- 1
+  T <- 100
+
+  transm_adv <- c(1.1, 1.5)
+  R_L1V1 <- 1.1
+  R_L1V2 <- R_L1V1 * transm_adv[1]
+  R_L1V3 <- R_L1V1 * transm_adv[2]
+
+  R <- array(NA, dim = c(T, n_loc, n_v))
+  R[, 1, 1] <- rep(R_L1V1, each = T)
+  R[, 1, 2] <- rep(R_L1V2, each = T)
+  R[, 1, 3] <- rep(R_L1V3, each = T)
+
+  # arbitrary serial interval
+  w_v <- c(0, 0.2, 0.5, 0.3)
+  si_distr <- cbind(w_v, w_v, w_v)
+
+  # simulate incidence
+  incid_init <- incidence::incidence(rep(1, 20))
+  incid <- array(NA, dim = c(T, n_loc, n_v))
+
+  for (v in seq_len(n_v)) {
+    incid[, 1, v] <- rbind(
+      incid_init$counts,
+        as.matrix( #
+          projections::project(
+            incid_init,
+            ## R in the future so removing time of seeding
+            R = R[-1, 1, v],
+            si = si_distr[, v],
+            n_sim = 1,
+            n_days = T - 1
+          )
+        )
+    )
+  }
+
+
+
+  priors <- default_priors()
+  x <- estimate_joint(incid, si_distr, priors, seed = 1)
+  out <- apply(x$epsilon, 1, mean)
 
 })
