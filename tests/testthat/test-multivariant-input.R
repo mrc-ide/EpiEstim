@@ -248,6 +248,22 @@ test_that("seed is specified correctly",{
                "seed must be numeric")
 })
 
+  # convergence check
+
+low_iter <- function() {
+  list(n_iter = 20L,
+       burnin = 10L,
+       thin = 10L)
+}
+
+test_that("convergence check works",{
+  expect_warning(estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+                              mcmc_control = low_iter(),
+                              t_min = 2L, t_max = nrow(incid),
+                              seed = NULL),
+               "The Gelman-Rubin algorithm suggests the MCMC may not have converged
+            within the number of iterations (MCMC.burnin + n1) specified.")
+})
 
 
 
