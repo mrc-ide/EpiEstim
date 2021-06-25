@@ -462,9 +462,12 @@ test_that("estimate_joint produces expected results (>2var, 4loc, imports)", {
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
-
-  x <- estimate_joint(incid, si_distr, priors, seed = 1,
-                      incid_imported = incid_imported)
+  ## Need to run for longer after changing priors
+  x <- estimate_joint(
+    incid, si_distr, priors, seed = 1,
+    incid_imported = incid_imported,
+    mcmc_control = list(n_iter = 2000L, burnin = 100L, thin = 10L)
+  )
 
   ## epsilon should be approximately 0
   expect_equal(
@@ -531,8 +534,11 @@ test_that("estimate_joint produces expected results (2var, 4loc, imports)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, seed = 1,
-                      incid_imported = incid_imported)
+  x <- estimate_joint(
+    incid, si_distr, priors, seed = 1,
+    incid_imported = incid_imported,
+    mcmc_control = list(n_iter = 2000L, burnin = 100L, thin = 10L)
+  )
 
   ## epsilon should be approximately 0
   expect_equal(mean(x$epsilon), 0, tolerance = 0.05)
