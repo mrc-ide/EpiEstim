@@ -301,7 +301,30 @@ draw_R <- function(epsilon, incid, lambda, priors,
   R[t, ] <- R_fill
   R
 }
-
+##' Index before which at most a given probability
+##' mass is captured
+##'
+##' Across a matrix of discretised probability distributions
+##' (see \code{estimate_joint}
+##' this function returns the largest index
+##' (across all columns) such that the
+##' cumulative probability mass before index is
+##' 1 - \code{miss_at_most}.
+##'
+##'
+##' @inheritParams estimate_joint
+##' @param miss_at_most
+##' @return
+##' @author Sangeeta Bhatia
+compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
+  cutoff <- 1 - miss_at_most
+  cdf <- apply(si_distr, 2, cumsum)
+  idx <- apply(
+    cdf, 2,
+    function(col) Position(function(x) x > cutoff, col)
+  )
+  max(idx)
+}
 
 #' Jointly estimate the instantaneous reproduction number for a reference
 #'   pathogen/strain/variant and the relative transmissibility of a
@@ -326,8 +349,11 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #'   for example from function `default_mcmc_controls`
 #'
 #' @param t_min an integer >1 giving the minimum time step to consider in the
-#'   estimation. Default value is 2 (as the estimation is conditional on
-#'   observations at time step 1 and can therefore only start at time step 2).
+#'   estimation.
+#'   The NULL, t_min is calculated using the function \code{compute_si_cutoff}
+#'   which gets the maximum (across all variants) of the 95th percentile of the
+#'   SI distribution.
+#'
 #'
 #' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
@@ -393,10 +419,13 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #'
 estimate_joint <- function(incid, si_distr, priors,
                            mcmc_control = default_mcmc_controls(),
-                           t_min = 2L, t_max = nrow(incid),
+                           t_min = NULL, t_max = nrow(incid),
                            seed = NULL,
                            incid_imported = NULL
-) {
+                           ) {
+  if (is.null(t_min)) {
+   t_min <- compute_si_cutoff(si_distr, 0.05)
+  }
   if (!is.integer(t_min) | !is.integer(t_max)){
     stop("t_min and t_max must be integers")
   }
@@ -431,6 +460,7 @@ estimate_joint <- function(incid, si_distr, priors,
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
+
   t <- seq(t_min, t_max, 1)
 
   T <- nrow(incid)

@@ -611,3 +611,36 @@ test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1.1,
   expect_equal(mean(x$R[,2,], na.rm=T), 1.5, tolerance = 0.5)
 
 })
+
+
+test_that("estimate_joint produces expected results (2 variants 1 location, t_min NULL)", {
+  n_v <- 2 # 2 variants
+  n_loc <- 1 # 1 locations
+  T <- 100 # 100 time steps
+
+  priors <- default_priors()
+
+  # constant incidence 10 per day everywhere
+  incid <- array(10, dim = c(T, n_loc, n_v))
+
+  ## Reasonable serial interval so that
+  ## t_min is sensibly calculated
+  w_v1 <- discr_si(0:30, 7, 5)
+  ## Different mean for 2nd variant,
+  w_v2 <- discr_si(0:30, 14, 5)
+  si_distr <- cbind(w_v1, w_v2)
+
+  x <- estimate_joint(incid, si_distr, priors, seed = 1, t_min = NULL)
+
+  ## epsilon should be approximately 1
+  expect_equal(mean(x$epsilon), 1, tolerance = 0.05)
+
+  ## R should be approximately 1
+  ## not exactly 1 because of the first few timesteps & because of priors
+  ## so ignore fisrt timesteps
+  mean_R <- apply(x$R, c(1, 2), mean)
+  ## if t_min is bigger than 2 the first t_min - 1
+  ## rows will be NA
+  t_min <- compute_si_cutoff(si_distr)
+  expect_true(max(abs(mean_R[-seq(1, t_min - 1, 1), ] - 1)) < 0.1)
+})
