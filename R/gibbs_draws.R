@@ -316,6 +316,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 ##' @param miss_at_most
 ##' @return
 ##' @author Sangeeta Bhatia
+##' @export
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
   cutoff <- 1 - miss_at_most
   cdf <- apply(si_distr, 2, cumsum)
