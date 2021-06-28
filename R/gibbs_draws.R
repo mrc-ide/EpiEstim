@@ -514,7 +514,7 @@ estimate_joint <- function(incid, si_distr, priors,
   
   # Add in convergence check (gelman diagnostic)
   # Split epsilon into 2 chains
-browser()
+
   apply(epsilon_out, 1, function(x) {
   if(length(x)%%2!=0){ # if length is odd
     eps1 <- coda::as.mcmc(x[1:((length(x)+1)/2)])
@@ -527,10 +527,11 @@ browser()
   
   eps_2chain <- coda::mcmc.list(eps1,eps2)
   diag <- coda::gelman.diag(eps_2chain, confidence = 0.95)
+  
   # Are any of the scale reduction factors >1.1?
   if (any(diag$psrf[, "Upper C.I."] > 1.1)) {
-    warning("The Gelman-Rubin algorithm suggests the MCMC may not have converged
-            within the number of iterations (MCMC.burnin + n1) specified.")
+    warning("The Gelman-Rubin algorithm suggests the MCMC may not have converged 
+                 within the number of iterations specified.")
   }})
   ## TODO: Very importamt - do we need to fix
   ## ordering of R as well i.e. we have reshuffled the incidence

@@ -249,9 +249,11 @@ test_that("seed is specified correctly",{
 })
 
   # convergence check
+  # Note: At least ~70 iterations, otherwise mcmc chains too short to run
+  # gelman diagnostic
 
 low_iter <- function() {
-  list(n_iter = 20L,
+  list(n_iter = 70L,
        burnin = 10L,
        thin = 10L)
 }
@@ -261,8 +263,8 @@ test_that("convergence check works",{
                               mcmc_control = low_iter(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "The Gelman-Rubin algorithm suggests the MCMC may not have converged
-            within the number of iterations (MCMC.burnin + n1) specified.")
+                 "The Gelman-Rubin algorithm suggests the MCMC may not have converged 
+                 within the number of iterations specified.")
 })
 
 
