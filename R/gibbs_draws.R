@@ -638,6 +638,8 @@ estimate_joint <- function(incid, si_distr, priors,
   # Not sure if this will be the same for >2 variants
 }
 
+#' Process incidence input for multivariant analyses with estimate_joint
+#'
 #' @param incid a multidimensional array containing values of the incidence
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension)
