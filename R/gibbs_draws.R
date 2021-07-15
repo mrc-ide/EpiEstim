@@ -1,3 +1,44 @@
+#' Precompute shape of posterior distribution for R
+#'
+#' @param incid a multidimensional array containing values of the (local)
+#'   incidence
+#'   for each time step (1st dimension), location (2nd dimension) and
+#'   pathogen/strain/variant (3rd dimension)
+#'
+#' @param priors a list of prior parameters (shape and scale of a gamma
+#'   distribution) for epsilon and R; can be obtained from the function
+#'   `default_priors`. The prior for R is assumed to be the same for all
+#'   time steps and all locations
+#'
+#' @param t_min an integer >1 giving the minimum time step to consider in the
+#'   estimation. Default value is 2 (as the estimation is conditional on
+#'   observations at time step 1 and can therefore only start at time step 2).
+#'
+#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#'   step to consider in the estimation. Default value is `nrow(incid)`.
+#'
+#' @return a vector of the shape of the posterior distribution of R for 
+#'   each time step t and each location l 
+#'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector)
+#'
+#' @export
+#'
+#' @examples
+#'
+#' n_v <- 2
+#' n_loc <- 3 # 3 locations
+#' T <- 100 # 100 time steps
+#' priors <- default_priors()
+#' # constant incidence 10 per day everywhere
+#' incid <- array(10, dim = c(T, n_loc, n_v))
+#' get_shape_R_flat(incid, priors)
+#'
+get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
+  t <- seq(t_min, t_max, 1)
+  shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape ## TODO: precalculate this
+  as.numeric(shape)
+}
+
 #' Set default for Gamma priors
 #'
 #' @return a list of default parameters for the priors.
@@ -227,6 +268,11 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   distribution) for epsilon and R; can be obtained from the function
 #'   `default_priors`. The prior for R is assumed to be the same for all
 #'   time steps and all locations
+#'   
+#' @param shape_R_flat a vector of the shape of the posterior distribution of R 
+#'   for each time step t and each location l 
+#'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector), 
+#'   as obtained from function `get_shape_R_flat`
 #'
 #' @param t_min an integer >1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
@@ -263,6 +309,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #' draw_R(epsilon, incid$local, lambda, priors, seed = 1)
 #'
 draw_R <- function(epsilon, incid, lambda, priors,
+                   shape_R_flat = NULL,
                    t_min = 2L, t_max = nrow(incid),
                    seed = NULL) {
   if (!is.integer(t_min) | !is.integer(t_max)){
@@ -282,10 +329,10 @@ draw_R <- function(epsilon, incid, lambda, priors,
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
-  shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape ## TODO: precalculate this
-  shape_flat <- as.numeric(shape) ## TODO: precalculate this
-  ## Fix for issue 123.
-  ## overall infectivity for
+  if (is.null(shape_R_flat)) {
+    shape_R_flat <- get_shape_R_flat(incid, priors, t_min, t_max)
+  }
+  ## overall infectivity
   temp <- lambda[t, , 1]
   idx <- seq(2, dim(incid)[3], 1)
   for(var in idx){
@@ -295,8 +342,8 @@ draw_R <- function(epsilon, incid, lambda, priors,
   rate <- temp + 1 / priors$R$scale
   scale <- 1 / rate
   scale_flat <- as.numeric(scale)
-  R_flat <- rgamma(length(shape_flat), shape = shape_flat, scale = scale_flat)
-  R_fill <- matrix(R_flat, nrow = nrow(shape), ncol = ncol(shape))
+  R_flat <- rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
+  R_fill <- matrix(R_flat, nrow = length(t), ncol = ncol(incid))
   R <- matrix(NA, nrow(incid), ncol(incid))
   R[t, ] <- R_fill
   R
@@ -395,7 +442,8 @@ estimate_joint <- function(incid, si_distr, priors,
                            mcmc_control = default_mcmc_controls(),
                            t_min = 2L, t_max = nrow(incid),
                            seed = NULL,
-                           incid_imported = NULL
+                           incid_imported = NULL,
+                           precompute = TRUE
 ) {
   if (!is.integer(t_min) | !is.integer(t_max)){
     stop("t_min and t_max must be integers")
@@ -476,6 +524,13 @@ estimate_joint <- function(incid, si_distr, priors,
   lambda_reordered[, , 1] <- lambda[, , max_transmiss]
   lambda_reordered[, , -1] <- lambda[, , -max_transmiss]
   lambda <- lambda_reordered
+  
+  ## Precalculate quantities of interest
+  if (precompute) {
+    shape_R_flat <- get_shape_R_flat(incid$local, priors, t_min, t_max)
+  } else {
+    shape_R_flat <- NULL
+  }
 
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
@@ -484,13 +539,14 @@ estimate_joint <- function(incid, si_distr, priors,
   epsilon_out[, 1] <- epsilon_init
   R_init <- draw_R(
     epsilon = epsilon_init, incid = incid$local, lambda = lambda,
-    priors = priors,t_min = t_min, t_max = t_max
+    priors = priors, shape_R_flat = shape_R_flat, t_min = t_min, t_max = t_max
   )
 
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
   for (i in seq_len(mcmc_control$n_iter)) {
     R_out[, , i + 1] <- draw_R(epsilon_out[, i], incid$local, lambda, priors,
+                               shape_R_flat = shape_R_flat, 
                                t_min = t_min, t_max = t_max)
     epsilon_out[, i + 1] <- draw_epsilon(
       abind::adrop(R_out[, , i + 1, drop = FALSE], drop = 3),
