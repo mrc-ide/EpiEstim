@@ -588,7 +588,7 @@ test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1.1,
             incid_init,
             ## R in the future so removing time of seeding
             R = R[-1, loc, v],
-            si = si_distr[, v],
+            si = si_distr[-1, v],
             n_sim = 1,
             n_days = T - 1,
             time_change = seq_len(
