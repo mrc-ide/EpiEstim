@@ -35,8 +35,63 @@
 #'
 get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
-  shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape ## TODO: precalculate this
+  shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape 
   as.numeric(shape)
+}
+
+#' Precompute shape of posterior distribution for epsilon
+#'
+#' @param incid a multidimensional array containing values of the (local)
+#'   incidence
+#'   for each time step (1st dimension), location (2nd dimension) and
+#'   pathogen/strain/variant (3rd dimension)
+#'
+#' @param lambda a multidimensional array containing values of the overall
+#'   infectivity for each time step (1st dimension), location (2nd dimension)
+#'   and pathogen/strain/variant (3rd dimension). The overall infectivity for
+#'   a given location and pathogen/strain/variant represents the sum of
+#'   the incidence for that location and that pathogen/strain/variant at all
+#'   previous time steps, weighted by the current infectivity of those
+#'   past incident cases. It can be calculated from the incidence `incid` and
+#'   the distribution of the serial interval using function `compute_lambda`)
+#'
+#' @param priors a list of prior parameters (shape and scale of a gamma
+#'   distribution) for epsilon and R; can be obtained from the function
+#'   `default_priors`. The prior for R is assumed to be the same for all
+#'   time steps and all locations
+#'
+#' @param t_min an integer >1 giving the minimum time step to consider in the
+#'   estimation. Default value is 2 (as the estimation is conditional on
+#'   observations at time step 1 and can therefore only start at time step 2).
+#'
+#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#'   step to consider in the estimation. Default value is `nrow(incid)`.
+#'
+#' @return a value or vector of values of the shape of the posterior 
+#'   distribution of epsilon for each of the non reference variants
+#'
+#' @export
+#'
+#' @examples
+#'
+#' n_loc <- 4 # 4 locations
+#' n_v <- 3 # 3 strains
+#' T <- 100 # 100 time steps
+#' priors <- default_priors()
+#' # constant incidence 10 per day everywhere
+#' incid <- array(10, dim = c(T, n_loc, n_v))
+#' incid <- process_I_multivariant(incid)
+#' # arbitrary serial interval, same for both variants
+#' w_v <- c(0, 0.2, 0.5, 0.3)
+#' si_distr <- cbind(w_v, w_v, w_v)
+#' lambda <- compute_lambda(incid, si_distr)
+#' get_shape_epsilon(incid$local, lambda, priors)
+#'
+get_shape_epsilon <- function(incid, lambda, priors,
+                              t_min = 2L, t_max = nrow(incid)) {
+  t <- seq(t_min, t_max, 1)
+  EpiEstim:::vnapply(seq(2, dim(lambda)[3]), function(e)
+    sum(incid[t, , e])) + priors$epsilon$shape
 }
 
 #' Set default for Gamma priors
@@ -217,6 +272,7 @@ compute_lambda <- function(incid, si_distr) {
 #' draw_epsilon(R, incid$local, lambda, priors, seed = 1)
 #'
 draw_epsilon <- function(R, incid, lambda, priors,
+                         shape_epsilon = NULL,
                          t_min = 2L, t_max = nrow(incid),
                          seed = NULL) {
   if (!is.integer(t_min) | !is.integer(t_max)){
@@ -236,12 +292,13 @@ draw_epsilon <- function(R, incid, lambda, priors,
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
-  shape <- EpiEstim:::vnapply(seq(2, dim(lambda)[3]), function(e)
-    sum(incid[t, , e])) + priors$epsilon$shape
+  if (is.null(shape_epsilon)) {
+    shape_epsilon <- get_shape_epsilon (incid, lambda, priors, t_min, t_max)
+  }
   rate <- EpiEstim:::vnapply(seq(2, dim(lambda)[3]), function(e)
     sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
   scale <- 1 / rate
-  rgamma(dim(lambda)[3] - 1, shape = shape, scale = scale)
+  rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale)
 }
 
 #' Draw R from marginal posterior distribution
@@ -480,37 +537,37 @@ estimate_joint <- function(incid, si_distr, priors,
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
-
+  
   T <- nrow(incid)
   n_loc <- ncol(incid)
-
+  
   incid <- process_I_multivariant(incid, incid_imported)
-
+  
   lambda <- compute_lambda(incid, si_distr)
-
+  
   ## find clever initial values, based on ratio of reproduction numbers
   ## over the whole time period, across all locations together
-
+  
   R_init <- sapply(seq_len(dim(incid$local)[3]), function(i) {
     tmp_df <- data.frame(local = apply(incid$local[, , i, drop = FALSE],
                                        c(1, 3), sum)[,1],
                          imported = apply(incid$imported[, , i, drop = FALSE],
                                           c(1, 3), sum)[,1])
     suppressWarnings(
-    EpiEstim::estimate_R(tmp_df,
-                         method = "non_parametric_si",
-                         config = EpiEstim::make_config(
-                           si_distr = si_distr[, i],
-                           t_start = t_min,
-                           t_end = t_max)))$R$'Mean(R)'
-    })
-
+      EpiEstim::estimate_R(tmp_df,
+                           method = "non_parametric_si",
+                           config = EpiEstim::make_config(
+                             si_distr = si_distr[, i],
+                             t_start = t_min,
+                             t_end = t_max)))$R$'Mean(R)'
+  })
+  
   max_transmiss <- which.max(R_init)
   # reorder variants so most transmissible is first
   incid_reordered <- array(NA, dim = dim(incid$local))
   incid_reordered[,,1] <- incid$local[,,max_transmiss]
   incid_reordered[,,-1] <- incid$local[,, -max_transmiss]
-
+  
   incid$local <- incid_reordered
   ## Re-order R_init so that they are in the same
   ## order as the incidence
@@ -518,7 +575,7 @@ estimate_joint <- function(incid, si_distr, priors,
   R_init_reord[1] <- R_init[max_transmiss]
   R_init_reord[-1] <- R_init[-max_transmiss]
   R_init <- R_init_reord
-
+  
   ## Re-order lambda
   lambda_reordered <- lambda
   lambda_reordered[, , 1] <- lambda[, , max_transmiss]
@@ -528,10 +585,12 @@ estimate_joint <- function(incid, si_distr, priors,
   ## Precalculate quantities of interest
   if (precompute) {
     shape_R_flat <- get_shape_R_flat(incid$local, priors, t_min, t_max)
+    shape_epsilon <- get_shape_epsilon (incid$local, lambda, priors, t_min, t_max)
   } else {
     shape_R_flat <- NULL
+    shape_epsilon <- NULL
   }
-
+  
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
@@ -541,7 +600,7 @@ estimate_joint <- function(incid, si_distr, priors,
     epsilon = epsilon_init, incid = incid$local, lambda = lambda,
     priors = priors, shape_R_flat = shape_R_flat, t_min = t_min, t_max = t_max
   )
-
+  
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
   for (i in seq_len(mcmc_control$n_iter)) {
@@ -551,10 +610,11 @@ estimate_joint <- function(incid, si_distr, priors,
     epsilon_out[, i + 1] <- draw_epsilon(
       abind::adrop(R_out[, , i + 1, drop = FALSE], drop = 3),
       incid$local, lambda, priors,
+      shape_epsilon = shape_epsilon,
       t_min = t_min, t_max = t_max)
-
+    
   }
-
+  
   # remove burnin and thin
   keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
   epsilon_out <- epsilon_out[, keep, drop = FALSE]
