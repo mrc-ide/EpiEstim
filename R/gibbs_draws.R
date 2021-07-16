@@ -236,6 +236,10 @@ compute_lambda <- function(incid, si_distr) {
 #'   distribution) for epsilon and R; can be obtained from the function
 #'   `default_priors`. The prior for R is assumed to be the same for all
 #'   time steps and all locations
+#'   
+#' @param shape_epsilon a value or vector of values of the shape of the posterior 
+#'   distribution of epsilon for each of the non reference variants, as returned
+#'   by function `get_shape_epsilon`
 #'
 #' @param t_min an integer >1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
@@ -446,6 +450,9 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #'   NULL this means there are no
 #'   known imported cases and all cases other than on those from the first
 #'   time step will be considered locally infected.
+#'   
+#' @param precompute a boolean (defaulting to TRUE) deciding whether to 
+#'   precompute quantities or not. Using TRUE will make the algorithm faster
 #'
 #' @return a list with two elements.
 #'   1) `epsilon` is a matrix containing the MCMC chain (thinned and after

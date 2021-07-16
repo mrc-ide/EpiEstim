@@ -54,6 +54,9 @@ therefore the incidence of locally infected cases. If `incid_imported` is
 NULL this means there are no
 known imported cases and all cases other than on those from the first
 time step will be considered locally infected.}
+
+\item{precompute}{a boolean (defaulting to TRUE) deciding whether to 
+precompute quantities or not. Using TRUE will make the algorithm faster}
 }
 \value{
 a list with two elements.
