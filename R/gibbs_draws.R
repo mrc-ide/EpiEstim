@@ -17,8 +17,8 @@
 #' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
-#' @return a vector of the shape of the posterior distribution of R for 
-#'   each time step t and each location l 
+#' @return a vector of the shape of the posterior distribution of R for
+#'   each time step t and each location l
 #'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector)
 #'
 #' @export
@@ -35,7 +35,7 @@
 #'
 get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
-  shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape 
+  shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape
   as.numeric(shape)
 }
 
@@ -67,7 +67,7 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 #' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
-#' @return a value or vector of values of the shape of the posterior 
+#' @return a value or vector of values of the shape of the posterior
 #'   distribution of epsilon for each of the non reference variants
 #'
 #' @export
@@ -325,10 +325,10 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   distribution) for epsilon and R; can be obtained from the function
 #'   `default_priors`. The prior for R is assumed to be the same for all
 #'   time steps and all locations
-#'   
-#' @param shape_R_flat a vector of the shape of the posterior distribution of R 
-#'   for each time step t and each location l 
-#'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector), 
+#'
+#' @param shape_R_flat a vector of the shape of the posterior distribution of R
+#'   for each time step t and each location l
+#'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector),
 #'   as obtained from function `get_shape_R_flat`
 #'
 #' @param t_min an integer >1 giving the minimum time step to consider in the
@@ -367,7 +367,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'
 draw_R <- function(epsilon, incid, lambda, priors,
                    shape_R_flat = NULL,
-                   t_min = 2L, t_max = nrow(incid),
+                   t_min = NULL, t_max = nrow(incid),
                    seed = NULL) {
   if (!is.integer(t_min) | !is.integer(t_max)){
     stop("t_min and t_max must be integers")
@@ -417,18 +417,22 @@ draw_R <- function(epsilon, incid, lambda, priors,
 ##'
 ##'
 ##' @inheritParams estimate_joint
-##' @param miss_at_most
+##' @param miss_at_most numeric. probability mass in the tail of the SI distribution
 ##' @return
 ##' @author Sangeeta Bhatia
 ##' @export
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
+  if (sum(si_distr) != 1) {
+    warning("Input SI distribution should sum to 1. Normalising now")
+    si_distr <- si_distr / colSums(si_distr)
+  }
   cutoff <- 1 - miss_at_most
   cdf <- apply(si_distr, 2, cumsum)
   idx <- apply(
     cdf, 2,
     function(col) Position(function(x) x > cutoff, col)
   )
-  max(idx)
+  as.integer(max(idx))
 }
 
 #' Jointly estimate the instantaneous reproduction number for a reference
@@ -527,8 +531,11 @@ estimate_joint <- function(incid, si_distr, priors,
                            t_min = NULL, t_max = nrow(incid),
                            seed = NULL,
                            incid_imported = NULL,
-                           precompute = TRUE
-) {
+                           precompute = TRUE) {
+
+  if (is.null(t_min)) {
+    t_min <- compute_si_cutoff(si_distr, 0.05)
+  }
   if (!is.integer(t_min) | !is.integer(t_max)){
     stop("t_min and t_max must be integers")
   }
@@ -565,17 +572,17 @@ estimate_joint <- function(incid, si_distr, priors,
   if (!is.null(seed)) set.seed(seed)
 
   t <- seq(t_min, t_max, 1)
-  
+
   T <- nrow(incid)
   n_loc <- ncol(incid)
-  
+
   incid <- process_I_multivariant(incid, incid_imported)
-  
+
   lambda <- compute_lambda(incid, si_distr)
-  
+
   ## find clever initial values, based on ratio of reproduction numbers
   ## over the whole time period, across all locations together
-  
+
   R_init <- sapply(seq_len(dim(incid$local)[3]), function(i) {
     tmp_df <- data.frame(local = apply(incid$local[, , i, drop = FALSE],
                                        c(1, 3), sum)[,1],
@@ -589,13 +596,13 @@ estimate_joint <- function(incid, si_distr, priors,
                              t_start = t_min,
                              t_end = t_max)))$R$'Mean(R)'
   })
-  
+
   max_transmiss <- which.max(R_init)
   # reorder variants so most transmissible is first
   incid_reordered <- array(NA, dim = dim(incid$local))
   incid_reordered[,,1] <- incid$local[,,max_transmiss]
   incid_reordered[,,-1] <- incid$local[,, -max_transmiss]
-  
+
   incid$local <- incid_reordered
   ## Re-order R_init so that they are in the same
   ## order as the incidence
@@ -603,13 +610,13 @@ estimate_joint <- function(incid, si_distr, priors,
   R_init_reord[1] <- R_init[max_transmiss]
   R_init_reord[-1] <- R_init[-max_transmiss]
   R_init <- R_init_reord
-  
+
   ## Re-order lambda
   lambda_reordered <- lambda
   lambda_reordered[, , 1] <- lambda[, , max_transmiss]
   lambda_reordered[, , -1] <- lambda[, , -max_transmiss]
   lambda <- lambda_reordered
-  
+
   ## Precalculate quantities of interest
   if (precompute) {
     shape_R_flat <- get_shape_R_flat(incid$local, priors, t_min, t_max)
@@ -618,7 +625,7 @@ estimate_joint <- function(incid, si_distr, priors,
     shape_R_flat <- NULL
     shape_epsilon <- NULL
   }
-  
+
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
@@ -628,21 +635,21 @@ estimate_joint <- function(incid, si_distr, priors,
     epsilon = epsilon_init, incid = incid$local, lambda = lambda,
     priors = priors, shape_R_flat = shape_R_flat, t_min = t_min, t_max = t_max
   )
-  
+
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
   for (i in seq_len(mcmc_control$n_iter)) {
     R_out[, , i + 1] <- draw_R(epsilon_out[, i], incid$local, lambda, priors,
-                               shape_R_flat = shape_R_flat, 
+                               shape_R_flat = shape_R_flat,
                                t_min = t_min, t_max = t_max)
     epsilon_out[, i + 1] <- draw_epsilon(
       abind::adrop(R_out[, , i + 1, drop = FALSE], drop = 3),
       incid$local, lambda, priors,
       shape_epsilon = shape_epsilon,
       t_min = t_min, t_max = t_max)
-    
+
   }
-  
+
   # remove burnin and thin
   keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
   epsilon_out <- epsilon_out[, keep, drop = FALSE]

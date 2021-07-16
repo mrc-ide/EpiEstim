@@ -36,7 +36,8 @@ Imports:
     coda,
     incidence (>= 1.7.0),
     scales,
-    grDevices
+    grDevices,
+    abind
 Suggests:
     testthat,
     utils,

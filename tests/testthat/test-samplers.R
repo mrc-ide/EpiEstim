@@ -138,7 +138,7 @@ test_that("draw_R produces expected results (2 variants, 4 locations)", {
   epsilon <- 1
 
   set.seed(1)
-  x <- lapply(1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors))
+  x <- lapply(1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors, t_min = 2L))
   x_mean <- Reduce("+", x) / length(x)
 
   ## R should be approximately 1
@@ -168,7 +168,7 @@ test_that("draw_R produces expected results (2 variants, 1 location)", {
   epsilon <- 1
 
   set.seed(1)
-  x <- lapply(1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors))
+  x <- lapply(1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors, t_min = 2L))
   x_mean <- Reduce("+", x) / length(x)
 
   ## R should be approximately 1
@@ -198,7 +198,7 @@ test_that("draw_R produces expected results (>2 variants, 4 locations)", {
   epsilon <- c(1, 1)
 
   set.seed(1)
-  x <- lapply(1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors))
+  x <- lapply(1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors, t_min = 2L))
   x_mean <- Reduce("+", x) / length(x)
 
   ## R should be approximately 1
@@ -228,7 +228,7 @@ test_that("draw_R produces expected results (>2 variants, 1 location)", {
   epsilon <- c(1, 1)
 
   set.seed(1)
-  x <- lapply(1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors))
+  x <- lapply(1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors, t_min = 2L))
   x_mean <- Reduce("+", x) / length(x)
 
   ## R should be approximately 1
@@ -616,31 +616,31 @@ test_that("estimate_joint faster with precompute (2 variants 3 locations)", {
   n_v <- 2 # 2 variants
   n_loc <- 3 # 3 locations
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
-  
+
   t1 <- system.time(
     x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE)
   )
-  
+
   t2 <- system.time(
     x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE)
   )
-  
+
   ## t1 should be < t2
   expect_true(t1[["elapsed"]] < t2[["elapsed"]])
-  
+
   ## epsilon should be approximately 1 in both cases
   expect_equal(mean(x1$epsilon), 1, tolerance = 0.05)
   expect_equal(mean(x2$epsilon), 1, tolerance = 0.05)
-  
+
   ## R should be approximately 1 in both cases
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
@@ -655,31 +655,31 @@ test_that("estimate_joint faster with precompute (2 variants 1 location)", {
   n_v <- 2 # 2 variants
   n_loc <- 1 # 1 locations
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
-  
+
   t1 <- system.time(
     x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE)
   )
-  
+
   t2 <- system.time(
     x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE)
   )
-  
+
   ## t1 should be < t2
   expect_true(t1[["elapsed"]] < t2[["elapsed"]])
-  
+
   ## epsilon should be approximately 1 in both cases
   expect_equal(mean(x1$epsilon), 1, tolerance = 0.05)
   expect_equal(mean(x2$epsilon), 1, tolerance = 0.05)
-  
+
   ## R should be approximately 1 in both cases
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
@@ -694,31 +694,31 @@ test_that("estimate_joint faster with precompute (3 variants 4 locations)", {
   n_v <- 3 # 3 variants
   n_loc <- 4 # 4 locations
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
-  
+
   t1 <- system.time(
     x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE)
   )
-  
+
   t2 <- system.time(
     x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE)
   )
-  
+
   ## t1 should be < t2
   expect_true(t1[["elapsed"]] < t2[["elapsed"]])
-  
+
     ## epsilon should be approximately 1 in both cases
   expect_equal(mean(x1$epsilon), 1, tolerance = 0.05)
   expect_equal(mean(x2$epsilon), 1, tolerance = 0.05)
-  
+
   ## R should be approximately 1 in both cases
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
@@ -733,31 +733,31 @@ test_that("estimate_joint faster with precompute (3 variants 1 location)", {
   n_v <- 3 # 3 variants
   n_loc <- 1 # 1 locations
   T <- 100 # 100 time steps
-  
+
   priors <- default_priors()
-  
+
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  
+
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
-  
+
   t1 <- system.time(
     x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE)
   )
-  
+
   t2 <- system.time(
     x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE)
   )
-  
+
   ## t1 should be < t2
   expect_true(t1[["elapsed"]] < t2[["elapsed"]])
-  
+
   ## epsilon should be approximately 1 in both cases
   expect_equal(mean(x1$epsilon), 1, tolerance = 0.05)
   expect_equal(mean(x2$epsilon), 1, tolerance = 0.05)
-  
+
   ## R should be approximately 1 in both cases
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
