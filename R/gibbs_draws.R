@@ -293,7 +293,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
   if (is.null(shape_epsilon)) {
-    shape_epsilon <- get_shape_epsilon (incid, lambda, priors, t_min, t_max)
+    shape_epsilon <- get_shape_epsilon(incid, lambda, priors, t_min, t_max)
   }
   rate <- vnapply(seq(2, dim(lambda)[3]), function(e)
     sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
@@ -585,7 +585,7 @@ estimate_joint <- function(incid, si_distr, priors,
   ## Precalculate quantities of interest
   if (precompute) {
     shape_R_flat <- get_shape_R_flat(incid$local, priors, t_min, t_max)
-    shape_epsilon <- get_shape_epsilon (incid$local, lambda, priors, t_min, t_max)
+    shape_epsilon <- get_shape_epsilon(incid$local, lambda, priors, t_min, t_max)
   } else {
     shape_R_flat <- NULL
     shape_epsilon <- NULL
