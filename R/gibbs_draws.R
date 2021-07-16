@@ -363,7 +363,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #' lambda <- compute_lambda(incid, si_distr)
 #' # Epsilon = 1 i.e. no transmission advantage
 #' epsilon <- 1
-#' draw_R(epsilon, incid$local, lambda, priors, seed = 1)
+#' draw_R(epsilon, incid$local, lambda, priors, seed = 1, t_min = 2L)
 #'
 draw_R <- function(epsilon, incid, lambda, priors,
                    shape_R_flat = NULL,
