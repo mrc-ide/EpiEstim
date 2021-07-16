@@ -90,7 +90,7 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 get_shape_epsilon <- function(incid, lambda, priors,
                               t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
-  EpiEstim:::vnapply(seq(2, dim(lambda)[3]), function(e)
+  vnapply(seq(2, dim(lambda)[3]), function(e)
     sum(incid[t, , e])) + priors$epsilon$shape
 }
 
@@ -295,7 +295,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
   if (is.null(shape_epsilon)) {
     shape_epsilon <- get_shape_epsilon (incid, lambda, priors, t_min, t_max)
   }
-  rate <- EpiEstim:::vnapply(seq(2, dim(lambda)[3]), function(e)
+  rate <- vnapply(seq(2, dim(lambda)[3]), function(e)
     sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
   scale <- 1 / rate
   rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale)
