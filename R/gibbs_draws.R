@@ -90,7 +90,7 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 get_shape_epsilon <- function(incid, lambda, priors,
                               t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
-  EpiEstim:::vnapply(seq(2, dim(lambda)[3]), function(e)
+  vnapply(seq(2, dim(lambda)[3]), function(e)
     sum(incid[t, , e])) + priors$epsilon$shape
 }
 
@@ -236,6 +236,10 @@ compute_lambda <- function(incid, si_distr) {
 #'   distribution) for epsilon and R; can be obtained from the function
 #'   `default_priors`. The prior for R is assumed to be the same for all
 #'   time steps and all locations
+#'   
+#' @param shape_epsilon a value or vector of values of the shape of the posterior 
+#'   distribution of epsilon for each of the non reference variants, as returned
+#'   by function `get_shape_epsilon`
 #'
 #' @param t_min an integer >1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
@@ -293,9 +297,9 @@ draw_epsilon <- function(R, incid, lambda, priors,
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
   if (is.null(shape_epsilon)) {
-    shape_epsilon <- get_shape_epsilon (incid, lambda, priors, t_min, t_max)
+    shape_epsilon <- get_shape_epsilon(incid, lambda, priors, t_min, t_max)
   }
-  rate <- EpiEstim:::vnapply(seq(2, dim(lambda)[3]), function(e)
+  rate <- vnapply(seq(2, dim(lambda)[3]), function(e)
     sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
   scale <- 1 / rate
   rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale)
@@ -477,6 +481,9 @@ compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
 #'   NULL this means there are no
 #'   known imported cases and all cases other than on those from the first
 #'   time step will be considered locally infected.
+#'   
+#' @param precompute a boolean (defaulting to TRUE) deciding whether to 
+#'   precompute quantities or not. Using TRUE will make the algorithm faster
 #'
 #' @return a list with two elements.
 #'   1) `epsilon` is a matrix containing the MCMC chain (thinned and after
@@ -620,7 +627,7 @@ estimate_joint <- function(incid, si_distr, priors,
   ## Precalculate quantities of interest
   if (precompute) {
     shape_R_flat <- get_shape_R_flat(incid$local, priors, t_min, t_max)
-    shape_epsilon <- get_shape_epsilon (incid$local, lambda, priors, t_min, t_max)
+    shape_epsilon <- get_shape_epsilon(incid$local, lambda, priors, t_min, t_max)
   } else {
     shape_R_flat <- NULL
     shape_epsilon <- NULL
