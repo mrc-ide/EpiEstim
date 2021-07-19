@@ -11,7 +11,7 @@ estimate_joint(
   si_distr,
   priors,
   mcmc_control = default_mcmc_controls(),
-  t_min = 2L,
+  t_min = NULL,
   t_max = nrow(incid),
   seed = NULL,
   incid_imported = NULL,
@@ -38,8 +38,10 @@ time steps and all locations}
 for example from function `default_mcmc_controls`}
 
 \item{t_min}{an integer >1 giving the minimum time step to consider in the
-estimation. Default value is 2 (as the estimation is conditional on
-observations at time step 1 and can therefore only start at time step 2).}
+estimation.
+The NULL, t_min is calculated using the function \code{compute_si_cutoff}
+which gets the maximum (across all variants) of the 95th percentile of the
+SI distribution.}
 
 \item{t_max}{an integer >`t_min` and <=`nrow(incid)` giving the maximum time
 step to consider in the estimation. Default value is `nrow(incid)`.}
