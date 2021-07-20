@@ -252,7 +252,7 @@ test_that("estimate_joint produces expected results (2 variants 3 locations)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, seed = 1)
+  x <- estimate_joint(incid, si_distr, priors, seed = 1, t_min = 2L)
 
   ## epsilon should be approximately 1
   expect_equal(mean(x$epsilon), 1, tolerance = 0.05)
@@ -279,7 +279,7 @@ test_that("estimate_joint produces expected results (2 variants 1 location)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, seed = 1)
+  x <- estimate_joint(incid, si_distr, priors, seed = 1, t_min = 2L)
 
   ## epsilon should be approximately 1
   expect_equal(mean(x$epsilon), 1, tolerance = 0.05)
@@ -306,7 +306,7 @@ test_that("estimate_joint produces expected results (>2 variants 4 locs)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, seed = 1)
+  x <- estimate_joint(incid, si_distr, priors, seed = 1, t_min = 2L)
 
   ## epsilon should be approximately 1
   ## FIXME this should be apply(x$epsilon, 1, mean)
@@ -338,7 +338,7 @@ test_that("estimate_joint produces expected results (>2 variants 1 loc)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, seed = 1)
+  x <- estimate_joint(incid, si_distr, priors, seed = 1, t_min = 2L)
 
   ## epsilon should be approximately 1
   expect_equal(
@@ -429,7 +429,7 @@ test_that("estimate_joint produces expected results (>2var, 1loc, imports)", {
   si_distr <- cbind(w_v, w_v, w_v)
 
   x <- estimate_joint(incid, si_distr, priors, seed = 1,
-                      incid_imported = incid_imported)
+                      incid_imported = incid_imported, t_min = 2L)
 
   ## epsilon should be approximately 0
   expect_equal(
@@ -466,7 +466,7 @@ test_that("estimate_joint produces expected results (>2var, 4loc, imports)", {
   x <- estimate_joint(
     incid, si_distr, priors, seed = 1,
     incid_imported = incid_imported,
-    mcmc_control = list(n_iter = 2000L, burnin = 100L, thin = 10L)
+    mcmc_control = list(n_iter = 2000L, burnin = 100L, thin = 10L), t_min = 2L
   )
 
   ## epsilon should be approximately 0
@@ -502,7 +502,7 @@ test_that("estimate_joint produces expected results (2var, 1loc, imports)", {
   si_distr <- cbind(w_v, w_v, w_v)
 
   x <- estimate_joint(incid, si_distr, priors, seed = 1,
-                      incid_imported = incid_imported)
+                      incid_imported = incid_imported, t_min = 2L)
 
   ## epsilon should be approximately 0
   expect_equal(mean(x$epsilon), 0, tolerance = 0.05)
@@ -537,7 +537,7 @@ test_that("estimate_joint produces expected results (2var, 4loc, imports)", {
   x <- estimate_joint(
     incid, si_distr, priors, seed = 1,
     incid_imported = incid_imported,
-    mcmc_control = list(n_iter = 2000L, burnin = 100L, thin = 10L)
+    mcmc_control = list(n_iter = 2000L, burnin = 100L, thin = 10L), t_min = 2L
   )
 
   ## epsilon should be approximately 0
@@ -603,7 +603,7 @@ test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1.1,
 
   priors <- default_priors()
   x <- estimate_joint(
-    incid, si_distr, priors, seed = 1
+    incid, si_distr, priors, seed = 1, t_min = 2L
   )
 
   ## R should be approx 1.1 for loc1 and 1.5 for loc2
@@ -627,11 +627,11 @@ test_that("estimate_joint faster with precompute (2 variants 3 locations)", {
   si_distr <- cbind(w_v, w_v)
 
   t1 <- system.time(
-    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE)
+    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
   )
 
   t2 <- system.time(
-    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE)
+    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
   )
 
   ## t1 should be < t2
@@ -666,11 +666,11 @@ test_that("estimate_joint faster with precompute (2 variants 1 location)", {
   si_distr <- cbind(w_v, w_v)
 
   t1 <- system.time(
-    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE)
+    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
   )
 
   t2 <- system.time(
-    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE)
+    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
   )
 
   ## t1 should be < t2
@@ -705,11 +705,11 @@ test_that("estimate_joint faster with precompute (3 variants 4 locations)", {
   si_distr <- cbind(w_v, w_v, w_v)
 
   t1 <- system.time(
-    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE)
+    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
   )
 
   t2 <- system.time(
-    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE)
+    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
   )
 
   ## t1 should be < t2
@@ -744,11 +744,11 @@ test_that("estimate_joint faster with precompute (3 variants 1 location)", {
   si_distr <- cbind(w_v, w_v, w_v)
 
   t1 <- system.time(
-    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE)
+    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
   )
 
   t2 <- system.time(
-    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE)
+    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
   )
 
   ## t1 should be < t2
