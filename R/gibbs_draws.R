@@ -422,7 +422,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 ##'
 ##' @inheritParams estimate_joint
 ##' @param miss_at_most numeric. probability mass in the tail of the SI distribution
-##' @return
+##' @return integer
 ##' @author Sangeeta Bhatia
 ##' @export
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {

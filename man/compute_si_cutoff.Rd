@@ -17,7 +17,7 @@ should sum to 1}
 \item{miss_at_most}{numeric. probability mass in the tail of the SI distribution}
 }
 \value{
-
+integer
 }
 \description{
 Across a matrix of discretised probability distributions
