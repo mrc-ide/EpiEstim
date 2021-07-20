@@ -766,3 +766,85 @@ test_that("estimate_joint faster with precompute (3 variants 1 location)", {
   mean_R2 <- apply(x2$R, c(1, 2), mean)
   expect_true(max(abs(mean_R2[-c(1, 2, 3), ] - 1)) < 0.1)
 })
+
+
+test_that("compute_si_cutoff returns the correct value", {
+  si_1 <- c(0.1, 0.2, 0.3, 0.2, 0.1, 0.03, 0.02,
+            0.01, 0.01, 0.01, 0.02)
+  si <- cbind(si_1, si_1)
+  ## With default cut-off we expect it to be 9
+  expect_equal(compute_si_cutoff(si), 7L)
+  ## Change miss_at_most to 0.5. We now should get
+  ## 3
+  expect_equal(compute_si_cutoff(si, 0.5), 3L)
+  ## With different SI distributions for the 2
+  ## variants
+  si_2 <- c(1, rep(0, 10))
+  si <- cbind(si_1, si_2)
+  expect_equal(compute_si_cutoff(si), 7L)
+  expect_equal(compute_si_cutoff(si, 0.5), 3L)
+})
+
+test_that("first_nonzero_incid returns correct value", {
+  incid <- array(0, dim = c(10, 2, 2))
+  ## Put the non-zero incidence in different
+  ## places so that we can be sure we are getting
+  ## the right index back.
+  incid[2, 1, 1] <- 1
+  incid[3, 2, 1] <- 1
+  incid[4, 1, 2] <- 1
+  incid[5, 2, 2] <- 1
+  expect_equal(first_nonzero_incid(incid), 5L)
+
+  ## Edge cases
+  incid <- array(0, dim = c(10, 2, 2))
+  incid[1, , ] <- 1
+  expect_equal(first_nonzero_incid(incid), 1L)
+
+  incid <- array(0, dim = c(10, 2, 2))
+  incid[10, , ] <- 1
+  expect_equal(first_nonzero_incid(incid), 10L)
+})
+
+test_that("compute_t_min works correctly", {
+  incid <- array(0, dim = c(10, 2, 2))
+  incid[2, 1, 1] <- 1
+  incid[3, 2, 1] <- 1
+  incid[4, 1, 2] <- 1
+  incid[5, 2, 2] <- 1
+  si_1 <- c(0.1, 0.2, 0.3, 0.2, 0.1, 0.03, 0.02,
+            0.01, 0.01, 0.01, 0.02)
+  si <- cbind(si_1, si_1)
+  ## first_nonzero_incid will return 5 and
+  ## compute_si_cutoff  will be 7 so that here we
+  ## expect 12.
+  expect_equal(compute_t_min(incid, si), 12L)
+})
+
+test_that("estimate_joint uses the correct t_min", {
+  n_v <- 2 # 2 variants
+  n_loc <- 3 # 3 locations
+  T <- 100 # 100 time steps
+
+  priors <- default_priors()
+
+  # constant incidence 10 per day everywhere
+  incid <- array(10, dim = c(T, n_loc, n_v))
+
+  # arbitrary serial interval
+  w_v <- c(0, 0.2, 0.5, 0.3)
+  si_distr <- cbind(w_v, w_v)
+
+  x <- estimate_joint(incid, si_distr, priors, t_min = 2L, seed = 1)
+  ## If t_min is 2, the first row if x$R will be NA
+  expect_true(all(is.na(x$R[1, , ])))
+  ## and not after that.
+  expect_true(! any(is.na(x$R[seq(2, dim(x$R)[1]), , ])))
+  ## if t_min is NULL, t_min would be set to
+  ## compute_t_min.
+  t_min <- compute_t_min(incid, si_distr)
+  x <- estimate_joint(incid, si_distr, priors, seed = 1)
+  expect_true(all(is.na(x$R[seq(1, t_min - 1, 1), , ])))
+  expect_true(! any(is.na(x$R[seq(t_min, dim(x$R)[1]), , ])))
+})
+

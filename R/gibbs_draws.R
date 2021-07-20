@@ -236,8 +236,8 @@ compute_lambda <- function(incid, si_distr) {
 #'   distribution) for epsilon and R; can be obtained from the function
 #'   `default_priors`. The prior for R is assumed to be the same for all
 #'   time steps and all locations
-#'   
-#' @param shape_epsilon a value or vector of values of the shape of the posterior 
+#'
+#' @param shape_epsilon a value or vector of values of the shape of the posterior
 #'   distribution of epsilon for each of the non reference variants, as returned
 #'   by function `get_shape_epsilon`
 #'
@@ -426,8 +426,8 @@ draw_R <- function(epsilon, incid, lambda, priors,
 ##' @author Sangeeta Bhatia
 ##' @export
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
-  if (sum(si_distr) != 1) {
-    warning("Input SI distribution should sum to 1. Normalising now")
+  if (any(colSums(si_distr) != 1)) {
+    warning("Input SI distributions should sum to 1. Normalising now")
     si_distr <- si_distr / colSums(si_distr)
   }
   cutoff <- 1 - miss_at_most
@@ -437,6 +437,49 @@ compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
     function(col) Position(function(x) x > cutoff, col)
   )
   as.integer(max(idx))
+}
+
+##' Get the first day of non-zero incidence across
+##' all variants and locations.
+##' @details For each variant, find the first day of
+##' non-zero incidence. The maximum of these
+##' is the smallest possible point at which
+##' estimation can begin.
+##' @inheritParams estimate_joint
+##' @return integer
+##' @author Sangeeta Bhatia
+##' @export
+first_nonzero_incid <- function(incid) {
+  t_min_incid <- apply(
+    incid, c(2, 3),
+    function(vec) Position(function(x) x > 0, vec)
+  )
+  if (any(is.na(t_min_incid))) {
+    warning(
+      "For some variants/locations, incidence is
+       always zero. This will cause estimate_joint to fail."
+    )
+  }
+  max(t_min_incid)
+}
+##' Compute the smallest index at which joint estimation
+##' should start
+##'
+##' Unless specified by the user, t_min in \code{estimate_joint}
+##' is computed as the sum of two indices:
+##' (i) the first day of non-zero incidence across all locations,
+##' computed using \code{first_nonzero_incid}
+##' and (ii) the 95th percentile of the probability mass function of the
+##' SI distribution across all variants computed using \code{compute_si_cutoff}
+##' @inheritParams compute_si_cutoff
+##' @inheritParams estimate_joint
+##' @return integer
+##' @author Sangeeta Bhatia
+##' @export
+compute_t_min <- function(incid, si_distr, miss_at_most) {
+  t_min_si <- compute_si_cutoff(si_distr, 0.05)
+  t_min_incid <- first_nonzero_incid(incid)
+  as.integer(t_min_incid + t_min_si)
 }
 
 #' Jointly estimate the instantaneous reproduction number for a reference
@@ -461,7 +504,7 @@ compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
 #' @param mcmc_control a list of default MCMC control parameters, as obtained
 #'   for example from function `default_mcmc_controls`
 #'
-#' @param t_min an integer >1 giving the minimum time step to consider in the
+#' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation.
 #'   The NULL, t_min is calculated using the function \code{compute_si_cutoff}
 #'   which gets the maximum (across all variants) of the 95th percentile of the
@@ -481,8 +524,8 @@ compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
 #'   NULL this means there are no
 #'   known imported cases and all cases other than on those from the first
 #'   time step will be considered locally infected.
-#'   
-#' @param precompute a boolean (defaulting to TRUE) deciding whether to 
+#'
+#' @param precompute a boolean (defaulting to TRUE) deciding whether to
 #'   precompute quantities or not. Using TRUE will make the algorithm faster
 #'
 #' @return a list with two elements.
@@ -541,9 +584,9 @@ estimate_joint <- function(incid, si_distr, priors,
                            precompute = TRUE) {
 
   if (is.null(t_min)) {
-    t_min <- compute_si_cutoff(si_distr, 0.05)
+    t_min <- compute_t_min(incid, si_distr)
   }
-  if (!is.integer(t_min) | !is.integer(t_max)){
+  if (!is.integer(t_min) | !is.integer(t_max)) {
     stop("t_min and t_max must be integers")
   }
   if (t_min < 2 | t_max < 2){
@@ -578,6 +621,9 @@ estimate_joint <- function(incid, si_distr, priors,
   }
   if (!is.null(seed)) set.seed(seed)
 
+  if (t_min > t_max) {
+    stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
+  }
   t <- seq(t_min, t_max, 1)
 
   T <- nrow(incid)

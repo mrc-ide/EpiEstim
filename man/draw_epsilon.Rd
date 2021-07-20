@@ -39,7 +39,7 @@ distribution) for epsilon and R; can be obtained from the function
 `default_priors`. The prior for R is assumed to be the same for all
 time steps and all locations}
 
-\item{shape_epsilon}{a value or vector of values of the shape of the posterior 
+\item{shape_epsilon}{a value or vector of values of the shape of the posterior
 distribution of epsilon for each of the non reference variants, as returned
 by function `get_shape_epsilon`}
 
