@@ -650,21 +650,6 @@ estimate_joint <- function(incid, si_distr, priors,
                              t_end = t_max)))$R$'Mean(R)'
   })
 
-
-  incid$local <- incid_reordered
-  ## Re-order R_init so that they are in the same
-  ## order as the incidence
-  R_init_reord <- R_init
-  R_init_reord[1] <- R_init[max_transmiss]
-  R_init_reord[-1] <- R_init[-max_transmiss]
-  R_init <- R_init_reord
-
-  ## Re-order lambda
-  lambda_reordered <- lambda
-  lambda_reordered[, , 1] <- lambda[, , max_transmiss]
-  lambda_reordered[, , -1] <- lambda[, , -max_transmiss]
-  lambda <- lambda_reordered
-
   ## Precalculate quantities of interest
   if (precompute) {
     shape_R_flat <- get_shape_R_flat(incid$local, priors, t_min, t_max)
