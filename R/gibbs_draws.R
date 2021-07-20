@@ -17,8 +17,8 @@
 #' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
-#' @return a vector of the shape of the posterior distribution of R for 
-#'   each time step t and each location l 
+#' @return a vector of the shape of the posterior distribution of R for
+#'   each time step t and each location l
 #'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector)
 #'
 #' @export
@@ -35,7 +35,7 @@
 #'
 get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
-  shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape 
+  shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape
   as.numeric(shape)
 }
 
@@ -67,7 +67,7 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 #' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
-#' @return a value or vector of values of the shape of the posterior 
+#' @return a value or vector of values of the shape of the posterior
 #'   distribution of epsilon for each of the non reference variants
 #'
 #' @export
@@ -236,8 +236,8 @@ compute_lambda <- function(incid, si_distr) {
 #'   distribution) for epsilon and R; can be obtained from the function
 #'   `default_priors`. The prior for R is assumed to be the same for all
 #'   time steps and all locations
-#'   
-#' @param shape_epsilon a value or vector of values of the shape of the posterior 
+#'
+#' @param shape_epsilon a value or vector of values of the shape of the posterior
 #'   distribution of epsilon for each of the non reference variants, as returned
 #'   by function `get_shape_epsilon`
 #'
@@ -329,10 +329,10 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   distribution) for epsilon and R; can be obtained from the function
 #'   `default_priors`. The prior for R is assumed to be the same for all
 #'   time steps and all locations
-#'   
-#' @param shape_R_flat a vector of the shape of the posterior distribution of R 
-#'   for each time step t and each location l 
-#'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector), 
+#'
+#' @param shape_R_flat a vector of the shape of the posterior distribution of R
+#'   for each time step t and each location l
+#'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector),
 #'   as obtained from function `get_shape_R_flat`
 #'
 #' @param t_min an integer >1 giving the minimum time step to consider in the
@@ -367,11 +367,11 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #' lambda <- compute_lambda(incid, si_distr)
 #' # Epsilon = 1 i.e. no transmission advantage
 #' epsilon <- 1
-#' draw_R(epsilon, incid$local, lambda, priors, seed = 1)
+#' draw_R(epsilon, incid$local, lambda, priors, seed = 1, t_min = 2L)
 #'
 draw_R <- function(epsilon, incid, lambda, priors,
                    shape_R_flat = NULL,
-                   t_min = 2L, t_max = nrow(incid),
+                   t_min = NULL, t_max = nrow(incid),
                    seed = NULL) {
   if (!is.integer(t_min) | !is.integer(t_max)){
     stop("t_min and t_max must be integers")
@@ -409,7 +409,78 @@ draw_R <- function(epsilon, incid, lambda, priors,
   R[t, ] <- R_fill
   R
 }
+##' Index before which at most a given probability
+##' mass is captured
+##'
+##' Across a matrix of discretised probability distributions
+##' (see \code{estimate_joint}
+##' this function returns the largest index
+##' (across all columns) such that the
+##' cumulative probability mass before index is
+##' 1 - \code{miss_at_most}.
+##'
+##'
+##' @inheritParams estimate_joint
+##' @param miss_at_most numeric. probability mass in the tail of the SI distribution
+##' @return integer
+##' @author Sangeeta Bhatia
+##' @export
+compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
+  if (any(colSums(si_distr) != 1)) {
+    warning("Input SI distributions should sum to 1. Normalising now")
+    si_distr <- si_distr / colSums(si_distr)
+  }
+  cutoff <- 1 - miss_at_most
+  cdf <- apply(si_distr, 2, cumsum)
+  idx <- apply(
+    cdf, 2,
+    function(col) Position(function(x) x > cutoff, col)
+  )
+  as.integer(max(idx))
+}
 
+##' Get the first day of non-zero incidence across
+##' all variants and locations.
+##' @details For each variant, find the first day of
+##' non-zero incidence. The maximum of these
+##' is the smallest possible point at which
+##' estimation can begin.
+##' @inheritParams estimate_joint
+##' @return integer
+##' @author Sangeeta Bhatia
+##' @export
+first_nonzero_incid <- function(incid) {
+  t_min_incid <- apply(
+    incid, c(2, 3),
+    function(vec) Position(function(x) x > 0, vec)
+  )
+  if (any(is.na(t_min_incid))) {
+    warning(
+      "For some variants/locations, incidence is
+       always zero. This will cause estimate_joint to fail."
+    )
+  }
+  max(t_min_incid)
+}
+##' Compute the smallest index at which joint estimation
+##' should start
+##'
+##' Unless specified by the user, t_min in \code{estimate_joint}
+##' is computed as the sum of two indices:
+##' (i) the first day of non-zero incidence across all locations,
+##' computed using \code{first_nonzero_incid}
+##' and (ii) the 95th percentile of the probability mass function of the
+##' SI distribution across all variants computed using \code{compute_si_cutoff}
+##' @inheritParams compute_si_cutoff
+##' @inheritParams estimate_joint
+##' @return integer
+##' @author Sangeeta Bhatia
+##' @export
+compute_t_min <- function(incid, si_distr, miss_at_most) {
+  t_min_si <- compute_si_cutoff(si_distr, 0.05)
+  t_min_incid <- first_nonzero_incid(incid)
+  as.integer(t_min_incid + t_min_si)
+}
 
 #' Jointly estimate the instantaneous reproduction number for a reference
 #'   pathogen/strain/variant and the relative transmissibility of a
@@ -433,9 +504,12 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #' @param mcmc_control a list of default MCMC control parameters, as obtained
 #'   for example from function `default_mcmc_controls`
 #'
-#' @param t_min an integer >1 giving the minimum time step to consider in the
-#'   estimation. Default value is 2 (as the estimation is conditional on
-#'   observations at time step 1 and can therefore only start at time step 2).
+#' @param t_min an integer > 1 giving the minimum time step to consider in the
+#'   estimation.
+#'   The NULL, t_min is calculated using the function \code{compute_si_cutoff}
+#'   which gets the maximum (across all variants) of the 95th percentile of the
+#'   SI distribution.
+#'
 #'
 #' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
@@ -450,8 +524,8 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #'   NULL this means there are no
 #'   known imported cases and all cases other than on those from the first
 #'   time step will be considered locally infected.
-#'   
-#' @param precompute a boolean (defaulting to TRUE) deciding whether to 
+#'
+#' @param precompute a boolean (defaulting to TRUE) deciding whether to
 #'   precompute quantities or not. Using TRUE will make the algorithm faster
 #'
 #' @return a list with two elements.
@@ -504,12 +578,15 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #'
 estimate_joint <- function(incid, si_distr, priors,
                            mcmc_control = default_mcmc_controls(),
-                           t_min = 2L, t_max = nrow(incid),
+                           t_min = NULL, t_max = nrow(incid),
                            seed = NULL,
                            incid_imported = NULL,
-                           precompute = TRUE
-) {
-  if (!is.integer(t_min) | !is.integer(t_max)){
+                           precompute = TRUE) {
+
+  if (is.null(t_min)) {
+    t_min <- compute_t_min(incid, si_distr)
+  }
+  if (!is.integer(t_min) | !is.integer(t_max)) {
     stop("t_min and t_max must be integers")
   }
   if (t_min < 2 | t_max < 2){
@@ -543,18 +620,22 @@ estimate_joint <- function(incid, si_distr, priors,
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
+
+  if (t_min > t_max) {
+    stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
+  }
   t <- seq(t_min, t_max, 1)
-  
+
   T <- nrow(incid)
   n_loc <- ncol(incid)
-  
+
   incid <- process_I_multivariant(incid, incid_imported)
-  
+
   lambda <- compute_lambda(incid, si_distr)
-  
+
   ## find clever initial values, based on ratio of reproduction numbers
   ## over the whole time period, across all locations together
-  
+
   R_init <- sapply(seq_len(dim(incid$local)[3]), function(i) {
     tmp_df <- data.frame(local = apply(incid$local[, , i, drop = FALSE],
                                        c(1, 3), sum)[,1],
@@ -568,13 +649,13 @@ estimate_joint <- function(incid, si_distr, priors,
                              t_start = t_min,
                              t_end = t_max)))$R$'Mean(R)'
   })
-  
+
   max_transmiss <- which.max(R_init)
   # reorder variants so most transmissible is first
   incid_reordered <- array(NA, dim = dim(incid$local))
   incid_reordered[,,1] <- incid$local[,,max_transmiss]
   incid_reordered[,,-1] <- incid$local[,, -max_transmiss]
-  
+
   incid$local <- incid_reordered
   ## Re-order R_init so that they are in the same
   ## order as the incidence
@@ -582,13 +663,13 @@ estimate_joint <- function(incid, si_distr, priors,
   R_init_reord[1] <- R_init[max_transmiss]
   R_init_reord[-1] <- R_init[-max_transmiss]
   R_init <- R_init_reord
-  
+
   ## Re-order lambda
   lambda_reordered <- lambda
   lambda_reordered[, , 1] <- lambda[, , max_transmiss]
   lambda_reordered[, , -1] <- lambda[, , -max_transmiss]
   lambda <- lambda_reordered
-  
+
   ## Precalculate quantities of interest
   if (precompute) {
     shape_R_flat <- get_shape_R_flat(incid$local, priors, t_min, t_max)
@@ -597,7 +678,7 @@ estimate_joint <- function(incid, si_distr, priors,
     shape_R_flat <- NULL
     shape_epsilon <- NULL
   }
-  
+
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
@@ -607,21 +688,21 @@ estimate_joint <- function(incid, si_distr, priors,
     epsilon = epsilon_init, incid = incid$local, lambda = lambda,
     priors = priors, shape_R_flat = shape_R_flat, t_min = t_min, t_max = t_max
   )
-  
+
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
   for (i in seq_len(mcmc_control$n_iter)) {
     R_out[, , i + 1] <- draw_R(epsilon_out[, i], incid$local, lambda, priors,
-                               shape_R_flat = shape_R_flat, 
+                               shape_R_flat = shape_R_flat,
                                t_min = t_min, t_max = t_max)
     epsilon_out[, i + 1] <- draw_epsilon(
       abind::adrop(R_out[, , i + 1, drop = FALSE], drop = 3),
       incid$local, lambda, priors,
       shape_epsilon = shape_epsilon,
       t_min = t_min, t_max = t_max)
-    
+
   }
-  
+
   # remove burnin and thin
   keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
   epsilon_out <- epsilon_out[, keep, drop = FALSE]

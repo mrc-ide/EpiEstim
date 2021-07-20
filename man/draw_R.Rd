@@ -10,7 +10,7 @@ draw_R(
   lambda,
   priors,
   shape_R_flat = NULL,
-  t_min = 2L,
+  t_min = NULL,
   t_max = nrow(incid),
   seed = NULL
 )
@@ -39,9 +39,9 @@ distribution) for epsilon and R; can be obtained from the function
 `default_priors`. The prior for R is assumed to be the same for all
 time steps and all locations}
 
-\item{shape_R_flat}{a vector of the shape of the posterior distribution of R 
-for each time step t and each location l 
-(stored in element (l-1)*(t_max - t_min + 1) + t of the vector), 
+\item{shape_R_flat}{a vector of the shape of the posterior distribution of R
+for each time step t and each location l
+(stored in element (l-1)*(t_max - t_min + 1) + t of the vector),
 as obtained from function `get_shape_R_flat`}
 
 \item{t_min}{an integer >1 giving the minimum time step to consider in the
@@ -76,6 +76,6 @@ si_distr <- cbind(w_v, w_v)
 lambda <- compute_lambda(incid, si_distr)
 # Epsilon = 1 i.e. no transmission advantage
 epsilon <- 1
-draw_R(epsilon, incid$local, lambda, priors, seed = 1)
+draw_R(epsilon, incid$local, lambda, priors, seed = 1, t_min = 2L)
 
 }

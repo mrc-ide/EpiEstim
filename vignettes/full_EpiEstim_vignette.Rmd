@@ -13,18 +13,19 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
-)
-require(kableExtra)
-require(hrbrthemes)
-require(gghighlight)
-require(MCMCglmm)
-require(projections)
-require(EpiEstim) 
-require(ggplot2)
-require(incidence)
-require(dplyr)
-require(gridExtra)
-require(readxl)
+  )
+## https://stackoverflow.com/questions/5595512/what-is-the-difference-between-require-and-library
+library(kableExtra)
+library(hrbrthemes)
+library(gghighlight)
+library(MCMCglmm)
+library(projections)
+library(EpiEstim) 
+library(ggplot2)
+library(incidence)
+library(dplyr)
+library(gridExtra)
+library(readxl)
 ```
 
 The `EpiEstim` package allows you to estimate the time varying reproduction number (R~t~) from epidemic data. This vignette will take you through the key stages in the process of estimating R~t~ and also introduce some additional packages (`incidence` and `projections`) that can work alongside EpiEstim in a typical outbreak analysis workflow. Please also see the 'Examples' and 'FAQs' sections.

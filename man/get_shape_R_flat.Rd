@@ -25,8 +25,8 @@ observations at time step 1 and can therefore only start at time step 2).}
 step to consider in the estimation. Default value is `nrow(incid)`.}
 }
 \value{
-a vector of the shape of the posterior distribution of R for 
-  each time step t and each location l 
+a vector of the shape of the posterior distribution of R for
+  each time step t and each location l
   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector)
 }
 \description{

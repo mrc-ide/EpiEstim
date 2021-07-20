@@ -34,7 +34,7 @@ observations at time step 1 and can therefore only start at time step 2).}
 step to consider in the estimation. Default value is `nrow(incid)`.}
 }
 \value{
-a value or vector of values of the shape of the posterior 
+a value or vector of values of the shape of the posterior
   distribution of epsilon for each of the non reference variants
 }
 \description{
