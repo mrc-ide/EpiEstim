@@ -251,6 +251,10 @@ test_that("seed is specified correctly",{
   # convergence check
   # Note: At least ~70 iterations, otherwise mcmc chains too short to run
   # gelman diagnostic
+  # with set.seed(42) the low_iter MCMC should fail to converge, while the
+  # high_iter MCMC should succeed in converging
+
+set.seed(42)
 
 low_iter <- function() {
   list(n_iter = 70L,
@@ -258,13 +262,28 @@ low_iter <- function() {
        thin = 10L)
 }
 
-test_that("convergence check works",{
-  expect_warning(estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
-                              mcmc_control = low_iter(),
-                              t_min = 2L, t_max = nrow(incid),
-                              seed = NULL),
-                 "The Gelman-Rubin algorithm suggests the MCMC may not have converged 
-                 within the number of iterations specified.")
+high_iter <- function() {
+  list(n_iter = 5000L,
+       burnin = 2500L,
+       thin = 10L)
+}
+
+test_that("convergence check returns FALSE for non-converging MCMC", {
+  out <- estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+                        mcmc_control = low_iter(),
+                        t_min = 2L, t_max = nrow(incid),
+                        seed = NULL)
+  
+  expect_equal(out$convergence, FALSE)
+})
+
+test_that("convergence check returns TRUE for converging MCMC", {
+  out <- estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+                        mcmc_control = high_iter(),
+                        t_min = 2L, t_max = nrow(incid),
+                        seed = NULL)
+  
+  expect_equal(out$convergence, TRUE)
 })
 
 
