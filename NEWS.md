@@ -1,3 +1,7 @@
+# EpiEstim 2.3
+
+* new function estimate_joint to estimate the transmission advantage of a strain or variant
+
 # EpiEstim 2.2-5
 
 * New vignette
