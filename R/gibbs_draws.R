@@ -528,16 +528,21 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' @param precompute a boolean (defaulting to TRUE) deciding whether to
 #'   precompute quantities or not. Using TRUE will make the algorithm faster
 #'
-#' @return a list with two elements.
+#' @return a list with three elements.
 #'   1) `epsilon` is a matrix containing the MCMC chain (thinned and after
 #'   burnin) for the relative transmissibility of the "new"
 #'   pathogen/strain/variant(s) compared to the reference
 #'   pathogen/strain/variant. Each row in the matrix is a "new"
 #'   pathogen/strain/variant and each column an iteration of the MCMC.
-#'   2) `R_out` is an array containing the MCMC chain (thinned and after
+#'   2) `R` is an array containing the MCMC chain (thinned and after
 #'   burnin) for the reproduction number for the reference
 #'   pathogen/strain/variant. The first dimension of the array is time,
 #'   the second location, and the third iteration of the MCMC.
+#'   3) `convergence` is a logical vector based on the results of a
+#'   convergence check. This takes a value of TRUE when the MCMC has
+#'   converged within the number of iterations specified and FALSE
+#'   when the MCMC has not converged.
+#'   
 #'
 #' @export
 #'
@@ -739,12 +744,16 @@ estimate_joint <- function(incid, si_distr, priors,
   if (any(diag$psrf[, "Upper C.I."] > 1.1)) {
     warning("The Gelman-Rubin algorithm suggests the MCMC may not have converged 
                  within the number of iterations specified.")
-  }})
+    convergence <- FALSE
+  } else {
+    convergence <- TRUE
+  }
+  })
   ## TODO: Very importamt - do we need to fix
   ## ordering of R as well i.e. we have reshuffled the incidence
   ## but R should be returned in the order of the
   ## original incidence?
-  list(epsilon = epsilon_out, R = R_out)
+  list(epsilon = epsilon_out, R = R_out, convergence = convergence)
   # Not sure if this will be the same for >2 variants
 }
 
