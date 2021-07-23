@@ -528,16 +528,21 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' @param precompute a boolean (defaulting to TRUE) deciding whether to
 #'   precompute quantities or not. Using TRUE will make the algorithm faster
 #'
-#' @return a list with two elements.
+#' @return A list with three elements.
 #'   1) `epsilon` is a matrix containing the MCMC chain (thinned and after
 #'   burnin) for the relative transmissibility of the "new"
 #'   pathogen/strain/variant(s) compared to the reference
 #'   pathogen/strain/variant. Each row in the matrix is a "new"
 #'   pathogen/strain/variant and each column an iteration of the MCMC.
-#'   2) `R_out` is an array containing the MCMC chain (thinned and after
+#'   2) `R` is an array containing the MCMC chain (thinned and after
 #'   burnin) for the reproduction number for the reference
 #'   pathogen/strain/variant. The first dimension of the array is time,
 #'   the second location, and the third iteration of the MCMC.
+#'   3) `convergence` is a logical vector based on the results of the
+#'   Gelman-Rubin convergence diagnostic. This takes a value of TRUE
+#'   when the MCMC has converged within the number of iterations specified
+#'   and FALSE when the MCMC has not converged.
+#'   
 #'
 #' @export
 #'
@@ -718,11 +723,38 @@ estimate_joint <- function(incid, si_distr, priors,
       }
     }
   }
+  
+  # Add in convergence check (gelman diagnostic)
+  # Split epsilon into 2 chains
+
+  conv_check <- apply(epsilon_out, 1, function(x) {
+  if(length(x)%%2!=0){ # if length is odd
+    eps1 <- coda::as.mcmc(x[1:((length(x)+1)/2)])
+    eps2 <- coda::as.mcmc(x[length(eps1):length(x)])
+  }
+  if(length(x)%%2==0){ # if length is even
+    eps1 <- coda::as.mcmc(x[1:(length(x)/2)])
+    eps2 <- coda::as.mcmc(x[(length(eps1)+1):length(x)])
+  }
+  
+  eps_2chain <- coda::mcmc.list(eps1,eps2)
+  diag <- coda::gelman.diag(eps_2chain, confidence = 0.95)
+  
+  # Are any of the scale reduction factors >1.1?
+  if (any(diag$psrf[, "Upper C.I."] > 1.1)) {
+    message("The Gelman-Rubin algorithm suggests the MCMC may not have converged 
+                 within the number of iterations specified.")
+    convergence <- FALSE
+  } else {
+    convergence <- TRUE
+  } 
+  convergence
+  })
   ## TODO: Very importamt - do we need to fix
   ## ordering of R as well i.e. we have reshuffled the incidence
   ## but R should be returned in the order of the
   ## original incidence?
-  list(epsilon = epsilon_out, R = R_out)
+  list(epsilon = epsilon_out, R = R_out, convergence = conv_check)
   # Not sure if this will be the same for >2 variants
 }
 
