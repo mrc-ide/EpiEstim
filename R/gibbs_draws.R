@@ -528,7 +528,7 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' @param precompute a boolean (defaulting to TRUE) deciding whether to
 #'   precompute quantities or not. Using TRUE will make the algorithm faster
 #'
-#' @return a list with three elements.
+#' @return A list with three elements.
 #'   1) `epsilon` is a matrix containing the MCMC chain (thinned and after
 #'   burnin) for the relative transmissibility of the "new"
 #'   pathogen/strain/variant(s) compared to the reference
@@ -538,10 +538,10 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #'   burnin) for the reproduction number for the reference
 #'   pathogen/strain/variant. The first dimension of the array is time,
 #'   the second location, and the third iteration of the MCMC.
-#'   3) `convergence` is a logical vector based on the results of a
-#'   convergence check. This takes a value of TRUE when the MCMC has
-#'   converged within the number of iterations specified and FALSE
-#'   when the MCMC has not converged.
+#'   3) `convergence` is a logical vector based on the results of the
+#'   Gelman-Rubin convergence diagnostic. This takes a value of TRUE
+#'   when the MCMC has converged within the number of iterations specified
+#'   and FALSE when the MCMC has not converged.
 #'   
 #'
 #' @export
