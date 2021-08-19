@@ -61,7 +61,7 @@ time step will be considered locally infected.}
 precompute quantities or not. Using TRUE will make the algorithm faster}
 }
 \value{
-A list with three elements.
+A list with the following elements.
   1) `epsilon` is a matrix containing the MCMC chain (thinned and after
   burnin) for the relative transmissibility of the "new"
   pathogen/strain/variant(s) compared to the reference
@@ -75,6 +75,8 @@ A list with three elements.
   Gelman-Rubin convergence diagnostic. This takes a value of TRUE
   when the MCMC has converged within the number of iterations specified
   and FALSE when the MCMC has not converged.
+  4) `diag` is a list of the point estimate and upper confidence limits
+      of the Gelman-Rubin convergence diagnostics (as implemented in coda).
 }
 \description{
 Jointly estimate the instantaneous reproduction number for a reference

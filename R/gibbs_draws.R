@@ -528,7 +528,7 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' @param precompute a boolean (defaulting to TRUE) deciding whether to
 #'   precompute quantities or not. Using TRUE will make the algorithm faster
 #'
-#' @return A list with three elements.
+#' @return A list with the following elements.
 #'   1) `epsilon` is a matrix containing the MCMC chain (thinned and after
 #'   burnin) for the relative transmissibility of the "new"
 #'   pathogen/strain/variant(s) compared to the reference
@@ -542,7 +542,9 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #'   Gelman-Rubin convergence diagnostic. This takes a value of TRUE
 #'   when the MCMC has converged within the number of iterations specified
 #'   and FALSE when the MCMC has not converged.
-#'   
+#'   4) `diag` is a list of the point estimate and upper confidence limits
+#'       of the Gelman-Rubin convergence diagnostics (as implemented in coda).
+#'
 #'
 #' @export
 #'
@@ -723,7 +725,7 @@ estimate_joint <- function(incid, si_distr, priors,
       }
     }
   }
-  
+
   # Add in convergence check (gelman diagnostic)
   # Split epsilon into 2 chains
 
@@ -736,25 +738,25 @@ estimate_joint <- function(incid, si_distr, priors,
     eps1 <- coda::as.mcmc(x[1:(length(x)/2)])
     eps2 <- coda::as.mcmc(x[(length(eps1)+1):length(x)])
   }
-  
+
   eps_2chain <- coda::mcmc.list(eps1,eps2)
   diag <- coda::gelman.diag(eps_2chain, confidence = 0.95)
-  
+
   # Are any of the scale reduction factors >1.1?
   if (any(diag$psrf[, "Upper C.I."] > 1.1)) {
-    message("The Gelman-Rubin algorithm suggests the MCMC may not have converged 
+    message("The Gelman-Rubin algorithm suggests the MCMC may not have converged
                  within the number of iterations specified.")
     convergence <- FALSE
   } else {
     convergence <- TRUE
-  } 
+  }
   convergence
   })
   ## TODO: Very importamt - do we need to fix
   ## ordering of R as well i.e. we have reshuffled the incidence
   ## but R should be returned in the order of the
   ## original incidence?
-  list(epsilon = epsilon_out, R = R_out, convergence = conv_check)
+  list(epsilon = epsilon_out, R = R_out, convergence = conv_check, diag = diag$psrf)
   # Not sure if this will be the same for >2 variants
 }
 
