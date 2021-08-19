@@ -25,7 +25,7 @@ test_that("si_distr is specified correctly", {
   expect_error(compute_lambda(incid=incid_processed, si_distr=sidistr_3),
                "si_distr must be >=0")
 })
-  
+
 ##############################
 ## Tests for draw_epsilon() ##
 ##############################
@@ -41,7 +41,7 @@ priors <- default_priors()
 tmin1 <- 2.5 # not an integer
 tmin2 <- 1L # less than 2
 tmin3 <- as.integer(nrow(incid)+1) # greater than nrow(incid)
-  
+
 test_that("tmin and tmax are specified correctly", {
   expect_error(draw_epsilon(R=R, incid=incid, lambda=lambda, priors=priors,
                               t_min = tmin1, t_max = nrow(incid),
@@ -273,8 +273,8 @@ test_that("convergence check returns FALSE for non-converging MCMC", {
                         mcmc_control = low_iter(),
                         t_min = 2L, t_max = nrow(incid),
                         seed = NULL)
-  
-  expect_equal(out$convergence, FALSE)
+
+  expect_false(out$convergence[1])
 })
 
 test_that("convergence check returns TRUE for converging MCMC", {
@@ -282,8 +282,8 @@ test_that("convergence check returns TRUE for converging MCMC", {
                         mcmc_control = high_iter(),
                         t_min = 2L, t_max = nrow(incid),
                         seed = NULL)
-  
-  expect_equal(out$convergence, TRUE)
+
+  expect_true(out$convergence[1])
 })
 
 
