@@ -848,3 +848,28 @@ test_that("estimate_joint uses the correct t_min", {
   expect_true(! any(is.na(x$R[seq(t_min, dim(x$R)[1]), , ])))
 })
 
+
+
+test_that("estimate_joint convergence checks work with >2 variants", {
+  n_v <- 3 # 3 variants
+  n_loc <- 4 # 4 locations
+  T <- 100 # 100 time steps
+
+  priors <- default_priors()
+
+  # constant incidence 10 per day everywhere
+  incid <- array(10, dim = c(T, n_loc, n_v))
+
+  # arbitrary serial interval
+  w_v <- c(0, 0.2, 0.5, 0.3)
+  si_distr <- cbind(w_v, w_v, w_v)
+  low_iter <- list(n_iter = 60L, burnin = 10L, thin = 1L)
+  x <- estimate_joint(
+    incid, si_distr, priors, seed = 1, t_min = 2L, mcmc_control = low_iter
+  )
+  ## convergence should be a list of length 2.
+  ## not checking whether chains have converged or not.
+  ## that is tested in a different set of tests.
+  expect_equal(length(x$convergence), 2)
+  expect_equal(length(x$diag), 2)
+})

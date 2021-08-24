@@ -61,20 +61,29 @@ time step will be considered locally infected.}
 precompute quantities or not. Using TRUE will make the algorithm faster}
 }
 \value{
-A list with three elements.
-  1) `epsilon` is a matrix containing the MCMC chain (thinned and after
+A list with the following elements.
+\enumerate{
+
+  \item `epsilon` is a matrix containing the MCMC chain (thinned and after
   burnin) for the relative transmissibility of the "new"
   pathogen/strain/variant(s) compared to the reference
   pathogen/strain/variant. Each row in the matrix is a "new"
   pathogen/strain/variant and each column an iteration of the MCMC.
-  2) `R` is an array containing the MCMC chain (thinned and after
+  \item `R` is an array containing the MCMC chain (thinned and after
   burnin) for the reproduction number for the reference
   pathogen/strain/variant. The first dimension of the array is time,
   the second location, and the third iteration of the MCMC.
-  3) `convergence` is a logical vector based on the results of the
-  Gelman-Rubin convergence diagnostic. This takes a value of TRUE
-  when the MCMC has converged within the number of iterations specified
-  and FALSE when the MCMC has not converged.
+  \item `convergence` is a logical vector based on the results of the
+  Gelman-Rubin convergence diagnostic. Each element in `convergence`
+  takes a value of TRUE
+  when the MCMC for the corresponding epsilon has converged within the
+  number of iterations specified and FALSE otherwise.
+  \item `diag` is a nested list of the point estimate and upper confidence limits
+      of the Gelman-Rubin convergence diagnostics (as implemented in coda). The length of
+`diag` is equal to the number of rows in `epsilon`. Each element of `diag` is a list of
+length 2 where the first element is called `psrf` and is a named list of the
+point estimate and upper confidence limits. The second elemnent is NULL and can be ignored.
+}
 }
 \description{
 Jointly estimate the instantaneous reproduction number for a reference

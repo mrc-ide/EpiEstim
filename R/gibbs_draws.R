@@ -528,21 +528,29 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' @param precompute a boolean (defaulting to TRUE) deciding whether to
 #'   precompute quantities or not. Using TRUE will make the algorithm faster
 #'
-#' @return A list with three elements.
-#'   1) `epsilon` is a matrix containing the MCMC chain (thinned and after
+#' @return A list with the following elements.
+#' \enumerate{
+#'
+#'   \item `epsilon` is a matrix containing the MCMC chain (thinned and after
 #'   burnin) for the relative transmissibility of the "new"
 #'   pathogen/strain/variant(s) compared to the reference
 #'   pathogen/strain/variant. Each row in the matrix is a "new"
 #'   pathogen/strain/variant and each column an iteration of the MCMC.
-#'   2) `R` is an array containing the MCMC chain (thinned and after
+#'   \item `R` is an array containing the MCMC chain (thinned and after
 #'   burnin) for the reproduction number for the reference
 #'   pathogen/strain/variant. The first dimension of the array is time,
 #'   the second location, and the third iteration of the MCMC.
-#'   3) `convergence` is a logical vector based on the results of the
-#'   Gelman-Rubin convergence diagnostic. This takes a value of TRUE
-#'   when the MCMC has converged within the number of iterations specified
-#'   and FALSE when the MCMC has not converged.
-#'   
+#'   \item `convergence` is a logical vector based on the results of the
+#'   Gelman-Rubin convergence diagnostic. Each element in `convergence`
+#'   takes a value of TRUE
+#'   when the MCMC for the corresponding epsilon has converged within the
+#'   number of iterations specified and FALSE otherwise.
+#'   \item `diag` is a nested list of the point estimate and upper confidence limits
+#'       of the Gelman-Rubin convergence diagnostics (as implemented in coda). The length of
+#' `diag` is equal to the number of rows in `epsilon`. Each element of `diag` is a list of
+#' length 2 where the first element is called `psrf` and is a named list of the
+#' point estimate and upper confidence limits. The second elemnent is NULL and can be ignored.
+#'}
 #'
 #' @export
 #'
@@ -723,38 +731,44 @@ estimate_joint <- function(incid, si_distr, priors,
       }
     }
   }
-  
+
   # Add in convergence check (gelman diagnostic)
   # Split epsilon into 2 chains
+  diag <- lapply(
+    seq_len(nrow(epsilon_out)), function(row) {
+      x <- epsilon_out[row, ]
+      if(length(x)%%2 != 0){ # if length is odd
+        eps1 <- coda::as.mcmc(x[1:((length(x)+1)/2)])
+        eps2 <- coda::as.mcmc(x[length(eps1):length(x)])
+      }
+      if(length(x)%%2==0){ # if length is even
+        eps1 <- coda::as.mcmc(x[1:(length(x)/2)])
+        eps2 <- coda::as.mcmc(x[(length(eps1)+1):length(x)])
+      }
 
-  conv_check <- apply(epsilon_out, 1, function(x) {
-  if(length(x)%%2!=0){ # if length is odd
-    eps1 <- coda::as.mcmc(x[1:((length(x)+1)/2)])
-    eps2 <- coda::as.mcmc(x[length(eps1):length(x)])
-  }
-  if(length(x)%%2==0){ # if length is even
-    eps1 <- coda::as.mcmc(x[1:(length(x)/2)])
-    eps2 <- coda::as.mcmc(x[(length(eps1)+1):length(x)])
-  }
-  
-  eps_2chain <- coda::mcmc.list(eps1,eps2)
-  diag <- coda::gelman.diag(eps_2chain, confidence = 0.95)
-  
+      eps_2chain <- coda::mcmc.list(eps1,eps2)
+      coda::gelman.diag(eps_2chain, confidence = 0.95)
+
+    }
+  )
+  conv_check <- lapply(diag, function(x) {
   # Are any of the scale reduction factors >1.1?
-  if (any(diag$psrf[, "Upper C.I."] > 1.1)) {
-    message("The Gelman-Rubin algorithm suggests the MCMC may not have converged 
-                 within the number of iterations specified.")
-    convergence <- FALSE
-  } else {
-    convergence <- TRUE
-  } 
-  convergence
-  })
+   if (any(x$psrf[, "Upper C.I."] > 1.1)) {
+     message("The Gelman-Rubin algorithm suggests the MCMC may not have converged
+                  within the number of iterations specified.")
+     convergence <- FALSE
+   } else {
+     convergence <- TRUE
+   }
+    convergence
+  }
+  )
+  conv_check <- unlist(conv_check)
   ## TODO: Very importamt - do we need to fix
   ## ordering of R as well i.e. we have reshuffled the incidence
   ## but R should be returned in the order of the
   ## original incidence?
-  list(epsilon = epsilon_out, R = R_out, convergence = conv_check)
+  list(epsilon = epsilon_out, R = R_out, convergence = conv_check, diag = diag)
   # Not sure if this will be the same for >2 variants
 }
 
