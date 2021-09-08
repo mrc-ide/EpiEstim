@@ -135,7 +135,12 @@
 #' These can be overlapping or not (see `make_config` function and vignette
 #' for examples).
 #' 
-#' @seealso \code{\link{discr_si}} \code{\link{make_config}}
+#' @seealso \itemize{
+#'  \item{\code{\link{make_config}}}{ for general settings of the estimation}
+#'  \item{\code{\link{discr_si}}}{ to build serial interval distributions}
+#'  \item{\code{\link{sample_posterior_R}}}{ to draw samples of R values from
+#' the posterior distribution from the output of \code{estimate_R()}}
+#' }
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
 #' @references {
 #' Cori, A. et al. A new framework and software to estimate time-varying
