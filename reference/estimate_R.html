@@ -138,7 +138,7 @@ incidence time series and the serial interval distribution." />
 
 <code>estimate_R</code> estimates the reproduction number of an epidemic, given the
 incidence time series and the serial interval distribution.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/mrc-ide/EpiEstim/blob/master/R/estimate_r.R'><code>R/estimate_r.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/mrc-ide/EpiEstim/blob/master/R/estimate_R.R'><code>R/estimate_R.R</code></a></small>
     <div class="hidden name"><code>estimate_R.Rd</code></div>
     </div>
 
@@ -187,7 +187,7 @@ imported cases.</p></td>
       <th>si_data</th>
       <td><p>For method "si_from_data" ; the data on dates of symptoms of
 pairs of infector/infected individuals to be used to estimate the serial
-interval distribution This should be a dataframe with 5 columns:</p><ul>
+interval distribution should be a dataframe with 5 columns:</p><ul>
 <li><p>EL: the lower bound
 of the symptom onset date of the infector (given as an integer)</p></li>
 <li><p>ER:
@@ -294,7 +294,14 @@ Reich, N.G. et al. Estimating incubation period distributions with coarse
 data (Statis. Med. 2009)</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='discr_si.html'>discr_si</a></code> <code><a href='make_config.html'>make_config</a></code></p></div>
+    <div class='dont-index'>
+<ul>
+<li><p><code><a href='make_config.html'>make_config</a></code> for general settings of the estimation</p></li>
+<li><p><code><a href='discr_si.html'>discr_si</a></code> to build serial interval distributions</p></li>
+<li><p><code><a href='sample_posterior_R.html'>sample_posterior_R</a></code> to draw samples of R values from
+the posterior distribution from the output of <code>estimate_R()</code></p></li>
+</ul>
+</div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Anne Cori <a href='mailto:a.cori@imperial.ac.uk'>a.cori@imperial.ac.uk</a></p>
