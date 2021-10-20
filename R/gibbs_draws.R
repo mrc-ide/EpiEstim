@@ -112,7 +112,7 @@ default_priors <- function() {
   ## Flatter epsilon and R with larger variace
   ## Mean epsilon 10 and SD 10
   ## Mean R 1 and SD 5
-  list(epsilon = list(shape = 1, scale = 10),
+  list(epsilon = list(shape = 1, scale = 1),
        R = list(shape = 0.04, scale = 25))
 }
 
