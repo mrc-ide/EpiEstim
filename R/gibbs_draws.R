@@ -662,7 +662,6 @@ estimate_joint <- function(incid, si_distr, priors,
                              t_start = t_min,
                              t_end = t_max)))$R$'Mean(R)'
   })
-
   max_transmiss <- which.max(R_init)
   # reorder variants so most transmissible is first
   incid_reordered <- array(NA, dim = dim(incid$local))
@@ -768,7 +767,8 @@ estimate_joint <- function(incid, si_distr, priors,
   ## ordering of R as well i.e. we have reshuffled the incidence
   ## but R should be returned in the order of the
   ## original incidence?
-  list(epsilon = epsilon_out, R = R_out, convergence = conv_check, diag = diag)
+  list(epsilon = epsilon_out, R = R_out, convergence = conv_check, diag = diag,
+       max_transmiss = max_transmiss)
   # Not sure if this will be the same for >2 variants
 }
 
