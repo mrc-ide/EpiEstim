@@ -706,6 +706,7 @@ estimate_advantage <- function(incid, si_distr, priors,
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
                         ncol = mcmc_control$n_iter + 1)
   epsilon_out[, 1] <- epsilon_init
+  
   R_init <- draw_R(
     epsilon = epsilon_init, incid = incid$local, lambda = lambda,
     priors = priors, shape_R_flat = shape_R_flat, t_min = t_min, t_max = t_max
@@ -741,9 +742,10 @@ estimate_advantage <- function(incid, si_distr, priors,
           epsilon_out[row, ] <- epsilon_out[row, ] *  epsilon_out[1, ]
         }
       }
+      R_out <- R_out / as.vector(epsilon_out)
     }
   }
-
+  
   # Add in convergence check (gelman diagnostic)
   # Split epsilon into 2 chains
   diag <- lapply(
@@ -776,12 +778,10 @@ estimate_advantage <- function(incid, si_distr, priors,
   }
   )
   conv_check <- unlist(conv_check)
-  ## TODO: Very importamt - do we need to fix
-  ## ordering of R as well i.e. we have reshuffled the incidence
-  ## but R should be returned in the order of the
-  ## original incidence?
-  list(epsilon = epsilon_out, R = R_out, convergence = conv_check, diag = diag)
-  # Not sure if this will be the same for >2 variants
+
+  list(epsilon = epsilon_out, R = R_out, convergence = conv_check, diag = diag #, max_transmiss = max_transmiss
+       ) 
+  
 }
 
 #' Process incidence input for multivariant analyses with estimate_advantage
