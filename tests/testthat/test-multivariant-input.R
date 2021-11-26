@@ -138,7 +138,7 @@ test_that("epsilon is specified correctly",{
 
 
 ################################
-## Tests for estimate_joint() ##
+## Tests for estimate_advantage() ##
 ################################
 
 incid <- array(10, dim = c(T, n_loc, n_v))
@@ -154,17 +154,17 @@ tmin2 <- 1L # less than 2
 tmin3 <- as.integer(nrow(incid)+1) # greater than nrow(incid)
 
 test_that("tmin and tmax are specified correctly", {
-  expect_error(estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+  expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = tmin1, t_max = nrow(incid),
                               seed = NULL),
                "t_min and t_max must be integers")
-  expect_error(estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+  expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = tmin2, t_max = nrow(incid),
                               seed = NULL),
                "t_min and t_max must be >=2")
-  expect_error(estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+  expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = tmin3, t_max = nrow(incid),
                               seed = NULL),
@@ -179,17 +179,17 @@ sidistr_2=cbind(c(0,0.1,0.5,0.3),c(0,0.2,0.5,0.3)) # sum of first SI doesn't equ
 sidistr_3=cbind(c(0,-0.1,0.7,0.4),c(0,0.2,0.5,0.3)) # negative value
 
 test_that("si_distr is specified correctly", {
-  expect_error(estimate_joint(incid=incid, si_distr=sidistr_1, priors=priors,
+  expect_error(estimate_advantage(incid=incid, si_distr=sidistr_1, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
                "Values in the first row of si_distr must be 0")
-  expect_error(estimate_joint(incid=incid, si_distr=sidistr_2, priors=priors,
+  expect_error(estimate_advantage(incid=incid, si_distr=sidistr_2, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
                "The sum of each column in si_distr should be equal to 1")
-  expect_error(estimate_joint(incid=incid, si_distr=sidistr_3, priors=priors,
+  expect_error(estimate_advantage(incid=incid, si_distr=sidistr_3, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
@@ -218,17 +218,17 @@ mcmc_control3 <- function() {
 }
 
 test_that("mcmc_control is specified correctly", {
-  expect_error(estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+  expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = mcmc_control1(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
                "n_iter in mcmc_control must be a positive integer")
-  expect_error(estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+  expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = mcmc_control2(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
                "burnin in mcmc_control must be a positive integer")
-  expect_error(estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+  expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = mcmc_control3(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
@@ -241,7 +241,7 @@ test_that("mcmc_control is specified correctly", {
 seed <- "a"
 
 test_that("seed is specified correctly",{
-  expect_error(estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+  expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = seed),
@@ -269,7 +269,7 @@ high_iter <- function() {
 }
 
 test_that("convergence check returns FALSE for non-converging MCMC", {
-  out <- estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+  out <- estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                         mcmc_control = low_iter(),
                         t_min = 2L, t_max = nrow(incid),
                         seed = NULL)
@@ -278,7 +278,7 @@ test_that("convergence check returns FALSE for non-converging MCMC", {
 })
 
 test_that("convergence check returns TRUE for converging MCMC", {
-  out <- estimate_joint(incid=incid, si_distr=si_distr, priors=priors,
+  out <- estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                         mcmc_control = high_iter(),
                         t_min = 2L, t_max = nrow(incid),
                         seed = NULL)
@@ -287,6 +287,44 @@ test_that("convergence check returns TRUE for converging MCMC", {
 })
 
 
+  # reordering incidence tests
+
+  # use dummy incidence data based on Rt_ref = 1.6, epsilon = 2
+
+incid <- readRDS("../incidence_files/incid.rds")
+incid <- as.array(incid[[1]])
+incid <- incid[[1]]
+si_for_est <- readRDS("../incidence_files/si_for_est.rds")
+si_for_est <- si_for_est[[1]]
+priors <- default_priors()
+
+test_that("estimate of epsilon is the same with or without incidence reordering", {
+  
+  out <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
+                            mcmc_control = default_mcmc_controls(),
+                            t_min = 2L, t_max = nrow(incid),
+                            seed = NULL, reorder_incid = TRUE)
+  
+  out2 <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
+                            mcmc_control = default_mcmc_controls(),
+                            t_min = 2L, t_max = nrow(incid),
+                            seed = NULL, reorder_incid = FALSE)
+  
+  expect_equal(mean(out$epsilon), mean(out2$epsilon), tolerance = 0.001)
+})
 
 
-
+test_that("the Rt of the reference variant is returned both with and without incidence reordering", {
+  
+  out <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
+                            mcmc_control = default_mcmc_controls(),
+                            t_min = 2L, t_max = nrow(incid),
+                            seed = NULL, reorder_incid = TRUE)
+  
+  out2 <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
+                             mcmc_control = default_mcmc_controls(),
+                             t_min = 2L, t_max = nrow(incid),
+                             seed = NULL, reorder_incid = FALSE)
+  
+  expect_equal(median(out$R, na.rm = T), median(out2$R, na.rm = T), tolerance = 0.001)
+})

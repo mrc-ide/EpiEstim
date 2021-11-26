@@ -413,14 +413,14 @@ draw_R <- function(epsilon, incid, lambda, priors,
 ##' mass is captured
 ##'
 ##' Across a matrix of discretised probability distributions
-##' (see \code{estimate_joint}
+##' (see \code{estimate_advantage}
 ##' this function returns the largest index
 ##' (across all columns) such that the
 ##' cumulative probability mass before index is
 ##' 1 - \code{miss_at_most}.
 ##'
 ##'
-##' @inheritParams estimate_joint
+##' @inheritParams estimate_advantage
 ##' @param miss_at_most numeric. probability mass in the tail of the SI distribution
 ##' @return integer
 ##' @author Sangeeta Bhatia
@@ -445,7 +445,7 @@ compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
 ##' non-zero incidence. The maximum of these
 ##' is the smallest possible point at which
 ##' estimation can begin.
-##' @inheritParams estimate_joint
+##' @inheritParams estimate_advantage
 ##' @return integer
 ##' @author Sangeeta Bhatia
 ##' @export
@@ -457,7 +457,7 @@ first_nonzero_incid <- function(incid) {
   if (any(is.na(t_min_incid))) {
     warning(
       "For some variants/locations, incidence is
-       always zero. This will cause estimate_joint to fail."
+       always zero. This will cause estimate_advantage to fail."
     )
   }
   max(t_min_incid)
@@ -465,14 +465,14 @@ first_nonzero_incid <- function(incid) {
 ##' Compute the smallest index at which joint estimation
 ##' should start
 ##'
-##' Unless specified by the user, t_min in \code{estimate_joint}
+##' Unless specified by the user, t_min in \code{estimate_advantage}
 ##' is computed as the sum of two indices:
 ##' (i) the first day of non-zero incidence across all locations,
 ##' computed using \code{first_nonzero_incid}
 ##' and (ii) the 95th percentile of the probability mass function of the
 ##' SI distribution across all variants computed using \code{compute_si_cutoff}
 ##' @inheritParams compute_si_cutoff
-##' @inheritParams estimate_joint
+##' @inheritParams estimate_advantage
 ##' @return integer
 ##' @author Sangeeta Bhatia
 ##' @export
@@ -527,6 +527,12 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #'
 #' @param precompute a boolean (defaulting to TRUE) deciding whether to
 #'   precompute quantities or not. Using TRUE will make the algorithm faster
+#'   
+#' @param reorder_incid a boolean (defaulting to TRUE) deciding whether the
+#'   incidence array can be internally reordered during the estimation of the
+#'   transmission advantage. If TRUE, the most transmissible pathogen/strain/variant
+#'   is temporarily assigned to [,,1] of the incidence array. We recommend the
+#'   default value of TRUE as we find this to stabilise inference.
 #'
 #' @return A list with the following elements.
 #' \enumerate{
@@ -573,7 +579,7 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' R_init <- matrix(5, nrow = T, ncol = n_loc)
 #' R_init[1, ] <- NA # no estimates of R on first time step
 #' epsilon_init <- 5
-#' x <- estimate_joint(incid, si_distr, priors)
+#' x <- estimate_advantage(incid, si_distr, priors)
 #' # Plotting to check outputs
 #' par(mfrow = c(2, 2))
 #' plot(x$epsilon, type = "l",
@@ -589,12 +595,13 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' plot(x$R[30, 3, ], type = "l",
 #'      xlab = "Iteration", ylab = "R time 30 location 3")
 #'
-estimate_joint <- function(incid, si_distr, priors,
+estimate_advantage <- function(incid, si_distr, priors = default_priors(),
                            mcmc_control = default_mcmc_controls(),
                            t_min = NULL, t_max = nrow(incid),
                            seed = NULL,
                            incid_imported = NULL,
-                           precompute = TRUE) {
+                           precompute = TRUE,
+                           reorder_incid = TRUE) {
 
   if (is.null(t_min)) {
     t_min <- compute_t_min(incid, si_distr)
@@ -638,6 +645,10 @@ estimate_joint <- function(incid, si_distr, priors,
     stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
   }
   t <- seq(t_min, t_max, 1)
+  
+  if (!identical(priors, default_priors())) {
+    warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
+  }
 
   T <- nrow(incid)
   n_loc <- ncol(incid)
@@ -663,25 +674,27 @@ estimate_joint <- function(incid, si_distr, priors,
                              t_end = t_max)))$R$'Mean(R)'
   })
 
-  max_transmiss <- which.max(R_init)
-  # reorder variants so most transmissible is first
-  incid_reordered <- array(NA, dim = dim(incid$local))
-  incid_reordered[,,1] <- incid$local[,,max_transmiss]
-  incid_reordered[,,-1] <- incid$local[,, -max_transmiss]
-
-  incid$local <- incid_reordered
-  ## Re-order R_init so that they are in the same
-  ## order as the incidence
-  R_init_reord <- R_init
-  R_init_reord[1] <- R_init[max_transmiss]
-  R_init_reord[-1] <- R_init[-max_transmiss]
-  R_init <- R_init_reord
-
-  ## Re-order lambda
-  lambda_reordered <- lambda
-  lambda_reordered[, , 1] <- lambda[, , max_transmiss]
-  lambda_reordered[, , -1] <- lambda[, , -max_transmiss]
-  lambda <- lambda_reordered
+  if (reorder_incid) {
+    max_transmiss <- which.max(R_init)
+    # reorder variants so most transmissible is first
+    incid_reordered <- array(NA, dim = dim(incid$local))
+    incid_reordered[,,1] <- incid$local[,,max_transmiss]
+    incid_reordered[,,-1] <- incid$local[,, -max_transmiss]
+    
+    incid$local <- incid_reordered
+    ## Re-order R_init so that they are in the same
+    ## order as the incidence
+    R_init_reord <- R_init
+    R_init_reord[1] <- R_init[max_transmiss]
+    R_init_reord[-1] <- R_init[-max_transmiss]
+    R_init <- R_init_reord
+    
+    ## Re-order lambda
+    lambda_reordered <- lambda
+    lambda_reordered[, , 1] <- lambda[, , max_transmiss]
+    lambda_reordered[, , -1] <- lambda[, , -max_transmiss]
+    lambda <- lambda_reordered
+  }
 
   ## Precalculate quantities of interest
   if (precompute) {
@@ -697,11 +710,12 @@ estimate_joint <- function(incid, si_distr, priors,
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
                         ncol = mcmc_control$n_iter + 1)
   epsilon_out[, 1] <- epsilon_init
+  
   R_init <- draw_R(
     epsilon = epsilon_init, incid = incid$local, lambda = lambda,
     priors = priors, shape_R_flat = shape_R_flat, t_min = t_min, t_max = t_max
   )
-
+  
   R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
   for (i in seq_len(mcmc_control$n_iter)) {
@@ -720,18 +734,22 @@ estimate_joint <- function(incid, si_distr, priors,
   keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
   epsilon_out <- epsilon_out[, keep, drop = FALSE]
   R_out <- R_out[, , keep, drop = FALSE]
+  
   ## IF we have not re-ordered, we don't need to
   ## divide. Caution: this will only work for
   ## 2 variants at the moment.
-  if (max_transmiss != 1) {
-    epsilon_out[1 , ] <-  1 / epsilon_out[1 , ]
-    if (nrow(epsilon_out) > 1) {
-      for (row in 2:nrow(epsilon_out)) {
-        epsilon_out[row, ] <- epsilon_out[row, ] *  epsilon_out[1, ]
+  if (reorder_incid) {
+    if (max_transmiss != 1) {
+      epsilon_out[1 , ] <-  1 / epsilon_out[1 , ]
+      if (nrow(epsilon_out) > 1) {
+        for (row in 2:nrow(epsilon_out)) {
+          epsilon_out[row, ] <- epsilon_out[row, ] *  epsilon_out[1, ]
+        }
       }
+      R_out <- R_out / as.vector(epsilon_out)
     }
   }
-
+  
   # Add in convergence check (gelman diagnostic)
   # Split epsilon into 2 chains
   diag <- lapply(
@@ -764,15 +782,13 @@ estimate_joint <- function(incid, si_distr, priors,
   }
   )
   conv_check <- unlist(conv_check)
-  ## TODO: Very importamt - do we need to fix
-  ## ordering of R as well i.e. we have reshuffled the incidence
-  ## but R should be returned in the order of the
-  ## original incidence?
-  list(epsilon = epsilon_out, R = R_out, convergence = conv_check, diag = diag)
-  # Not sure if this will be the same for >2 variants
+
+  list(epsilon = epsilon_out, R = R_out, convergence = conv_check, diag = diag #, max_transmiss = max_transmiss
+       ) 
+  
 }
 
-#' Process incidence input for multivariant analyses with estimate_joint
+#' Process incidence input for multivariant analyses with estimate_advantage
 #'
 #' @param incid a multidimensional array containing values of the incidence
 #'   for each time step (1st dimension), location (2nd dimension) and

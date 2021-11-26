@@ -2,7 +2,7 @@
 % Please edit documentation in R/gibbs_draws.R
 \name{process_I_multivariant}
 \alias{process_I_multivariant}
-\title{Process incidence input for multivariant analyses with estimate_joint}
+\title{Process incidence input for multivariant analyses with estimate_advantage}
 \usage{
 process_I_multivariant(incid, incid_imported = NULL)
 }
@@ -32,7 +32,7 @@ a list with two elements.
   pathogen/strain/variant (3rd dimension)
 }
 \description{
-Process incidence input for multivariant analyses with estimate_joint
+Process incidence input for multivariant analyses with estimate_advantage
 }
 \examples{
 n_v <- 3 # 3 variants

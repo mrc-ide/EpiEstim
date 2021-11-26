@@ -238,7 +238,7 @@ test_that("draw_R produces expected results (>2 variants, 1 location)", {
 })
 
 
-test_that("estimate_joint produces expected results (2 variants 3 locations)", {
+test_that("estimate_advantage produces expected results (2 variants 3 locations)", {
   n_v <- 2 # 2 variants
   n_loc <- 3 # 3 locations
   T <- 100 # 100 time steps
@@ -252,7 +252,7 @@ test_that("estimate_joint produces expected results (2 variants 3 locations)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, seed = 1, t_min = 2L)
+  x <- estimate_advantage(incid, si_distr, priors, seed = 1, t_min = 2L)
 
   ## epsilon should be approximately 1
   expect_equal(mean(x$epsilon), 1, tolerance = 0.05)
@@ -265,7 +265,7 @@ test_that("estimate_joint produces expected results (2 variants 3 locations)", {
 })
 
 
-test_that("estimate_joint produces expected results (2 variants 1 location)", {
+test_that("estimate_advantage produces expected results (2 variants 1 location)", {
   n_v <- 2 # 2 variants
   n_loc <- 1 # 1 locations
   T <- 100 # 100 time steps
@@ -279,7 +279,7 @@ test_that("estimate_joint produces expected results (2 variants 1 location)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, seed = 1, t_min = 2L)
+  x <- estimate_advantage(incid, si_distr, priors, seed = 1, t_min = 2L)
 
   ## epsilon should be approximately 1
   expect_equal(mean(x$epsilon), 1, tolerance = 0.05)
@@ -292,7 +292,7 @@ test_that("estimate_joint produces expected results (2 variants 1 location)", {
 })
 
 
-test_that("estimate_joint produces expected results (>2 variants 4 locs)", {
+test_that("estimate_advantage produces expected results (>2 variants 4 locs)", {
   n_v <- 3 # 3 variants
   n_loc <- 4 # 4 locations
   T <- 100 # 100 time steps
@@ -306,7 +306,7 @@ test_that("estimate_joint produces expected results (>2 variants 4 locs)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, seed = 1, t_min = 2L)
+  x <- estimate_advantage(incid, si_distr, priors, seed = 1, t_min = 2L)
 
   ## epsilon should be approximately 1
   ## FIXME this should be apply(x$epsilon, 1, mean)
@@ -324,7 +324,7 @@ test_that("estimate_joint produces expected results (>2 variants 4 locs)", {
 })
 
 
-test_that("estimate_joint produces expected results (>2 variants 1 loc)", {
+test_that("estimate_advantage produces expected results (>2 variants 1 loc)", {
   n_v <- 3 # 3 variants
   n_loc <- 1 # 1 location
   T <- 100 # 100 time steps
@@ -338,7 +338,7 @@ test_that("estimate_joint produces expected results (>2 variants 1 loc)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, seed = 1, t_min = 2L)
+  x <- estimate_advantage(incid, si_distr, priors, seed = 1, t_min = 2L)
 
   ## epsilon should be approximately 1
   expect_equal(
@@ -409,7 +409,7 @@ test_that("compute_lambda rejects invalid incid inputs", {
 })
 
 
-test_that("estimate_joint produces expected results (>2var, 1loc, imports)", {
+test_that("estimate_advantage produces expected results (>2var, 1loc, imports)", {
   n_v <- 3 # 3 variants
   n_loc <- 1 # 1 location
   T <- 100 # 100 time steps
@@ -428,7 +428,7 @@ test_that("estimate_joint produces expected results (>2var, 1loc, imports)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, seed = 1,
+  x <- estimate_advantage(incid, si_distr, priors, seed = 1,
                       incid_imported = incid_imported, t_min = 2L)
 
   ## epsilon should be approximately 0
@@ -444,7 +444,7 @@ test_that("estimate_joint produces expected results (>2var, 1loc, imports)", {
 })
 
 
-test_that("estimate_joint produces expected results (>2var, 4loc, imports)", {
+test_that("estimate_advantage produces expected results (>2var, 4loc, imports)", {
   n_v <- 3 # 3 variants
   n_loc <- 4 # 4 locations
   T <- 100 # 100 time steps
@@ -463,7 +463,7 @@ test_that("estimate_joint produces expected results (>2var, 4loc, imports)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
   ## Need to run for longer after changing priors
-  x <- estimate_joint(
+  x <- estimate_advantage(
     incid, si_distr, priors, seed = 1,
     incid_imported = incid_imported,
     mcmc_control = list(n_iter = 2000L, burnin = 100L, thin = 10L), t_min = 2L
@@ -482,7 +482,7 @@ test_that("estimate_joint produces expected results (>2var, 4loc, imports)", {
 })
 
 
-test_that("estimate_joint produces expected results (2var, 1loc, imports)", {
+test_that("estimate_advantage produces expected results (2var, 1loc, imports)", {
   n_v <- 2 # 2 variants
   n_loc <- 1 # 1 location
   T <- 100 # 100 time steps
@@ -501,7 +501,7 @@ test_that("estimate_joint produces expected results (2var, 1loc, imports)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, seed = 1,
+  x <- estimate_advantage(incid, si_distr, priors, seed = 1,
                       incid_imported = incid_imported, t_min = 2L)
 
   ## epsilon should be approximately 0
@@ -515,7 +515,7 @@ test_that("estimate_joint produces expected results (2var, 1loc, imports)", {
 })
 
 
-test_that("estimate_joint produces expected results (2var, 4loc, imports)", {
+test_that("estimate_advantage produces expected results (2var, 4loc, imports)", {
   n_v <- 2 # 2 variants
   n_loc <- 4 # 4 locations
   T <- 100 # 100 time steps
@@ -534,7 +534,7 @@ test_that("estimate_joint produces expected results (2var, 4loc, imports)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
 
-  x <- estimate_joint(
+  x <- estimate_advantage(
     incid, si_distr, priors, seed = 1,
     incid_imported = incid_imported,
     mcmc_control = list(n_iter = 2000L, burnin = 100L, thin = 10L), t_min = 2L
@@ -551,7 +551,7 @@ test_that("estimate_joint produces expected results (2var, 4loc, imports)", {
 })
 
 
-test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1.1, R_loc2 = 1.5)", {
+test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 1.1, R_loc2 = 1.5)", {
   n_v <- 2 # 2 variants
   n_loc <- 2 # 2 locations
   T <- 100 # 100 time steps
@@ -602,7 +602,7 @@ test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1.1,
 
 
   priors <- default_priors()
-  x <- estimate_joint(
+  x <- estimate_advantage(
     incid, si_distr, priors, seed = 1, t_min = 2L
   )
 
@@ -612,7 +612,7 @@ test_that("estimate_joint produces expected results (2 var, 2 loc, R_loc1 = 1.1,
 
 })
 
-test_that("estimate_joint faster with precompute (2 variants 3 locations)", {
+test_that("estimate_advantage faster with precompute (2 variants 3 locations)", {
   n_v <- 2 # 2 variants
   n_loc <- 3 # 3 locations
   T <- 100 # 100 time steps
@@ -627,11 +627,11 @@ test_that("estimate_joint faster with precompute (2 variants 3 locations)", {
   si_distr <- cbind(w_v, w_v)
 
   t1 <- system.time(
-    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
+    x1 <- estimate_advantage(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
   )
 
   t2 <- system.time(
-    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
+    x2 <- estimate_advantage(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
   )
 
   ## t1 should be < t2
@@ -651,7 +651,7 @@ test_that("estimate_joint faster with precompute (2 variants 3 locations)", {
 })
 
 
-test_that("estimate_joint faster with precompute (2 variants 1 location)", {
+test_that("estimate_advantage faster with precompute (2 variants 1 location)", {
   n_v <- 2 # 2 variants
   n_loc <- 1 # 1 locations
   T <- 100 # 100 time steps
@@ -666,11 +666,11 @@ test_that("estimate_joint faster with precompute (2 variants 1 location)", {
   si_distr <- cbind(w_v, w_v)
 
   t1 <- system.time(
-    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
+    x1 <- estimate_advantage(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
   )
 
   t2 <- system.time(
-    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
+    x2 <- estimate_advantage(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
   )
 
   ## t1 should be < t2
@@ -690,7 +690,7 @@ test_that("estimate_joint faster with precompute (2 variants 1 location)", {
 })
 
 
-test_that("estimate_joint faster with precompute (3 variants 4 locations)", {
+test_that("estimate_advantage faster with precompute (3 variants 4 locations)", {
   n_v <- 3 # 3 variants
   n_loc <- 4 # 4 locations
   T <- 100 # 100 time steps
@@ -705,11 +705,11 @@ test_that("estimate_joint faster with precompute (3 variants 4 locations)", {
   si_distr <- cbind(w_v, w_v, w_v)
 
   t1 <- system.time(
-    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
+    x1 <- estimate_advantage(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
   )
 
   t2 <- system.time(
-    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
+    x2 <- estimate_advantage(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
   )
 
   ## t1 should be < t2
@@ -729,7 +729,7 @@ test_that("estimate_joint faster with precompute (3 variants 4 locations)", {
 })
 
 
-test_that("estimate_joint faster with precompute (3 variants 1 location)", {
+test_that("estimate_advantage faster with precompute (3 variants 1 location)", {
   n_v <- 3 # 3 variants
   n_loc <- 1 # 1 locations
   T <- 100 # 100 time steps
@@ -744,11 +744,11 @@ test_that("estimate_joint faster with precompute (3 variants 1 location)", {
   si_distr <- cbind(w_v, w_v, w_v)
 
   t1 <- system.time(
-    x1 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
+    x1 <- estimate_advantage(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
   )
 
   t2 <- system.time(
-    x2 <- estimate_joint(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
+    x2 <- estimate_advantage(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
   )
 
   ## t1 should be < t2
@@ -821,7 +821,7 @@ test_that("compute_t_min works correctly", {
   expect_equal(compute_t_min(incid, si), 12L)
 })
 
-test_that("estimate_joint uses the correct t_min", {
+test_that("estimate_advantage uses the correct t_min", {
   n_v <- 2 # 2 variants
   n_loc <- 3 # 3 locations
   T <- 100 # 100 time steps
@@ -835,7 +835,7 @@ test_that("estimate_joint uses the correct t_min", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v)
 
-  x <- estimate_joint(incid, si_distr, priors, t_min = 2L, seed = 1)
+  x <- estimate_advantage(incid, si_distr, priors, t_min = 2L, seed = 1)
   ## If t_min is 2, the first row if x$R will be NA
   expect_true(all(is.na(x$R[1, , ])))
   ## and not after that.
@@ -843,14 +843,14 @@ test_that("estimate_joint uses the correct t_min", {
   ## if t_min is NULL, t_min would be set to
   ## compute_t_min.
   t_min <- compute_t_min(incid, si_distr)
-  x <- estimate_joint(incid, si_distr, priors, seed = 1)
+  x <- estimate_advantage(incid, si_distr, priors, seed = 1)
   expect_true(all(is.na(x$R[seq(1, t_min - 1, 1), , ])))
   expect_true(! any(is.na(x$R[seq(t_min, dim(x$R)[1]), , ])))
 })
 
 
 
-test_that("estimate_joint convergence checks work with >2 variants", {
+test_that("estimate_advantage convergence checks work with >2 variants", {
   n_v <- 3 # 3 variants
   n_loc <- 4 # 4 locations
   T <- 100 # 100 time steps
@@ -864,7 +864,7 @@ test_that("estimate_joint convergence checks work with >2 variants", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
   low_iter <- list(n_iter = 60L, burnin = 10L, thin = 1L)
-  x <- estimate_joint(
+  x <- estimate_advantage(
     incid, si_distr, priors, seed = 1, t_min = 2L, mcmc_control = low_iter
   )
   ## convergence should be a list of length 2.

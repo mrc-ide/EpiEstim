@@ -24,7 +24,7 @@ should sum to 1}
 integer
 }
 \description{
-Unless specified by the user, t_min in \code{estimate_joint}
+Unless specified by the user, t_min in \code{estimate_advantage}
 is computed as the sum of two indices:
 (i) the first day of non-zero incidence across all locations,
 computed using \code{first_nonzero_incid}

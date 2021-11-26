@@ -21,7 +21,7 @@ integer
 }
 \description{
 Across a matrix of discretised probability distributions
-(see \code{estimate_joint}
+(see \code{estimate_advantage}
 this function returns the largest index
 (across all columns) such that the
 cumulative probability mass before index is
