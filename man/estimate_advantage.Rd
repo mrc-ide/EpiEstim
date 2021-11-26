@@ -9,7 +9,7 @@
 estimate_advantage(
   incid,
   si_distr,
-  priors,
+  priors = default_priors(),
   mcmc_control = default_mcmc_controls(),
   t_min = NULL,
   t_max = nrow(incid),
