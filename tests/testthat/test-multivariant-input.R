@@ -287,6 +287,44 @@ test_that("convergence check returns TRUE for converging MCMC", {
 })
 
 
+  # reordering incidence tests
+
+  # use dummy incidence data based on Rt_ref = 1.6, epsilon = 2
+
+incid <- readRDS("../incidence_files/incid.rds")
+incid <- as.array(incid[[1]])
+incid <- incid[[1]]
+si_for_est <- readRDS("../incidence_files/si_for_est.rds")
+si_for_est <- si_for_est[[1]]
+priors <- default_priors()
+
+test_that("estimate of epsilon is the same with or without incidence reordering", {
+  
+  out <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
+                            mcmc_control = default_mcmc_controls(),
+                            t_min = 2L, t_max = nrow(incid),
+                            seed = NULL, reorder_incid = TRUE)
+  
+  out2 <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
+                            mcmc_control = default_mcmc_controls(),
+                            t_min = 2L, t_max = nrow(incid),
+                            seed = NULL, reorder_incid = FALSE)
+  
+  expect_equal(mean(out$epsilon), mean(out2$epsilon), tolerance = 0.001)
+})
 
 
-
+test_that("the Rt of the reference variant is returned both with and without incidence reordering", {
+  
+  out <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
+                            mcmc_control = default_mcmc_controls(),
+                            t_min = 2L, t_max = nrow(incid),
+                            seed = NULL, reorder_incid = TRUE)
+  
+  out2 <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
+                             mcmc_control = default_mcmc_controls(),
+                             t_min = 2L, t_max = nrow(incid),
+                             seed = NULL, reorder_incid = FALSE)
+  
+  expect_equal(median(out$R, na.rm = T), median(out2$R, na.rm = T), tolerance = 0.001)
+})
