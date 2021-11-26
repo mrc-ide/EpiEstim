@@ -595,7 +595,7 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' plot(x$R[30, 3, ], type = "l",
 #'      xlab = "Iteration", ylab = "R time 30 location 3")
 #'
-estimate_advantage <- function(incid, si_distr, priors,
+estimate_advantage <- function(incid, si_distr, priors = default_priors(),
                            mcmc_control = default_mcmc_controls(),
                            t_min = NULL, t_max = nrow(incid),
                            seed = NULL,
