@@ -873,3 +873,25 @@ test_that("estimate_advantage convergence checks work with >2 variants", {
   expect_equal(length(x$convergence), 2)
   expect_equal(length(x$diag), 2)
 })
+
+test_that("estimate_advantage produces expected warning message", {
+  n_v <- 2 # 2 variants
+  n_loc <- 1 # 1 locations
+  T <- 100 # 100 time steps
+  ## Try to use non-default priors
+  priors <-   list(epsilon = list(shape = 10, scale = 10),
+                   R = list(shape = 0.04, scale = 25))
+
+  # constant incidence 10 per day everywhere
+  incid <- array(10, dim = c(T, n_loc, n_v))
+
+  # arbitrary serial interval
+  w_v <- c(0, 0.2, 0.5, 0.3)
+  si_distr <- cbind(w_v, w_v)
+
+  expect_warning(
+    estimate_advantage(incid, si_distr, priors, seed = 1, t_min = 2L),
+    "Priors where the mean of epsilon is different from 1 are not currently supported."
+  )
+
+})
