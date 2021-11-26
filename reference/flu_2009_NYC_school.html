@@ -79,7 +79,7 @@ influenza in a New York city school (see references).
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3</span>
       </span>
     </div>
 
@@ -101,6 +101,9 @@ influenza in a New York city school (see references).
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MV_EpiEstim_vignette.html">MV-EpiEstim</a>
+    </li>
     <li>
       <a href="../articles/full_EpiEstim_vignette.html">EpiEstim Vignette</a>
     </li>
@@ -171,31 +174,31 @@ at a New York City school. New Eng J Med 361: 2628-2636.</p>
 New York City school. New Eng J Med 361: 2628-2636.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'>## Note the following examples use an MCMC routine</span>
-<span class='co'>## to estimate the serial interval distribution from data,</span>
-<span class='co'>## so they may take a few minutes to run</span>
-
-<span class='co'>## load data on pandemic flu in a New York school in 2009</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"flu_2009_NYC_school"</span><span class='op'>)</span>
-
-<span class='co'>## estimate the reproduction number (method "si_from_data")</span>
-<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_R.html'>estimate_R</a></span><span class='op'>(</span><span class='va'>flu_2009_NYC_school</span><span class='op'>$</span><span class='va'>incidence</span>, method<span class='op'>=</span><span class='st'>"si_from_data"</span>,
-         si_data <span class='op'>=</span> <span class='va'>flu_2009_NYC_school</span><span class='op'>$</span><span class='va'>si_data</span>,
-          config <span class='op'>=</span> <span class='fu'><a href='make_config.html'>make_config</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-                      t_start <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>8</span><span class='op'>)</span>, 
-                      t_end <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='fl'>14</span><span class='op'>)</span>,
-                      si_parametric_distr <span class='op'>=</span> <span class='st'>"G"</span>,
-                      mcmc_control <span class='op'>=</span> <span class='fu'><a href='make_mcmc_control.html'>make_mcmc_control</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>burnin <span class='op'>=</span> <span class='fl'>1000</span>,
-                                 thin <span class='op'>=</span> <span class='fl'>10</span>, seed <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>,
-                      n1 <span class='op'>=</span> <span class='fl'>1000</span>, n2 <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span><span class='op'>)</span>
-          <span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
-<span class='co'>## the second plot produced shows, at each each day,</span>
-<span class='co'>## the estimate of the reproduction number</span>
-<span class='co'>## over the 7-day window finishing on that day.</span>
-<span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='co'>## Note the following examples use an MCMC routine</span></span>
+<span class='r-in'><span class='co'>## to estimate the serial interval distribution from data,</span></span>
+<span class='r-in'><span class='co'>## so they may take a few minutes to run</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## load data on pandemic flu in a New York school in 2009</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"flu_2009_NYC_school"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## estimate the reproduction number (method "si_from_data")</span></span>
+<span class='r-in'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_R.html'>estimate_R</a></span><span class='op'>(</span><span class='va'>flu_2009_NYC_school</span><span class='op'>$</span><span class='va'>incidence</span>, method<span class='op'>=</span><span class='st'>"si_from_data"</span>,</span>
+<span class='r-in'>         si_data <span class='op'>=</span> <span class='va'>flu_2009_NYC_school</span><span class='op'>$</span><span class='va'>si_data</span>,</span>
+<span class='r-in'>          config <span class='op'>=</span> <span class='fu'><a href='make_config.html'>make_config</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>                      t_start <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>2</span>, <span class='fl'>8</span><span class='op'>)</span>, </span>
+<span class='r-in'>                      t_end <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>8</span>, <span class='fl'>14</span><span class='op'>)</span>,</span>
+<span class='r-in'>                      si_parametric_distr <span class='op'>=</span> <span class='st'>"G"</span>,</span>
+<span class='r-in'>                      mcmc_control <span class='op'>=</span> <span class='fu'><a href='make_mcmc_control.html'>make_mcmc_control</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>burnin <span class='op'>=</span> <span class='fl'>1000</span>,</span>
+<span class='r-in'>                                 thin <span class='op'>=</span> <span class='fl'>10</span>, seed <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>                      n1 <span class='op'>=</span> <span class='fl'>1000</span>, n2 <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>          <span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>## the second plot produced shows, at each each day,</span></span>
+<span class='r-in'><span class='co'>## the estimate of the reproduction number</span></span>
+<span class='r-in'><span class='co'>## over the 7-day window finishing on that day.</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

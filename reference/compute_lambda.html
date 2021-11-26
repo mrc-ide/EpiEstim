@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Discretized Generation Time Distribution Assuming A Shifted Gamma 
-Distribution — discr_si • EpiEstim</title>
+<title>Compute the overall infectivity — compute_lambda • EpiEstim</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ Distribution — discr_si • EpiEstim</title>
 
 
 
-<meta property="og:title" content="Discretized Generation Time Distribution Assuming A Shifted Gamma 
-Distribution — discr_si" />
-<meta property="og:description" content="discr_si computes the discrete distribution of the serial interval, 
-assuming that the serial interval is shifted Gamma distributed, with shift 1." />
+<meta property="og:title" content="Compute the overall infectivity — compute_lambda" />
+<meta property="og:description" content="Compute the overall infectivity" />
 
 
 
@@ -132,76 +129,62 @@ assuming that the serial interval is shifted Gamma distributed, with shift 1." /
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Discretized Generation Time Distribution Assuming A Shifted Gamma 
-Distribution</h1>
-    <small class="dont-index">Source: <a href='https://github.com/mrc-ide/EpiEstim/blob/master/R/discr_si.R'><code>R/discr_si.R</code></a></small>
-    <div class="hidden name"><code>discr_si.Rd</code></div>
+    <h1>Compute the overall infectivity</h1>
+    <small class="dont-index">Source: <a href='https://github.com/mrc-ide/EpiEstim/blob/master/R/gibbs_draws.R'><code>R/gibbs_draws.R</code></a></small>
+    <div class="hidden name"><code>compute_lambda.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>discr_si</code> computes the discrete distribution of the serial interval, 
-assuming that the serial interval is shifted Gamma distributed, with shift 1.</p>
+    <p>Compute the overall infectivity</p>
     </div>
 
-    <pre class="usage"><span class='fu'>discr_si</span><span class='op'>(</span><span class='va'>k</span>, <span class='va'>mu</span>, <span class='va'>sigma</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>compute_lambda</span><span class='op'>(</span><span class='va'>incid</span>, <span class='va'>si_distr</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>k</th>
-      <td><p>Positive integer, or vector of positive integers for which the 
-discrete distribution is desired.</p></td>
+      <th>incid</th>
+      <td><p>a list (as obtained from function `process_I_multivariant`)
+of two multidimensional arrays ("local" and "imported")
+containing values of the incidence
+for each time step (1st dimension), location (2nd dimension) and
+pathogen/strain/variant (3rd dimension)</p></td>
     </tr>
     <tr>
-      <th>mu</th>
-      <td><p>A positive real giving the mean of the Gamma distribution.</p></td>
-    </tr>
-    <tr>
-      <th>sigma</th>
-      <td><p>A non-negative real giving the standard deviation of the Gamma 
-distribution.</p></td>
+      <th>si_distr</th>
+      <td><p>a matrix where each column contains the probability mass
+function for the discrete serial interval for each of the
+pathogen/strain/variants, starting with the probability mass function
+for day 0 in the first row, which should be 0. Each column in the matrix
+should sum to 1</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Gives the discrete probability \(w_k\) that the serial interval is 
-equal to \(k\).</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Assuming that the serial interval is shifted Gamma distributed with mean 
-\(\mu\), standard deviation \(\sigma\) and shift \(1\),
-the discrete probability \(w_k\) that the serial interval is equal to 
-\(k\) is:$$w_k = kF_{\{\mu-1,\sigma\}}(k)+(k-2)F_{\{\mu-1,\sigma\}}
-(k-2)-2(k-1)F_{\{\mu-1,\sigma\}}(k-1)\\
-+(\mu-1)(2F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
-\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-1)-
-F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
-\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-2)-
-F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
-\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k))$$where \(F_{\{\mu,\sigma\}}\) is the cumulative density function of a Gamma 
-distribution with mean \(\mu\) and standard deviation \(\sigma\).</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Cori, A. et al. A new framework and software to estimate 
-time-varying reproduction numbers during epidemics (AJE 2013).</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='overall_infectivity.html'>overall_infectivity</a></code>, <code><a href='estimate_R.html'>estimate_R</a></code></p></div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Anne Cori <a href='mailto:a.cori@imperial.ac.uk'>a.cori@imperial.ac.uk</a></p>
+    <p>a multidimensional array containing values of the overall
+  infectivity for each time step (1st dimension), location (2nd dimension)
+  and pathogen/strain/variant (3rd dimension). The overall infectivity for
+  a given location and pathogen/strain/variant represents the sum of
+  the incidence for that location and that pathogen/strain/variant at all
+  previous time steps, weighted by the current infectivity of those
+  past incident cases. Pre-calculating the overall infectivity makes the
+  algorithm much faster</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='co'>## Computing the discrete serial interval of influenza</span></span>
-<span class='r-in'><span class='va'>mean_flu_si</span> <span class='op'>&lt;-</span> <span class='fl'>2.6</span></span>
-<span class='r-in'><span class='va'>sd_flu_si</span> <span class='op'>&lt;-</span> <span class='fl'>1.5</span></span>
-<span class='r-in'><span class='va'>dicrete_si_distr</span> <span class='op'>&lt;-</span> <span class='fu'>discr_si</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>, <span class='va'>mean_flu_si</span>, <span class='va'>sd_flu_si</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>, <span class='va'>dicrete_si_distr</span>, type <span class='op'>=</span> <span class='st'>"h"</span>,</span>
-<span class='r-in'>          lwd <span class='op'>=</span> <span class='fl'>10</span>, lend <span class='op'>=</span> <span class='fl'>1</span>, xlab <span class='op'>=</span> <span class='st'>"time (days)"</span>, ylab <span class='op'>=</span> <span class='st'>"frequency"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/title.html'>title</a></span><span class='op'>(</span>main <span class='op'>=</span> <span class='st'>"Discrete distribution of the serial interval of influenza"</span><span class='op'>)</span></span>
-<span class='r-plt img'><img src='discr_si-1.png' alt='' width='700' height='433' /></span>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='va'>n_v</span> <span class='op'>&lt;-</span> <span class='fl'>2</span></span>
+<span class='r-in'><span class='va'>n_loc</span> <span class='op'>&lt;-</span> <span class='fl'>3</span> <span class='co'># 3 locations</span></span>
+<span class='r-in'><span class='cn'>T</span> <span class='op'>&lt;-</span> <span class='fl'>100</span> <span class='co'># 100 time steps</span></span>
+<span class='r-in'><span class='va'>priors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='default_priors.html'>default_priors</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># constant incidence 10 per day everywhere</span></span>
+<span class='r-in'><span class='va'>incid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fl'>10</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>T</span>, <span class='va'>n_loc</span>, <span class='va'>n_v</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>incid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='process_I_multivariant.html'>process_I_multivariant</a></span><span class='op'>(</span><span class='va'>incid</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># arbitrary serial interval, same for both variants</span></span>
+<span class='r-in'><span class='va'>w_v</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0.2</span>, <span class='fl'>0.5</span>, <span class='fl'>0.3</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>si_distr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='va'>w_v</span>, <span class='va'>w_v</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>lambda</span> <span class='op'>&lt;-</span> <span class='fu'>compute_lambda</span><span class='op'>(</span><span class='va'>incid</span>, <span class='va'>si_distr</span><span class='op'>)</span></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

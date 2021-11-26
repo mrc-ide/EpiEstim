@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3</span>
       </span>
     </div>
 
@@ -93,6 +93,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MV_EpiEstim_vignette.html">MV-EpiEstim</a>
+    </li>
     <li>
       <a href="../articles/full_EpiEstim_vignette.html">EpiEstim Vignette</a>
     </li>
@@ -223,10 +226,54 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="compute_lambda.html">compute_lambda()</a></code> </p>
+        </td>
+        <td><p>Compute the overall infectivity</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_si_cutoff.html">compute_si_cutoff()</a></code> </p>
+        </td>
+        <td><p>Index before which at most a given probability
+mass is captured</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="compute_t_min.html">compute_t_min()</a></code> </p>
+        </td>
+        <td><p>Compute the smallest index at which joint estimation
+should start</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="default_mcmc_controls.html">default_mcmc_controls()</a></code> </p>
+        </td>
+        <td><p>Set default for MCMC control</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="default_priors.html">default_priors()</a></code> </p>
+        </td>
+        <td><p>Set default for Gamma priors</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="discr_si.html">discr_si()</a></code> </p>
         </td>
         <td><p>Discretized Generation Time Distribution Assuming A Shifted Gamma 
 Distribution</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="draw_R.html">draw_R()</a></code> </p>
+        </td>
+        <td><p>Draw R from marginal posterior distribution</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="draw_epsilon.html">draw_epsilon()</a></code> </p>
+        </td>
+        <td><p>Draw epsilon from marginal posterior distribution</p></td>
       </tr><tr>
         
         <td>
@@ -245,9 +292,36 @@ incidence time series and the serial interval distribution.</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="estimate_advantage.html">estimate_advantage()</a></code> </p>
+        </td>
+        <td><p>Jointly estimate the instantaneous reproduction number for a reference
+  pathogen/strain/variant and the relative transmissibility of a
+  "new" pathogen/strain/variant</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="first_nonzero_incid.html">first_nonzero_incid()</a></code> </p>
+        </td>
+        <td><p>Get the first day of non-zero incidence across
+all variants and locations.</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="flu_2009_NYC_school.html">flu_2009_NYC_school</a></code> </p>
         </td>
         <td><p>Data on the 2009 H1N1 influenza pandemic in a school in New York city</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_shape_R_flat.html">get_shape_R_flat()</a></code> </p>
+        </td>
+        <td><p>Precompute shape of posterior distribution for R</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_shape_epsilon.html">get_shape_epsilon()</a></code> </p>
+        </td>
+        <td><p>Precompute shape of posterior distribution for epsilon</p></td>
       </tr><tr>
         
         <td>
@@ -290,6 +364,12 @@ estimate the serial interval within <code>estimate_R</code> (with method
           <p><code><a href="plot.estimate_R.html">plot(<i>&lt;estimate_R&gt;</i>)</a></code> </p>
         </td>
         <td><p>Plot outputs of estimate_r</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="process_I_multivariant.html">process_I_multivariant()</a></code> </p>
+        </td>
+        <td><p>Process incidence input for multivariant analyses with estimate_advantage</p></td>
       </tr><tr>
         
         <td>

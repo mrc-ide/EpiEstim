@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Discretized Generation Time Distribution Assuming A Shifted Gamma 
-Distribution — discr_si • EpiEstim</title>
+<title>Set default for MCMC control — default_mcmc_controls • EpiEstim</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ Distribution — discr_si • EpiEstim</title>
 
 
 
-<meta property="og:title" content="Discretized Generation Time Distribution Assuming A Shifted Gamma 
-Distribution — discr_si" />
-<meta property="og:description" content="discr_si computes the discrete distribution of the serial interval, 
-assuming that the serial interval is shifted Gamma distributed, with shift 1." />
+<meta property="og:title" content="Set default for MCMC control — default_mcmc_controls" />
+<meta property="og:description" content="Set default for MCMC control" />
 
 
 
@@ -132,76 +129,33 @@ assuming that the serial interval is shifted Gamma distributed, with shift 1." /
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Discretized Generation Time Distribution Assuming A Shifted Gamma 
-Distribution</h1>
-    <small class="dont-index">Source: <a href='https://github.com/mrc-ide/EpiEstim/blob/master/R/discr_si.R'><code>R/discr_si.R</code></a></small>
-    <div class="hidden name"><code>discr_si.Rd</code></div>
+    <h1>Set default for MCMC control</h1>
+    <small class="dont-index">Source: <a href='https://github.com/mrc-ide/EpiEstim/blob/master/R/gibbs_draws.R'><code>R/gibbs_draws.R</code></a></small>
+    <div class="hidden name"><code>default_mcmc_controls.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>discr_si</code> computes the discrete distribution of the serial interval, 
-assuming that the serial interval is shifted Gamma distributed, with shift 1.</p>
+    <p>Set default for MCMC control</p>
     </div>
 
-    <pre class="usage"><span class='fu'>discr_si</span><span class='op'>(</span><span class='va'>k</span>, <span class='va'>mu</span>, <span class='va'>sigma</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>default_mcmc_controls</span><span class='op'>(</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>k</th>
-      <td><p>Positive integer, or vector of positive integers for which the 
-discrete distribution is desired.</p></td>
-    </tr>
-    <tr>
-      <th>mu</th>
-      <td><p>A positive real giving the mean of the Gamma distribution.</p></td>
-    </tr>
-    <tr>
-      <th>sigma</th>
-      <td><p>A non-negative real giving the standard deviation of the Gamma 
-distribution.</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Gives the discrete probability \(w_k\) that the serial interval is 
-equal to \(k\).</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Assuming that the serial interval is shifted Gamma distributed with mean 
-\(\mu\), standard deviation \(\sigma\) and shift \(1\),
-the discrete probability \(w_k\) that the serial interval is equal to 
-\(k\) is:$$w_k = kF_{\{\mu-1,\sigma\}}(k)+(k-2)F_{\{\mu-1,\sigma\}}
-(k-2)-2(k-1)F_{\{\mu-1,\sigma\}}(k-1)\\
-+(\mu-1)(2F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
-\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-1)-
-F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
-\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k-2)-
-F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
-\sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k))$$where \(F_{\{\mu,\sigma\}}\) is the cumulative density function of a Gamma 
-distribution with mean \(\mu\) and standard deviation \(\sigma\).</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Cori, A. et al. A new framework and software to estimate 
-time-varying reproduction numbers during epidemics (AJE 2013).</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='overall_infectivity.html'>overall_infectivity</a></code>, <code><a href='estimate_R.html'>estimate_R</a></code></p></div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Anne Cori <a href='mailto:a.cori@imperial.ac.uk'>a.cori@imperial.ac.uk</a></p>
+    <p>a list of default MCMC control parameters, containing:</p>
+<p>- n_iter: the number if iterations of the MCMC to perform</p>
+<p>- burnin: the burnin to use; MCMC iterations will only be recorded after
+  the burnin</p>
+<p>- thin: MCMC iterations will only be recorded after
+  the burnin and every `thin` iteration</p>
+<p>Values can then be manually be edited as in the examples below.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='co'>## Computing the discrete serial interval of influenza</span></span>
-<span class='r-in'><span class='va'>mean_flu_si</span> <span class='op'>&lt;-</span> <span class='fl'>2.6</span></span>
-<span class='r-in'><span class='va'>sd_flu_si</span> <span class='op'>&lt;-</span> <span class='fl'>1.5</span></span>
-<span class='r-in'><span class='va'>dicrete_si_distr</span> <span class='op'>&lt;-</span> <span class='fu'>discr_si</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>, <span class='va'>mean_flu_si</span>, <span class='va'>sd_flu_si</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>20</span><span class='op'>)</span>, <span class='va'>dicrete_si_distr</span>, type <span class='op'>=</span> <span class='st'>"h"</span>,</span>
-<span class='r-in'>          lwd <span class='op'>=</span> <span class='fl'>10</span>, lend <span class='op'>=</span> <span class='fl'>1</span>, xlab <span class='op'>=</span> <span class='st'>"time (days)"</span>, ylab <span class='op'>=</span> <span class='st'>"frequency"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/title.html'>title</a></span><span class='op'>(</span>main <span class='op'>=</span> <span class='st'>"Discrete distribution of the serial interval of influenza"</span><span class='op'>)</span></span>
-<span class='r-plt img'><img src='discr_si-1.png' alt='' width='700' height='433' /></span>
+    <pre class="examples"><span class='r-in'><span class='va'>mcmc_control</span><span class='op'>&lt;-</span> <span class='fu'>default_mcmc_controls</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># change to run for 10 times longer</span></span>
+<span class='r-in'><span class='va'>mcmc_control</span><span class='op'>$</span><span class='va'>n_iter</span> <span class='op'>&lt;-</span> <span class='va'>mcmc_control</span><span class='op'>$</span><span class='va'>n_iter</span> <span class='op'>*</span> <span class='fl'>10</span></span>
+<span class='r-in'></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

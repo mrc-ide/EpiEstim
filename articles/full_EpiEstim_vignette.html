@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3</span>
       </span>
     </div>
 
@@ -54,6 +54,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/MV_EpiEstim_vignette.html">MV-EpiEstim</a>
+    </li>
+    <li>
       <a href="../articles/full_EpiEstim_vignette.html">EpiEstim Vignette</a>
     </li>
     <li>
@@ -89,7 +92,7 @@
       <h1 data-toc-skip>EpiEstim Vignette</h1>
                         <h4 class="author">Rebecca Nash</h4>
             
-            <h4 class="date">2021-09-10</h4>
+            <h4 class="date">2021-11-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/master/vignettes/full_EpiEstim_vignette.Rmd"><code>vignettes/full_EpiEstim_vignette.Rmd</code></a></small>
       <div class="hidden name"><code>full_EpiEstim_vignette.Rmd</code></div>
@@ -702,6 +705,7 @@ dd/mm/yy
 <span class="co">#&gt; 4       5    18 1.282858 0.1257946         1.0481878        1.0831904</span>
 <span class="co">#&gt; 5       6    19 1.157739 0.1129838         0.9469160        0.9783737</span>
 <span class="co">#&gt; 6       7    20 1.113414 0.1071383         0.9133547        0.9432394</span>
+
 <span class="co"># Each row now corresponds to a biweekly window. If you take the first row here you can see that R has been estimated over 14 days where all cases with onset from day 2 to day 15 of the outbreak are included.</span></code></pre></div>
 <p>R<sub>t</sub> is then plotted for each time window on the last day of that window. So in the example above, the estimate of R<sub>t</sub> for the window from day 2 to day 15 will be plotted on day 15 (11th May). This means that it appears as if you’re starting your estimation later than you are because the plot for R<sub>t</sub> does not start until the end of the first window.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -866,6 +870,7 @@ dd/mm/yy
 <span class="co"># This dataset already has a discrete SI distribution:</span>
 <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span>
 <span class="co">#&gt;  [1] 0.000 0.233 0.359 0.198 0.103 0.053 0.027 0.014 0.007 0.003 0.002 0.001</span>
+
 <span class="co"># Estimate R using non-parametric SI distribution:</span>
 <span class="va">R_np</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span>incid<span class="op">=</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>,
                    method<span class="op">=</span><span class="st">"non_parametric_si"</span>,

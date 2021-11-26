@@ -2,7 +2,8 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
+  MV_EpiEstim_vignette: MV_EpiEstim_vignette.html
   full_EpiEstim_vignette: full_EpiEstim_vignette.html
   short_demo: short_demo.html
-last_built: 2021-09-10T08:01Z
+last_built: 2021-11-26T18:09Z
 

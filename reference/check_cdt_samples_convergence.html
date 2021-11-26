@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3</span>
       </span>
     </div>
 
@@ -95,6 +95,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MV_EpiEstim_vignette.html">MV-EpiEstim</a>
+    </li>
     <li>
       <a href="../articles/full_EpiEstim_vignette.html">EpiEstim Vignette</a>
     </li>
@@ -165,28 +168,28 @@ algorithm to assess convergence of the chain by comparing its two halves.</p>
     <p>Anne Cori</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'>## Note the following examples use an MCMC routine</span>
-<span class='co'>## to estimate the serial interval distribution from data,</span>
-<span class='co'>## so they may take a few minutes to run</span>
-
-<span class='co'>## load data on rotavirus</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"MockRotavirus"</span><span class='op'>)</span>
-
-<span class='co'>## estimate the serial interval from data</span>
-<span class='va'>SI_fit</span> <span class='op'>&lt;-</span> <span class='fu'>coarseDataTools</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/coarseDataTools/man/dic.fit.mcmc.html'>dic.fit.mcmc</a></span><span class='op'>(</span>dat <span class='op'>=</span> <span class='va'>MockRotavirus</span><span class='op'>$</span><span class='va'>si_data</span>,
-                     dist<span class='op'>=</span><span class='st'>"G"</span>,
-                     init_pars<span class='op'>=</span><span class='fu'><a href='init_mcmc_params.html'>init_mcmc_params</a></span><span class='op'>(</span><span class='va'>MockRotavirus</span><span class='op'>$</span><span class='va'>si_data</span>, <span class='st'>"G"</span><span class='op'>)</span>,
-                     burnin <span class='op'>=</span> <span class='fl'>1000</span>,
-                     n.samples <span class='op'>=</span> <span class='fl'>5000</span><span class='op'>)</span>
-
-<span class='co'>## use check_cdt_samples_convergence to check convergence</span>
-<span class='va'>converg_diag</span> <span class='op'>&lt;-</span> <span class='fu'>check_cdt_samples_convergence</span><span class='op'>(</span><span class='va'>SI_fit</span><span class='op'>@</span><span class='va'>samples</span><span class='op'>)</span>
-<span class='va'>converg_diag</span>
-
-<span class='op'>}</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='co'>## Note the following examples use an MCMC routine</span></span>
+<span class='r-in'><span class='co'>## to estimate the serial interval distribution from data,</span></span>
+<span class='r-in'><span class='co'>## so they may take a few minutes to run</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## load data on rotavirus</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"MockRotavirus"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## estimate the serial interval from data</span></span>
+<span class='r-in'><span class='va'>SI_fit</span> <span class='op'>&lt;-</span> <span class='fu'>coarseDataTools</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/coarseDataTools/man/dic.fit.mcmc.html'>dic.fit.mcmc</a></span><span class='op'>(</span>dat <span class='op'>=</span> <span class='va'>MockRotavirus</span><span class='op'>$</span><span class='va'>si_data</span>,</span>
+<span class='r-in'>                     dist<span class='op'>=</span><span class='st'>"G"</span>,</span>
+<span class='r-in'>                     init_pars<span class='op'>=</span><span class='fu'><a href='init_mcmc_params.html'>init_mcmc_params</a></span><span class='op'>(</span><span class='va'>MockRotavirus</span><span class='op'>$</span><span class='va'>si_data</span>, <span class='st'>"G"</span><span class='op'>)</span>,</span>
+<span class='r-in'>                     burnin <span class='op'>=</span> <span class='fl'>1000</span>,</span>
+<span class='r-in'>                     n.samples <span class='op'>=</span> <span class='fl'>5000</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## use check_cdt_samples_convergence to check convergence</span></span>
+<span class='r-in'><span class='va'>converg_diag</span> <span class='op'>&lt;-</span> <span class='fu'>check_cdt_samples_convergence</span><span class='op'>(</span><span class='va'>SI_fit</span><span class='op'>@</span><span class='va'>samples</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>converg_diag</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

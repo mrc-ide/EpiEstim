@@ -83,7 +83,7 @@ influenza in San Antonio, Texas, USA (see references).
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3</span>
       </span>
     </div>
 
@@ -105,6 +105,9 @@ influenza in San Antonio, Texas, USA (see references).
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/MV_EpiEstim_vignette.html">MV-EpiEstim</a>
+    </li>
     <li>
       <a href="../articles/full_EpiEstim_vignette.html">EpiEstim Vignette</a>
     </li>
@@ -187,39 +190,42 @@ influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.</p>
 pandemic in Southeast Asia. Nature 437(7056), 209-214.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## load data on pandemic flu in a school in 2009</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"Flu2009"</span><span class='op'>)</span>
-
-<span class='co'>## estimate the reproduction number (method "non_parametric_si")</span>
-<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_R.html'>estimate_R</a></span><span class='op'>(</span><span class='va'>Flu2009</span><span class='op'>$</span><span class='va'>incidence</span>, method<span class='op'>=</span><span class='st'>"non_parametric_si"</span>,
-          config <span class='op'>=</span> <span class='fu'><a href='make_config.html'>make_config</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>si_distr <span class='op'>=</span> <span class='va'>Flu2009</span><span class='op'>$</span><span class='va'>si_distr</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Default config will estimate R on weekly sliding windows.</span>
-#&gt; <span class='message'>    To change this change the t_start and t_end arguments. </span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = "none"` instead.</span></div><div class='img'><img src='Flu2009-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'>## the second plot produced shows, at each each day,</span>
-<span class='co'>## the estimate of the reproduction number</span>
-<span class='co'>## over the 7-day window finishing on that day.</span>
-
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'>## Note the following examples use an MCMC routine</span>
-<span class='co'>## to estimate the serial interval distribution from data,</span>
-<span class='co'>## so they may take a few minutes to run</span>
-
-<span class='co'>## estimate the reproduction number (method "si_from_data")</span>
-<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_R.html'>estimate_R</a></span><span class='op'>(</span><span class='va'>Flu2009</span><span class='op'>$</span><span class='va'>incidence</span>, method<span class='op'>=</span><span class='st'>"si_from_data"</span>,
-          si_data <span class='op'>=</span> <span class='va'>Flu2009</span><span class='op'>$</span><span class='va'>si_data</span>,
-          config <span class='op'>=</span> <span class='fu'><a href='make_config.html'>make_config</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mcmc_control <span class='op'>=</span> <span class='fu'><a href='make_mcmc_control.html'>make_mcmc_control</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-                                 burnin <span class='op'>=</span> <span class='fl'>1000</span>,
-                                 thin <span class='op'>=</span> <span class='fl'>10</span>, seed <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>,
-                      n1 <span class='op'>=</span> <span class='fl'>1000</span>, n2 <span class='op'>=</span> <span class='fl'>50</span>,
-                      si_parametric_distr <span class='op'>=</span> <span class='st'>"G"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
-<span class='co'>## the second plot produced shows, at each each day,</span>
-<span class='co'>## the estimate of the reproduction number</span>
-<span class='co'>## over the 7-day window finishing on that day.</span>
-<span class='op'>}</span>
-
-
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>## load data on pandemic flu in a school in 2009</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"Flu2009"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## estimate the reproduction number (method "non_parametric_si")</span></span>
+<span class='r-in'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_R.html'>estimate_R</a></span><span class='op'>(</span><span class='va'>Flu2009</span><span class='op'>$</span><span class='va'>incidence</span>, method<span class='op'>=</span><span class='st'>"non_parametric_si"</span>,</span>
+<span class='r-in'>          config <span class='op'>=</span> <span class='fu'><a href='make_config.html'>make_config</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>si_distr <span class='op'>=</span> <span class='va'>Flu2009</span><span class='op'>$</span><span class='va'>si_distr</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Default config will estimate R on weekly sliding windows.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     To change this change the t_start and t_end arguments. </span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = "none"` instead.</span>
+<span class='r-plt img'><img src='Flu2009-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'><span class='co'>## the second plot produced shows, at each each day,</span></span>
+<span class='r-in'><span class='co'>## the estimate of the reproduction number</span></span>
+<span class='r-in'><span class='co'>## over the 7-day window finishing on that day.</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='co'>## Note the following examples use an MCMC routine</span></span>
+<span class='r-in'><span class='co'>## to estimate the serial interval distribution from data,</span></span>
+<span class='r-in'><span class='co'>## so they may take a few minutes to run</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>## estimate the reproduction number (method "si_from_data")</span></span>
+<span class='r-in'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='estimate_R.html'>estimate_R</a></span><span class='op'>(</span><span class='va'>Flu2009</span><span class='op'>$</span><span class='va'>incidence</span>, method<span class='op'>=</span><span class='st'>"si_from_data"</span>,</span>
+<span class='r-in'>          si_data <span class='op'>=</span> <span class='va'>Flu2009</span><span class='op'>$</span><span class='va'>si_data</span>,</span>
+<span class='r-in'>          config <span class='op'>=</span> <span class='fu'><a href='make_config.html'>make_config</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>mcmc_control <span class='op'>=</span> <span class='fu'><a href='make_mcmc_control.html'>make_mcmc_control</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>                                 burnin <span class='op'>=</span> <span class='fl'>1000</span>,</span>
+<span class='r-in'>                                 thin <span class='op'>=</span> <span class='fl'>10</span>, seed <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>                      n1 <span class='op'>=</span> <span class='fl'>1000</span>, n2 <span class='op'>=</span> <span class='fl'>50</span>,</span>
+<span class='r-in'>                      si_parametric_distr <span class='op'>=</span> <span class='st'>"G"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>## the second plot produced shows, at each each day,</span></span>
+<span class='r-in'><span class='co'>## the estimate of the reproduction number</span></span>
+<span class='r-in'><span class='co'>## over the 7-day window finishing on that day.</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

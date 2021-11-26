@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3</span>
       </span>
     </div>
 
@@ -54,6 +54,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/MV_EpiEstim_vignette.html">MV-EpiEstim</a>
+    </li>
+    <li>
       <a href="../articles/full_EpiEstim_vignette.html">EpiEstim Vignette</a>
     </li>
     <li>
@@ -88,7 +91,7 @@
       <h1 data-toc-skip>EpiEstim: a demonstration</h1>
                         <h4 class="author">Anne Cori</h4>
             
-            <h4 class="date">2021-09-10</h4>
+            <h4 class="date">2021-11-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/master/vignettes/short_demo.Rmd"><code>vignettes/short_demo.Rmd</code></a></small>
       <div class="hidden name"><code>short_demo.Rmd</code></div>
@@ -162,6 +165,7 @@
 <span class="op">)</span>
 <span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span>
 <span class="co">#&gt;     To change this change the t_start and t_end arguments.</span>
+
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">res_parametric_si</span><span class="op">$</span><span class="va">R</span><span class="op">)</span>
 <span class="co">#&gt;   t_start t_end  Mean(R)    Std(R) Quantile.0.025(R) Quantile.0.05(R)</span>
 <span class="co">#&gt; 1       2     8 1.735798 0.4091314         1.0287437         1.121933</span>
@@ -311,6 +315,7 @@
 <span class="co">#&gt; @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ </span>
 <span class="co">#&gt; Estimating the reproduction number for these serial interval estimates...</span>
 <span class="co">#&gt;  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span>
+
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">res_si_from_data</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="figs-demo/estimate_r_si_from_data-1.png" width="576"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -358,6 +363,7 @@
                                 seed <span class="op">=</span> <span class="va">overall_seed</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span>
 <span class="co">#&gt;     To change this change the t_start and t_end arguments.</span>
+
 <span class="co">## check that res_si_from_sample is the same as res_si_from_data</span>
 <span class="co">## since they were generated using the same MCMC algorithm to generate the SI</span>
 <span class="co">## sample (either internally to EpiEstim or externally)</span>
@@ -476,7 +482,8 @@
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span></code></pre></div>
 <p><img src="figs-demo/imports-1.png" width="576"></p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Estimate R with assumptions on serial interval</span>
+<code class="sourceCode R">
+<span class="co">## Estimate R with assumptions on serial interval</span>
 <span class="va">res_with_imports</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">incid</span>, method <span class="op">=</span> <span class="st">"parametric_si"</span>,
                    config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
                    mean_si <span class="op">=</span> <span class="fl">2.6</span>, std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
