@@ -6,7 +6,23 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3871387.svg)](https://doi.org/10.5281/zenodo.3871387)
 <!-- badges: end -->
 
-A tool to estimate time varying instantaneous reproduction number during epidemics. It is described in the following paper: 
+## Vignettes
+The following vignettes provide worked examples, FAQs and details about how EpiEstim can be used alongside some other R packages in an outbreak analysis workflow.
+
+```r
+vignette("short_demo", package="EpiEstim")
+vignette("full_EpiEstim_vignette", package="EpiEstim")
+vignette("MV_EpiEstim_vignette", package="EpiEstim")   
+```
+
+To find out more about alternative software that may be more suitable for your specific data or analysis, please see below:
+
+```r
+vignette("alternative_software", package="EpiEstim")
+```
+
+## Citing our paper
+Anne Cori, Neil M. Ferguson, Christophe Fraser, Simon Cauchemez, [A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics](https://doi.org/10.1093/aje/kwt133), American Journal of Epidemiology, Volume 178, Issue 9, 1 November 2013, Pages 1505–1512. 
 
 > @article{Cori2013,
  author={Cori, A and Ferguson, NM and Fraser, C and Cauchemez, S},  
@@ -16,7 +32,6 @@ A tool to estimate time varying instantaneous reproduction number during epidemi
  doi={10.1093/aje/kwt133},  
 }
 
-Anne Cori, Neil M. Ferguson, Christophe Fraser, Simon Cauchemez, [A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics](https://doi.org/10.1093/aje/kwt133), American Journal of Epidemiology, Volume 178, Issue 9, 1 November 2013, Pages 1505–1512.
 
 ## Citing this code resource
 We kindly request that you cite this codebase as follows (BibTeX format):
