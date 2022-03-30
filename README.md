@@ -6,12 +6,19 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3871387.svg)](https://doi.org/10.5281/zenodo.3871387)
 <!-- badges: end -->
 
+EpiEstim is a tool to estimate the time-varying instantaneous reproduction number during epidemics.
+
 ## Vignettes
 The following vignettes provide worked examples, FAQs and details about how EpiEstim can be used alongside some other R packages in an outbreak analysis workflow.
 
 ```r
 vignette("short_demo", package="EpiEstim")
 vignette("full_EpiEstim_vignette", package="EpiEstim")
+```
+
+To estimate the transmission advantage of pathogen variants or strains in real-time, please see the pre-print by Bhatia et al (https://www.medrxiv.org/content/10.1101/2021.11.26.21266899v1) and the vignette below:
+
+```r
 vignette("MV_EpiEstim_vignette", package="EpiEstim")   
 ```
 
