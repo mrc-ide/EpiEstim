@@ -299,7 +299,6 @@ estimate_R <- function(incid,
                        si_data = NULL,
                        si_sample = NULL,
                        config = make_config(incid = incid, method = method)) {
-  
   method <- match.arg(method)
   config <- make_config(incid = incid, method = method, config = config)
   config <- process_config(config)
@@ -361,7 +360,6 @@ estimate_R <- function(incid,
     if (!is.null(config$seed)) {
       set.seed(config$seed)
     }
-
     out <- estimate_R_func(
       incid = incid, method = method, si_sample = si_sample,
       config = config
