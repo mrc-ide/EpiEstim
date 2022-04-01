@@ -22,6 +22,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -34,23 +36,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.3</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -73,7 +69,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/mrc-ide/EpiEstim/">
+  <a href="https://github.com/mrc-ide/EpiEstim/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -90,9 +86,9 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="epiestim" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#epiestim" class="anchor"></a>EpiEstim</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="epiestim">EpiEstim<a class="anchor" aria-label="anchor" href="#epiestim"></a>
+</h1></div>
 <!-- badges: start -->
 
 <p>A tool to estimate time varying instantaneous reproduction number during epidemics. It is described in the following paper:</p>
@@ -104,17 +100,17 @@ journal={Am. J. Epidemiol.},<br>
 doi={10.1093/aje/kwt133},<br>
 }</p>
 </blockquote>
-<p>Anne Cori, Neil M. Ferguson, Christophe Fraser, Simon Cauchemez, <a href="https://doi.org/10.1093/aje/kwt133">A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics</a>, American Journal of Epidemiology, Volume 178, Issue 9, 1 November 2013, Pages 1505–1512.</p>
-<div id="citing-this-code-resource" class="section level2">
-<h2 class="hasAnchor">
-<a href="#citing-this-code-resource" class="anchor"></a>Citing this code resource</h2>
+<p>Anne Cori, Neil M. Ferguson, Christophe Fraser, Simon Cauchemez, <a href="https://doi.org/10.1093/aje/kwt133" class="external-link">A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics</a>, American Journal of Epidemiology, Volume 178, Issue 9, 1 November 2013, Pages 1505–1512.</p>
+<div class="section level2">
+<h2 id="citing-this-code-resource">Citing this code resource<a class="anchor" aria-label="anchor" href="#citing-this-code-resource"></a>
+</h2>
 <p>We kindly request that you cite this codebase as follows (BibTeX format):</p>
 <blockquote>
 <p>@misc{Cori2021, author={Cori, A and Kamvar, ZN and Stockwin, J and Jombart, T and Dahlqwist, E and FitzJohn, R and Thompson, R},<br>
 year={2021},<br>
 title={{EpiEstim v2.2-3: A tool to estimate time varying instantaneous reproduction number during epidemics}},<br>
 publisher={GitHub}, journal={GitHub repository},<br>
-howpublished = {\url{<a href="https://github.com/mrc-ide/EpiEstim" class="uri">https://github.com/mrc-ide/EpiEstim</a>}}, commit={c18949d93fe4dcc384cbcae7567a788622efc781},<br>
+howpublished = {}, commit={c18949d93fe4dcc384cbcae7567a788622efc781},<br>
 }</p>
 </blockquote>
 </div>
@@ -123,48 +119,58 @@ howpublished = {\url{<a href="https://github.com/mrc-ide/EpiEstim" class="uri">h
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=EpiEstim">https://​cloud.r-project.org/​package=EpiEstim</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/mrc-ide/EpiEstim/">https://​github.com/​mrc-ide/​EpiEstim/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/mrc-ide/EpiEstim/issues">https://​github.com/​mrc-ide/​EpiEstim/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=EpiEstim" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/mrc-ide/EpiEstim/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/mrc-ide/EpiEstim/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>GPL (&gt;=2)</li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>Anne Cori <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-8443-9162" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html#citation">Citing EpiEstim</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/mrc-ide/EpiEstim/actions"><img src="https://github.com/mrc-ide/EpiEstim/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
-<li><a href="https://codecov.io/gh/annecori/EpiEstim?branch=master"><img src="https://codecov.io/gh/annecori/EpiEstim/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
-<li><a href="https://doi.org/10.5281/zenodo.3871387"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.3871387.svg" alt="DOI"></a></li>
+<li>Anne Cori <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-8443-9162" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/mrc-ide/EpiEstim/actions" class="external-link"><img src="https://github.com/mrc-ide/EpiEstim/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
+<li><a href="https://codecov.io/gh/annecori/EpiEstim?branch=master" class="external-link"><img src="https://codecov.io/gh/annecori/EpiEstim/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://doi.org/10.5281/zenodo.3871387" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.3871387.svg" alt="DOI"></a></li>
+</ul>
 </div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Anne Cori.</p>
+  <p></p>
+<p>Developed by Anne Cori.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -172,6 +178,8 @@ howpublished = {\url{<a href="https://github.com/mrc-ide/EpiEstim" class="uri">h
 
   
 
+
+  
 
   </body>
 </html>
