@@ -1,0 +1,78 @@
+---
+title: "Alternative software for estimating the reproduction number"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Alternative software for estimating the reproduction number}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(kableExtra)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Summary table of other R packages and tools
+
+This is a dynamic version of Table 2 from the review "Real-time estimation of the reproduction number: scoping review of the applications and challenges" by Nash et al (currently under review - the URL will be made available here upon publication). This table summarises the R packages and tool identified in the paper that modify the approach used in EpiEstim or have incorporated additional features, such as the ability to estimate the reproduction number for multiple regions simultaneously. We intend for this table to be updated once new packages or package versions are released and hope this will help guide users when deciding which software would be most suitable for their specific data or analysis. If you are the author(s) of any of these R packages or tool and wish to edit or update this table please feel free to contact us or create a pull request.
+
+The ticks (✓) indicate whether an R package/tool includes that modification type. The final 3 rows summarise additional exploration by the authors of the paper to assess how easily each package/tool can be installed and used. Full details of how each classification (very good = ✓✓, good = ✓, poor = ✗) was defined, will be made available in the supplementary material of the Nash et al paper upon publication (Table S2 and the associated text). 
+
+
+```{r, echo=FALSE}
+Theme <- c("Incidence",
+           "Incidence",
+           "Other input data or method modification",
+           "Other input data or method modification",
+           "Other input data or method modification",
+           "Other input data or method modification",
+           "Geographical factors",
+           "Practical/logistical",
+           "Practical/logistical",
+           "Usability",
+           "Usability",
+           "Usability")
+Mod_type <- c("Account for case reporting delay or missing data",
+              "Remove weekly administrative noise",
+              "Low incidence or early R estimation",
+              "Alternative prior",
+              "Alternative way of temporal smoothing",
+              "Alternative method to estimate the SI",
+              "Model different regions simultaneously",
+              "Extrinsic factors",
+              "Disease elimination",
+              "Ease of installation",
+              "Documentation and tutorials",
+              "Speed of R estimation* (*or SI estimation for epicontacts)")
+APEestim <- c("","","","","✓","","","","","✓","✗","✓✓")
+bayEStim <- c("✓","","","","","","","","","✗","✗","NA")
+earlyR <- c("","","✓","","","","","","","✓✓","✓✓","✓✓")
+epicontacts <- c("","","","","","✓","","","","✓✓","✓✓","✓✓")
+Epidemia <- c("✓","","","✓","✓","","✓","✓","","✗","✓✓","✓")
+EpiFilter <- c("","","✓","✓","✓","","","","✓","✗","✓✓","✓✓")
+EpiNow2 <- c("✓","✓","","✓","✓","","✓","","","✓","✓✓","✗")
+
+df <- data.frame(Theme, Mod_type, APEestim, bayEStim, earlyR, 
+                 epicontacts, Epidemia, EpiFilter, EpiNow2)
+
+knitr::kable(df, col.names = c("Theme","Modification Type","APEestim","bayEStim","earlyR",
+                               "epicontacts","Epidemia","EpiFilter","EpiNow2"),
+             align = c("llccccccc"),
+             format = "html") %>%
+kableExtra::kable_styling(font_size = 12,
+                          full_width = T) %>%
+pack_rows("Full details of how the classifications (very good = ✓✓, good = ✓, poor = ✗) were defined can be found in the supplementary material of the Nash et al paper.", 10, 12) %>%
+footnote(general = 
+           "The CRAN package documentation or github repository for these R packages or tool* can be found by following the links below:
+APEestim (_v 0.0.1_): https://github.com/kpzoo/APEestim 
+bayEStim (_v 0.0.1_): https://github.com/thlytras/bayEStim 
+earlyR (_v 0.0.5_): https://CRAN.R-project.org/package=earlyR 
+epicontacts (_v 1.1.2_): https://CRAN.R-project.org/package=epicontacts 
+Epidemia (_v 1.0.0_): https://github.com/ImperialCollegeLondon/epidemia 
+*EpiFilter: https://github.com/kpzoo/EpiFilter 
+EpiNow2 (_v 1.3.2_): https://CRAN.R-project.org/package=EpiNow2")
+
+```
+

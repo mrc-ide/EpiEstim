@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Your Vignette Title}
+  %\VignetteIndexEntry{Full EpiEstim vignette}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
   )
-## https://stackoverflow.com/questions/5595512/what-is-the-difference-between-require-and-library
+
 library(kableExtra)
 library(hrbrthemes)
 library(gghighlight)
