@@ -320,7 +320,6 @@ make_config <- function(..., incid = NULL,
   ## checking and processing incid
   if(!is.null(incid)) 
   {
-    browser()
     incid <- process_I(incid)
     T <- nrow(incid)
     
