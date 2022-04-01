@@ -56,6 +56,9 @@
       <a href="articles/MV_EpiEstim_vignette.html">MV-EpiEstim</a>
     </li>
     <li>
+      <a href="articles/alternative_software.html">Alternative software for estimating the reproduction number</a>
+    </li>
+    <li>
       <a href="articles/full_EpiEstim_vignette.html">EpiEstim Vignette</a>
     </li>
     <li>
@@ -91,7 +94,25 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>A tool to estimate time varying instantaneous reproduction number during epidemics. It is described in the following paper:</p>
+<p>EpiEstim is a tool to estimate the time-varying instantaneous reproduction number during epidemics.</p>
+<div class="section level2">
+<h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
+</h2>
+<p>The following vignettes provide worked examples, FAQs and details about how EpiEstim can be used alongside some other R packages in an outbreak analysis workflow.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"short_demo"</span>, package<span class="op">=</span><span class="st">"EpiEstim"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"full_EpiEstim_vignette"</span>, package<span class="op">=</span><span class="st">"EpiEstim"</span><span class="op">)</span></code></pre></div>
+<p>To estimate the transmission advantage of pathogen variants or strains in real-time, please see the pre-print by Bhatia et al (<a href="https://www.medrxiv.org/content/10.1101/2021.11.26.21266899v1" class="external-link uri">https://www.medrxiv.org/content/10.1101/2021.11.26.21266899v1</a>) and the vignette below:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"MV_EpiEstim_vignette"</span>, package<span class="op">=</span><span class="st">"EpiEstim"</span><span class="op">)</span>   </code></pre></div>
+<p>To find out more about alternative software that may be more suitable for your specific data or analysis, please see below:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"alternative_software"</span>, package<span class="op">=</span><span class="st">"EpiEstim"</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="citing-our-paper">Citing our paper<a class="anchor" aria-label="anchor" href="#citing-our-paper"></a>
+</h2>
+<p>Anne Cori, Neil M. Ferguson, Christophe Fraser, Simon Cauchemez, <a href="https://doi.org/10.1093/aje/kwt133" class="external-link">A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics</a>, American Journal of Epidemiology, Volume 178, Issue 9, 1 November 2013, Pages 1505–1512.</p>
 <blockquote>
 <p>@article{Cori2013, author={Cori, A and Ferguson, NM and Fraser, C and Cauchemez, S},<br>
 year={2013},<br>
@@ -100,7 +121,7 @@ journal={Am. J. Epidemiol.},<br>
 doi={10.1093/aje/kwt133},<br>
 }</p>
 </blockquote>
-<p>Anne Cori, Neil M. Ferguson, Christophe Fraser, Simon Cauchemez, <a href="https://doi.org/10.1093/aje/kwt133" class="external-link">A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics</a>, American Journal of Epidemiology, Volume 178, Issue 9, 1 November 2013, Pages 1505–1512.</p>
+</div>
 <div class="section level2">
 <h2 id="citing-this-code-resource">Citing this code resource<a class="anchor" aria-label="anchor" href="#citing-this-code-resource"></a>
 </h2>

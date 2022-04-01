@@ -3,7 +3,8 @@ pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
   MV_EpiEstim_vignette: MV_EpiEstim_vignette.html
+  alternative_software: alternative_software.html
   full_EpiEstim_vignette: full_EpiEstim_vignette.html
   short_demo: short_demo.html
-last_built: 2022-04-01T10:37Z
+last_built: 2022-04-01T13:22Z
 
