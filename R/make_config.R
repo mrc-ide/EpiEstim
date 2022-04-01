@@ -288,7 +288,6 @@ make_config <- function(..., incid = NULL,
                         method = c("non_parametric_si", "parametric_si", 
                                    "uncertain_si", "si_from_data", 
                                    "si_from_sample")){
-  
   config <- list(...)
   if (length(config) == 1L && is.list(config[[1]])) {
     config <- config[[1]]
@@ -321,6 +320,7 @@ make_config <- function(..., incid = NULL,
   ## checking and processing incid
   if(!is.null(incid)) 
   {
+    browser()
     incid <- process_I(incid)
     T <- nrow(incid)
     
