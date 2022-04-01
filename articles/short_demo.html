@@ -162,25 +162,8 @@
                                   mean_si <span class="op">=</span> <span class="fl">2.6</span>, 
                                   std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt; debug: message(msg)</span>
 <span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span>
 <span class="co">#&gt;     To change this change the t_start and t_end arguments.</span>
-<span class="co">#&gt; debug: config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt; debug: config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_parametric_si</span><span class="op">$</span><span class="va">R</span><span class="op">)</span>
 <span class="co">#&gt;   t_start t_end  Mean(R)    Std(R) Quantile.0.025(R) Quantile.0.05(R)</span>
@@ -224,25 +207,8 @@
                                     config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
                                       si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt; debug: message(msg)</span>
 <span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span>
 <span class="co">#&gt;     To change this change the t_start and t_end arguments.</span>
-<span class="co">#&gt; debug: config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt; debug: config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 <span class="co"># si_distr gives the probability mass function of the serial interval for </span>
 <span class="co"># time intervals 0, 1, 2, etc.</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_non_parametric_si</span>, <span class="st">"R"</span><span class="op">)</span></code></pre></div>
@@ -271,25 +237,8 @@
 <span class="va">res_uncertain_si</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>,
                                method <span class="op">=</span> <span class="st">"uncertain_si"</span>,
                                config <span class="op">=</span> <span class="va">config</span><span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt; debug: message(msg)</span>
 <span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span>
 <span class="co">#&gt;     To change this change the t_start and t_end arguments.</span>
-<span class="co">#&gt; debug: config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt; debug: config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_uncertain_si</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </code></pre></div>
 <p><img src="figs-demo/estimate_r_uncertain_si-1.png" width="576"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -337,25 +286,8 @@
                                method <span class="op">=</span> <span class="st">"si_from_data"</span>,
                                si_data <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_data</span>,
                                config <span class="op">=</span> <span class="va">config</span><span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt; debug: message(msg)</span>
 <span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span>
 <span class="co">#&gt;     To change this change the t_start and t_end arguments.</span>
-<span class="co">#&gt; debug: config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt; debug: config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 <span class="co">#&gt; Running 1500 MCMC iterations </span>
 <span class="co">#&gt; MCMCmetrop1R iteration 1 of 1500 </span>
 <span class="co">#&gt; function value =  -27.68336</span>
@@ -428,25 +360,8 @@
                                 si_sample <span class="op">=</span> <span class="va">si_sample</span>,
                                 config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n2 <span class="op">=</span> <span class="fl">50</span>, 
                                 seed <span class="op">=</span> <span class="va">overall_seed</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt; debug: message(msg)</span>
 <span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span>
 <span class="co">#&gt;     To change this change the t_start and t_end arguments.</span>
-<span class="co">#&gt; debug: config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt; debug: config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 
 <span class="co">## check that res_si_from_sample is the same as res_si_from_data</span>
 <span class="co">## since they were generated using the same MCMC algorithm to generate the SI</span>
@@ -470,20 +385,6 @@
                            mean_si <span class="op">=</span> <span class="fl">2.6</span>, 
                            std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_weekly</span>, <span class="st">"R"</span><span class="op">)</span> </code></pre></div>
 <p><img src="figs-demo/estimate_r_weekly-1.png" width="576"></p>
 <p>For biweekly estimates:</p>
@@ -498,20 +399,6 @@
                              mean_si <span class="op">=</span> <span class="fl">2.6</span>, 
                              std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_biweekly</span>, <span class="st">"R"</span><span class="op">)</span> </code></pre></div>
 <p><img src="figs-demo/estimate_r_biweekly-1.png" width="576"></p>
 <p>So far we have used estimates on sliding windows. Sometimes it may be useful to consider consecutive non overlapping windows as well. For instance, in the flu outbreak we are considering, the school closed from 14th to 20th May 2009, i.e. days 18 to 24 in our dataset (Cauchemez et al., PNAS, 2011). It is interesting to estimate the reproduction number before, during, and after the shcool closure to assess whether this had an impact on transmissibility.</p>
@@ -526,20 +413,6 @@
                                                 mean_si <span class="op">=</span> <span class="fl">2.6</span>, 
                                                 std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_before_during_after_closure</span>, <span class="st">"R"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
 <p><img src="figs-demo/estimate_r_before_during_after_closure-1.png" width="576"></p>
@@ -564,25 +437,8 @@
 <span class="va">res_incid_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, 
                               method<span class="op">=</span><span class="st">"parametric_si"</span>,
                               config <span class="op">=</span> <span class="va">config</span><span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt; debug: message(msg)</span>
 <span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span>
 <span class="co">#&gt;     To change this change the t_start and t_end arguments.</span>
-<span class="co">#&gt; debug: config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt; debug: config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_incid_table</span>, <span class="st">"R"</span><span class="op">)</span></code></pre></div>
 <p><img src="figs-demo/incid_table-1.png" width="576"></p>
 <p>It can just be a vector (but then the x-axis in your plots is measured in time steps since start of the outbreak)</p>
@@ -590,25 +446,8 @@
 <code class="sourceCode R"><span class="va">res_incid_vector</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">I</span>, 
                                method<span class="op">=</span><span class="st">"parametric_si"</span>,
                                config <span class="op">=</span> <span class="va">config</span><span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt; debug: message(msg)</span>
 <span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span>
 <span class="co">#&gt;     To change this change the t_start and t_end arguments.</span>
-<span class="co">#&gt; debug: config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt; debug: config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_incid_vector</span>, <span class="st">"R"</span><span class="op">)</span></code></pre></div>
 <p><img src="figs-demo/incid_vector-1.png" width="576"></p>
 <p>Finally, <code>incid</code> can be an object of the class <code>incidence</code>, as created for instance by the function <code>incidence</code> of the <code>incidence</code> package.</p>
@@ -622,25 +461,8 @@
 <span class="va">res_incid_class</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/incidence.html" class="external-link">incidence</a></span><span class="op">(</span><span class="va">dates_onset</span>, last_date <span class="op">=</span> <span class="va">last_date</span><span class="op">)</span>, 
                               method<span class="op">=</span><span class="st">"parametric_si"</span>,
                               config <span class="op">=</span> <span class="va">config</span><span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt; debug: message(msg)</span>
 <span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span>
 <span class="co">#&gt;     To change this change the t_start and t_end arguments.</span>
-<span class="co">#&gt; debug: config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt; debug: config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_incid_class</span>, <span class="st">"R"</span><span class="op">)</span></code></pre></div>
 <p><img src="figs-demo/incid_class-1.png" width="576"></p>
 </div>
@@ -664,25 +486,8 @@
 <span class="va">res_with_imports</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">incid</span>, method <span class="op">=</span> <span class="st">"parametric_si"</span>,
                    config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
                    mean_si <span class="op">=</span> <span class="fl">2.6</span>, std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt; debug: message(msg)</span>
 <span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span>
 <span class="co">#&gt;     To change this change the t_start and t_end arguments.</span>
-<span class="co">#&gt; debug: config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt; debug: config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_with_imports</span>, add_imported_cases<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; The number of colors (8) did not match the number of groups (2).</span>
 <span class="co">#&gt; Using `col_pal` instead.</span></code></pre></div>

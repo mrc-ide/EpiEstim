@@ -126,25 +126,8 @@ pandemic in Southeast Asia. Nature 437(7056), 209-214.</p>
 <span class="r-in"><span class="co">## estimate the reproduction number (method "non_parametric_si")</span></span>
 <span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, method<span class="op">=</span><span class="st">"non_parametric_si"</span>,</span>
 <span class="r-in">          config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: incid &lt;- process_I(incid)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: T &lt;- nrow(incid)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     message(msg)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     config$t_end &lt;- seq(8, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> } else {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     check_times(config$t_start, config$t_end, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: message(msg)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Default config will estimate R on weekly sliding windows.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     To change this change the t_start and t_end arguments. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: config$t_start &lt;- seq(2, T - 6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: config$t_end &lt;- seq(8, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: return(config)</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = "none"` instead.</span>
 <span class="r-plt img"><img src="Flu2009-1.png" alt="" width="700" height="433"></span>

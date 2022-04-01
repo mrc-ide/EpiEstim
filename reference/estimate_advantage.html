@@ -187,34 +187,6 @@ point estimate and upper confidence limits. The second elemnent is NULL and can 
 <span class="r-in"><span class="va">R_init</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co"># no estimates of R on first time step</span></span>
 <span class="r-in"><span class="va">epsilon_init</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">estimate_advantage</span><span class="op">(</span><span class="va">incid</span>, <span class="va">si_distr</span>, <span class="va">priors</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: incid &lt;- process_I(incid)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: T &lt;- nrow(incid)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     message(msg)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     config$t_end &lt;- seq(8, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> } else {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     check_times(config$t_start, config$t_end, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: check_times(config$t_start, config$t_end, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: return(config)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: incid &lt;- process_I(incid)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: T &lt;- nrow(incid)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     message(msg)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     config$t_end &lt;- seq(8, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> } else {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     check_times(config$t_start, config$t_end, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: check_times(config$t_start, config$t_end, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: return(config)</span>
 <span class="r-in"><span class="co"># Plotting to check outputs</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">epsilon</span>, type <span class="op">=</span> <span class="st">"l"</span>,</span>

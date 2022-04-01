@@ -114,20 +114,6 @@ dynamics in Great Britain. Proc Natl Acad Sci U S A 103(33): 12637-12642.</p>
 <span class="r-in">                      t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">27</span>, <span class="fl">51</span><span class="op">)</span>, </span>
 <span class="r-in">                      t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">33</span>, <span class="fl">57</span><span class="op">)</span>,</span>
 <span class="r-in">                      si_distr <span class="op">=</span> <span class="va">Smallpox1972</span><span class="op">$</span><span class="va">si_distr</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: incid &lt;- process_I(incid)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: T &lt;- nrow(incid)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     message(msg)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     config$t_end &lt;- seq(8, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> } else {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     check_times(config$t_start, config$t_end, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: check_times(config$t_start, config$t_end, T)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> debug: return(config)</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = "none"` instead.</span>
 <span class="r-plt img"><img src="Smallpox1972-1.png" alt="" width="700" height="433"></span>

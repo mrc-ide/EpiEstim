@@ -450,35 +450,7 @@ Variant_2
 <code class="sourceCode R"><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu">EpiEstim</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_advantage.html">estimate_advantage</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid</span>,
                              si_distr <span class="op">=</span> <span class="va">si_matrix</span>,
                              priors <span class="op">=</span> <span class="fu"><a href="../reference/default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span>,
-                             mcmc_control <span class="op">=</span> <span class="fu"><a href="../reference/default_mcmc_controls.html">default_mcmc_controls</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span>
-<span class="co">#&gt; Called from: make_config(incid = incid, method = method, config = config)</span>
-<span class="co">#&gt; debug: incid &lt;- process_I(incid)</span>
-<span class="co">#&gt; debug: T &lt;- nrow(incid)</span>
-<span class="co">#&gt; debug: if (is.null(config$t_start) || is.null(config$t_end)) {</span>
-<span class="co">#&gt;     msg &lt;- "Default config will estimate R on weekly sliding windows.\n    To change this change the t_start and t_end arguments. "</span>
-<span class="co">#&gt;     message(msg)</span>
-<span class="co">#&gt;     config$t_start &lt;- seq(2, T - 6)</span>
-<span class="co">#&gt;     config$t_end &lt;- seq(8, T)</span>
-<span class="co">#&gt; } else {</span>
-<span class="co">#&gt;     check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; debug: check_times(config$t_start, config$t_end, T)</span>
-<span class="co">#&gt; debug: class(config) &lt;- "estimate_R_config"</span>
-<span class="co">#&gt; debug: return(config)</span></code></pre></div>
+                             mcmc_control <span class="op">=</span> <span class="fu"><a href="../reference/default_mcmc_controls.html">default_mcmc_controls</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>The output is a list containing 4 elements:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">output</span><span class="op">$</span><span class="va">epsilon</span></code></pre></div>
@@ -506,7 +478,7 @@ Variant_2
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">output</span><span class="op">$</span><span class="va">epsilon</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;      50%     2.5%    97.5% </span>
-<span class="co">#&gt; 1.492862 1.468557 1.509958</span></code></pre></div>
+<span class="co">#&gt; 1.491490 1.474835 1.511473</span></code></pre></div>
 <div style="margin-top:30px;">
 <h2 id="faqs">FAQs</h2>
 </div>
