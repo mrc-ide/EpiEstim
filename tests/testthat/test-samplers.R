@@ -607,8 +607,8 @@ test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 
   )
 
   ## R should be approx 1.1 for loc1 and 1.5 for loc2
-  expect_equal(mean(x$R[,1,], na.rm=T), 1.1, tolerance = 0.5)
-  expect_equal(mean(x$R[,2,], na.rm=T), 1.5, tolerance = 0.5)
+  expect_equal(mean(x$R[,1,], na.rm = TRUE), 1.1, tolerance = 0.5)
+  expect_equal(mean(x$R[,2,], na.rm = TRUE), 1.5, tolerance = 0.5)
 
 })
 
