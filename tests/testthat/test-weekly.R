@@ -311,6 +311,37 @@ test_that("weekly version of estimate_R works with aggregated data in non-parame
   
 })
 
+
+
+test_that("r grid can be automatically updated with similar results", {
+  
+  ## estimate the reproduction number (method "parametric_si")
+  ## when not specifying t_start and t_end in config, they are set to estimate
+  ## the reproduction number on sliding weekly windows      
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si))
+  
+ res_weekly_small_grid <- estimate_R_agg(incid = weekly_inc, 
+                               dt = 7, # aggregation window of the data
+                               dt_out = 7, # desired sliding window length
+                               iter = 10,
+                               config = config,
+                               method = method,
+                               grid = list(precision = 0.001, min = 0.01, max = 0.01))
+ 
+ res_weekly_default_grid <- estimate_R_agg(incid = weekly_inc, 
+                                         dt = 7, # aggregation window of the data
+                                         dt_out = 7, # desired sliding window length
+                                         iter = 10,
+                                         config = config,
+                                         method = method)
+ 
+ expect_true(max(abs(res_weekly_small_grid$R - res_weekly_default_grid$R)) < 1e-9)
+  
+})
+
+
 ## TODO: 
 ## check that if incid is not a vector you can't run with dt > 1 (if it's an incidence object or a matrix / dataframe)
 ## check that if method is not parametric or non_parametric you can't run with dt > 1

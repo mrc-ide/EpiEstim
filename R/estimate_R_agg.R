@@ -1,7 +1,7 @@
 
 ###############################################################
 # TODO: add a "details" and "examples" section
-# TODO: vignettes are not visible 
+# TODO: vignettes are not visible - maybe sorted? ask Rich if not
 # TODO: automatic refining of the grid if the initial one wasn't good
 # TODO: Add the following checks:
 ## - check that dt is in correct format - probably integer, meaning 7L by default rather than 7
@@ -22,7 +22,8 @@
 #' function \code{make_config}. 
 #' @param method One of "non_parametric_si" or "parametric_si" (see details).
 #' @param grid named list containing "precision", "min", and "max" which are used to
-#' define a grid of growth rate parameters that are used inside the EM algorithm (see details)
+#' define a grid of growth rate parameters that are used inside the EM algorithm (see details). 
+#' We recommend using the default values. 
 #'
 #' @return {
 #' an object of class \code{estimate_R}, with components:
@@ -145,7 +146,8 @@ estimate_R_agg <- function(incid,
       # Translate R to growth rate
       get_r_from_R <- function(R, gt_mean, gt_sd, 
                                gt_distr,
-                               r_grid) {
+                               grid) {
+        r_grid <- seq(grid$min, grid$max, grid$precision)
         if(is.null(gt_distr)) {
           gt_pars <- gamma_mucv2shapescale(mu = gt_mean, cv = gt_sd / gt_mean)
           ## TODO: could call these si rather than gt
@@ -159,8 +161,15 @@ estimate_R_agg <- function(incid,
         # find location of the value in the R grid which has the smallest 
         # difference to the input of R the user provided e.g. R_grid[idx_r]:
         idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L)) 
-        if (any(idx_r == 1) || any(idx_r == length(r_grid))) {
-          stop("rerun get_r_from_R with a wider r_grid (e.g. increase grid$max).")
+        
+        while (any(idx_r == 1) || any(idx_r == length(r_grid))) {
+          # rerunning get_r_from_R with a wider r_grid
+          grid_multiplier <- 5
+          if(grid$max > 0) grid$max <- grid_multiplier * grid$max else grid$max <- - grid$max 
+          if(grid$min < 0) grid$min <- grid_multiplier * grid$min else grid$min <- - grid$min 
+          r_grid <- seq(grid$min, grid$max, grid$precision)
+          R_grid <- r2R0(r = r_grid, w = gt_distr)
+          idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L)) 
         }
         r <- vapply(idx_r, function(e) r_grid[e], numeric(1L))
       }
@@ -168,7 +177,7 @@ estimate_R_agg <- function(incid,
       gr <- get_r_from_R(R = Mean_R, 
                          gt_mean = config$mean_si, gt_sd = config$std_si, 
                          gt_distr = config$si_distr,
-                         r_grid = seq(grid$min, grid$max, grid$precision))
+                         grid = grid)
       
       ## TODO: if grid not good enough rerun with new grid
       
@@ -233,7 +242,7 @@ estimate_R_agg <- function(incid,
       gr2 <- get_r_from_R(R = Mean_R_2, 
                          gt_mean = config$mean_si, gt_sd = config$std_si, 
                          gt_distr = config$si_distr,
-                         r_grid = seq(grid$min, grid$max, grid$precision))
+                         grid = grid)
       
       # again, making the assumption that the gr for the first 
       # dt would be the same as the second dt:

@@ -29,7 +29,8 @@ function \code{make_config}.}
 \item{method}{One of "non_parametric_si" or "parametric_si" (see details).}
 
 \item{grid}{named list containing "precision", "min", and "max" which are used to
-define a grid of growth rate parameters that are used inside the EM algorithm (see details)}
+define a grid of growth rate parameters that are used inside the EM algorithm (see details). 
+We recommend using the default values.}
 }
 \value{
 {
