@@ -55,6 +55,8 @@
 
 #' }
 #' }
+#' @importFrom epitrix gamma_mucv2shapescale r2R0
+#' @importFrom distcrete distcrete
 #' @export
 #'
 #' @examples # TODO: add examples
@@ -142,15 +144,15 @@ estimate_R_agg <- function(incid,
                                gt_distr,
                                r_grid) {
         if(is.null(gt_distr)) {
-          gt_pars <- epitrix::gamma_mucv2shapescale(mu = gt_mean, cv = gt_sd / gt_mean)
+          gt_pars <- gamma_mucv2shapescale(mu = gt_mean, cv = gt_sd / gt_mean)
           ## TODO: could call these si rather than gt
           ## TODO: could use internal function discr_si rather than this discretisation - leave for now
-          gt_distr <- distcrete::distcrete("gamma", interval = 1,
+          gt_distr <- distcrete("gamma", interval = 1,
                                            shape = gt_pars$shape,
                                            scale = gt_pars$scale, w = 0.5)
         }
         # using a grid of r values translate that into R using r2R0
-        R_grid <- epitrix::r2R0(r = r_grid, w = gt_distr)
+        R_grid <- r2R0(r = r_grid, w = gt_distr)
         # find location of the value in the R grid which has the smallest 
         # difference to the input of R the user provided e.g. R_grid[idx_r]:
         idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L)) 

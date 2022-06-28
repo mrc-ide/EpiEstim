@@ -37,7 +37,10 @@ Imports:
     incidence (>= 1.7.0),
     scales,
     grDevices,
-    abind
+    abind,
+    gghighlight,
+    epitrix,
+    distcrete
 Suggests:
     testthat,
     utils,
@@ -47,7 +50,6 @@ Suggests:
     rmarkdown,
     kableExtra,
     hrbrthemes,
-    gghighlight,
     MCMCglmm,
     projections,
     dplyr,

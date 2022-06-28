@@ -20,6 +20,6 @@ Aggregating daily incidence to longer time windows
 \examples{
 data("SARS2003")
 incid <- SARS2003$incidence
-dt <- 7
+dt <- 7L
 aggregate_inc(incid, dt)
 }
