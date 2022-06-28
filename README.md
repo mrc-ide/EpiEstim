@@ -7,6 +7,10 @@
 <!-- badges: end -->
 
 EpiEstim is a tool to estimate the time-varying instantaneous reproduction number during epidemics.
+To install the latest version, use:
+```r
+devtools::install_github("mrc-ide/EpiEstim", build_vignettes = TRUE)
+```
 
 ## Vignettes
 The following vignettes provide worked examples, FAQs and details about how EpiEstim can be used alongside some other R packages in an outbreak analysis workflow.

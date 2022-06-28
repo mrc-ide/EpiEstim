@@ -2,7 +2,6 @@
 ###############################################################
 # TODO: add a "details" and "examples" section
 # TODO: vignettes are not visible - maybe sorted? ask Rich if not
-# TODO: automatic refining of the grid if the initial one wasn't good
 # TODO: Add the following checks:
 ## - check that dt is in correct format - probably integer, meaning 7L by default rather than 7
 ## - check that dt_out in is correct format
