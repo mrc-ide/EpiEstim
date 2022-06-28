@@ -16,8 +16,8 @@ devtools::install_github("mrc-ide/EpiEstim", build_vignettes = TRUE)
 The following vignettes provide worked examples, FAQs and details about how EpiEstim can be used alongside some other R packages in an outbreak analysis workflow.
 
 ```r
-vignette("short_demo", package="EpiEstim")
-vignette("full_EpiEstim_vignette", package="EpiEstim")
+vignette("short_demo", package = "EpiEstim")
+vignette("full_EpiEstim_vignette", package = "EpiEstim")
 ```
 
 To estimate the transmission advantage of pathogen variants or strains in real-time, please see the pre-print by Bhatia et al (https://www.medrxiv.org/content/10.1101/2021.11.26.21266899v1) and the vignette below:
@@ -29,7 +29,7 @@ vignette("MV_EpiEstim_vignette", package="EpiEstim")
 To find out more about alternative software that may be more suitable for your specific data or analysis, please see below:
 
 ```r
-vignette("alternative_software", package="EpiEstim")
+vignette("alternative_software", package = "EpiEstim")
 ```
 
 ## Citing our paper
