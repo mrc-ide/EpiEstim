@@ -316,6 +316,7 @@ test_that("weekly version of estimate_R works with aggregated data in non-parame
 ## check that if method is not parametric or non_parametric you can't run with dt > 1
 ## check that if you don't supply the right arguments it does not work (e.g. no mean_SI for a parametric method)
 ## do a test with a different dt (3, 10)
+## can we plot the output of the R calculated from coarse data
 
 
 

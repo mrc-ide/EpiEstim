@@ -1,7 +1,6 @@
 
 ###############################################################
 # TODO: add a "details" and "examples" section
-# TODO: this function may be hidden to the user
 # TODO: vignettes are not visible 
 # TODO: automatic refining of the grid if the initial one wasn't good
 # TODO: Add the following checks:
@@ -10,6 +9,7 @@
 ## - check that the grid is a list of 3 elements, all of them numbers, min < max, precision < max - min
 ## TODO: do we want to keep the iteration number printed
 ## TODO: allow user defined tstart and tend?
+## TODO: sort the x axis issue on the plots
 ###############################################################
 
 #' @title Estimated Instantaneous Reproduction Number from coarsely aggregated data
