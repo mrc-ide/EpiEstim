@@ -69,6 +69,7 @@
 #' incid <- SARS2003$incidence
 #' dt <- 7L
 #' weekly_inc <- aggregate_inc(incid, dt)
+#' si_distr <- SARS2003$si_distr
 #' 
 #' ## estimate Rt using the default parameters (method "non_parametric_si")
 #' method <- "non_parametric_si"
