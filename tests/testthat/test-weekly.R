@@ -34,13 +34,28 @@ test_that("weekly version of estimate_R works in parametric mode", {
   ## the reproduction number on sliding weekly windows                          
   config <- make_config(list(mean_si = mean_si,
                              std_si = std_si))
-  res <- estimate_R_agg(incid = weekly_inc, 
+  res_weekly <- estimate_R_agg(incid = weekly_inc, 
                         dt = 7, # aggregation window of the data
                         dt_out = 7, # desired sliding window length
                         iter = 10,
                         config = config,
                         method = "parametric_si",
                         grid = list(precision = 0.001, min = -1, max = 1))
+  
+  res_daily <- estimate_R(incid = incid, 
+                               config = config,
+                               method = "parametric_si")
+  
+  ## test that the weekly incidence matches the aggregated daily one
+  ## except for first time window where we impose I = 1 on first day
+  ## TODO: explore the issue above of forcing I = 1 on first day
+  
+  for(i in seq_len(floor(length(res_daily$I) / dt))[-1])
+  {
+    expect_equal(sum(res_daily$I[i*dt+(1:dt)]), 
+                 sum(res_weekly$I[i*dt+(1:dt)]))
+  }
+  
                         
                           
 })

@@ -60,17 +60,17 @@ estimate_R_agg <- function(incid,
     config_out$t_end <- config_out$t_start + (dt_out - 1)
   }
   
-  ndays <- length(incid)*dt
+  T <- length(incid)*dt
   
   # config$t_start and config$t_end used for the reconstruction. 
   # Rt estimation starts on 1st day of second dt. 
   # Width of fixed time windows match aggregations:
-  config$t_start <- seq(from = dt + 1, to = ndays - (dt - 1), dt)
-  config$t_end <- seq(from = min(config$t_start) + (dt - 1),to = ndays,dt)
+  config$t_start <- seq(from = dt + 1, to = T - (dt - 1), dt)
+  config$t_end <- seq(from = min(config$t_start) + (dt - 1),to = T,dt)
   
   niter <- seq(1,iter,1) 
   windows <- length(config$t_end)
-  sim_inc <- matrix(NA, nrow = ndays, ncol = iter)
+  sim_inc <- matrix(NA, nrow = T, ncol = iter)
   R_ests <- matrix(NA, nrow = windows, ncol = iter)
   R_upper_95 <- matrix(NA, nrow = windows, ncol = iter)
   R_lower_95 <- matrix(NA, nrow = windows, ncol = iter)
@@ -171,8 +171,8 @@ estimate_R_agg <- function(incid,
       k_seq <- rep(k, each=dt)
       gr_seq <- rep(gr, each=dt)
       
-      est_inc <- numeric(length=ndays)
-      days <- seq(1,ndays,1)
+      est_inc <- numeric(length=T)
+      days <- seq(1,T,1)
       w_day <- rep(seq(1,dt), ngroups)
       
       for(t in 1:length(days)){
@@ -252,8 +252,8 @@ estimate_R_agg <- function(incid,
       k2_seq <- rep(k2, each=dt)
       gr2_seq <- rep(gr2, each=dt)
       
-      est_inc2 <- numeric(length=ndays)
-      days <- seq(1,ndays,1)
+      est_inc2 <- numeric(length=T)
+      days <- seq(1,T,1)
       w_day <- rep(seq(1,dt), ngroups)
       
       for(t in 1:length(days)){
@@ -279,15 +279,7 @@ estimate_R_agg <- function(incid,
       
     }
   }
-  list(recon_inc = sim_inc, 
-       R_mean_fixed = R_ests, 
-       R_upper_95_fixed = R_upper_95, 
-       R_lower_95_fixed = R_lower_95, 
-       R_upper_90 = R_upper_90, 
-       R_lower_90 = R_lower_90,
-       R_mean_sliding = R_out$R$`Mean(R)`,
-       R_tmin_sliding = R_out$R$`t_start`,
-       R_tmax_sliding = R_out$R$`t_end`,
-       R_upper_95_sliding = R_out$R$`Quantile.0.975(R)`,
-       R_lower_95_sliding = R_out$R$`Quantile.0.025(R)`)
+  
+  R_out
+  
 }
