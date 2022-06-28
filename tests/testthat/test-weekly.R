@@ -34,9 +34,14 @@ test_that("weekly version of estimate_R works in parametric mode", {
   ## the reproduction number on sliding weekly windows                          
   config <- make_config(list(mean_si = mean_si,
                              std_si = std_si))
-  res <- estimate_R(incid = incid, 
-                    method = "parametric_si",
-                    config = config)
-  
-  
+  res <- estimate_R_agg(incid = weekly_inc, 
+                        dt = 7, # aggregation window of the data
+                        dt_out = 7, # desired sliding window length
+                        iter = 10,
+                        config = config,
+                        method = "parametric_si",
+                        grid = list(precision = 0.001, min = -1, max = 1))
+                        
+                          
 })
+  

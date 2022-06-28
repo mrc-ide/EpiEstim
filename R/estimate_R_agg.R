@@ -108,12 +108,17 @@ estimate_R_agg <- function(incid,
       
       # 4. Translate to growth rate
       
-      
-      get_r_from_R <- function(R, gt_mean, gt_sd, r_grid = seq(grid$min, grid$max, grid$precision)) {
-        gt_pars <- epitrix::gamma_mucv2shapescale(mu = gt_mean, cv = gt_sd / gt_mean)
-        gt_distr <- distcrete::distcrete("gamma", interval = 1,
-                                         shape = gt_pars$shape,
-                                         scale = gt_pars$scale, w = 0.5)
+      get_r_from_R <- function(R, gt_mean, gt_sd, 
+                               gt_distr,
+                               r_grid) {
+        if(is.null(gt_distr)) {
+          gt_pars <- epitrix::gamma_mucv2shapescale(mu = gt_mean, cv = gt_sd / gt_mean)
+          ## TODO: could call these si rather than gt
+          ## TODO: could use internal function discr_si rather than this discretisation - leave for now
+          gt_distr <- distcrete::distcrete("gamma", interval = 1,
+                                           shape = gt_pars$shape,
+                                           scale = gt_pars$scale, w = 0.5)
+        }
         # using a grid of r values translate that into R using r2R0
         R_grid <- epitrix::r2R0(r = r_grid, w = gt_distr)
         # find location of the value in the R grid which has the smallest 
@@ -125,8 +130,12 @@ estimate_R_agg <- function(incid,
         r <- vapply(idx_r, function(e) r_grid[e], numeric(1L))
       }
       
+      gr <- get_r_from_R(R = Mean_R, 
+                         gt_mean = config$mean_si, gt_sd = config$std_si, 
+                         gt_distr = config$si_distr,
+                         r_grid = seq(grid$min, grid$max, grid$precision))
       
-      gr <- get_r_from_R(Mean_R, mean_si, sd_si)
+      ## TODO: if grid not good enough rerun with new grid
       
       # so that the incidence for the first dt can be 
       # reconstructed, making the assumption that the gr
@@ -211,7 +220,10 @@ estimate_R_agg <- function(incid,
       
       #gr2 <- spline_func(Mean_R_2)
       
-      gr2 <- get_r_from_R(Mean_R_2, mean_si, sd_si)
+      gr2 <- get_r_from_R(R = Mean_R_2, 
+                         gt_mean = config$mean_si, gt_sd = config$std_si, 
+                         gt_distr = config$si_distr,
+                         r_grid = seq(grid$min, grid$max, grid$precision))
       
       # again, making the assumption that the gr for the first 
       # dt would be the same as the second dt:
@@ -277,10 +289,5 @@ estimate_R_agg <- function(incid,
        R_tmin_sliding = R_out$R$`t_start`,
        R_tmax_sliding = R_out$R$`t_end`,
        R_upper_95_sliding = R_out$R$`Quantile.0.975(R)`,
-       R_lower_95_sliding = R_out$R$`Quantile.0.025(R)`,
-       R_mean_daily = R_daily$R$`Mean(R)`,
-       R_upper_95_daily = R_daily$R$`Quantile.0.975(R)`,
-       R_lower_95_daily = R_daily$R$`Quantile.0.025(R)`,
-       R_tmin_daily = R_daily$R$`t_start`,
-       R_tmax_daily = R_daily$R$`t_end`)
+       R_lower_95_sliding = R_out$R$`Quantile.0.025(R)`)
 }
