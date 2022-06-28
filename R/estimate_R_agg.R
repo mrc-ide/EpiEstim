@@ -24,10 +24,40 @@
 #' @param grid named list containing "precision", "min", and "max" which are used to
 #' define a grid of growth rate parameters that are used inside the EM algorithm (see details)
 #'
-#' @return
+#' @return {
+#' an object of class \code{estimate_R}, with components:
+#' \itemize{
+#'
+#' \item{R}{: a dataframe containing:
+#' the times of start and end of each time window considered ;
+#' the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975
+#' quantiles of the reproduction number for each time window.}
+#'
+#' \item{method}{: the method used to estimate R, one of "non_parametric_si",
+#' "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
+#'
+#' \item{si_distr}{: a vector or dataframe (depending on the method) containing
+#'  the discrete serial interval distribution(s) used for estimation}
+#'
+#' \item{SI.Moments}{: a vector or dataframe (depending on the method)
+#' containing the mean and std of the discrete serial interval distribution(s)
+#' used for estimation}
+#'
+#' \item{I}{: the time series of total incidence}
+#'
+#' \item{I_local}{: the time series of incidence of local cases (so that
+#' \code{I_local + I_imported = I})}
+#'
+#' \item{I_imported}{: the time series of incidence of imported cases (so that
+#' \code{I_local + I_imported = I})}
+#'
+#' \item{dates}{: a vector of dates corresponding to the incidence time series}
+
+#' }
+#' }
 #' @export
 #'
-#' @examples
+#' @examples # TODO: add examples
 estimate_R_agg <- function(incid,
                            dt = 7, # aggregation window of the data
                            dt_out = 7, # desired sliding window length

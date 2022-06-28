@@ -46,6 +46,7 @@ test_that("weekly version of estimate_R works in parametric mode", {
                                config = config,
                                method = "parametric_si")
   
+  ######################################################################
   ## test that the weekly incidence matches the aggregated daily one
   ## except for first time window where we impose I = 1 on first day
   ## TODO: explore the issue above of forcing I = 1 on first day
@@ -56,7 +57,35 @@ test_that("weekly version of estimate_R works in parametric mode", {
                  sum(res_weekly$I[i*dt+(1:dt)]))
   }
   
-                        
+  ######################################################################
+  ## test that the weekly R estimates vaguely match if you use the daily data
+  ## or the weekly data
+  
+  common_t_start <- intersect(res_daily$R$t_start, res_weekly$R$t_start)
+  
+  relative_error <- abs(res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start] -   
+                          res_weekly$R$`Mean(R)`[res_weekly$R$t_start %in% common_t_start]) / 
+    res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start]
+
+  ## only check after the 10th common_t_start as before hand there is a lot of
+  ## day to day variation
+  expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
+  
+  ######################################################################
+  ## test that the weekly R estimates from weekly data match exactly the weekly
+  ## R estimates from the daily reconstructed incidence
+  
+  res_daily_reconstructed <- estimate_R(incid = res_weekly$I, 
+                          config = config,
+                          method = "parametric_si")
+  
+  common_t_start <- intersect(res_daily_reconstructed$R$t_start, res_weekly$R$t_start)
+  
+  relative_error <- abs(res_daily_reconstructed$R$`Mean(R)`[res_daily_reconstructed$R$t_start %in% common_t_start] -   
+                          res_weekly$R$`Mean(R)`[res_weekly$R$t_start %in% common_t_start]) / 
+    res_daily_reconstructed$R$`Mean(R)`[res_daily_reconstructed$R$t_start %in% common_t_start]
+  
+  expect_true(all(relative_error < 1e-9)) 
                           
 })
   
