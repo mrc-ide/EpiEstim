@@ -3,6 +3,11 @@
 # TODO: add a "details" and "examples" section
 # TODO: this function may be hidden to the user
 # TODO: vignettes are not visible 
+# TODO: automatic refining of the grid if the initial one wasn't good
+# TODO: Add the following checks:
+## - check that dt is in correct format
+## - check that dt_out in is correct format
+## - check that the grid is a list of 3 elements, all of them numbers, min < max, precision < max - min
 ###############################################################
 
 #' @title Estimated Instantaneous Reproduction Number from coarsely aggregated data
@@ -52,7 +57,8 @@
 #' @importFrom distcrete distcrete
 #' @export
 #'
-#' @details # TODO: add details
+#' @details
+#' 
 #' @examples 
 #' ## load data on SARS in 2003
 #' data("SARS2003")
@@ -83,20 +89,15 @@ estimate_R_agg <- function(incid,
                            method = c("non_parametric_si", "parametric_si"),
                            grid = list(precision = 0.001, min = -1, max = 1)){ 
   
-  ## features to add:
-  ## automatic refining of the grid if the initial one wasn't good
+  # Two configs:
+  # 'config' for the R estimates used to reconstruct the incidence (internal to the
+  # EM algorithm). These use a fixed window length matched to dt (aggregation window)
+  # 'config_out' for the final estimated R using sliding windows
   
-  ## checks TODO: 
-  ## check that dt is in correct format
-  ## check that dt_out in is correct format
-  ## add checks that grid is a list of 3 elements, all of them numbers, min < max, precision < max - min
   method <- match.arg(method) # potentially add an error message but maybe automatic
   config <- process_config(config)
   check_config(config, method)
-  
-  config_out <- config # this will be used for the final estimated R
-  # config will be used for R estimates internal to the EM algorithm
-  # these use a fixed window length matched to the data aggregation window dt
+  config_out <- config 
   
   if(is.null(config_out$t_start)) {
     config_out$t_start <- seq(from = dt + 1,
@@ -111,7 +112,7 @@ estimate_R_agg <- function(incid,
   
   # config$t_start and config$t_end used for the reconstruction. 
   # Rt estimation starts on 1st day of second dt. 
-  # Width of fixed time windows match aggregations:
+  # Width of fixed time windows match aggregations (dt):
   config$t_start <- seq(from = dt + 1, to = T - (dt - 1), dt)
   config$t_end <- seq(from = min(config$t_start) + (dt - 1),to = T,dt)
   
@@ -123,7 +124,7 @@ estimate_R_agg <- function(incid,
   for(i in 1:length(niter)){
     if(niter[i]==1){
       
-      # Aggregated incidence split evenly:
+      # Initialisation of EM. Aggregated incidence split evenly:
       dis<- incid/dt
       dis_inc <- rep(dis, each = dt)
       
