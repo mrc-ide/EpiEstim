@@ -3,6 +3,7 @@ require(testthat)
 
 ### everything needed for the tests in this file ###
 
+data("Flu2009")
 data("SARS2003")
 incid <- SARS2003$incidence
 dt <- 7L

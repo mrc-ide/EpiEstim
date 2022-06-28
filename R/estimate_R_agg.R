@@ -1,18 +1,11 @@
 
-
-# grid$precision, grid$min, and grid$max are all growth rate grid parameters
-
 ###############################################################
-
-
-
-###############################################################
-
-# TODO: add a "details section"
+# TODO: add a "details" and "examples" section
 # TODO: this function may be hidden to the user
 # TODO: vignettes are not visible 
+###############################################################
 
-#' Estimated Instantaneous Reproduction Number from coarsely aggregated data
+#' @title Estimated Instantaneous Reproduction Number from coarsely aggregated data
 #'
 #' @param incid aggregated incidence data, supplied as a vector
 #' @param dt length of temporal aggregation of the data (numeric, 7 days by default)
@@ -59,7 +52,29 @@
 #' @importFrom distcrete distcrete
 #' @export
 #'
-#' @examples # TODO: add examples
+#' @details # TODO: add details
+#' @examples 
+#' ## load data on SARS in 2003
+#' data("SARS2003")
+#' 
+#' ## aggregate the data to weekly counts of cases
+#' incid <- SARS2003$incidence
+#' dt <- 7L
+#' weekly_inc <- aggregate_inc(incid, dt)
+#' 
+#' ## estimate Rt using the default parameters (method "non_parametric_si")
+#' method <- "non_parametric_si"
+#' config <- make_config(list(si_distr = si_distr))
+#' res_weekly <- estimate_R_agg(incid = weekly_inc, 
+#'                             dt = 7, # aggregation window of the data
+#'                             dt_out = 7, # desired sliding window length
+#'                             iter = 10,
+#'                             config = config,
+#'                             method = method,
+#'                             grid = list(precision = 0.001, min = -1, max = 1))
+#' 
+#' ## plot the result
+#' plot(res_weekly)
 estimate_R_agg <- function(incid,
                            dt = 7, # aggregation window of the data
                            dt_out = 7, # desired sliding window length
@@ -104,10 +119,6 @@ estimate_R_agg <- function(incid,
   windows <- length(config$t_end)
   sim_inc <- matrix(NA, nrow = T, ncol = iter)
   R_ests <- matrix(NA, nrow = windows, ncol = iter)
-  R_upper_95 <- matrix(NA, nrow = windows, ncol = iter)
-  R_lower_95 <- matrix(NA, nrow = windows, ncol = iter)
-  R_upper_90 <- matrix(NA, nrow = windows, ncol = iter)
-  R_lower_90 <- matrix(NA, nrow = windows, ncol = iter)
   
   for(i in 1:length(niter)){
     if(niter[i]==1){
@@ -118,7 +129,6 @@ estimate_R_agg <- function(incid,
       
       # Remember that the EpiEstim SI needs to start at 0
       # vs. projections which needs to start at 1
-      
       R <- estimate_R(dis_inc, 
                       method = method,
                       config = config)
@@ -127,19 +137,8 @@ estimate_R_agg <- function(incid,
       
       
       Mean_R <- R$R$`Mean(R)`
-      Upper95_R <- R$R$`Quantile.0.975(R)`
-      Lower95_R <- R$R$`Quantile.0.025(R)`
-      Upper90_R <- R$R$`Quantile.0.95(R)`
-      Lower90_R <- R$R$`Quantile.0.05(R)`
-      R_ests[,i] <- Mean_R
-      R_upper_95[,i] <- Upper95_R
-      R_lower_95[,i] <- Lower95_R
-      R_upper_90[,i] <- Upper90_R
-      R_lower_90[,i] <- Lower90_R
       
-      
-      # 4. Translate to growth rate
-      
+      # Translate R to growth rate
       get_r_from_R <- function(R, gt_mean, gt_sd, 
                                gt_distr,
                                r_grid) {
@@ -182,23 +181,10 @@ estimate_R_agg <- function(incid,
       d <- numeric(length=ngroups)
       k <- numeric(length=ngroups)
       
-      # This is what we use for weekly:
-      # for (w in 1:length(k)){
-      #   k[w] <- incid[w]/(exp(gr[w])* (1+(exp(gr[w])+
-      #                                            (exp(gr[w]*2))+
-      #                                            (exp(gr[w]*3))+
-      #                                            (exp(gr[w]*4))+
-      #                                            (exp(gr[w]*5))+
-      #                                            (exp(gr[w]*6)))))
-      # }
-      # 
-      
       for (w in 1:length(k)){
         d[w] <- sum(exp(gr[w]*seq(1,dt-1,1)))
         k[w] <- incid[w]/(exp(gr[w])* (1+d[w]))
       }
-      
-      
       
       k_seq <- rep(k, each=dt)
       gr_seq <- rep(gr, each=dt)
@@ -207,11 +193,12 @@ estimate_R_agg <- function(incid,
       days <- seq(1,T,1)
       w_day <- rep(seq(1,dt), ngroups)
       
+      # Reconstruct daily incidence
       for(t in 1:length(days)){
         est_inc[t] <- k_seq[t]*exp(gr_seq[t]*w_day[t])
       }
       
-      # New fix:
+      # If reconstructed incidence on day 1 is <1, make it 1
       if(est_inc[1]<1){
         est_inc[1]=1
       } 
@@ -224,7 +211,6 @@ estimate_R_agg <- function(incid,
     } else {
       
       # Use new adjusted incidence as starting point
-      #sim_inc_temp <- as.vector(sim_inc[,i-1])
       new_inc <- as.incidence(sim_inc[,i-1])
       new_inc$dates <- as.numeric(new_inc$dates)
       
@@ -238,20 +224,8 @@ estimate_R_agg <- function(incid,
       
       
       Mean_R_2 <- R2$R$`Mean(R)`
-      Upper95_R_2 <- R2$R$`Quantile.0.975(R)`
-      Lower95_R_2 <- R2$R$`Quantile.0.025(R)`
-      Upper90_R_2 <- R2$R$`Quantile.0.95(R)`
-      Lower90_R_2 <- R2$R$`Quantile.0.05(R)`
-      R_ests[,i] <- Mean_R_2
-      R_upper_95[,i] <- Upper95_R_2
-      R_lower_95[,i] <- Lower95_R_2
-      R_upper_90[,i] <- Upper90_R_2
-      R_lower_90[,i] <- Lower90_R_2
       
-      # Translate to growth rate again
-      
-      #gr2 <- spline_func(Mean_R_2)
-      
+      # Translate R to growth rate again
       gr2 <- get_r_from_R(R = Mean_R_2, 
                          gt_mean = config$mean_si, gt_sd = config$std_si, 
                          gt_distr = config$si_distr,
@@ -259,22 +233,11 @@ estimate_R_agg <- function(incid,
       
       # again, making the assumption that the gr for the first 
       # dt would be the same as the second dt:
-      
       gr2 <- c(gr2[1],gr2) 
       
       # Estimate incidence 
       k2 <- numeric(length=ngroups)
       d2 <- numeric(length=ngroups)
-      
-      # for (w in 1:length(k2)){
-      #   k2[w] <- incid[w]/(exp(gr2[w])* (1+(exp(gr2[w])+
-      #                                              (exp(gr2[w]*2))+
-      #                                              (exp(gr2[w]*3))+
-      #                                              (exp(gr2[w]*4))+
-      #                                              (exp(gr2[w]*5))+
-      #                                              (exp(gr2[w]*6)))))
-      # }
-      
       
       for (w in 1:length(k2)){
         d2[w] <- sum(exp(gr2[w]*seq(1,dt-1,1)))

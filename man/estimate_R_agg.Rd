@@ -66,6 +66,29 @@ used for estimation}
 \description{
 Estimated Instantaneous Reproduction Number from coarsely aggregated data
 }
+\details{
+# TODO: add details
+}
 \examples{
-# TODO: add examples
+## load data on SARS in 2003
+data("SARS2003")
+
+## aggregate the data to weekly counts of cases
+incid <- SARS2003$incidence
+dt <- 7L
+weekly_inc <- aggregate_inc(incid, dt)
+
+## estimate Rt using the default parameters (method "non_parametric_si")
+method <- "non_parametric_si"
+config <- make_config(list(si_distr = si_distr))
+res_weekly <- estimate_R_agg(incid = weekly_inc, 
+                            dt = 7, # aggregation window of the data
+                            dt_out = 7, # desired sliding window length
+                            iter = 10,
+                            config = config,
+                            method = method,
+                            grid = list(precision = 0.001, min = -1, max = 1))
+
+## plot the result
+plot(res_weekly)
 }
