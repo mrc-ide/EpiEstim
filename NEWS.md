@@ -1,3 +1,7 @@
+# EpiEstim 2.4
+
+* estimate_R can now be applied to coarsely (non-daily) aggregated data
+
 # EpiEstim 2.3
 
 * new function estimate_joint to estimate the transmission advantage of a strain or variant
