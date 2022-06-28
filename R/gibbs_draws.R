@@ -109,7 +109,7 @@ get_shape_epsilon <- function(incid, lambda, priors,
 #' priors$R$shape <- 3
 #'
 default_priors <- function() {
-  ## Flatter epsilon and R with larger variace
+  ## Flatter epsilon and R with larger variance
   ## Mean epsilon 10 and SD 10
   ## Mean R 1 and SD 5
   list(epsilon = list(shape = 1, scale = 1),
