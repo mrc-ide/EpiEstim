@@ -5,16 +5,18 @@
 # TODO: vignettes are not visible 
 # TODO: automatic refining of the grid if the initial one wasn't good
 # TODO: Add the following checks:
-## - check that dt is in correct format
+## - check that dt is in correct format - probably integer, meaning 7L by default rather than 7
 ## - check that dt_out in is correct format
 ## - check that the grid is a list of 3 elements, all of them numbers, min < max, precision < max - min
+## TODO: do we want to keep the iteration number printed
+## TODO: allow user defined tstart and tend?
 ###############################################################
 
 #' @title Estimated Instantaneous Reproduction Number from coarsely aggregated data
 #'
 #' @param incid aggregated incidence data, supplied as a vector
-#' @param dt length of temporal aggregation of the data (numeric, 7 days by default)
-#' @param dt_out length of the sliding windows for R estimates (numeric, 7 days by default)
+#' @param dt length of temporal aggregation of the data (numeric, 7 time units (typically days) by default)
+#' @param dt_out length of the sliding windows for R estimates (numeric, 7 time units (typically days) by default)
 #' @param iter number of iterations of the EM algorithm (numeric, 10 by default)
 #' @param config An object of class \code{estimate_R_config}, as returned by 
 #' function \code{make_config}. 
@@ -57,7 +59,7 @@
 #' @importFrom distcrete distcrete
 #' @export
 #'
-#' @details
+#' @details TODO: add details
 #' 
 #' @examples 
 #' ## load data on SARS in 2003

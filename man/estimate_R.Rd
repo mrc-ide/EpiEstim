@@ -2,10 +2,7 @@
 % Please edit documentation in R/estimate_R.R
 \name{estimate_R}
 \alias{estimate_R}
-\title{Estimated Instantaneous Reproduction Number
-
-\code{estimate_R} estimates the reproduction number of an epidemic, given the
-incidence time series and the serial interval distribution.}
+\title{Estimated Instantaneous Reproduction Number}
 \usage{
 estimate_R(
   incid,
@@ -13,7 +10,11 @@ estimate_R(
     "si_from_sample"),
   si_data = NULL,
   si_sample = NULL,
-  config = make_config(incid = incid, method = method)
+  config = make_config(incid = incid, method = method),
+  dt = 1,
+  dt_out = 7,
+  iter = 10,
+  grid = list(precision = 0.001, min = -1, max = 1)
 )
 }
 \arguments{
@@ -21,7 +22,8 @@ estimate_R(
 \itemize{
 
 \item{A vector (or a dataframe with a single column) of non-negative integers
-containing the incidence time series}
+containing the incidence time series; these can be aggregated at any time
+unit as specified by argument \code{dt}}
 
 \item{A dataframe of non-negative integers with either i) \code{incid$I}
 containing the total incidence, or ii) two columns, so that
@@ -68,6 +70,17 @@ gives one distribution of the serial interval to be explored (see details).}
 
 \item{config}{An object of class \code{estimate_R_config}, as returned by 
 function \code{make_config}.}
+
+\item{dt}{length of temporal aggregation of the data (numeric, 1 time unit (typically days) by default)}
+
+\item{dt_out}{length of the sliding windows for R estimates (numeric, 7 time units (typically days)  by default).
+Only used if \code{dt > 1}; 
+in this case this will superseed config$t_start and config$t_end, see \code{\link{estimate_R_agg}}.}
+
+\item{iter}{number of iterations of the EM algorithm (numeric, 10 by default). Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.}
+
+\item{grid}{named list containing "precision", "min", and "max" which are used to
+define a grid of growth rate parameters that are used inside the EM algorithm. Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.}
 }
 \value{
 {
@@ -106,8 +119,6 @@ showing whether the Gelman-Rubin MCMC convergence diagnostic was successful
 }
 }
 \description{
-Estimated Instantaneous Reproduction Number
-
 \code{estimate_R} estimates the reproduction number of an epidemic, given the
 incidence time series and the serial interval distribution.
 }
@@ -308,8 +319,10 @@ data (Statis. Med. 2009)
  \item{\code{\link{make_config}}}{ for general settings of the estimation}
  \item{\code{\link{discr_si}}}{ to build serial interval distributions}
  \item{\code{\link{sample_posterior_R}}}{ to draw samples of R values from
-the posterior distribution from the output of \code{estimate_R()}}
-}
+the posterior distribution from the output of \code{estimate_R()}
+}}
+
+TODO: add something about \code{dt > 1} linking to \code{\link{estimate_R_agg}}
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}

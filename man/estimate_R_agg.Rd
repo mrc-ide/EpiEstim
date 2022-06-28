@@ -17,9 +17,9 @@ estimate_R_agg(
 \arguments{
 \item{incid}{aggregated incidence data, supplied as a vector}
 
-\item{dt}{length of temporal aggregation of the data (numeric, 7 days by default)}
+\item{dt}{length of temporal aggregation of the data (numeric, 7 time units (typically days) by default)}
 
-\item{dt_out}{length of the sliding windows for R estimates (numeric, 7 days by default)}
+\item{dt_out}{length of the sliding windows for R estimates (numeric, 7 time units (typically days) by default)}
 
 \item{iter}{number of iterations of the EM algorithm (numeric, 10 by default)}
 
@@ -67,7 +67,7 @@ used for estimation}
 Estimated Instantaneous Reproduction Number from coarsely aggregated data
 }
 \details{
-# TODO: add details
+TODO: add details
 }
 \examples{
 ## load data on SARS in 2003
