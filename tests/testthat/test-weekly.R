@@ -51,7 +51,6 @@ test_that("weekly version of estimate_R_agg works in parametric mode", {
   ######################################################################
   ## test that the weekly incidence matches the aggregated daily one
   ## except for first time window where we impose I = 1 on first day
-  ## TODO: explore the issue above of forcing I = 1 on first day
   
   for(i in seq_len(floor(length(res_daily$I) / dt))[-1])
   {
@@ -115,7 +114,6 @@ test_that("weekly version of estimate_R_agg works in  non-parametric mode", {
   ######################################################################
   ## test that the weekly incidence matches the aggregated daily one
   ## except for first time window where we impose I = 1 on first day
-  ## TODO: explore the issue above of forcing I = 1 on first day
   
   for(i in seq_len(floor(length(res_daily$I) / dt))[-1])
   {
@@ -187,7 +185,6 @@ test_that("weekly version of estimate_R works with aggregated data in parametric
   ######################################################################
   ## test that the weekly incidence matches the aggregated daily one
   ## except for first time window where we impose I = 1 on first day
-  ## TODO: explore the issue above of forcing I = 1 on first day
   
   for(i in seq_len(floor(length(res_daily$I) / dt))[-1])
   {
@@ -265,7 +262,6 @@ test_that("weekly version of estimate_R works with aggregated data in non-parame
   ######################################################################
   ## test that the weekly incidence matches the aggregated daily one
   ## except for first time window where we impose I = 1 on first day
-  ## TODO: explore the issue above of forcing I = 1 on first day
   
   for(i in seq_len(floor(length(res_daily$I) / dt))[-1])
   {
@@ -342,12 +338,6 @@ test_that("r grid can be automatically updated with similar results", {
 })
 
 
-## TODO: 
-## check that if incid is not a vector you can't run with dt > 1 (if it's an incidence object or a matrix / dataframe)
-## check that if method is not parametric or non_parametric you can't run with dt > 1
-## check that if you don't supply the right arguments it does not work (e.g. no mean_SI for a parametric method)
-## do a test with a different dt (3, 10)
-## can we plot the output of the R calculated from coarse data
 
 
 

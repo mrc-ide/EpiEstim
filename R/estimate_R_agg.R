@@ -1,16 +1,4 @@
 
-###############################################################
-# TODO: add a "details" and "examples" section
-# TODO: vignettes are not visible - maybe sorted? ask Rich if not
-# TODO: Add the following checks:
-## - check that dt is in correct format - probably integer, meaning 7L by default rather than 7
-## - check that dt_out in is correct format
-## - check that the grid is a list of 3 elements, all of them numbers, min < max, precision < max - min
-## TODO: do we want to keep the iteration number printed
-## TODO: allow user defined tstart and tend?
-## TODO: sort the x axis issue on the plots
-###############################################################
-
 #' @title Estimated Instantaneous Reproduction Number from coarsely aggregated data
 #'
 #' @param incid aggregated incidence data, supplied as a vector
@@ -91,7 +79,7 @@ estimate_R_agg <- function(incid,
                            config = make_config(), 
                            method = c("non_parametric_si", "parametric_si"),
                            grid = list(precision = 0.001, min = -1, max = 1)){ 
-  
+
   # Two configs:
   # 'config' for the R estimates used to reconstruct the incidence (internal to the
   # EM algorithm). These use a fixed window length matched to dt (aggregation window)
@@ -120,15 +108,13 @@ estimate_R_agg <- function(incid,
   config$t_end <- seq(from = min(config$t_start) + (dt - 1),to = T,dt)
   
   niter <- seq(1,iter,1) 
-  windows <- length(config$t_end)
   sim_inc <- matrix(NA, nrow = T, ncol = iter)
-  R_ests <- matrix(NA, nrow = windows, ncol = iter)
   
   for(i in 1:length(niter)){
     if(niter[i]==1){
       
       # Initialisation of EM. Aggregated incidence split evenly:
-      dis<- incid/dt
+      dis <- incid/dt
       dis_inc <- rep(dis, each = dt)
       
       # Remember that the EpiEstim SI needs to start at 0
@@ -139,7 +125,6 @@ estimate_R_agg <- function(incid,
       
       print(paste0("Estimated R for iteration: ", i))
       
-      
       Mean_R <- R$R$`Mean(R)`
       
       # Translate R to growth rate
@@ -149,8 +134,6 @@ estimate_R_agg <- function(incid,
         r_grid <- seq(grid$min, grid$max, grid$precision)
         if(is.null(gt_distr)) {
           gt_pars <- gamma_mucv2shapescale(mu = gt_mean, cv = gt_sd / gt_mean)
-          ## TODO: could call these si rather than gt
-          ## TODO: could use internal function discr_si rather than this discretisation - leave for now
           gt_distr <- distcrete("gamma", interval = 1,
                                            shape = gt_pars$shape,
                                            scale = gt_pars$scale, w = 0.5)
@@ -178,8 +161,6 @@ estimate_R_agg <- function(incid,
                          gt_distr = config$si_distr,
                          grid = grid)
       
-      ## TODO: if grid not good enough rerun with new grid
-      
       # so that the incidence for the first dt can be 
       # reconstructed, making the assumption that the gr
       # for the first week would be the same as the second:
@@ -194,26 +175,21 @@ estimate_R_agg <- function(incid,
       k <- numeric(length=ngroups)
       
       for (w in 1:length(k)){
-        d[w] <- sum(exp(gr[w]*seq(1,dt-1,1)))
-        k[w] <- incid[w]/(exp(gr[w])* (1+d[w]))
+        d[w] <- sum(exp(gr[w] * seq(1, dt - 1, 1)))
+        k[w] <- incid[w] / (exp(gr[w]) * (1 + d[w]))
       }
       
-      k_seq <- rep(k, each=dt)
-      gr_seq <- rep(gr, each=dt)
+      k_seq <- rep(k, each = dt)
+      gr_seq <- rep(gr, each = dt)
       
-      est_inc <- numeric(length=T)
-      days <- seq(1,T,1)
-      w_day <- rep(seq(1,dt), ngroups)
+      est_inc <- numeric(length = T)
+      days <- seq(1, T, 1)
+      w_day <- rep(seq(1, dt), ngroups)
       
       # Reconstruct daily incidence
-      for(t in 1:length(days)){
-        est_inc[t] <- k_seq[t]*exp(gr_seq[t]*w_day[t])
+      for(t in seq_along(days)){
+        est_inc[t] <- k_seq[t] * exp(gr_seq[t] * w_day[t])
       }
-      
-      # If reconstructed incidence on day 1 is <1, make it 1
-      if(est_inc[1]<1){
-        est_inc[1]=1
-      } 
       
       sim_inc[,i] <- est_inc
       
@@ -223,8 +199,7 @@ estimate_R_agg <- function(incid,
     } else {
       
       # Use new adjusted incidence as starting point
-      new_inc <- as.incidence(sim_inc[,i-1])
-      new_inc$dates <- as.numeric(new_inc$dates)
+      new_inc <- sim_inc[,i-1]
       
       # Re-Estimate R
       
@@ -245,40 +220,34 @@ estimate_R_agg <- function(incid,
       
       # again, making the assumption that the gr for the first 
       # dt would be the same as the second dt:
-      gr2 <- c(gr2[1],gr2) 
+      gr2 <- c(gr2[1], gr2) 
       
       # Estimate incidence 
       k2 <- numeric(length=ngroups)
       d2 <- numeric(length=ngroups)
       
-      for (w in 1:length(k2)){
-        d2[w] <- sum(exp(gr2[w]*seq(1,dt-1,1)))
-        k2[w] <- incid[w]/(exp(gr2[w])* (1+d2[w]))
+      for (w in seq_along(k2)){
+        d2[w] <- sum(exp(gr2[w] * seq(1, dt - 1, 1)))
+        k2[w] <- incid[w] / (exp(gr2[w]) * (1 + d2[w]))
       }
       
-      k2_seq <- rep(k2, each=dt)
-      gr2_seq <- rep(gr2, each=dt)
+      k2_seq <- rep(k2, each = dt)
+      gr2_seq <- rep(gr2, each = dt)
       
-      est_inc2 <- numeric(length=T)
-      days <- seq(1,T,1)
-      w_day <- rep(seq(1,dt), ngroups)
+      est_inc2 <- numeric(length = T)
+      days <- seq(1, T, 1)
+      w_day <- rep(seq(1, dt), ngroups)
       
       for(t in 1:length(days)){
-        est_inc2[t] <- k2_seq[t]*exp(gr2_seq[t]*w_day[t])
+        est_inc2[t] <- k2_seq[t] * exp(gr2_seq[t] * w_day[t])
       }
-      
-      # If reconstructed incidence on day 1 is <1, make it 1
-      if(est_inc2[1]<1){
-        est_inc2[1]=1
-      } 
       
       sim_inc[,i] <- est_inc2
       
       # monitor progress:
       print(paste0("Reconstructed incidence for iteration: ", i))
       
-      
-      if(niter[i]==max(niter)){
+      if(niter[i] == max(niter)){
         R_out <- estimate_R(sim_inc[,i],
                             method = method,
                             config = config_out)
