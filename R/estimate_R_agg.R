@@ -73,13 +73,32 @@
 #' ## plot the result
 #' plot(res_weekly)
 estimate_R_agg <- function(incid,
-                           dt = 7, # aggregation window of the data
-                           dt_out = 7, # desired sliding window length
-                           iter = 10,
+                           dt = 7L, # aggregation window of the data
+                           dt_out = 7L, # desired sliding window length
+                           iter = 10L,
                            config = make_config(), 
                            method = c("non_parametric_si", "parametric_si"),
                            grid = list(precision = 0.001, min = -1, max = 1)){ 
-
+  
+  if (!is.integer(dt) | !is.integer(dt_out)) {
+    stop("dt and dt_out must be integers e.g. 7L")
+  }
+  if (!is.integer(iter)) {
+    stop("iter must be an integer e.g. 10L")
+  }
+  if (!is.list(grid) | !length(grid) == 3){
+    stop("grid must be a list of 3 elements: precision, min, and max")
+  }
+  if (grid$max < grid$min){
+    stop("grid max must be larger than grid min")
+  }
+  if (grid$precision > grid$max-grid$min){
+    stop("grid precision must be less than grid max - grid min")
+  }
+  if (!is.numeric(grid$precision) | !is.numeric(grid$min) | !is.numeric(grid$max)){
+    stop("grid precision, min, and max, must all be numeric")
+  }
+  
   # Two configs:
   # 'config' for the R estimates used to reconstruct the incidence (internal to the
   # EM algorithm). These use a fixed window length matched to dt (aggregation window)
@@ -99,16 +118,16 @@ estimate_R_agg <- function(incid,
     config_out$t_end <- config_out$t_start + (dt_out - 1)
   }
   
-  T <- length(incid)*dt
+  all_T <- length(incid)*dt
   
   # config$t_start and config$t_end used for the reconstruction. 
   # Rt estimation starts on 1st day of second dt. 
   # Width of fixed time windows match aggregations (dt):
-  config$t_start <- seq(from = dt + 1, to = T - (dt - 1), dt)
-  config$t_end <- seq(from = min(config$t_start) + (dt - 1),to = T,dt)
+  config$t_start <- seq(from = dt + 1, to = all_T - (dt - 1), dt)
+  config$t_end <- seq(from = min(config$t_start) + (dt - 1),to = all_T,dt)
   
   niter <- seq(1,iter,1) 
-  sim_inc <- matrix(NA, nrow = T, ncol = iter)
+  sim_inc <- matrix(NA, nrow = all_T, ncol = iter)
   
   for(i in 1:length(niter)){
     if(niter[i]==1){
@@ -124,8 +143,8 @@ estimate_R_agg <- function(incid,
                       config = config)
       
       print(paste0("Estimated R for iteration: ", i))
-      
       Mean_R <- R$R$`Mean(R)`
+      
       
       # Translate R to growth rate
       get_r_from_R <- function(R, gt_mean, gt_sd, 
@@ -140,6 +159,7 @@ estimate_R_agg <- function(incid,
         }
         # using a grid of r values translate that into R using r2R0
         R_grid <- r2R0(r = r_grid, w = gt_distr)
+        
         # find location of the value in the R grid which has the smallest 
         # difference to the input of R the user provided e.g. R_grid[idx_r]:
         idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L)) 
@@ -147,11 +167,11 @@ estimate_R_agg <- function(incid,
         while (any(idx_r == 1) || any(idx_r == length(r_grid))) {
           # rerunning get_r_from_R with a wider r_grid
           grid_multiplier <- 5
-          if(grid$max > 0) grid$max <- grid_multiplier * grid$max else grid$max <- - grid$max 
-          if(grid$min < 0) grid$min <- grid_multiplier * grid$min else grid$min <- - grid$min 
+          if(grid$max > 0) grid$max <- grid_multiplier * grid$max else grid$max <- - grid$max
+          if(grid$min < 0) grid$min <- grid_multiplier * grid$min else grid$min <- - grid$min
           r_grid <- seq(grid$min, grid$max, grid$precision)
           R_grid <- r2R0(r = r_grid, w = gt_distr)
-          idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L)) 
+          idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L))
         }
         r <- vapply(idx_r, function(e) r_grid[e], numeric(1L))
       }
@@ -160,6 +180,8 @@ estimate_R_agg <- function(incid,
                          gt_mean = config$mean_si, gt_sd = config$std_si, 
                          gt_distr = config$si_distr,
                          grid = grid)
+      
+      
       
       # so that the incidence for the first dt can be 
       # reconstructed, making the assumption that the gr
@@ -182,8 +204,8 @@ estimate_R_agg <- function(incid,
       k_seq <- rep(k, each = dt)
       gr_seq <- rep(gr, each = dt)
       
-      est_inc <- numeric(length = T)
-      days <- seq(1, T, 1)
+      est_inc <- numeric(length = all_T)
+      days <- seq(1, all_T, 1)
       w_day <- rep(seq(1, dt), ngroups)
       
       # Reconstruct daily incidence
@@ -234,8 +256,8 @@ estimate_R_agg <- function(incid,
       k2_seq <- rep(k2, each = dt)
       gr2_seq <- rep(gr2, each = dt)
       
-      est_inc2 <- numeric(length = T)
-      days <- seq(1, T, 1)
+      est_inc2 <- numeric(length = all_T)
+      days <- seq(1, all_T, 1)
       w_day <- rep(seq(1, dt), ngroups)
       
       for(t in 1:length(days)){

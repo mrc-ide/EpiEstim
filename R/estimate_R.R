@@ -314,14 +314,14 @@ estimate_R <- function(incid,
                        si_data = NULL,
                        si_sample = NULL,
                        config = make_config(incid = incid, method = method),
-                       dt = 1, # aggregation window of the data
-                       dt_out = 7, # desired sliding window length
-                       iter = 10,
+                       dt = 1L, # aggregation window of the data
+                       dt_out = 7L, # desired sliding window length
+                       iter = 10L,
                        grid = list(precision = 0.001, min = -1, max = 1)) {
   
   method <- match.arg(method)
   
-  # switch between the standard estimate_R version and that wich disaggregates
+  # switch between the standard estimate_R version and that which disaggregates
   # coarsely aggregated data
   if(dt >= 2) {
     out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, iter = iter,
