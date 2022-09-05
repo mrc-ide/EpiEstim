@@ -109,15 +109,6 @@ estimate_R_agg <- function(incid,
   check_config(config, method)
   config_out <- config 
   
-  if(is.null(config_out$t_start)) {
-    config_out$t_start <- seq(from = dt + 1,
-                              to = (length(incid) * dt) -
-                                (dt_out - 1), 1)
-  }
-  if(is.null(config_out$t_end)) {
-    config_out$t_end <- config_out$t_start + (dt_out - 1)
-  }
-  
   T <- length(incid)*dt
   
   # config$t_start and config$t_end used for the reconstruction. 
@@ -147,23 +138,15 @@ estimate_R_agg <- function(incid,
       ## before which we can't estimate R and therefore we can't reconstruct Idaily
       ## before that date we will keep the naive disaggregation
       
-      browser()
-      final_mean_si <- sum(R$si_distr * (seq(0, length(R$si_distr) -
-                                             1)))
-      
-      idx_reconstruct <- seq(ceiling(final_mean_si), length(dis_inc))
-      incid_to_reconstruct <- dis_inc[idx_reconstruct]
+      idx_reconstruct <- seq(min(R$R$t_start), length(dis_inc))
       incid_not_to_reconstruct <- dis_inc[-idx_reconstruct]
       
+      aggs_to_reconstruct <- seq(ceiling(idx_reconstruct[1]/dt), length(incid))
+      incid_to_reconstruct <- incid[aggs_to_reconstruct]
       
-      #config$t_start <- R$R$t_start # needed?
-      #config$t_end <- R$R$t_end # needed?
-      
-      ######
       
       print(paste0("Estimated R for iteration: ", i))
       Mean_R <- R$R$`Mean(R)`
-      
       
       # Translate R to growth rate
       get_r_from_R <- function(R, gt_mean, gt_sd, 
@@ -206,37 +189,36 @@ estimate_R_agg <- function(incid,
       # reconstructed, making the assumption that the gr
       # for the first week would be the same as the second:
       
-      gr <- c(gr[1],gr) # needed?
+      #gr <- c(gr[1],gr) # needed?
       
       # 5. Estimate incidence using growth rate
       
       # Assume that It is a constant (k) multiplied by exp(gr[for that dt]*t)
-      
-      # you should have something like length(gr) * dt = length(incid_to_reconstruct)
-      ngroups <- length(incid_to_reconstruct / dt) # wrong
+      ngroups <- length(Mean_R) 
       d <- numeric(length=ngroups)
       k <- numeric(length=ngroups)
       
       for (w in 1:length(k)){
         d[w] <- sum(exp(gr[w] * seq(1, dt - 1, 1)))
-        k[w] <- incid[w] / (exp(gr[w]) * (1 + d[w]))
+        k[w] <- incid_to_reconstruct[w] / (exp(gr[w]) * (1 + d[w]))
       }
       
       k_seq <- rep(k, each = dt)
       gr_seq <- rep(gr, each = dt)
       
-      est_inc <- rep(NA, T)
-      days <- seq(1, T, 1)
-      w_day <- rep(seq(1, dt), ngroups)
+      recon_days <- seq(1, length(Mean_R)*dt)
+      w_day <- rep(seq(1, dt), length(recon_days))
       
       # Reconstruct daily incidence
-      for(t in seq_along(days)){
+      est_inc <- rep(NA, length(recon_days))
+      
+      for(t in seq_along(recon_days)){
         ## MAKE SURE THAT YOU ONLY FILL IN only incid_to_reconstruct
         ## for the ones before, you need to use dis_inc
         est_inc[t] <- k_seq[t] * exp(gr_seq[t] * w_day[t])
       }
       
-      sim_inc[,i] <- est_inc
+      sim_inc[,i] <- c(incid_not_to_reconstruct,est_inc)
       
       print(paste0("Reconstructed incidence for iteration: ", i))
       
@@ -265,32 +247,45 @@ estimate_R_agg <- function(incid,
       
       # again, making the assumption that the gr for the first 
       # dt would be the same as the second dt:
-      gr2 <- c(gr2[1], gr2) 
+      #gr2 <- c(gr2[1], gr2) 
       
       # Estimate incidence 
       k2 <- numeric(length=ngroups)
       d2 <- numeric(length=ngroups)
       
+      
       for (w in seq_along(k2)){
         d2[w] <- sum(exp(gr2[w] * seq(1, dt - 1, 1)))
-        k2[w] <- incid[w] / (exp(gr2[w]) * (1 + d2[w]))
+        k2[w] <- incid_to_reconstruct[w] / (exp(gr2[w]) * (1 + d2[w]))
       }
       
       k2_seq <- rep(k2, each = dt)
       gr2_seq <- rep(gr2, each = dt)
-      
-      est_inc2 <- numeric(length = T)
-      days <- seq(1, T, 1)
       w_day <- rep(seq(1, dt), ngroups)
       
-      for(t in 1:length(days)){
-        est_inc2[t] <- k2_seq[t] * exp(gr2_seq[t] * w_day[t])
-      }
+      est_inc2 <- rep(NA, length(recon_days))
       
-      sim_inc[,i] <- est_inc2
+      for(t in seq_along(recon_days)){
+        est_inc2[t] <- k2_seq[t] * exp(gr2_seq[t] * w_day[t])
+        }
+        
+      sim_inc[,i] <- c(incid_not_to_reconstruct,est_inc2)
+      
       
       # monitor progress:
       print(paste0("Reconstructed incidence for iteration: ", i))
+      
+      
+      # Final estimate R starting on the first aggregation window 
+      # that incidence was able to be reconstructed over
+      
+      if(is.null(config_out$t_start)) {
+        config_out$t_start <- seq(from = min(R$R$t_start), 
+                                  to = T - (dt_out - 1), 1)
+      }
+      if(is.null(config_out$t_end)) {
+        config_out$t_end <- config_out$t_start + (dt_out - 1)
+      }
       
       if(niter[i] == max(niter)){
         R_out <- estimate_R(sim_inc[,i],

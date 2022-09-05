@@ -491,12 +491,12 @@ test_that("result of weekly version of estimate_R can be plotted without error",
   
 }) 
 
-# Note: need to fix issue with other dts
+# Note: need to add checks for the fix
 test_that("method works with different dt", {
 
   inc_three <- aggregate_inc(incid, 3L)
   inc_ten <- aggregate_inc(incid, 10L)
-  
+
   method <- "parametric_si"
   config <- make_config(list(mean_si = mean_si,
                              std_si = std_si))
@@ -504,15 +504,7 @@ test_that("method works with different dt", {
   res_daily <- suppressWarnings(estimate_R(incid = incid,
                                             config = config,
                                             method = method))
-  
-  
-  estimate_R(incid = incid,
-             config = make_config(list(mean_si = mean_si,
-                                       std_si = std_si, 
-                                       t_start = 30,
-                                       t_end = 40)) ,
-             method = method)
-  
+
   
   res_three <- suppressWarnings(estimate_R(incid = inc_three,
                                                 dt = 3L,
@@ -535,11 +527,15 @@ test_that("method works with different dt", {
                                                 config = config,
                                                 method = method))
   
-  ## test that the ten day incidence matches the aggregated daily one
+  ## test that the three and ten day incidence matches the aggregated daily one
   ## except for first time window where we impose I = 1 on first day
   
-  for(i in seq_len(floor(length(res_daily$I) / 10))[-1])
-  {
+  for(i in seq_len(floor(length(res_daily$I) / 3))[-1]){
+    expect_equal(sum(res_daily$I[i*3+(1:3)]), 
+                 sum(res_three$I[i*3+(1:3)]))
+  }
+  
+  for(i in seq_len(floor(length(res_daily$I) / 10))[-1]){
     expect_equal(sum(res_daily$I[i*10+(1:10)]), 
                  sum(res_ten$I[i*10+(1:10)]))
   }
@@ -547,14 +543,20 @@ test_that("method works with different dt", {
   ## test that weekly sliding R estimates are similar when using different 
   ## temporal aggregations of data
   
-  common_t_end <- intersect(res_weekly$R$t_end, res_ten$R$t_end)
+  common_t_end_three <- intersect(res_weekly$R$t_end, res_three$R$t_end)
+  common_t_end_ten <- intersect(res_weekly$R$t_end, res_ten$R$t_end)
   
-  relative_error <- abs(res_weekly$R$`Mean(R)`[res_weekly$R$t_end %in% common_t_end] -   
-                          res_ten$R$`Mean(R)`[res_ten$R$t_end %in% common_t_end]) / 
-    res_weekly$R$`Mean(R)`[res_weekly$R$t_end %in% common_t_end]
+  relative_error_three <- abs(res_weekly$R$`Mean(R)`[res_weekly$R$t_end %in% common_t_end_three] -   
+                              res_three$R$`Mean(R)`[res_three$R$t_end %in% common_t_end_three]) / 
+    res_weekly$R$`Mean(R)`[res_weekly$R$t_end %in% common_t_end_three]
+  
+  relative_error_ten <- abs(res_weekly$R$`Mean(R)`[res_weekly$R$t_end %in% common_t_end_ten] -   
+                          res_ten$R$`Mean(R)`[res_ten$R$t_end %in% common_t_end_ten]) / 
+    res_weekly$R$`Mean(R)`[res_weekly$R$t_end %in% common_t_end_ten]
   
   ## lot of variation early on so excluding first part
-  expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error_three[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error_ten[-c(1:20)] < 0.4)) 
   
 })
   
