@@ -142,6 +142,9 @@ estimate_R_agg <- function(incid,
                       method = method,
                       config = config)
       
+      config$t_start <- R$R$t_start
+      config$t_end <- R$R$t_end
+      
       print(paste0("Estimated R for iteration: ", i))
       Mean_R <- R$R$`Mean(R)`
       

@@ -723,6 +723,9 @@ estimate_R_func <- function(incid,
     quantile_0.95_posterior, quantile_0.975_posterior
   )))
   
+  non_na_rows <- !is.na(results$R$mean_posterior)
+  results$R <- results$R[non_na_rows, ]
+  
   names(results$R) <- c(
     "t_start", "t_end", "Mean(R)", "Std(R)",
     "Quantile.0.025(R)", "Quantile.0.05(R)", "Quantile.0.25(R)",
