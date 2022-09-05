@@ -507,7 +507,6 @@ estimate_R_func <- function(incid,
   }
   
   method <- match.arg(method)
-  
   incid <- process_I(incid)
   T <- nrow(incid)
   
@@ -751,7 +750,6 @@ estimate_R_func <- function(incid,
     ))
   }
   names(results$SI.Moments) <- c("Mean", "Std")
-  
   
   if (!is.null(incid$dates)) {
     results$dates <- check_dates(incid)

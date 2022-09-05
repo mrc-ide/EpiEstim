@@ -494,7 +494,7 @@ test_that("result of weekly version of estimate_R can be plotted without error",
 # Note: need to fix issue with other dts
 test_that("method works with different dt", {
 
-  #inc_three <- aggregate_inc(incid, 3L)
+  inc_three <- aggregate_inc(incid, 3L)
   inc_ten <- aggregate_inc(incid, 10L)
   
   method <- "parametric_si"
@@ -505,12 +505,21 @@ test_that("method works with different dt", {
                                             config = config,
                                             method = method))
   
-  # res_three <- suppressWarnings(estimate_R(incid = inc_three, 
-  #                                               dt = 3L, 
-  #                                               dt_out = 7L, 
-  #                                               iter = 10L,
-  #                                               config = config,
-  #                                               method = method))
+  
+  estimate_R(incid = incid,
+             config = make_config(list(mean_si = mean_si,
+                                       std_si = std_si, 
+                                       t_start = 30,
+                                       t_end = 40)) ,
+             method = method)
+  
+  
+  res_three <- suppressWarnings(estimate_R(incid = inc_three,
+                                                dt = 3L,
+                                                dt_out = 7L,
+                                                iter = 10L,
+                                                config = config,
+                                                method = method))
   
   res_weekly <- suppressWarnings(estimate_R(incid = weekly_inc, 
                                                dt = 7L, 
