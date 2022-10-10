@@ -306,7 +306,7 @@ consider consecutive non overlapping windows as well.
 For instance, in the flu outbreak we are considering, the school closed from 
 14th to 20th May 2009, i.e. days 18 to 24 in our dataset (Cauchemez et al., 
 PNAS, 2011). It is interesting to estimate the reproduction number before, 
-during, and after the shcool closure to assess whether this had an impact on 
+during, and after the school closure to assess whether this had an impact on 
 transmissibility. 
 
 ```{r estimate_r_before_during_after_closure}
