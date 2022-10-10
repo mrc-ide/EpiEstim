@@ -76,12 +76,12 @@ missing, and return a list of settings.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">make_config</span><span class="op">(</span>
-  <span class="va">...</span>,
-  incid <span class="op">=</span> <span class="cn">NULL</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"non_parametric_si"</span>, <span class="st">"parametric_si"</span>, <span class="st">"uncertain_si"</span>, <span class="st">"si_from_data"</span>,
-    <span class="st">"si_from_sample"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">make_config</span><span class="op">(</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  incid <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"non_parametric_si"</span>, <span class="st">"parametric_si"</span>, <span class="st">"uncertain_si"</span>, <span class="st">"si_from_data"</span>,</span>
+<span>    <span class="st">"si_from_sample"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -204,14 +204,21 @@ of variation (see details).</p></dd>
 
 
 </dl></dd>
+
+
 <dt>incid</dt>
 <dd><p>As in function<code>estimate_R</code>.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>As in function<code>estimate_R</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>estimate_R_config</code> with components 
+    
+
+<p>An object of class <code>estimate_R_config</code> with components 
 t_start, t_end, n1, n2, mean_si, std_si, 
 std_mean_si, min_mean_si, max_mean_si, std_std_si, min_std_si, max_std_si,
 si_distr, si_parametric_distr, mcmc_control, seed, mean_prior, std_prior, 
@@ -346,49 +353,49 @@ Unlike methods "uncertain_si" and "si_from_data", the user directly provides
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## Note the following examples use an MCMC routine</span></span>
-<span class="r-in"><span class="co">## to estimate the serial interval distribution from data,</span></span>
-<span class="r-in"><span class="co">## so they may take a few minutes to run</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## load data on rotavirus</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MockRotavirus"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the reproduction number (method "si_from_data")</span></span>
-<span class="r-in"><span class="co">## we are not specifying the time windows, so by defaults this will estimate</span></span>
-<span class="r-in"><span class="co">## R on sliding weekly windows</span></span>
-<span class="r-in"><span class="va">incid</span> <span class="op">&lt;-</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">incidence</span></span>
-<span class="r-in"><span class="va">method</span> <span class="op">&lt;-</span> <span class="st">"si_from_data"</span></span>
-<span class="r-in"><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">make_config</span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid</span>, </span>
-<span class="r-in">                     method <span class="op">=</span> <span class="va">method</span>, </span>
-<span class="r-in">                     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>si_parametric_distr <span class="op">=</span> <span class="st">"G"</span>,</span>
-<span class="r-in">                     mcmc_control <span class="op">=</span> <span class="fu"><a href="make_mcmc_control.html">make_mcmc_control</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">1000</span>, </span>
-<span class="r-in">                     thin <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span class="r-in">                     n1 <span class="op">=</span> <span class="fl">500</span>, </span>
-<span class="r-in">                     n2 <span class="op">=</span> <span class="fl">50</span>,</span>
-<span class="r-in">                     seed <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">R_si_from_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">incid</span>,</span>
-<span class="r-in">                            method <span class="op">=</span> <span class="va">method</span>,</span>
-<span class="r-in">                            si_data <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span>
-<span class="r-in">                            config <span class="op">=</span> <span class="va">config</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_si_from_data</span><span class="op">)</span>                          </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## you can also create the config straight within the estimate_R call, </span></span>
-<span class="r-in"><span class="co">## in that case incid and method are automatically used from the estimate_R</span></span>
-<span class="r-in"><span class="co">## arguments:</span></span>
-<span class="r-in"><span class="va">R_si_from_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">incid</span>,</span>
-<span class="r-in">                            method <span class="op">=</span> <span class="va">method</span>,</span>
-<span class="r-in">                            si_data <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span>
-<span class="r-in">                            config <span class="op">=</span> <span class="fu">make_config</span><span class="op">(</span></span>
-<span class="r-in">                     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>si_parametric_distr <span class="op">=</span> <span class="st">"G"</span>,</span>
-<span class="r-in">                     mcmc_control <span class="op">=</span> <span class="fu"><a href="make_mcmc_control.html">make_mcmc_control</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">1000</span>, </span>
-<span class="r-in">                     thin <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span class="r-in">                     n1 <span class="op">=</span> <span class="fl">500</span>, </span>
-<span class="r-in">                     n2 <span class="op">=</span> <span class="fl">50</span>,</span>
-<span class="r-in">                     seed <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_si_from_data</span><span class="op">)</span>    </span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">## Note the following examples use an MCMC routine</span></span></span>
+<span class="r-in"><span><span class="co">## to estimate the serial interval distribution from data,</span></span></span>
+<span class="r-in"><span><span class="co">## so they may take a few minutes to run</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## load data on rotavirus</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MockRotavirus"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the reproduction number (method "si_from_data")</span></span></span>
+<span class="r-in"><span><span class="co">## we are not specifying the time windows, so by defaults this will estimate</span></span></span>
+<span class="r-in"><span><span class="co">## R on sliding weekly windows</span></span></span>
+<span class="r-in"><span><span class="va">incid</span> <span class="op">&lt;-</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">incidence</span></span></span>
+<span class="r-in"><span><span class="va">method</span> <span class="op">&lt;-</span> <span class="st">"si_from_data"</span></span></span>
+<span class="r-in"><span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu">make_config</span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid</span>, </span></span>
+<span class="r-in"><span>                     method <span class="op">=</span> <span class="va">method</span>, </span></span>
+<span class="r-in"><span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>si_parametric_distr <span class="op">=</span> <span class="st">"G"</span>,</span></span>
+<span class="r-in"><span>                     mcmc_control <span class="op">=</span> <span class="fu"><a href="make_mcmc_control.html">make_mcmc_control</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">1000</span>, </span></span>
+<span class="r-in"><span>                     thin <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                     n1 <span class="op">=</span> <span class="fl">500</span>, </span></span>
+<span class="r-in"><span>                     n2 <span class="op">=</span> <span class="fl">50</span>,</span></span>
+<span class="r-in"><span>                     seed <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">R_si_from_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">incid</span>,</span></span>
+<span class="r-in"><span>                            method <span class="op">=</span> <span class="va">method</span>,</span></span>
+<span class="r-in"><span>                            si_data <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span></span>
+<span class="r-in"><span>                            config <span class="op">=</span> <span class="va">config</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_si_from_data</span><span class="op">)</span>                          </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## you can also create the config straight within the estimate_R call, </span></span></span>
+<span class="r-in"><span><span class="co">## in that case incid and method are automatically used from the estimate_R</span></span></span>
+<span class="r-in"><span><span class="co">## arguments:</span></span></span>
+<span class="r-in"><span><span class="va">R_si_from_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">incid</span>,</span></span>
+<span class="r-in"><span>                            method <span class="op">=</span> <span class="va">method</span>,</span></span>
+<span class="r-in"><span>                            si_data <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span></span>
+<span class="r-in"><span>                            config <span class="op">=</span> <span class="fu">make_config</span><span class="op">(</span></span></span>
+<span class="r-in"><span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>si_parametric_distr <span class="op">=</span> <span class="st">"G"</span>,</span></span>
+<span class="r-in"><span>                     mcmc_control <span class="op">=</span> <span class="fu"><a href="make_mcmc_control.html">make_mcmc_control</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">1000</span>, </span></span>
+<span class="r-in"><span>                     thin <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                     n1 <span class="op">=</span> <span class="fl">500</span>, </span></span>
+<span class="r-in"><span>                     n2 <span class="op">=</span> <span class="fl">50</span>,</span></span>
+<span class="r-in"><span>                     seed <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_si_from_data</span><span class="op">)</span>    </span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -403,7 +410,7 @@ Unlike methods "uncertain_si" and "si_from_data", the user directly provides
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

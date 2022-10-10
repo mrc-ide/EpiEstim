@@ -72,26 +72,36 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">default_mcmc_controls</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">default_mcmc_controls</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="value">
     <h2>Value</h2>
-    <p>a list of default MCMC control parameters, containing:
-- n_iter: the number if iterations of the MCMC to perform
-- burnin: the burnin to use; MCMC iterations will only be recorded after
-  the burnin
-- thin: MCMC iterations will only be recorded after
-  the burnin and every `thin` iteration
-  Values can then be manually be edited as in the examples below.</p>
+    
+
+<p>a list of default MCMC control parameters, containing:</p>
+
+
+<p>- n_iter: the number if iterations of the MCMC to perform</p>
+
+
+<p>- burnin: the burnin to use; MCMC iterations will only be recorded after
+  the burnin</p>
+
+
+<p>- thin: MCMC iterations will only be recorded after
+  the burnin and every `thin` iteration</p>
+
+
+<p>Values can then be manually be edited as in the examples below.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">mcmc_control</span><span class="op">&lt;-</span> <span class="fu">default_mcmc_controls</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># change to run for 10 times longer</span></span>
-<span class="r-in"><span class="va">mcmc_control</span><span class="op">$</span><span class="va">n_iter</span> <span class="op">&lt;-</span> <span class="va">mcmc_control</span><span class="op">$</span><span class="va">n_iter</span> <span class="op">*</span> <span class="fl">10</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">mcmc_control</span><span class="op">&lt;-</span> <span class="fu">default_mcmc_controls</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># change to run for 10 times longer</span></span></span>
+<span class="r-in"><span><span class="va">mcmc_control</span><span class="op">$</span><span class="va">n_iter</span> <span class="op">&lt;-</span> <span class="va">mcmc_control</span><span class="op">$</span><span class="va">n_iter</span> <span class="op">*</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -106,7 +116,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

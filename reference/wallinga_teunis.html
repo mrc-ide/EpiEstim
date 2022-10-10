@@ -77,11 +77,11 @@ given the incidence time series and the serial interval distribution.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">wallinga_teunis</span><span class="op">(</span>
-  <span class="va">incid</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"non_parametric_si"</span>, <span class="st">"parametric_si"</span><span class="op">)</span>,
-  <span class="va">config</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">wallinga_teunis</span><span class="op">(</span></span>
+<span>  <span class="va">incid</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"non_parametric_si"</span>, <span class="st">"parametric_si"</span><span class="op">)</span>,</span>
+<span>  <span class="va">config</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -93,9 +93,13 @@ given the incidence time series and the serial interval distribution.</p>
   used for plotting. <code>incid$dates</code> must contains only dates in a row.</p></li>
 <li><p>An object of class <code><a href="https://www.repidemicsconsortium.org/incidence/reference/incidence.html" class="external-link">incidence</a></code></p></li>
 </ul></dd>
+
+
 <dt>method</dt>
 <dd><p>the method used to estimate R, one of "non_parametric_si",
 "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"</p></dd>
+
+
 <dt>config</dt>
 <dd><p>a list with the following elements:</p><ul><li><p>t_start:
 Vector of positive integers giving the starting times of each window over
@@ -121,10 +125,13 @@ zero), which should be zero.</p></li>
 number of simulated epidemic trees used for computation of the confidence
 intervals of the case reproduction number (see details).</p></li>
 </ul></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a list with components: </p><ul><li><p>R: a dataframe
+    
+
+<p>a list with components: </p><ul><li><p>R: a dataframe
   containing: the times of start and end of each time window considered ; the
   estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction
   number for each time window.</p></li>
@@ -179,33 +186,33 @@ derived automatically using <code><a href="discr_si.html">discr_si</a></code>.</
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## load data on pandemic flu in a school in 2009</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Flu2009"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the case reproduction number (method "non_parametric_si")</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">wallinga_teunis</span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>,</span>
-<span class="r-in">   method<span class="op">=</span><span class="st">"non_parametric_si"</span>,</span>
-<span class="r-in">   config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">26</span><span class="op">)</span>, t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">32</span><span class="op">)</span>,</span>
-<span class="r-in">                 si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span>,</span>
-<span class="r-in">                 n_sim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## load data on pandemic flu in a school in 2009</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Flu2009"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the case reproduction number (method "non_parametric_si")</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">wallinga_teunis</span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>,</span></span>
+<span class="r-in"><span>   method<span class="op">=</span><span class="st">"non_parametric_si"</span>,</span></span>
+<span class="r-in"><span>   config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">26</span><span class="op">)</span>, t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">32</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span>,</span></span>
+<span class="r-in"><span>                 n_sim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = "none"` instead.</span>
 <span class="r-plt img"><img src="wallinga_teunis-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="co">## the second plot produced shows, at each each day,</span></span>
-<span class="r-in"><span class="co">## the estimate of the case reproduction number over the 7-day window</span></span>
-<span class="r-in"><span class="co">## finishing on that day.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the case reproduction number (method "parametric_si")</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">wallinga_teunis</span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, method<span class="op">=</span><span class="st">"parametric_si"</span>,</span>
-<span class="r-in">   config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">26</span><span class="op">)</span>, t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">32</span><span class="op">)</span>,</span>
-<span class="r-in">                 mean_si <span class="op">=</span> <span class="fl">2.6</span>, std_si <span class="op">=</span> <span class="fl">1.5</span>,</span>
-<span class="r-in">                 n_sim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co">## the second plot produced shows, at each each day,</span></span></span>
+<span class="r-in"><span><span class="co">## the estimate of the case reproduction number over the 7-day window</span></span></span>
+<span class="r-in"><span><span class="co">## finishing on that day.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the case reproduction number (method "parametric_si")</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">wallinga_teunis</span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, method<span class="op">=</span><span class="st">"parametric_si"</span>,</span></span>
+<span class="r-in"><span>   config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">26</span><span class="op">)</span>, t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">32</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 mean_si <span class="op">=</span> <span class="fl">2.6</span>, std_si <span class="op">=</span> <span class="fl">1.5</span>,</span></span>
+<span class="r-in"><span>                 n_sim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = "none"` instead.</span>
 <span class="r-plt img"><img src="wallinga_teunis-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="co">## the second plot produced shows, at each each day,</span></span>
-<span class="r-in"><span class="co">## the estimate of the case reproduction number over the 7-day window</span></span>
-<span class="r-in"><span class="co">## finishing on that day.</span></span>
+<span class="r-in"><span><span class="co">## the second plot produced shows, at each each day,</span></span></span>
+<span class="r-in"><span><span class="co">## the estimate of the case reproduction number over the 7-day window</span></span></span>
+<span class="r-in"><span><span class="co">## finishing on that day.</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -220,7 +227,7 @@ derived automatically using <code><a href="discr_si.html">discr_si</a></code>.</
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

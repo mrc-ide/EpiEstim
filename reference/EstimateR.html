@@ -74,73 +74,112 @@ Prefer the new estimate_R function instead</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">EstimateR</span><span class="op">(</span>
-  <span class="va">I</span>,
-  <span class="va">T.Start</span>,
-  <span class="va">T.End</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NonParametricSI"</span>, <span class="st">"ParametricSI"</span>, <span class="st">"UncertainSI"</span><span class="op">)</span>,
-  n1 <span class="op">=</span> <span class="cn">NULL</span>,
-  n2 <span class="op">=</span> <span class="cn">NULL</span>,
-  Mean.SI <span class="op">=</span> <span class="cn">NULL</span>,
-  Std.SI <span class="op">=</span> <span class="cn">NULL</span>,
-  Std.Mean.SI <span class="op">=</span> <span class="cn">NULL</span>,
-  Min.Mean.SI <span class="op">=</span> <span class="cn">NULL</span>,
-  Max.Mean.SI <span class="op">=</span> <span class="cn">NULL</span>,
-  Std.Std.SI <span class="op">=</span> <span class="cn">NULL</span>,
-  Min.Std.SI <span class="op">=</span> <span class="cn">NULL</span>,
-  Max.Std.SI <span class="op">=</span> <span class="cn">NULL</span>,
-  SI.Distr <span class="op">=</span> <span class="cn">NULL</span>,
-  Mean.Prior <span class="op">=</span> <span class="fl">5</span>,
-  Std.Prior <span class="op">=</span> <span class="fl">5</span>,
-  CV.Posterior <span class="op">=</span> <span class="fl">0.3</span>,
-  plot <span class="op">=</span> <span class="cn">FALSE</span>,
-  leg.pos <span class="op">=</span> <span class="st">"topright"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">EstimateR</span><span class="op">(</span></span>
+<span>  <span class="va">I</span>,</span>
+<span>  <span class="va">T.Start</span>,</span>
+<span>  <span class="va">T.End</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NonParametricSI"</span>, <span class="st">"ParametricSI"</span>, <span class="st">"UncertainSI"</span><span class="op">)</span>,</span>
+<span>  n1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Mean.SI <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Std.SI <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Std.Mean.SI <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Min.Mean.SI <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Max.Mean.SI <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Std.Std.SI <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Min.Std.SI <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Max.Std.SI <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  SI.Distr <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Mean.Prior <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  Std.Prior <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  CV.Posterior <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  leg.pos <span class="op">=</span> <span class="st">"topright"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>I</dt>
 <dd><p>see <code>incid</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>T.Start</dt>
 <dd><p>see <code>config$t_start</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>T.End</dt>
 <dd><p>see <code>config$t_end</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>method</dt>
 <dd><p>see method in <code>estimate_R</code> (but EstimateR uses CamelCase 
 where estimate_R uses snake_case for the method names)</p></dd>
+
+
 <dt>n1</dt>
 <dd><p>see <code>n1</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>n2</dt>
 <dd><p>see <code>n2</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>Mean.SI</dt>
 <dd><p>see <code>config$mean_si</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>Std.SI</dt>
 <dd><p>see <code>config$std_si</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>Std.Mean.SI</dt>
 <dd><p>see <code>config$std_mean_si</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>Min.Mean.SI</dt>
 <dd><p>see <code>config$min_mean_si</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>Max.Mean.SI</dt>
 <dd><p>see <code>config$max_mean_si</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>Std.Std.SI</dt>
 <dd><p>see <code>config$std_std_si</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>Min.Std.SI</dt>
 <dd><p>see <code>config$min_std_si</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>Max.Std.SI</dt>
 <dd><p>see <code>config$max_std_si</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>SI.Distr</dt>
 <dd><p>see <code>config$si_distr</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>Mean.Prior</dt>
 <dd><p>see <code>config$mean_prior</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>Std.Prior</dt>
 <dd><p>see <code>config$std_prior</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>CV.Posterior</dt>
 <dd><p>see <code>config$cv_posterior</code> in <code>estimate_R</code></p></dd>
+
+
 <dt>plot</dt>
 <dd><p>Not used anymore, only there for compatibility</p></dd>
+
+
 <dt>leg.pos</dt>
 <dd><p>Not used anymore, only there for compatibility</p></dd>
+
 </dl></div>
 
   </div>
@@ -155,7 +194,7 @@ where estimate_R uses snake_case for the method names)</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

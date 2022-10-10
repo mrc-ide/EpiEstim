@@ -85,7 +85,7 @@ cumulative probability mass before index is
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">compute_si_cutoff</span><span class="op">(</span><span class="va">si_distr</span>, miss_at_most <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compute_si_cutoff</span><span class="op">(</span><span class="va">si_distr</span>, miss_at_most <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -96,12 +96,17 @@ function for the discrete serial interval for each of the two
 pathogen/strain/variants, starting with the probability mass function
 for day 0 in the first row, which should be 0. each column in the matrix
 should sum to 1</p></dd>
+
+
 <dt>miss_at_most</dt>
 <dd><p>numeric. probability mass in the tail of the SI distribution</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>integer</p>
+    
+
+<p>integer</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -120,7 +125,7 @@ should sum to 1</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

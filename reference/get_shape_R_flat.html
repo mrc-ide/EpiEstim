@@ -72,7 +72,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">get_shape_R_flat</span><span class="op">(</span><span class="va">incid</span>, <span class="va">priors</span>, t_min <span class="op">=</span> <span class="fl">2L</span>, t_max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_shape_R_flat</span><span class="op">(</span><span class="va">incid</span>, <span class="va">priors</span>, t_min <span class="op">=</span> <span class="fl">2L</span>, t_max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -82,36 +82,45 @@
 incidence
 for each time step (1st dimension), location (2nd dimension) and
 pathogen/strain/variant (3rd dimension)</p></dd>
+
+
 <dt>priors</dt>
 <dd><p>a list of prior parameters (shape and scale of a gamma
 distribution) for epsilon and R; can be obtained from the function
 `default_priors`. The prior for R is assumed to be the same for all
 time steps and all locations</p></dd>
+
+
 <dt>t_min</dt>
 <dd><p>an integer &gt;1 giving the minimum time step to consider in the
 estimation. Default value is 2 (as the estimation is conditional on
 observations at time step 1 and can therefore only start at time step 2).</p></dd>
+
+
 <dt>t_max</dt>
 <dd><p>an integer &gt;`t_min` and &lt;=`nrow(incid)` giving the maximum time
 step to consider in the estimation. Default value is `nrow(incid)`.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a vector of the shape of the posterior distribution of R for
+    
+
+<p>a vector of the shape of the posterior distribution of R for
   each time step t and each location l
   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector)</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="va">n_v</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
-<span class="r-in"><span class="va">n_loc</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="co"># 3 locations</span></span>
-<span class="r-in"><span class="cn">T</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># 100 time steps</span></span>
-<span class="r-in"><span class="va">priors</span> <span class="op">&lt;-</span> <span class="fu"><a href="default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># constant incidence 10 per day everywhere</span></span>
-<span class="r-in"><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">10</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">T</span>, <span class="va">n_loc</span>, <span class="va">n_v</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">get_shape_R_flat</span><span class="op">(</span><span class="va">incid</span>, <span class="va">priors</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">n_v</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="va">n_loc</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="co"># 3 locations</span></span></span>
+<span class="r-in"><span><span class="cn">T</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># 100 time steps</span></span></span>
+<span class="r-in"><span><span class="va">priors</span> <span class="op">&lt;-</span> <span class="fu"><a href="default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># constant incidence 10 per day everywhere</span></span></span>
+<span class="r-in"><span><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">10</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">T</span>, <span class="va">n_loc</span>, <span class="va">n_v</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">get_shape_R_flat</span><span class="op">(</span><span class="va">incid</span>, <span class="va">priors</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04</span>
@@ -137,7 +146,7 @@ step to consider in the estimation. Default value is `nrow(incid)`.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [265] 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [277] 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [289] 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -152,7 +161,7 @@ step to consider in the estimation. Default value is `nrow(incid)`.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

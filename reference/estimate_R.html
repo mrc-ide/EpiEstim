@@ -85,14 +85,14 @@ incidence time series and the serial interval distribution.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">estimate_R</span><span class="op">(</span>
-  <span class="va">incid</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"non_parametric_si"</span>, <span class="st">"parametric_si"</span>, <span class="st">"uncertain_si"</span>, <span class="st">"si_from_data"</span>,
-    <span class="st">"si_from_sample"</span><span class="op">)</span>,
-  si_data <span class="op">=</span> <span class="cn">NULL</span>,
-  si_sample <span class="op">=</span> <span class="cn">NULL</span>,
-  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid</span>, method <span class="op">=</span> <span class="va">method</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">estimate_R</span><span class="op">(</span></span>
+<span>  <span class="va">incid</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"non_parametric_si"</span>, <span class="st">"parametric_si"</span>, <span class="st">"uncertain_si"</span>, <span class="st">"si_from_data"</span>,</span>
+<span>    <span class="st">"si_from_sample"</span><span class="op">)</span>,</span>
+<span>  si_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  si_sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid</span>, method <span class="op">=</span> <span class="va">method</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -110,9 +110,13 @@ contains a column <code>incid$dates</code>, this is used for plotting.
 <li><p>An object of class <code><a href="https://www.repidemicsconsortium.org/incidence/reference/incidence.html" class="external-link">incidence</a></code></p></li>
 </ul><p>Note that the cases from the first time step are always all assumed to be
 imported cases.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>One of "non_parametric_si", "parametric_si", "uncertain_si",
 "si_from_data" or "si_from_sample" (see details).</p></dd>
+
+
 <dt>si_data</dt>
 <dd><p>For method "si_from_data" ; the data on dates of symptoms of
 pairs of infector/infected individuals to be used to estimate the serial
@@ -133,16 +137,23 @@ interval-censored, single interval-censored or exact observations,
 respectively, see Reich et al. Statist. Med. 2009. If not specified, this
 will be automatically computed from the dates</p></li>
 </ul></dd>
+
+
 <dt>si_sample</dt>
 <dd><p>For method "si_from_sample" ; a matrix where each column
 gives one distribution of the serial interval to be explored (see details).</p></dd>
+
+
 <dt>config</dt>
 <dd><p>An object of class <code>estimate_R_config</code>, as returned by 
 function <code>make_config</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>an object of class <code>estimate_R</code>, with components:
+    
+
+<p>an object of class <code>estimate_R</code>, with components:
 </p><ul><li><p>R: a dataframe containing:
 the times of start and end of each time window considered ;
 the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975
@@ -228,159 +239,159 @@ the posterior distribution from the output of <code>estimate_R()</code></p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## load data on pandemic flu in a school in 2009</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Flu2009"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the reproduction number (method "non_parametric_si")</span></span>
-<span class="r-in"><span class="co">## when not specifying t_start and t_end in config, they are set to estimate</span></span>
-<span class="r-in"><span class="co">## the reproduction number on sliding weekly windows                          </span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span>incid <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span>
-<span class="r-in">                  method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span>
-<span class="r-in">                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## load data on pandemic flu in a school in 2009</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Flu2009"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the reproduction number (method "non_parametric_si")</span></span></span>
+<span class="r-in"><span><span class="co">## when not specifying t_start and t_end in config, they are set to estimate</span></span></span>
+<span class="r-in"><span><span class="co">## the reproduction number on sliding weekly windows                          </span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span>incid <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span></span>
+<span class="r-in"><span>                  method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span></span>
+<span class="r-in"><span>                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Default config will estimate R on weekly sliding windows.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     To change this change the t_start and t_end arguments. </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = "none"` instead.</span>
 <span class="r-plt img"><img src="estimate_R-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## the second plot produced shows, at each each day,</span></span>
-<span class="r-in"><span class="co">## the estimate of the reproduction number over the 7-day window </span></span>
-<span class="r-in"><span class="co">## finishing on that day.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## to specify t_start and t_end in config, e.g. to have biweekly sliding</span></span>
-<span class="r-in"><span class="co">## windows      </span></span>
-<span class="r-in"><span class="va">t_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">)</span><span class="op">-</span><span class="fl">13</span><span class="op">)</span>   </span>
-<span class="r-in"><span class="va">t_end</span> <span class="op">&lt;-</span> <span class="va">t_start</span> <span class="op">+</span> <span class="fl">13</span>                 </span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span>incid <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span>
-<span class="r-in">                  method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span>
-<span class="r-in">                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">                      si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span>, </span>
-<span class="r-in">                      t_start <span class="op">=</span> <span class="va">t_start</span>, </span>
-<span class="r-in">                      t_end <span class="op">=</span> <span class="va">t_end</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## the second plot produced shows, at each each day,</span></span></span>
+<span class="r-in"><span><span class="co">## the estimate of the reproduction number over the 7-day window </span></span></span>
+<span class="r-in"><span><span class="co">## finishing on that day.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## to specify t_start and t_end in config, e.g. to have biweekly sliding</span></span></span>
+<span class="r-in"><span><span class="co">## windows      </span></span></span>
+<span class="r-in"><span><span class="va">t_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">)</span><span class="op">-</span><span class="fl">13</span><span class="op">)</span>   </span></span>
+<span class="r-in"><span><span class="va">t_end</span> <span class="op">&lt;-</span> <span class="va">t_start</span> <span class="op">+</span> <span class="fl">13</span>                 </span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span>incid <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span></span>
+<span class="r-in"><span>                  method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span></span>
+<span class="r-in"><span>                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>                      si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span>, </span></span>
+<span class="r-in"><span>                      t_start <span class="op">=</span> <span class="va">t_start</span>, </span></span>
+<span class="r-in"><span>                      t_end <span class="op">=</span> <span class="va">t_end</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = "none"` instead.</span>
 <span class="r-plt img"><img src="estimate_R-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## the second plot produced shows, at each each day,</span></span>
-<span class="r-in"><span class="co">## the estimate of the reproduction number over the 14-day window </span></span>
-<span class="r-in"><span class="co">## finishing on that day.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## example with an incidence object</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## create fake data</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.repidemicsconsortium.org/incidence/" class="external-link">incidence</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">26</span>,<span class="fl">6</span>,<span class="fl">7</span>,<span class="fl">9</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">location</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"local"</span>,<span class="st">"imported"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">location</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"imported"</span> <span class="co"># forcing the first case to be imported</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## get incidence per group (location)</span></span>
-<span class="r-in"><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/incidence.html" class="external-link">incidence</a></span><span class="op">(</span><span class="va">data</span>, groups <span class="op">=</span> <span class="va">location</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Estimate R with assumptions on serial interval</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span><span class="va">incid</span>, method <span class="op">=</span> <span class="st">"parametric_si"</span>,</span>
-<span class="r-in">                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">                  mean_si <span class="op">=</span> <span class="fl">2.6</span>, std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## the second plot produced shows, at each each day,</span></span></span>
+<span class="r-in"><span><span class="co">## the estimate of the reproduction number over the 14-day window </span></span></span>
+<span class="r-in"><span><span class="co">## finishing on that day.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## example with an incidence object</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## create fake data</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.repidemicsconsortium.org/incidence/" class="external-link">incidence</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">5</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">26</span>,<span class="fl">6</span>,<span class="fl">7</span>,<span class="fl">9</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">location</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"local"</span>,<span class="st">"imported"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">location</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"imported"</span> <span class="co"># forcing the first case to be imported</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## get incidence per group (location)</span></span></span>
+<span class="r-in"><span><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/incidence.html" class="external-link">incidence</a></span><span class="op">(</span><span class="va">data</span>, groups <span class="op">=</span> <span class="va">location</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Estimate R with assumptions on serial interval</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span><span class="va">incid</span>, method <span class="op">=</span> <span class="st">"parametric_si"</span>,</span></span>
+<span class="r-in"><span>                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>                  mean_si <span class="op">=</span> <span class="fl">2.6</span>, std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Default config will estimate R on weekly sliding windows.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     To change this change the t_start and t_end arguments. </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = "none"` instead.</span>
 <span class="r-plt img"><img src="estimate_R-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="co">## the second plot produced shows, at each each day,</span></span>
-<span class="r-in"><span class="co">## the estimate of the reproduction number over the 7-day window</span></span>
-<span class="r-in"><span class="co">## finishing on that day.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the reproduction number (method "parametric_si")</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, method <span class="op">=</span> <span class="st">"parametric_si"</span>,</span>
-<span class="r-in">                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean_si <span class="op">=</span> <span class="fl">2.6</span>, std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co">## the second plot produced shows, at each each day,</span></span></span>
+<span class="r-in"><span><span class="co">## the estimate of the reproduction number over the 7-day window</span></span></span>
+<span class="r-in"><span><span class="co">## finishing on that day.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the reproduction number (method "parametric_si")</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, method <span class="op">=</span> <span class="st">"parametric_si"</span>,</span></span>
+<span class="r-in"><span>                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mean_si <span class="op">=</span> <span class="fl">2.6</span>, std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Default config will estimate R on weekly sliding windows.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     To change this change the t_start and t_end arguments. </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = "none"` instead.</span>
 <span class="r-plt img"><img src="estimate_R-4.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="co">## the second plot produced shows, at each each day,</span></span>
-<span class="r-in"><span class="co">## the estimate of the reproduction number over the 7-day window</span></span>
-<span class="r-in"><span class="co">## finishing on that day.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the reproduction number (method "uncertain_si")</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, method <span class="op">=</span> <span class="st">"uncertain_si"</span>,</span>
-<span class="r-in">                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">                  mean_si <span class="op">=</span> <span class="fl">2.6</span>, std_mean_si <span class="op">=</span> <span class="fl">1</span>,</span>
-<span class="r-in">                  min_mean_si <span class="op">=</span> <span class="fl">1</span>, max_mean_si <span class="op">=</span> <span class="fl">4.2</span>,</span>
-<span class="r-in">                  std_si <span class="op">=</span> <span class="fl">1.5</span>, std_std_si <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span class="r-in">                  min_std_si <span class="op">=</span> <span class="fl">0.5</span>, max_std_si <span class="op">=</span> <span class="fl">2.5</span>,</span>
-<span class="r-in">                  n1 <span class="op">=</span> <span class="fl">100</span>, n2 <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="co">## the second plot produced shows, at each each day,</span></span></span>
+<span class="r-in"><span><span class="co">## the estimate of the reproduction number over the 7-day window</span></span></span>
+<span class="r-in"><span><span class="co">## finishing on that day.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the reproduction number (method "uncertain_si")</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, method <span class="op">=</span> <span class="st">"uncertain_si"</span>,</span></span>
+<span class="r-in"><span>                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>                  mean_si <span class="op">=</span> <span class="fl">2.6</span>, std_mean_si <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                  min_mean_si <span class="op">=</span> <span class="fl">1</span>, max_mean_si <span class="op">=</span> <span class="fl">4.2</span>,</span></span>
+<span class="r-in"><span>                  std_si <span class="op">=</span> <span class="fl">1.5</span>, std_std_si <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
+<span class="r-in"><span>                  min_std_si <span class="op">=</span> <span class="fl">0.5</span>, max_std_si <span class="op">=</span> <span class="fl">2.5</span>,</span></span>
+<span class="r-in"><span>                  n1 <span class="op">=</span> <span class="fl">100</span>, n2 <span class="op">=</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Default config will estimate R on weekly sliding windows.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     To change this change the t_start and t_end arguments. </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = "none"` instead.</span>
 <span class="r-plt img"><img src="estimate_R-5.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span class="co">## the bottom left plot produced shows, at each each day,</span></span>
-<span class="r-in"><span class="co">## the estimate of the reproduction number over the 7-day window</span></span>
-<span class="r-in"><span class="co">## finishing on that day.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## Note the following examples use an MCMC routine</span></span>
-<span class="r-in"><span class="co">## to estimate the serial interval distribution from data,</span></span>
-<span class="r-in"><span class="co">## so they may take a few minutes to run</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## load data on rotavirus</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MockRotavirus"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">################</span></span>
-<span class="r-in"><span class="va">mcmc_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_mcmc_control.html">make_mcmc_control</a></span><span class="op">(</span></span>
-<span class="r-in">  burnin <span class="op">=</span> <span class="fl">1000</span>, <span class="co"># first 1000 iterations discarded as burn-in</span></span>
-<span class="r-in">  thin <span class="op">=</span> <span class="fl">10</span>, <span class="co"># every 10th iteration will be kept, the rest discarded</span></span>
-<span class="r-in">  seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># set the seed to make the process reproducible</span></span>
-<span class="r-in"> </span>
-<span class="r-in"><span class="va">R_si_from_data</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span></span>
-<span class="r-in">  incid <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">incidence</span>,</span>
-<span class="r-in">  method <span class="op">=</span> <span class="st">"si_from_data"</span>,</span>
-<span class="r-in">  si_data <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>, <span class="co"># symptom onset data</span></span>
-<span class="r-in">  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span>si_parametric_distr <span class="op">=</span> <span class="st">"G"</span>, <span class="co"># gamma dist. for SI</span></span>
-<span class="r-in">     mcmc_control <span class="op">=</span> <span class="va">mcmc_control</span>,</span>
-<span class="r-in">     n1 <span class="op">=</span> <span class="fl">500</span>, <span class="co"># number of posterior samples of SI dist.</span></span>
-<span class="r-in">     n2 <span class="op">=</span> <span class="fl">50</span>, <span class="co"># number of posterior samples of Rt dist.</span></span>
-<span class="r-in">     seed <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="co"># set seed for reproducibility</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## compare with version with no uncertainty</span></span>
-<span class="r-in"><span class="va">R_Parametric</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span><span class="va">MockRotavirus</span><span class="op">$</span><span class="va">incidence</span>,</span>
-<span class="r-in">                          method <span class="op">=</span> <span class="st">"parametric_si"</span>,</span>
-<span class="r-in">                          config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">                          mean_si <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">R_si_from_data</span><span class="op">$</span><span class="va">SI.Moments</span><span class="op">$</span><span class="va">Mean</span><span class="op">)</span>,</span>
-<span class="r-in">                             std_si <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">R_si_from_data</span><span class="op">$</span><span class="va">SI.Moments</span><span class="op">$</span><span class="va">Std</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">## generate plots</span></span>
-<span class="r-in"><span class="va">p_uncertainty</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_si_from_data</span>, <span class="st">"R"</span>, options_R<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">p_no_uncertainty</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_Parametric</span>, <span class="st">"R"</span>, options_R<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="va">p_uncertainty</span>, <span class="va">p_no_uncertainty</span>,ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## the left hand side graph is with uncertainty in the SI distribution, the</span></span>
-<span class="r-in"><span class="co">## right hand side without.</span></span>
-<span class="r-in"><span class="co">## The credible intervals are wider when accounting for uncertainty in the SI</span></span>
-<span class="r-in"><span class="co">## distribution.</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the reproduction number (method "si_from_sample")</span></span>
-<span class="r-in"><span class="va">MCMC_seed</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span class="r-in"><span class="va">overall_seed</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
-<span class="r-in"><span class="va">SI.fit</span> <span class="op">&lt;-</span> <span class="fu">coarseDataTools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/coarseDataTools/man/dic.fit.mcmc.html" class="external-link">dic.fit.mcmc</a></span><span class="op">(</span>dat <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span>
-<span class="r-in">                 dist <span class="op">=</span> <span class="st">"G"</span>,</span>
-<span class="r-in">                 init.pars <span class="op">=</span> <span class="fu"><a href="init_mcmc_params.html">init_mcmc_params</a></span><span class="op">(</span><span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>, <span class="st">"G"</span><span class="op">)</span>,</span>
-<span class="r-in">                 burnin <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span class="r-in">                 n.samples <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span class="r-in">                 seed <span class="op">=</span> <span class="va">MCMC_seed</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">si_sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="coarse2estim.html">coarse2estim</a></span><span class="op">(</span><span class="va">SI.fit</span>, thin <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">$</span><span class="va">si_sample</span></span>
-<span class="r-in"><span class="va">R_si_from_sample</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span><span class="va">MockRotavirus</span><span class="op">$</span><span class="va">incidence</span>,</span>
-<span class="r-in">                               method <span class="op">=</span> <span class="st">"si_from_sample"</span>,</span>
-<span class="r-in">                               si_sample <span class="op">=</span> <span class="va">si_sample</span>,</span>
-<span class="r-in">                               config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n2 <span class="op">=</span> <span class="fl">50</span>, </span>
-<span class="r-in">                               seed <span class="op">=</span> <span class="va">overall_seed</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_si_from_sample</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## check that R_si_from_sample is the same as R_si_from_data</span></span>
-<span class="r-in"><span class="co">## since they were generated using the same MCMC algorithm to generate the SI</span></span>
-<span class="r-in"><span class="co">## sample (either internally to EpiEstim or externally)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">R_si_from_sample</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Mean(R)`</span> <span class="op">==</span> <span class="va">R_si_from_data</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Mean(R)`</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+<span class="r-in"><span><span class="co">## the bottom left plot produced shows, at each each day,</span></span></span>
+<span class="r-in"><span><span class="co">## the estimate of the reproduction number over the 7-day window</span></span></span>
+<span class="r-in"><span><span class="co">## finishing on that day.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">## Note the following examples use an MCMC routine</span></span></span>
+<span class="r-in"><span><span class="co">## to estimate the serial interval distribution from data,</span></span></span>
+<span class="r-in"><span><span class="co">## so they may take a few minutes to run</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## load data on rotavirus</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MockRotavirus"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">################</span></span></span>
+<span class="r-in"><span><span class="va">mcmc_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="make_mcmc_control.html">make_mcmc_control</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  burnin <span class="op">=</span> <span class="fl">1000</span>, <span class="co"># first 1000 iterations discarded as burn-in</span></span></span>
+<span class="r-in"><span>  thin <span class="op">=</span> <span class="fl">10</span>, <span class="co"># every 10th iteration will be kept, the rest discarded</span></span></span>
+<span class="r-in"><span>  seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># set the seed to make the process reproducible</span></span></span>
+<span class="r-in"><span> </span></span>
+<span class="r-in"><span><span class="va">R_si_from_data</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  incid <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">incidence</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"si_from_data"</span>,</span></span>
+<span class="r-in"><span>  si_data <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>, <span class="co"># symptom onset data</span></span></span>
+<span class="r-in"><span>  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span>si_parametric_distr <span class="op">=</span> <span class="st">"G"</span>, <span class="co"># gamma dist. for SI</span></span></span>
+<span class="r-in"><span>     mcmc_control <span class="op">=</span> <span class="va">mcmc_control</span>,</span></span>
+<span class="r-in"><span>     n1 <span class="op">=</span> <span class="fl">500</span>, <span class="co"># number of posterior samples of SI dist.</span></span></span>
+<span class="r-in"><span>     n2 <span class="op">=</span> <span class="fl">50</span>, <span class="co"># number of posterior samples of Rt dist.</span></span></span>
+<span class="r-in"><span>     seed <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="co"># set seed for reproducibility</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## compare with version with no uncertainty</span></span></span>
+<span class="r-in"><span><span class="va">R_Parametric</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span><span class="va">MockRotavirus</span><span class="op">$</span><span class="va">incidence</span>,</span></span>
+<span class="r-in"><span>                          method <span class="op">=</span> <span class="st">"parametric_si"</span>,</span></span>
+<span class="r-in"><span>                          config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>                          mean_si <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">R_si_from_data</span><span class="op">$</span><span class="va">SI.Moments</span><span class="op">$</span><span class="va">Mean</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                             std_si <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">R_si_from_data</span><span class="op">$</span><span class="va">SI.Moments</span><span class="op">$</span><span class="va">Std</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## generate plots</span></span></span>
+<span class="r-in"><span><span class="va">p_uncertainty</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_si_from_data</span>, <span class="st">"R"</span>, options_R<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">p_no_uncertainty</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_Parametric</span>, <span class="st">"R"</span>, options_R<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="va">p_uncertainty</span>, <span class="va">p_no_uncertainty</span>,ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## the left hand side graph is with uncertainty in the SI distribution, the</span></span></span>
+<span class="r-in"><span><span class="co">## right hand side without.</span></span></span>
+<span class="r-in"><span><span class="co">## The credible intervals are wider when accounting for uncertainty in the SI</span></span></span>
+<span class="r-in"><span><span class="co">## distribution.</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the reproduction number (method "si_from_sample")</span></span></span>
+<span class="r-in"><span><span class="va">MCMC_seed</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="va">overall_seed</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="va">SI.fit</span> <span class="op">&lt;-</span> <span class="fu">coarseDataTools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/coarseDataTools/man/dic.fit.mcmc.html" class="external-link">dic.fit.mcmc</a></span><span class="op">(</span>dat <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span></span>
+<span class="r-in"><span>                 dist <span class="op">=</span> <span class="st">"G"</span>,</span></span>
+<span class="r-in"><span>                 init.pars <span class="op">=</span> <span class="fu"><a href="init_mcmc_params.html">init_mcmc_params</a></span><span class="op">(</span><span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>, <span class="st">"G"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 burnin <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>                 n.samples <span class="op">=</span> <span class="fl">5000</span>,</span></span>
+<span class="r-in"><span>                 seed <span class="op">=</span> <span class="va">MCMC_seed</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">si_sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="coarse2estim.html">coarse2estim</a></span><span class="op">(</span><span class="va">SI.fit</span>, thin <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">$</span><span class="va">si_sample</span></span></span>
+<span class="r-in"><span><span class="va">R_si_from_sample</span> <span class="op">&lt;-</span> <span class="fu">estimate_R</span><span class="op">(</span><span class="va">MockRotavirus</span><span class="op">$</span><span class="va">incidence</span>,</span></span>
+<span class="r-in"><span>                               method <span class="op">=</span> <span class="st">"si_from_sample"</span>,</span></span>
+<span class="r-in"><span>                               si_sample <span class="op">=</span> <span class="va">si_sample</span>,</span></span>
+<span class="r-in"><span>                               config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>n2 <span class="op">=</span> <span class="fl">50</span>, </span></span>
+<span class="r-in"><span>                               seed <span class="op">=</span> <span class="va">overall_seed</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_si_from_sample</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## check that R_si_from_sample is the same as R_si_from_data</span></span></span>
+<span class="r-in"><span><span class="co">## since they were generated using the same MCMC algorithm to generate the SI</span></span></span>
+<span class="r-in"><span><span class="co">## sample (either internally to EpiEstim or externally)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">R_si_from_sample</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Mean(R)`</span> <span class="op">==</span> <span class="va">R_si_from_data</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Mean(R)`</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -395,7 +406,7 @@ the posterior distribution from the output of <code>estimate_R()</code></p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

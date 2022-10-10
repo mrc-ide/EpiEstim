@@ -86,7 +86,7 @@ estimated.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">init_mcmc_params</span><span class="op">(</span><span class="va">si_data</span>, dist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"G"</span>, <span class="st">"W"</span>, <span class="st">"L"</span>, <span class="st">"off1G"</span>, <span class="st">"off1W"</span>, <span class="st">"off1L"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">init_mcmc_params</span><span class="op">(</span><span class="va">si_data</span>, dist <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"G"</span>, <span class="st">"W"</span>, <span class="st">"L"</span>, <span class="st">"off1G"</span>, <span class="st">"off1W"</span>, <span class="st">"off1L"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -111,15 +111,20 @@ interval-censored, single interval-censored or exact observations,
 respectively, see Reich et al. Statist. Med. 2009. If not specified, this
 will be automatically computed from the dates</p></li>
 </ul></dd>
+
+
 <dt>dist</dt>
 <dd><p>the parametric distribution to use for the serial interval. 
 Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G"
 (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
 shifted by 1).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A vector containing the initial values for the two parameters of the
+    
+
+<p>A vector containing the initial values for the two parameters of the
   distribution of the serial interval. These are the shape and scale for all
   but the lognormal distribution, for which it is the meanlog and sdlog.</p>
     </div>
@@ -134,42 +139,42 @@ shifted by 1).</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## Note the following examples use an MCMC routine</span></span>
-<span class="r-in"><span class="co">## to estimate the serial interval distribution from data,</span></span>
-<span class="r-in"><span class="co">## so they may take a few minutes to run</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## load data on rotavirus</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MockRotavirus"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## get clever initial values for shape and scale of a Gamma distribution</span></span>
-<span class="r-in"><span class="co">## fitted to the the data MockRotavirus$si_data</span></span>
-<span class="r-in"><span class="va">clever_init_param</span> <span class="op">&lt;-</span> <span class="fu">init_mcmc_params</span><span class="op">(</span><span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>, <span class="st">"G"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the serial interval from data using a clever starting point for </span></span>
-<span class="r-in"><span class="co">## the MCMC chain</span></span>
-<span class="r-in"><span class="va">SI_fit_clever</span> <span class="op">&lt;-</span> <span class="fu">coarseDataTools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/coarseDataTools/man/dic.fit.mcmc.html" class="external-link">dic.fit.mcmc</a></span><span class="op">(</span>dat <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span>
-<span class="r-in">                             dist <span class="op">=</span> <span class="st">"G"</span>,</span>
-<span class="r-in">                             init.pars <span class="op">=</span> <span class="va">clever_init_param</span>,</span>
-<span class="r-in">                             burnin <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span class="r-in">                             n.samples <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the serial interval from data using a random starting point for </span></span>
-<span class="r-in"><span class="co">## the MCMC chain</span></span>
-<span class="r-in"><span class="va">SI_fit_naive</span> <span class="op">&lt;-</span> <span class="fu">coarseDataTools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/coarseDataTools/man/dic.fit.mcmc.html" class="external-link">dic.fit.mcmc</a></span><span class="op">(</span>dat <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span>
-<span class="r-in">                             dist <span class="op">=</span> <span class="st">"G"</span>,</span>
-<span class="r-in">                             burnin <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span class="r-in">                             n.samples <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## use check_cdt_samples_convergence to check convergence in both situations</span></span>
-<span class="r-in"><span class="va">converg_diag_clever</span> <span class="op">&lt;-</span> <span class="fu"><a href="check_cdt_samples_convergence.html">check_cdt_samples_convergence</a></span><span class="op">(</span><span class="va">SI_fit_clever</span><span class="op">@</span><span class="va">samples</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">converg_diag_naive</span> <span class="op">&lt;-</span> <span class="fu"><a href="check_cdt_samples_convergence.html">check_cdt_samples_convergence</a></span><span class="op">(</span><span class="va">SI_fit_naive</span><span class="op">@</span><span class="va">samples</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">converg_diag_clever</span></span>
-<span class="r-in"><span class="va">converg_diag_naive</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">## Note the following examples use an MCMC routine</span></span></span>
+<span class="r-in"><span><span class="co">## to estimate the serial interval distribution from data,</span></span></span>
+<span class="r-in"><span><span class="co">## so they may take a few minutes to run</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## load data on rotavirus</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MockRotavirus"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## get clever initial values for shape and scale of a Gamma distribution</span></span></span>
+<span class="r-in"><span><span class="co">## fitted to the the data MockRotavirus$si_data</span></span></span>
+<span class="r-in"><span><span class="va">clever_init_param</span> <span class="op">&lt;-</span> <span class="fu">init_mcmc_params</span><span class="op">(</span><span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>, <span class="st">"G"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the serial interval from data using a clever starting point for </span></span></span>
+<span class="r-in"><span><span class="co">## the MCMC chain</span></span></span>
+<span class="r-in"><span><span class="va">SI_fit_clever</span> <span class="op">&lt;-</span> <span class="fu">coarseDataTools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/coarseDataTools/man/dic.fit.mcmc.html" class="external-link">dic.fit.mcmc</a></span><span class="op">(</span>dat <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span></span>
+<span class="r-in"><span>                             dist <span class="op">=</span> <span class="st">"G"</span>,</span></span>
+<span class="r-in"><span>                             init.pars <span class="op">=</span> <span class="va">clever_init_param</span>,</span></span>
+<span class="r-in"><span>                             burnin <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>                             n.samples <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the serial interval from data using a random starting point for </span></span></span>
+<span class="r-in"><span><span class="co">## the MCMC chain</span></span></span>
+<span class="r-in"><span><span class="va">SI_fit_naive</span> <span class="op">&lt;-</span> <span class="fu">coarseDataTools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/coarseDataTools/man/dic.fit.mcmc.html" class="external-link">dic.fit.mcmc</a></span><span class="op">(</span>dat <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span></span>
+<span class="r-in"><span>                             dist <span class="op">=</span> <span class="st">"G"</span>,</span></span>
+<span class="r-in"><span>                             burnin <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>                             n.samples <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## use check_cdt_samples_convergence to check convergence in both situations</span></span></span>
+<span class="r-in"><span><span class="va">converg_diag_clever</span> <span class="op">&lt;-</span> <span class="fu"><a href="check_cdt_samples_convergence.html">check_cdt_samples_convergence</a></span><span class="op">(</span><span class="va">SI_fit_clever</span><span class="op">@</span><span class="va">samples</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">converg_diag_naive</span> <span class="op">&lt;-</span> <span class="fu"><a href="check_cdt_samples_convergence.html">check_cdt_samples_convergence</a></span><span class="op">(</span><span class="va">SI_fit_naive</span><span class="op">@</span><span class="va">samples</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">converg_diag_clever</span></span></span>
+<span class="r-in"><span><span class="va">converg_diag_naive</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -184,7 +189,7 @@ shifted by 1).</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

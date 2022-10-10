@@ -72,16 +72,16 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">draw_R</span><span class="op">(</span>
-  <span class="va">epsilon</span>,
-  <span class="va">incid</span>,
-  <span class="va">lambda</span>,
-  <span class="va">priors</span>,
-  shape_R_flat <span class="op">=</span> <span class="cn">NULL</span>,
-  t_min <span class="op">=</span> <span class="cn">NULL</span>,
-  t_max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span>,
-  seed <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">draw_R</span><span class="op">(</span></span>
+<span>  <span class="va">epsilon</span>,</span>
+<span>  <span class="va">incid</span>,</span>
+<span>  <span class="va">lambda</span>,</span>
+<span>  <span class="va">priors</span>,</span>
+<span>  shape_R_flat <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_min <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -90,11 +90,15 @@
 <dd><p>a value or vector of values for the relative transmissibility
 of the "new" pathogen/strain/variant(s) compared to the reference
 pathogen/strain/variant</p></dd>
+
+
 <dt>incid</dt>
 <dd><p>a multidimensional array containing values of the (local)
 incidence
 for each time step (1st dimension), location (2nd dimension) and
 pathogen/strain/variant (3rd dimension)</p></dd>
+
+
 <dt>lambda</dt>
 <dd><p>a multidimensional array containing values of the overall
 infectivity for each time step (1st dimension), location (2nd dimension)
@@ -104,50 +108,63 @@ the incidence for that location and that pathogen/strain/variant at all
 previous time steps, weighted by the current infectivity of those
 past incident cases. It can be calculated from the incidence `incid` and
 the distribution of the serial interval using function `compute_lambda`)</p></dd>
+
+
 <dt>priors</dt>
 <dd><p>a list of prior parameters (shape and scale of a gamma
 distribution) for epsilon and R; can be obtained from the function
 `default_priors`. The prior for R is assumed to be the same for all
 time steps and all locations</p></dd>
+
+
 <dt>shape_R_flat</dt>
 <dd><p>a vector of the shape of the posterior distribution of R
 for each time step t and each location l
 (stored in element (l-1)*(t_max - t_min + 1) + t of the vector),
 as obtained from function `get_shape_R_flat`</p></dd>
+
+
 <dt>t_min</dt>
 <dd><p>an integer &gt;1 giving the minimum time step to consider in the
 estimation. Default value is 2 (as the estimation is conditional on
 observations at time step 1 and can therefore only start at time step 2).</p></dd>
+
+
 <dt>t_max</dt>
 <dd><p>an integer &gt;`t_min` and &lt;=`nrow(incid)` giving the maximum time
 step to consider in the estimation. Default value is `nrow(incid)`.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>a numeric value used to fix the random seed</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a matrix of the instantaneous reproduction number R for the reference
+    
+
+<p>a matrix of the instantaneous reproduction number R for the reference
   pathogen/strain/variant for each time step (row) and each location (column)
   drawn from the marginal posterior distribution</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="va">n_v</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
-<span class="r-in"><span class="va">n_loc</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="co"># 3 locations</span></span>
-<span class="r-in"><span class="cn">T</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># 100 time steps</span></span>
-<span class="r-in"><span class="va">priors</span> <span class="op">&lt;-</span> <span class="fu"><a href="default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># constant incidence 10 per day everywhere</span></span>
-<span class="r-in"><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">10</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">T</span>, <span class="va">n_loc</span>, <span class="va">n_v</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="process_I_multivariant.html">process_I_multivariant</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># arbitrary serial interval, same for both variants</span></span>
-<span class="r-in"><span class="va">w_v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.3</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">si_distr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">w_v</span>, <span class="va">w_v</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_lambda.html">compute_lambda</a></span><span class="op">(</span><span class="va">incid</span>, <span class="va">si_distr</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># Epsilon = 1 i.e. no transmission advantage</span></span>
-<span class="r-in"><span class="va">epsilon</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span class="r-in"><span class="fu">draw_R</span><span class="op">(</span><span class="va">epsilon</span>, <span class="va">incid</span><span class="op">$</span><span class="va">local</span>, <span class="va">lambda</span>, <span class="va">priors</span>, seed <span class="op">=</span> <span class="fl">1</span>, t_min <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">n_v</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="va">n_loc</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="co"># 3 locations</span></span></span>
+<span class="r-in"><span><span class="cn">T</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># 100 time steps</span></span></span>
+<span class="r-in"><span><span class="va">priors</span> <span class="op">&lt;-</span> <span class="fu"><a href="default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># constant incidence 10 per day everywhere</span></span></span>
+<span class="r-in"><span><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">10</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">T</span>, <span class="va">n_loc</span>, <span class="va">n_v</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="process_I_multivariant.html">process_I_multivariant</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># arbitrary serial interval, same for both variants</span></span></span>
+<span class="r-in"><span><span class="va">w_v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">si_distr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">w_v</span>, <span class="va">w_v</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lambda</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_lambda.html">compute_lambda</a></span><span class="op">(</span><span class="va">incid</span>, <span class="va">si_distr</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Epsilon = 1 i.e. no transmission advantage</span></span></span>
+<span class="r-in"><span><span class="va">epsilon</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="fu">draw_R</span><span class="op">(</span><span class="va">epsilon</span>, <span class="va">incid</span><span class="op">$</span><span class="va">local</span>, <span class="va">lambda</span>, <span class="va">priors</span>, seed <span class="op">=</span> <span class="fl">1</span>, t_min <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             [,1]      [,2]      [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1,]        NA        NA        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [2,] 4.1754778 6.4177517 5.2923993</span>
@@ -249,7 +266,7 @@ step to consider in the estimation. Default value is `nrow(incid)`.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [98,] 1.0872457 0.9527889 0.8528483</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [99,] 1.0057392 1.2131339 0.6324443</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [100,] 0.9490229 1.0053291 1.0373155</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -264,7 +281,7 @@ step to consider in the estimation. Default value is `nrow(incid)`.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

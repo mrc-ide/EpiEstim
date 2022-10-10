@@ -92,12 +92,12 @@ estimate the serial interval within <code>estimate_R</code> (with method
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">make_mcmc_control</span><span class="op">(</span>
-  burnin <span class="op">=</span> <span class="fl">3000</span>,
-  thin <span class="op">=</span> <span class="fl">10</span>,
-  seed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
-  init_pars <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">make_mcmc_control</span><span class="op">(</span></span>
+<span>  burnin <span class="op">=</span> <span class="fl">3000</span>,</span>
+<span>  thin <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  init_pars <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -105,23 +105,32 @@ estimate the serial interval within <code>estimate_R</code> (with method
     <dl><dt>burnin</dt>
 <dd><p>A positive integer giving the burnin used in the MCMC when
 estimating the serial interval distribution.</p></dd>
+
+
 <dt>thin</dt>
 <dd><p>A positive integer corresponding to thinning parameter; the MCMC
 will be run for <code>burnin+n1*thin iterations</code>; 1 in <code>thin</code>
 iterations will be recorded, after the burnin phase, so the posterior
 sample size is n1.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>An integer used as the seed for the random number generator at
 the start of the MCMC estimation; useful to get reproducible results.</p></dd>
+
+
 <dt>init_pars</dt>
 <dd><p>vector of size 2 corresponding to the initial values of
 parameters to use for the SI distribution. This is the shape and scale for
 all but the lognormal distribution, for which it is the meanlog and
 sdlog.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>estimate_R_mcmc_control</code> with components 
+    
+
+<p>An object of class <code>estimate_R_mcmc_control</code> with components 
 burnin, thin, seed, init_pars. This can be 
 used as an argument of function <code>make_config</code>.</p>
     </div>
@@ -162,7 +171,7 @@ these data using MCMC methods implemented in the package</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

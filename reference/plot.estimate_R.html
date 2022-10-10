@@ -82,20 +82,20 @@ interval.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for estimate_R</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>
-  <span class="va">x</span>,
-  what <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"incid"</span>, <span class="st">"R"</span>, <span class="st">"SI"</span><span class="op">)</span>,
-  add_imported_cases <span class="op">=</span> <span class="cn">FALSE</span>,
-  options_I <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">palette</a></span><span class="op">(</span><span class="op">)</span>, transp <span class="op">=</span> <span class="fl">0.7</span>, xlim <span class="op">=</span> <span class="cn">NULL</span>, ylim <span class="op">=</span> <span class="cn">NULL</span>, interval <span class="op">=</span>
-    <span class="fl">1L</span>, xlab <span class="op">=</span> <span class="st">"Time"</span>, ylab <span class="op">=</span> <span class="st">"Incidence"</span><span class="op">)</span>,
-  options_R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">palette</a></span><span class="op">(</span><span class="op">)</span>, transp <span class="op">=</span> <span class="fl">0.2</span>, xlim <span class="op">=</span> <span class="cn">NULL</span>, ylim <span class="op">=</span> <span class="cn">NULL</span>, xlab <span class="op">=</span>
-    <span class="st">"Time"</span>, ylab <span class="op">=</span> <span class="st">"R"</span><span class="op">)</span>,
-  options_SI <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>prob_min <span class="op">=</span> <span class="fl">0.001</span>, col <span class="op">=</span> <span class="st">"black"</span>, transp <span class="op">=</span> <span class="fl">0.25</span>, xlim <span class="op">=</span> <span class="cn">NULL</span>, ylim <span class="op">=</span>
-    <span class="cn">NULL</span>, xlab <span class="op">=</span> <span class="st">"Time"</span>, ylab <span class="op">=</span> <span class="st">"Frequency"</span><span class="op">)</span>,
-  legend <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for estimate_R</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  what <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"incid"</span>, <span class="st">"R"</span>, <span class="st">"SI"</span><span class="op">)</span>,</span>
+<span>  add_imported_cases <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  options_I <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">palette</a></span><span class="op">(</span><span class="op">)</span>, transp <span class="op">=</span> <span class="fl">0.7</span>, xlim <span class="op">=</span> <span class="cn">NULL</span>, ylim <span class="op">=</span> <span class="cn">NULL</span>, interval <span class="op">=</span></span>
+<span>    <span class="fl">1L</span>, xlab <span class="op">=</span> <span class="st">"Time"</span>, ylab <span class="op">=</span> <span class="st">"Incidence"</span><span class="op">)</span>,</span>
+<span>  options_R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/palette.html" class="external-link">palette</a></span><span class="op">(</span><span class="op">)</span>, transp <span class="op">=</span> <span class="fl">0.2</span>, xlim <span class="op">=</span> <span class="cn">NULL</span>, ylim <span class="op">=</span> <span class="cn">NULL</span>, xlab <span class="op">=</span></span>
+<span>    <span class="st">"Time"</span>, ylab <span class="op">=</span> <span class="st">"R"</span><span class="op">)</span>,</span>
+<span>  options_SI <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>prob_min <span class="op">=</span> <span class="fl">0.001</span>, col <span class="op">=</span> <span class="st">"black"</span>, transp <span class="op">=</span> <span class="fl">0.25</span>, xlim <span class="op">=</span> <span class="cn">NULL</span>, ylim <span class="op">=</span></span>
+<span>    <span class="cn">NULL</span>, xlab <span class="op">=</span> <span class="st">"Time"</span>, ylab <span class="op">=</span> <span class="st">"Frequency"</span><span class="op">)</span>,</span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -104,14 +104,20 @@ interval.</p>
 <dd><p>The output of function <code><a href="estimate_R.html">estimate_R</a></code> or function
 <code><a href="wallinga_teunis.html">wallinga_teunis</a></code>. To plot simultaneous outputs on the same 
 plot use <code><a href="estimate_R_plots.html">estimate_R_plots</a></code> function</p></dd>
+
+
 <dt>what</dt>
 <dd><p>A string specifying what to plot, namely the incidence time
 series (<code>what='incid'</code>), the estimated reproduction number
 (<code>what='R'</code>), the serial interval distribution (<code>what='SI'</code>, or
 all three (<code>what='all'</code>)).</p></dd>
+
+
 <dt>add_imported_cases</dt>
 <dd><p>A boolean to specify whether, on the incidence time
 series plot, to add the incidence of imported cases.</p></dd>
+
+
 <dt>options_I</dt>
 <dd><p>For what = "incid" or "all". A list of graphical options:</p><dl><dt>col</dt>
 <dd><p>A color or vector of colors used for plotting
@@ -136,6 +142,8 @@ defaults to 1 day.</p></dd>
 incidence plot</p></dd>
 
 </dl></dd>
+
+
 <dt>options_R</dt>
 <dd><p>For what = "R" or "all". A list of graphical options:</p><dl><dt>col</dt>
 <dd><p>A color or vector of colors used for plotting R. By
@@ -155,6 +163,8 @@ limits of the horizontal axis</p></dd>
 <dd><p>Labels for the axes of the R plot</p></dd>
 
 </dl></dd>
+
+
 <dt>options_SI</dt>
 <dd><p>For what = "SI" or "all". A list of graphical options:</p><dl><dt>prob_min</dt>
 <dd><p>A numeric value between 0 and 1. The SI
@@ -180,16 +190,24 @@ vertical axis</p></dd>
  distribution plot</p></dd>
 
 </dl></dd>
+
+
 <dt>legend</dt>
 <dd><p>A boolean (TRUE by default) governing the presence / absence of
 legends on the plots</p></dd>
+
+
 <dt>...</dt>
 <dd><p>further arguments passed to other methods (currently unused).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a plot (if <code>what = "incid"</code>, <code>"R"</code>, or <code>"SI"</code>) or a
-<code><a href="https://rdrr.io/r/grid/grid.grob.html" class="external-link">grob</a></code> object (if <code>what = "all"</code>).</p>
+    
+
+<p>a plot (if <code>what = "incid"</code>, <code>"R"</code>, or <code>"SI"</code>) or a</p>
+<p></p>
+<p><code><a href="https://rdrr.io/r/grid/grid.grob.html" class="external-link">grob</a></code> object (if <code>what = "all"</code>).</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -205,51 +223,51 @@ legends on the plots</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## load data on pandemic flu in a school in 2009</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Flu2009"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the instantaneous reproduction number</span></span>
-<span class="r-in"><span class="co">## (method "non_parametric_si")</span></span>
-<span class="r-in"><span class="va">R_i</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>,</span>
-<span class="r-in">                  method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span>
-<span class="r-in">                  config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">26</span><span class="op">)</span>, </span>
-<span class="r-in">                                t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">32</span><span class="op">)</span>, </span>
-<span class="r-in">                                si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span></span>
-<span class="r-in">                               <span class="op">)</span></span>
-<span class="r-in">                 <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## visualise results</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_i</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## load data on pandemic flu in a school in 2009</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Flu2009"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the instantaneous reproduction number</span></span></span>
+<span class="r-in"><span><span class="co">## (method "non_parametric_si")</span></span></span>
+<span class="r-in"><span><span class="va">R_i</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>,</span></span>
+<span class="r-in"><span>                  method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span></span>
+<span class="r-in"><span>                  config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">26</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>                                t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">32</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>                                si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span></span></span>
+<span class="r-in"><span>                               <span class="op">)</span></span></span>
+<span class="r-in"><span>                 <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## visualise results</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_i</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.estimate_R-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the instantaneous reproduction number</span></span>
-<span class="r-in"><span class="co">## (method "non_parametric_si")</span></span>
-<span class="r-in"><span class="va">R_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="wallinga_teunis.html">wallinga_teunis</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span>
-<span class="r-in">                       method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span>
-<span class="r-in">                       config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">26</span><span class="op">)</span>, </span>
-<span class="r-in">                                     t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">32</span><span class="op">)</span>, </span>
-<span class="r-in">                                     si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span></span>
-<span class="r-in">                                    <span class="op">)</span></span>
-<span class="r-in">                      <span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the instantaneous reproduction number</span></span></span>
+<span class="r-in"><span><span class="co">## (method "non_parametric_si")</span></span></span>
+<span class="r-in"><span><span class="va">R_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="wallinga_teunis.html">wallinga_teunis</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span></span>
+<span class="r-in"><span>                       method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span></span>
+<span class="r-in"><span>                       config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">26</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>                                     t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">32</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>                                     si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span></span></span>
+<span class="r-in"><span>                                    <span class="op">)</span></span></span>
+<span class="r-in"><span>                      <span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>setting config$n_sim to 10 as config$n_sim was not specified. </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## produce plot of the incidence</span></span>
-<span class="r-in"><span class="co">## (with, on top of total incidence, the incidence of imported cases),</span></span>
-<span class="r-in"><span class="co">## estimated instantaneous and case reproduction numbers</span></span>
-<span class="r-in"><span class="co">## and serial interval distribution used</span></span>
-<span class="r-in"><span class="va">p_I</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_i</span>, <span class="st">"incid"</span>, add_imported_cases<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="co"># plots the incidence</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## produce plot of the incidence</span></span></span>
+<span class="r-in"><span><span class="co">## (with, on top of total incidence, the incidence of imported cases),</span></span></span>
+<span class="r-in"><span><span class="co">## estimated instantaneous and case reproduction numbers</span></span></span>
+<span class="r-in"><span><span class="co">## and serial interval distribution used</span></span></span>
+<span class="r-in"><span><span class="va">p_I</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_i</span>, <span class="st">"incid"</span>, add_imported_cases<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="co"># plots the incidence</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The number of colors (8) did not match the number of groups (2).</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Using `col_pal` instead.</span>
-<span class="r-in"><span class="va">p_SI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_i</span>, <span class="st">"SI"</span><span class="op">)</span> <span class="co"># plots the serial interval distribution</span></span>
-<span class="r-in"><span class="va">p_Ri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_i</span>, <span class="st">"R"</span>,</span>
-<span class="r-in">             options_R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in">        <span class="co"># plots the estimated instantaneous reproduction number</span></span>
-<span class="r-in"><span class="va">p_Rc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_c</span>, <span class="st">"R"</span>,</span>
-<span class="r-in">             options_R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in">        <span class="co"># plots the estimated case reproduction number</span></span>
-<span class="r-in"><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="va">p_I</span>, <span class="va">p_SI</span>, <span class="va">p_Ri</span>, <span class="va">p_Rc</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="va">p_SI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_i</span>, <span class="st">"SI"</span><span class="op">)</span> <span class="co"># plots the serial interval distribution</span></span></span>
+<span class="r-in"><span><span class="va">p_Ri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_i</span>, <span class="st">"R"</span>,</span></span>
+<span class="r-in"><span>             options_R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>        <span class="co"># plots the estimated instantaneous reproduction number</span></span></span>
+<span class="r-in"><span><span class="va">p_Rc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_c</span>, <span class="st">"R"</span>,</span></span>
+<span class="r-in"><span>             options_R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>        <span class="co"># plots the estimated case reproduction number</span></span></span>
+<span class="r-in"><span><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span><span class="va">p_I</span>, <span class="va">p_SI</span>, <span class="va">p_Ri</span>, <span class="va">p_Rc</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.estimate_R-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -264,7 +282,7 @@ legends on the plots</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -89,7 +89,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>MV-EpiEstim</h1>
             
-            <h4 data-toc-skip class="date">2022-04-01</h4>
+            <h4 data-toc-skip class="date">2022-10-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/HEAD/vignettes/MV_EpiEstim_vignette.Rmd" class="external-link"><code>vignettes/MV_EpiEstim_vignette.Rmd</code></a></small>
       <div class="hidden name"><code>MV_EpiEstim_vignette.Rmd</code></div>
@@ -363,14 +363,14 @@ Variant_2
 <p>To estimate the effective transmission advantage of new variants compared to a reference variant we use the <code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> function in <code>EpiEstim</code>.</p>
 <p>###<code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/estimate_advantage.html">estimate_advantage</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incidence_object</span>, 
-                   si_distr <span class="op">=</span> <span class="va">si_matrix</span>, 
-                   priors <span class="op">=</span> <span class="fu"><a href="../reference/default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span>,
-                   mcmc_control <span class="op">=</span> <span class="fu"><a href="../reference/default_mcmc_controls.html">default_mcmc_controls</a></span><span class="op">(</span><span class="op">)</span>,
-                   t_min <span class="op">=</span> <span class="cn">NULL</span>, t_max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span>,
-                   incid_imported <span class="op">=</span> <span class="cn">NULL</span>,
-                   precompute <span class="op">=</span> <span class="cn">TRUE</span>,
-                   reorder_incid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/estimate_advantage.html">estimate_advantage</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incidence_object</span>, </span>
+<span>                   si_distr <span class="op">=</span> <span class="va">si_matrix</span>, </span>
+<span>                   priors <span class="op">=</span> <span class="fu"><a href="../reference/default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>                   mcmc_control <span class="op">=</span> <span class="fu"><a href="../reference/default_mcmc_controls.html">default_mcmc_controls</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>                   t_min <span class="op">=</span> <span class="cn">NULL</span>, t_max <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span>,</span>
+<span>                   incid_imported <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                   precompute <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                   reorder_incid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>As described above, the <code>incid=</code> and <code>si_distr=</code> arguments should be supplied with a multidimensional array of incidence and a matrix containing the serial interval for each variant respectively. In addition, the user can supply:</p>
 <ul>
 <li><p><code>priors=</code> with a list of the prior parameters (shape and scale) for the reproduction number and the transmission advantage. The default priors can be obtained using the <code><a href="../reference/default_priors.html">default_priors()</a></code> function.</p></li>
@@ -391,94 +391,94 @@ Variant_2
 </h3>
 <p>This example will take you through a workflow using incidence data for two variants of SARS-CoV-2 (wildtype and alpha) across 7 NHS regions in England. (For detailed description of the data see Bhatia et al. 2021)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"./data_mv_vignette/incid.rds"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"./data_mv_vignette/incid.rds"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Incidence</strong></p>
 <p>Let us say we have incidence data in the format below, where each row corresponds to a time step in the outbreak, each column corresponds to a region in England, and each third dimension corresponds to a variant.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span>
-<span class="co">#&gt; , , wild</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;      East of England London Midlands North East and Yorkshire North West</span>
-<span class="co">#&gt; [1,]               7     19       28                       21         37</span>
-<span class="co">#&gt; [2,]               8     20       44                       30         48</span>
-<span class="co">#&gt; [3,]              10     19       43                       30         48</span>
-<span class="co">#&gt; [4,]              10     23       52                       30         58</span>
-<span class="co">#&gt; [5,]               8     23       46                       36         53</span>
-<span class="co">#&gt; [6,]               6     19       32                       14         37</span>
-<span class="co">#&gt;      South East South West</span>
-<span class="co">#&gt; [1,]          7          8</span>
-<span class="co">#&gt; [2,]         10          7</span>
-<span class="co">#&gt; [3,]         11          6</span>
-<span class="co">#&gt; [4,]         10          6</span>
-<span class="co">#&gt; [5,]         12          5</span>
-<span class="co">#&gt; [6,]         13          2</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; , , alpha</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;      East of England London Midlands North East and Yorkshire North West</span>
-<span class="co">#&gt; [1,]               0      0        1                        0          0</span>
-<span class="co">#&gt; [2,]               0      1        1                        0          1</span>
-<span class="co">#&gt; [3,]               0      0        1                        0          0</span>
-<span class="co">#&gt; [4,]               1      0        1                        0          0</span>
-<span class="co">#&gt; [5,]               0      0        0                        0          0</span>
-<span class="co">#&gt; [6,]               0      0        0                        0          1</span>
-<span class="co">#&gt;      South East South West</span>
-<span class="co">#&gt; [1,]          0          0</span>
-<span class="co">#&gt; [2,]          0          0</span>
-<span class="co">#&gt; [3,]          1          1</span>
-<span class="co">#&gt; [4,]          0          0</span>
-<span class="co">#&gt; [5,]          0          0</span>
-<span class="co">#&gt; [6,]          0          0</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span></span>
+<span><span class="co">#&gt; , , wild</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      East of England London Midlands North East and Yorkshire North West</span></span>
+<span><span class="co">#&gt; [1,]               7     19       28                       21         37</span></span>
+<span><span class="co">#&gt; [2,]               8     20       44                       30         48</span></span>
+<span><span class="co">#&gt; [3,]              10     19       43                       30         48</span></span>
+<span><span class="co">#&gt; [4,]              10     23       52                       30         58</span></span>
+<span><span class="co">#&gt; [5,]               8     23       46                       36         53</span></span>
+<span><span class="co">#&gt; [6,]               6     19       32                       14         37</span></span>
+<span><span class="co">#&gt;      South East South West</span></span>
+<span><span class="co">#&gt; [1,]          7          8</span></span>
+<span><span class="co">#&gt; [2,]         10          7</span></span>
+<span><span class="co">#&gt; [3,]         11          6</span></span>
+<span><span class="co">#&gt; [4,]         10          6</span></span>
+<span><span class="co">#&gt; [5,]         12          5</span></span>
+<span><span class="co">#&gt; [6,]         13          2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; , , alpha</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;      East of England London Midlands North East and Yorkshire North West</span></span>
+<span><span class="co">#&gt; [1,]               0      0        1                        0          0</span></span>
+<span><span class="co">#&gt; [2,]               0      1        1                        0          1</span></span>
+<span><span class="co">#&gt; [3,]               0      0        1                        0          0</span></span>
+<span><span class="co">#&gt; [4,]               1      0        1                        0          0</span></span>
+<span><span class="co">#&gt; [5,]               0      0        0                        0          0</span></span>
+<span><span class="co">#&gt; [6,]               0      0        0                        0          1</span></span>
+<span><span class="co">#&gt;      South East South West</span></span>
+<span><span class="co">#&gt; [1,]          0          0</span></span>
+<span><span class="co">#&gt; [2,]          0          0</span></span>
+<span><span class="co">#&gt; [3,]          1          1</span></span>
+<span><span class="co">#&gt; [4,]          0          0</span></span>
+<span><span class="co">#&gt; [5,]          0          0</span></span>
+<span><span class="co">#&gt; [6,]          0          0</span></span></code></pre></div>
 <p>We also assume that the SI is the same for both variants, with a mean of 5.4 days and a standard deviation of 1.5 days (Rai, Shukla, and Dwivedi 2021) and produce a matrix of SI’s with the number of columns equal to the number of variants:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mean_SI</span> <span class="op">&lt;-</span> <span class="fl">5.4</span>
-<span class="va">sd_SI</span> <span class="op">&lt;-</span> <span class="fl">1.5</span>
-<span class="va">SI</span> <span class="op">&lt;-</span> <span class="fu">EpiEstim</span><span class="fu">::</span><span class="fu"><a href="../reference/discr_si.html">discr_si</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span><span class="op">)</span>, <span class="va">mean_SI</span>, <span class="va">sd_SI</span><span class="op">)</span>
-<span class="va">si_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">SI</span>,<span class="va">SI</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">mean_SI</span> <span class="op">&lt;-</span> <span class="fl">5.4</span></span>
+<span><span class="va">sd_SI</span> <span class="op">&lt;-</span> <span class="fl">1.5</span></span>
+<span><span class="va">SI</span> <span class="op">&lt;-</span> <span class="fu">EpiEstim</span><span class="fu">::</span><span class="fu"><a href="../reference/discr_si.html">discr_si</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">20</span><span class="op">)</span>, <span class="va">mean_SI</span>, <span class="va">sd_SI</span><span class="op">)</span></span>
+<span><span class="va">si_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">SI</span>,<span class="va">SI</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">si_matrix</span><span class="op">)</span>
-<span class="co">#&gt;                SI           SI</span>
-<span class="co">#&gt; [1,] 0.000000e+00 0.000000e+00</span>
-<span class="co">#&gt; [2,] 4.674689e-05 4.674689e-05</span>
-<span class="co">#&gt; [3,] 8.034951e-03 8.034951e-03</span>
-<span class="co">#&gt; [4,] 7.964056e-02 7.964056e-02</span>
-<span class="co">#&gt; [5,] 2.125381e-01 2.125381e-01</span>
-<span class="co">#&gt; [6,] 2.683362e-01 2.683362e-01</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">si_matrix</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                SI           SI</span></span>
+<span><span class="co">#&gt; [1,] 0.000000e+00 0.000000e+00</span></span>
+<span><span class="co">#&gt; [2,] 4.674689e-05 4.674689e-05</span></span>
+<span><span class="co">#&gt; [3,] 8.034951e-03 8.034951e-03</span></span>
+<span><span class="co">#&gt; [4,] 7.964056e-02 7.964056e-02</span></span>
+<span><span class="co">#&gt; [5,] 2.125381e-01 2.125381e-01</span></span>
+<span><span class="co">#&gt; [6,] 2.683362e-01 2.683362e-01</span></span></code></pre></div>
 <p><strong>Estimate transmission advantage</strong></p>
 <p>Now that we have our incidence and SI distributions we can supply these to the <code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> function. We use the default priors and MCMC controls.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu">EpiEstim</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_advantage.html">estimate_advantage</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid</span>,
-                             si_distr <span class="op">=</span> <span class="va">si_matrix</span>,
-                             priors <span class="op">=</span> <span class="fu"><a href="../reference/default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span>,
-                             mcmc_control <span class="op">=</span> <span class="fu"><a href="../reference/default_mcmc_controls.html">default_mcmc_controls</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu">EpiEstim</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_advantage.html">estimate_advantage</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid</span>,</span>
+<span>                             si_distr <span class="op">=</span> <span class="va">si_matrix</span>,</span>
+<span>                             priors <span class="op">=</span> <span class="fu"><a href="../reference/default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>                             mcmc_control <span class="op">=</span> <span class="fu"><a href="../reference/default_mcmc_controls.html">default_mcmc_controls</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The output is a list containing 4 elements:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">output</span><span class="op">$</span><span class="va">epsilon</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">epsilon</span></span></code></pre></div>
 <ul>
 <li>epsilon - the estimated effective transmission advantage. This is a matrix containing the MCMC chain (thinned and after burnin) for the relative transmissibility of the “new” variant (alpha) compared to the reference variant (wildtype) across all locations. Each row in the matrix is a “new” variant (in this case only 1) and each column an iteration of the MCMC. If epsilon &gt;1 then the corresponding variant is estimated to have a transmission advantage over the reference variant.</li>
 </ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">output</span><span class="op">$</span><span class="va">R</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">R</span></span></code></pre></div>
 <ul>
 <li>R - the reproduction number estimate for the reference variant. This is an array containing the MCMC chain (thinned and after burnin) for the reproduction number of the reference variant. The first dimension of the array is time, the second is the location, and the third is the iteration of the MCMC.</li>
 </ul>
 <p>In this example, we did not specify <code>t_min=</code> or <code>t_max=</code>. You will notice that the R estimates do not start until day 25, this is because: 1) One of the regions doesn’t have cases of the alpha variant until day 16, 2) The 95th percentile of the SI is 9 days.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">output</span><span class="op">$</span><span class="va">convergence</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">convergence</span></span></code></pre></div>
 <ul>
 <li>convergence - result of the Gelman-Rubin convergence diagnostic. This is either ‘TRUE’ or ‘FALSE’ and tells you whether the corresponding epsilon MCMC chain for each “new” variant has converged within the number of iterations specified.</li>
 </ul>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">output</span><span class="op">$</span><span class="va">diag</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">diag</span></span></code></pre></div>
 <ul>
 <li>diag - nested list of the point estimate and upper confidence limits of the Gelman-Rubin convergence diagnostics (as implemented in the R package <code>coda</code>). The length of diag is equal to the number of rows in epsilon (i.e. the number of non-reference variants, in this case only 1). Each element of diag contains a named list of the point estimate and upper confidence limits.</li>
 </ul>
 <p><strong>Summarise results</strong></p>
 <p>To summarise the estimated transmission advantage one can use the posterior median and 95% CrI as follows.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">output</span><span class="op">$</span><span class="va">epsilon</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;      50%     2.5%    97.5% </span>
-<span class="co">#&gt; 1.491490 1.474835 1.511473</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">output</span><span class="op">$</span><span class="va">epsilon</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      50%     2.5%    97.5% </span></span>
+<span><span class="co">#&gt; 1.492424 1.469989 1.509585</span></span></code></pre></div>
 <div style="margin-top:30px;">
 <h2 id="faqs">FAQs</h2>
 </div>
@@ -489,9 +489,9 @@ Variant_2
 <ul>
 <li><strong>What do some of the common warning/error messages mean?</strong></li>
 </ul>
-<pre><code><span class="st">"The Gelman-Rubin algorithm suggests the MCMC may not have converged within the number of iterations specified."</span></code></pre>
+<pre><code><span><span class="st">"The Gelman-Rubin algorithm suggests the MCMC may not have converged within the number of iterations specified."</span></span></code></pre>
 <p>This means that the MCMC chains for the estimation have not converged. To avoid this you may need to run <code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> with more MCMC iterations. E.g. by altering <code>mcmc_control()</code>.</p>
-<pre><code><span class="st">"Input SI distributions should sum to 1. Normalising now"</span></code></pre>
+<pre><code><span><span class="st">"Input SI distributions should sum to 1. Normalising now"</span></span></code></pre>
 <p>The SI distributions supplied have been re-normalised so that they sum to 1.</p>
 </div>
   </div>
@@ -513,7 +513,7 @@ Variant_2
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

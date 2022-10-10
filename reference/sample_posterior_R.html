@@ -72,7 +72,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">sample_posterior_R</span><span class="op">(</span><span class="va">R</span>, n <span class="op">=</span> <span class="fl">1000</span>, window <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sample_posterior_R</span><span class="op">(</span><span class="va">R</span>, n <span class="op">=</span> <span class="fl">1000</span>, window <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -80,18 +80,25 @@
     <dl><dt>R</dt>
 <dd><p>an <code>estimate_R</code> object from the estimate_r function
 function.</p></dd>
+
+
 <dt>n</dt>
 <dd><p>an integer specifying the number of samples to be taken from the
 gamma distribution.</p></dd>
+
+
 <dt>window</dt>
 <dd><p>an integer (or sequence of integers) specifying the window(s) 
 from which to estimate R. Defaults to the first window. If multiple windows
 are specified, the resulting samples will be drawn from several 
 distributions.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>n values of R from the posterior R distribution</p>
+    
+
+<p>n values of R from the posterior R distribution</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -100,30 +107,30 @@ distributions.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## load data on pandemic flu in a school in 2009</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Flu2009"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## estimate the reproduction number (method "non_parametric_si")</span></span>
-<span class="r-in"><span class="co">## when not specifying t_start and t_end in config, they are set to estimate</span></span>
-<span class="r-in"><span class="co">## the reproduction number on sliding weekly windows                          </span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span>
-<span class="r-in">                  method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span>
-<span class="r-in">                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## load data on pandemic flu in a school in 2009</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Flu2009"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## estimate the reproduction number (method "non_parametric_si")</span></span></span>
+<span class="r-in"><span><span class="co">## when not specifying t_start and t_end in config, they are set to estimate</span></span></span>
+<span class="r-in"><span><span class="co">## the reproduction number on sliding weekly windows                          </span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span></span>
+<span class="r-in"><span>                  method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span></span>
+<span class="r-in"><span>                  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Default config will estimate R on weekly sliding windows.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     To change this change the t_start and t_end arguments. </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Sample R from the first weekly window</span></span>
-<span class="r-in"><span class="va">win</span> <span class="op">&lt;-</span> <span class="fl">1L</span></span>
-<span class="r-in"><span class="va">R_median</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Median(R)`</span><span class="op">[</span><span class="va">win</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">R_CrI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Quantile.0.025(R)`</span><span class="op">[</span><span class="va">win</span><span class="op">]</span>, <span class="va">res</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Quantile.0.975(R)`</span><span class="op">[</span><span class="va">win</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2019</span><span class="op">-</span><span class="fl">06</span><span class="op">-</span><span class="fl">06</span><span class="op">)</span> <span class="co"># fixing the random seed for reproducibility</span></span>
-<span class="r-in"><span class="va">R_sample</span> <span class="op">&lt;-</span> <span class="fu">sample_posterior_R</span><span class="op">(</span><span class="va">res</span>, n <span class="op">=</span> <span class="fl">1000</span>, window <span class="op">=</span> <span class="va">win</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">R_sample</span>, col <span class="op">=</span> <span class="st">"grey"</span>, main <span class="op">=</span> <span class="st">"R sampled from the first weekly window"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">R_median</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span>       <span class="co"># show the median estimated R</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">R_CrI</span>, col <span class="op">=</span> <span class="st">"red"</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="co"># show the 95%CrI of R</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Sample R from the first weekly window</span></span></span>
+<span class="r-in"><span><span class="va">win</span> <span class="op">&lt;-</span> <span class="fl">1L</span></span></span>
+<span class="r-in"><span><span class="va">R_median</span> <span class="op">&lt;-</span> <span class="va">res</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Median(R)`</span><span class="op">[</span><span class="va">win</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">R_CrI</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Quantile.0.025(R)`</span><span class="op">[</span><span class="va">win</span><span class="op">]</span>, <span class="va">res</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Quantile.0.975(R)`</span><span class="op">[</span><span class="va">win</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2019</span><span class="op">-</span><span class="fl">06</span><span class="op">-</span><span class="fl">06</span><span class="op">)</span> <span class="co"># fixing the random seed for reproducibility</span></span></span>
+<span class="r-in"><span><span class="va">R_sample</span> <span class="op">&lt;-</span> <span class="fu">sample_posterior_R</span><span class="op">(</span><span class="va">res</span>, n <span class="op">=</span> <span class="fl">1000</span>, window <span class="op">=</span> <span class="va">win</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">R_sample</span>, col <span class="op">=</span> <span class="st">"grey"</span>, main <span class="op">=</span> <span class="st">"R sampled from the first weekly window"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">R_median</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span>       <span class="co"># show the median estimated R</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">R_CrI</span>, col <span class="op">=</span> <span class="st">"red"</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="co"># show the 95%CrI of R</span></span></span>
 <span class="r-plt img"><img src="sample_posterior_R-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -139,7 +146,7 @@ distributions.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
