@@ -7,7 +7,9 @@ data("Flu2009")
 data("SARS2003")
 incid <- SARS2003$incidence
 dt <- 7L
+dt_vec <- c(2L,2L,3L)
 weekly_inc <- aggregate_inc(incid, dt)
+agg_inc <- aggregate_inc(incid, dt_vec)
 
 mean_si <- sum(SARS2003$si_distr * seq_along(SARS2003$si_distr))
 std_si <- sqrt(sum(SARS2003$si_distr * seq_along(SARS2003$si_distr)^2))
@@ -19,12 +21,13 @@ test_that("function to aggregate incidence works", {
   expect_error(aggregate_inc(Flu2009$incidence, 7L),
                "incid should be a vector of integer values")
   expect_error(aggregate_inc(SARS2003$incidence, 7),
-               "dt should be an integer >=2")
+               "dt should be an integer or integers >=2 e.g. 2L or c(2L,2L,3L)", fixed=TRUE)
   expect_error(aggregate_inc(SARS2003$incidence, 1L),
-               "dt should be an integer >=2")
+               "dt should be an integer or integers >=2")
   expect_error(aggregate_inc(SARS2003$incidence, -1L),
-               "dt should be an integer >=2")
+               "dt should be an integer or integers >=2")
   expect_true(aggregate_inc(SARS2003$incidence, 7L)[1] == sum(SARS2003$incidence[1:7]))
+  expect_true(sum(aggregate_inc(SARS2003$incidence, c(2L,2L,3L))[1:3]) == sum(SARS2003$incidence[1:7]))
 })
 
 
@@ -43,6 +46,22 @@ test_that("estimate_R_agg works in parametric mode", {
                         method = method,
                         grid = list(precision = 0.001, min = -1, max = 1)))
   
+  res_agg1 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
+                                              dt = c(2L,2L,3L), 
+                                              dt_out = 7L, 
+                                              iter = 10L,
+                                              config = config,
+                                              method = method,
+                                              grid = list(precision = 0.001, min = -1, max = 1)))
+  
+  res_agg2 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
+                                              dt = rep(c(2L,2L,3L), length.out=length(agg_inc)), 
+                                              dt_out = 7L, 
+                                              iter = 10L,
+                                              config = config,
+                                              method = method,
+                                              grid = list(precision = 0.001, min = -1, max = 1)))
+  
   
   res_daily <- suppressWarnings(estimate_R(incid = incid, 
                                config = config,
@@ -58,19 +77,38 @@ test_that("estimate_R_agg works in parametric mode", {
                  sum(res_weekly$I[i*dt+(1:dt)]))
   }
   
+  for(i in seq_len(floor(length(res_daily$I) / dt))[-1])
+  {
+    expect_equal(sum(res_daily$I[i*dt+(1:dt)]), 
+                 sum(res_agg1$I[i*dt+(1:dt)]),
+                 sum(res_agg2$I[i*dt+(1:dt)]))
+  }
+  
   ######################################################################
   ## test that the weekly R estimates vaguely match if you use the daily data
-  ## or the weekly data
+  ## or the aggregated data
   
   common_t_start <- intersect(res_daily$R$t_start, res_weekly$R$t_start)
+  common_t_start2 <- intersect(res_daily$R$t_start, res_agg1$R$t_start)
+  common_t_start3 <- intersect(res_daily$R$t_start, res_agg2$R$t_start)
   
   relative_error <- abs(res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start] -   
                           res_weekly$R$`Mean(R)`[res_weekly$R$t_start %in% common_t_start]) / 
     res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start]
-
+  
+  relative_error2 <- abs(res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start2] -   
+                           res_agg1$R$`Mean(R)`[res_agg1$R$t_start %in% common_t_start2]) / 
+    res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start2]
+  
+  relative_error3 <- abs(res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start3] -   
+                           res_agg2$R$`Mean(R)`[res_agg2$R$t_start %in% common_t_start3]) / 
+    res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start3]
+  
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
   expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error2[-c(1:20)] < 0.4)) 
+  expect_true(all(relative_error3[-c(1:20)] < 0.4)) 
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -87,12 +125,16 @@ test_that("estimate_R_agg works in parametric mode", {
     res_daily_reconstructed$R$`Mean(R)`[res_daily_reconstructed$R$t_start %in% common_t_start]
   
   expect_true(all(relative_error < 1e-9)) 
+  
+  ######################################################################
+  ## test that the full vector and repeating vector produce the same result
+  expect_true(all(res_agg1$R == res_agg2$R))
                           
 })
 
 
 
-test_that("estimate_R_agg works in  non-parametric mode", {
+test_that("estimate_R_agg works in non-parametric mode", {
   ## estimate the reproduction number (method "non_parametric_si")
   ## when not specifying t_start and t_end in config, they are set to estimate
   ## the reproduction number on sliding weekly windows     
@@ -106,12 +148,28 @@ test_that("estimate_R_agg works in  non-parametric mode", {
                                method = method,
                                grid = list(precision = 0.001, min = -1, max = 1)))
   
+  res_agg1 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
+                                                dt = c(2L,2L,3L), 
+                                                dt_out = 7L, 
+                                                iter = 10L,
+                                                config = config,
+                                                method = method,
+                                                grid = list(precision = 0.001, min = -1, max = 1)))
+  
+  res_agg2 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
+                                              dt = rep(c(2L,2L,3L), length.out=length(agg_inc)), 
+                                              dt_out = 7L, 
+                                              iter = 10L,
+                                              config = config,
+                                              method = method,
+                                              grid = list(precision = 0.001, min = -1, max = 1)))
+  
   res_daily <- suppressWarnings(estimate_R(incid = incid, 
                           config = config,
                           method = method))
   
   ######################################################################
-  ## test that the weekly incidence matches the aggregated daily one
+  ## test that aggregated incidence matches the aggregated daily one
   ## except for first time window where we impose I = 1 on first day
   
   for(i in seq_len(floor(length(res_daily$I) / dt))[-1])
@@ -120,19 +178,38 @@ test_that("estimate_R_agg works in  non-parametric mode", {
                  sum(res_weekly$I[i*dt+(1:dt)]))
   }
   
+  for(i in seq_len(floor(length(res_daily$I) / dt))[-1])
+  {
+    expect_equal(sum(res_daily$I[i*dt+(1:dt)]), 
+                 sum(res_agg1$I[i*dt+(1:dt)]),
+                 sum(res_agg2$I[i*dt+(1:dt)]))
+  }
+  
   ######################################################################
   ## test that the weekly R estimates vaguely match if you use the daily data
-  ## or the weekly data
+  ## or the aggregated data
   
   common_t_start <- intersect(res_daily$R$t_start, res_weekly$R$t_start)
+  common_t_start2 <- intersect(res_daily$R$t_start, res_agg1$R$t_start)
+  common_t_start3 <- intersect(res_daily$R$t_start, res_agg2$R$t_start)
   
   relative_error <- abs(res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start] -   
                           res_weekly$R$`Mean(R)`[res_weekly$R$t_start %in% common_t_start]) / 
     res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start]
   
+  relative_error2 <- abs(res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start2] -   
+                          res_agg1$R$`Mean(R)`[res_agg1$R$t_start %in% common_t_start2]) / 
+    res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start2]
+  
+  relative_error3 <- abs(res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start3] -   
+                           res_agg2$R$`Mean(R)`[res_agg2$R$t_start %in% common_t_start3]) / 
+    res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start3]
+  
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
   expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error2[-c(1:20)] < 0.4)) 
+  expect_true(all(relative_error3[-c(1:20)] < 0.4)) 
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -150,10 +227,14 @@ test_that("estimate_R_agg works in  non-parametric mode", {
   
   expect_true(all(relative_error < 1e-9)) 
   
+  ######################################################################
+  ## test that the full vector and repeating vector produce the same result
+  expect_true(all(res_agg1$R == res_agg2$R))
+  
 })
   
 
-test_that("weekly version of estimate_R works with aggregated data in parametric mode", {
+test_that("estimate_R works with aggregated data in parametric mode", {
   ## estimate the reproduction number (method "parametric_si")
   ## when not specifying t_start and t_end in config, they are set to estimate
   ## the reproduction number on sliding weekly windows      
@@ -230,7 +311,7 @@ test_that("weekly version of estimate_R works with aggregated data in parametric
 
 
 
-test_that("weekly version of estimate_R works with aggregated data in non-parametric mode", {
+test_that("estimate_R works with aggregated data in non-parametric mode", {
   ## estimate the reproduction number (method "non_parametric_si")
   ## when not specifying t_start and t_end in config, they are set to estimate
   ## the reproduction number on sliding weekly windows      

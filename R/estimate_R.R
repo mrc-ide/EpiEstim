@@ -323,7 +323,7 @@ estimate_R <- function(incid,
   
   # switch between the standard estimate_R version and that which disaggregates
   # coarsely aggregated data
-  if(dt >= 2) {
+  if(any(dt >= 2)) {
     out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, iter = iter,
                           config = config, method = method, grid = grid)
   } else {
