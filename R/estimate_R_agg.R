@@ -235,6 +235,9 @@ estimate_R_agg <- function(incid,
   if (!is.numeric(grid$precision) | !is.numeric(grid$min) | !is.numeric(grid$max)){
     stop ("grid precision, min, and max, must all be numeric")
   }
+  if (!method == "parametric_si" && !method == "non_parametric_si"){
+    stop ("'arg' should be one of 'non_parametric_si' and 'parametric_si'")
+  }
   
   # Two configs:
   # 'config' for the R estimates used to reconstruct the incidence (internal to the

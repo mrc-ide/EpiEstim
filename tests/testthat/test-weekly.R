@@ -550,7 +550,7 @@ test_that("you can't run estimate_R_agg unless using parametric/non-parametric S
                  config = config,
                  method = method,
                  grid = list(precision = 0.001, min = -1, max = 1)),
-               "'arg' should be one of “non_parametric_si”, “parametric_si”")
+               "'arg' should be one of 'non_parametric_si' and 'parametric_si'")
   
 })
 
