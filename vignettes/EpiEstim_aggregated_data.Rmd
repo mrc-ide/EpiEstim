@@ -1,0 +1,184 @@
+---
+title: "EpiEstim for aggregated incidence data"
+author: "Rebecca Nash"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{EpiEstim for aggregated incidence data}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(kableExtra)
+library(hrbrthemes)
+library(gghighlight)
+library(MCMCglmm)
+library(projections)
+library(EpiEstim) 
+library(ggplot2)
+library(incidence)
+library(dplyr)
+library(gridExtra)
+library(readxl)
+```
+
+The `EpiEstim` package has been extended to allow users to estimate the time varying reproduction number (R~t~) from temporally aggregated incidence data (Nash et al.). This approach reconstructs daily incidence from data supplied at any timescale. This vignette will take you through the different ways aggregated incidence data can be supplied, the additional parameters needed, and an example using aggregated UK COVID-19 data. Please also see the FAQs section.
+
+
+<div style="margin-top:30px;">
+## Input data
+</div>
+**Incidence data**
+
+Many diseases are not reported on a daily basis. EpiEstim can now use incidence data that has been aggregated in multiple ways, e.g.:
+
+- Constant aggregations, such as weekly data
+- Repeating patterns of aggregations, such as regular reporting 3x per week 
+- Variable aggregations over the course of an outbreak
+
+Daily incidence data is reconstructed from aggregated data using an expectation-maximisation (EM) algorithm. There are three stages of the EM algorithm:
+
+- **Initialisation.** The EM algorithm is initialised with a naive disaggregation of the incidence data. For example, if there were 70 cases over the course of a week, this would be naively split into 10 cases per day.
+- **Expectation.** The reproduction number is estimated for each aggregation window, except for the first aggregation window (as there is no past incidence data). This means that the earliest the incidence reconstruction can start is at least the first day of the second aggregation window. Additionally, if the disaggregated incidence in subsequent aggregation windows is too low to estimate the reproduction number, this will mean that the reconstruction will not start until case numbers are sufficiently high.
+- **Maximisation.** The reproduction number estimates are then translated into growth rates for each aggregation window (Wallinga & Lipsitch, 2007) and used to reconstruct daily incidence data assuming exponential growth. The daily incidence is adjusted by a constant to ensure that if the daily incidence were to be re-aggregated, it would still sum to the original aggregated totals. The expectation and maximisation steps repeat iteratively until convergence.
+
+The daily incidence that is reconstructed after the final iteration of the EM algorithm is then used to estimate R~t~ using the same process as the original `estimate_R()` function, with sliding weekly time windows used as the default.
+
+**Aggregation windows**
+
+Aggregation windows can be specified using the parameter `dt`, and can be provided in one of three ways:
+
+- A single integer - for constant aggregation windows, e.g. `dt = 7L` for weekly data
+- A repeating vector of integers - for repeating aggregation patterns e.g. reporting 3x per week on the same day of the week could be `dt = c(2L,2L,3L)`
+- A vector of aggregations matching the length of incidence data supplied
+
+**Serial interval distribution**
+
+The serial interval can be provided on a daily timescale (as usual), either as the mean and standard deviation (parametric distribution) or the full distribution (non-parametric distribution). See 'full_EpiEstim_vignette' for more details. 
+
+
+##Estimate R~t~ from temporally aggregated incidence data
+
+To estimate R~t~ from temporally aggregated incidence data, we simply use the `estimate_R()` function with two additional parameters required, `dt` and `dt_out`, and two optional parameters, `iter` and `grid`. 
+
+
+###`estimate_R()` for aggregated data
+
+```{r, eval=FALSE}
+estimate_R(incid = aggregated_incidence,
+           dt = 7L,
+           dt_out = 7L,
+           iter = 10L,
+           grid = list(precision = 0.001, min = -1, max = 1))
+           config = config,
+           method = method)
+
+```
+
+
+- As described above, `dt` can be supplied as a single integer, a vector of repeating integers, or a full vector of integers matching the length of the incidence data.
+
+- `dt_out` is the length of the sliding windows used to estimate R~t~ from the reconstructed daily incidence data, this is `dt = 7L` (weekly sliding windows) by default. We recommend that `dt_out` is at least equal to the length of the longest aggregation window (`dt`) in the data. 
+
+There are two optional parameters that can be modified, however, we recommend that the default values are used:
+
+- `iter` is the number of iterations of the EM algorithm used to reconstruct the daily data. This is `iter = 10L` by default.
+
+- `grid` is a list of "precision", "min", and "max" values to define a grid of growth rate parameters used inside the EM algorithm. The grid is used to convert reproduction number estimates for each aggregation of incidence data into growth rates, which are then used to reconstruct the daily incidence data assuming exponential growth. The grid will auto-adjust if it is not large enough, so we recommend using the default values.
+
+The SI distibution can be specified as normal using the `method` and `config` parameters (see the full_EpiEstim_vignette for more details).
+
+
+<div style="margin-top:30px;">
+# Examples
+</div>
+
+## Estimate R~t~ from weekly COVID-19 data
+
+This example will take you through a workflow using weekly incidence data for UK COVID-19 cases. (For detailed description of the data see Nash et al.)
+
+```{r}
+incid <- readRDS("./aggregated_data/UK_Covid_cases.rds")
+```
+
+**Incidence**
+
+Let us say we have a vector of weekly incidence data for COVID-19 cases. 
+
+```{r}
+incid
+```
+
+We need to specify how the data is aggregated, which in this case, is by constant weekly aggregation windows. We do this by supplying `dt` with a single integer (7L).
+
+```{r}
+dt <- 7L
+```
+
+We can take an estimate from the literature to specify a parametric SI with a mean of 6.3 days and a standard deviation of 4.2 days (Bi et al 2020).
+
+```{r}
+mean_si <- 6.3
+std_si <- 4.2
+method <- "parametric_si"
+config <- make_config(list(mean_si = mean_si,
+                           std_si = std_si))
+```
+
+**Estimate R~t~**
+
+Now that we have our aggregated incidence, our aggregation time window, and SI distribution, we can supply these to the `estimate_R()` function. We do not need to specify `dt_out`, `iter` or `grid` because we are going to use the default values.
+
+```{r, message=FALSE, warning=FALSE}
+output <- EpiEstim::estimate_R(incid = incid,
+                             dt = dt,
+                             method = method,
+                             config = config)
+```
+
+The output consists of multiple elements, including the reconstructed daily incidence data:
+
+```{r}
+head(output$I)
+```
+
+And the R~t~ estimates (in this case, using the default weekly sliding windows): 
+
+```{r}
+head(output$R)
+```
+
+In this example, you will notice that R~t~ estimation does not start until day 8. This is because the daily incidence data cannot be reconstructed, and R~t~ estimation cannot start, until the first day of the second aggregation window. The start of R~t~ estimation may also be delayed if incidence is too low, but this was not the case here.
+
+**Plot results**
+
+As normal, simply plot the full or partial output.
+
+```{r, eval=FALSE}
+plot(output) # full output
+
+plot(output, "incid") # Reconstructed daily incidence only
+plot(output, "R") # Rt estimates only
+plot(output, "SI") # SI estimates only
+```
+
+<div style="margin-top:30px;">
+# FAQs
+</div>
+
+* **Why does R~t~ estimation start later than the start date of the incidence data supplied?**
+
+In order to reconstruct daily incidence data, the method requires that R~t~ is estimated for each aggregation window in turn, which is translated into a growth rate and used to reconstruct daily incidence assuming exponential growth. As there is no past incidence data beyond the first aggregation window, R~t~ cannot be estimated and the daily incidence cannot be reconstructed until the first day of the second aggregation window.
+
+Additionally, R~t~ estimation will not start until case numbers are sufficiently high.
+
+
+
+## References
+
+Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number from temporally aggregated incidence data: a statistical modelling approach and software tool. [medRxiv pre-print] 

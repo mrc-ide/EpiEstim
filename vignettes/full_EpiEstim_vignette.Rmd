@@ -155,6 +155,13 @@ table2 <- knitr::kable(df, "html",col.names = c("Date","Incidence Overall","Inci
 column_spec(table2,1:4,width="5.5cm")
 ```
 
+<div style="margin-top:20px;">
+**Temporally aggregated incidence data:**
+</div>
+This vignette provides examples using incidence data that is available on a daily basis. If you have data that is reported over aggregated timescales, such as weekly data or incidence reported 3 times a week, you will need to provide an additional parameter 'dt' to the `estimate_R()` function introduced in step C.
+
+For full details about using EpiEstim for temporally aggregated incidence data, see the "EpiEstim_aggregated_incidence" vignette.
+
 ##Estimate R~t~
 
 Once you have an incidence object (based on the dates of symptom onset) and information on the serial interval distribution, we can use the renewal equation (a form of branching process model) to estimate R~t~. R~t~ is the average number of secondary cases that an infected individual would infect if the conditions remained as they were at time t (Cori et al 2013). 
@@ -862,7 +869,7 @@ knitr::include_graphics("./figs/Time_varying_reporting.png")
 
 * **Can I use EpiEstim to estimate R from aggregated data e.g. weekly data?**
 
-    Currently, EpiEstim only allows you to estimate R using the same time unit for the incidence and serial interval data. If you have weekly incidence data, you would need to specify the distribution of the serial interval with week as the time unit.
+    Yes! Please see the 'EpiEstim_aggregated_data' vignette for further details.
 
 ### References
 
