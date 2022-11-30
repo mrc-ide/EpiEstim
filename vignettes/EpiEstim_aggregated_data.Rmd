@@ -14,17 +14,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-library(kableExtra)
-library(hrbrthemes)
-library(gghighlight)
-library(MCMCglmm)
-library(projections)
 library(EpiEstim) 
 library(ggplot2)
-library(incidence)
-library(dplyr)
-library(gridExtra)
-library(readxl)
 ```
 
 The `EpiEstim` package has been extended to allow users to estimate the time varying reproduction number (R~t~) from temporally aggregated incidence data (Nash et al.). This approach reconstructs daily incidence from data supplied at any timescale. This vignette will take you through the different ways aggregated incidence data can be supplied, the additional parameters needed, and an example using aggregated UK COVID-19 data. Please also see the FAQs section.
