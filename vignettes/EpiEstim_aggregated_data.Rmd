@@ -94,7 +94,7 @@ The SI distibution can be specified as normal using the `method` and `config` pa
 This example will take you through a workflow using weekly incidence data for UK COVID-19 cases. (For detailed description of the data see Nash et al.)
 
 ```{r}
-incid <- readRDS("./aggregated_data/UK_Covid_cases.rds")
+incid <- readRDS("./aggregated_data/UK_covid_cases.rds")
 ```
 
 **Incidence**
