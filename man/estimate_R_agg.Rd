@@ -6,9 +6,9 @@
 \usage{
 estimate_R_agg(
   incid,
-  dt = 7,
-  dt_out = 7,
-  iter = 10,
+  dt = 7L,
+  dt_out = 7L,
+  iter = 10L,
   config = make_config(),
   method = c("non_parametric_si", "parametric_si"),
   grid = list(precision = 0.001, min = -1, max = 1)
@@ -17,11 +17,13 @@ estimate_R_agg(
 \arguments{
 \item{incid}{aggregated incidence data, supplied as a vector}
 
-\item{dt}{length of temporal aggregation of the data (numeric, 7 time units (typically days) by default)}
+\item{dt}{length of temporal aggregations of the data (integer or vector of 
+integers, integer of 7 time units (typically days) by default - see details).}
 
-\item{dt_out}{length of the sliding windows for R estimates (numeric, 7 time units (typically days) by default)}
+\item{dt_out}{length of the sliding windows for R estimates (integer, 7 time 
+units (typically days) by default).}
 
-\item{iter}{number of iterations of the EM algorithm (numeric, 10 by default)}
+\item{iter}{number of iterations of the EM algorithm (integer, 10 by default)}
 
 \item{config}{An object of class \code{estimate_R_config}, as returned by 
 function \code{make_config}.}
@@ -29,8 +31,8 @@ function \code{make_config}.}
 \item{method}{One of "non_parametric_si" or "parametric_si" (see details).}
 
 \item{grid}{named list containing "precision", "min", and "max" which are used to
-define a grid of growth rate parameters that are used inside the EM algorithm (see details). 
-We recommend using the default values.}
+define a grid of growth rate parameters that are used inside the EM algorithm 
+(see details). We recommend using the default values.}
 }
 \value{
 {
@@ -52,7 +54,11 @@ quantiles of the reproduction number for each time window.}
 containing the mean and std of the discrete serial interval distribution(s)
 used for estimation}
 
-\item{I}{: the time series of total incidence}
+\item{I}{: the time series of daily incidence reconstructed by the EM algorithm.
+For the initial incidence that cannot be reconstructed (e.g. the first aggregation
+window and aggregation windows where incidence is too low to estimate Rt - see 
+details) then the incidence returned will be the naive disaggregation of the 
+incidence data used to initialise the EM algorithm. }
 
 \item{I_local}{: the time series of incidence of local cases (so that
 \code{I_local + I_imported = I})}
@@ -68,29 +74,158 @@ used for estimation}
 Estimated Instantaneous Reproduction Number from coarsely aggregated data
 }
 \details{
-TODO: add details
+Estimation of the time-varying reproduction number from temporally-aggregated
+incidence data. For full details about how Rt is estimated within this 
+bayesian framework, see details in \code{\link{estimate_R}}.
+
+Here, an expectation maximisation (EM) algorithm is used to reconstruct daily 
+incidence from data that is provided on another timescale. In addition to the 
+usual parameters required in \code{estimate_R}, the \code{estimate_R_agg()} 
+function requires that the user specify two additional parameters: dt and 
+dt_out. There are two other parameters that the user may modify, iter and 
+grid, however we recommend that the default values are used.
+
+\itemize{
+\item{dt is the length of the temporal aggregations of the incidence data in 
+days. This can be a single integer if the aggregations do not change. E.g. 
+for weekly data, the user would supply dt = 7L. If the aggregation windows 
+vary in length, a vector of integers can be supplied. If the aggregations 
+have a repeating pattern, for instance, if incidence is always reported three 
+times per week on the same day of the week, you can supply a vector such as: 
+dt = c(2L,2L,3L). If the aggregations change over time, or do not have a 
+repeating pattern, the user can supply a full vector of aggregations matching 
+the length of the incidence data supplied.}
+\item{dt_out is the length of the sliding window used to estimate Rt from the 
+reconstructed daily data. By default, Rt estimation uses weekly sliding time 
+windows, however, we recommend that the sliding window is at least equal to 
+the length of the longest aggregation window (dt) in the data.}
+\item{iter is the number of iterations of the EM algorithm used to reconstruct
+the daily incidence data. By default, iter = 10L, which has been demonstrated
+to exceed the number of iterations necessary to reach convergence in simulation 
+studies and analysis of real-world data by the package authors (manuscript in 
+prep).}
+\item{grid is a named list containing "precision", "min", and "max" which are 
+used to define a grid of growth rate parameters used inside the EM algorithm.
+The grid is used to convert reproduction number estimates for each aggregation
+of incidence data into growth rates, which are then used to reconstruct the 
+daily incidence data assuming exponential growth. The grid will auto-adjust 
+if it is not large enough, so we recommend using the default values.}
+}
+
+There are three stages of the EM algorithm:
+\itemize{
+\item{Initialisation. The EM algorithm is initialised with a naive disaggregation 
+of the incidence data. For example, if there were 70 cases over the course of a 
+week, this would be naively split into 10 cases per day.}
+\item{Expectation. The reproduction number is estimated for each aggregation 
+window, except for the first aggregation window (as there is no past incidence 
+data). This means that the earliest the incidence reconstruction can start is
+at least the first day of the second aggregation window. Additionally, if the 
+disaggregated incidence in subsequent aggregation windows is too low to estimate 
+the reproduction number, this will mean that the reconstruction will not start 
+until case numbers are sufficiently high.}
+\item{Maximisation. The reproduction number estimates are then translated 
+into growth rates for each aggregation window (Wallinga & Lipsitch, 2007) and 
+used to reconstruct daily incidence data assuming exponential growth. The daily
+incidence is adjusted by a constant to ensure that if the daily incidence were
+to be re-aggregated, it would still sum to the original aggregated totals. The
+expectation and maximisation steps repeat iteratively until convergence.}
+}
+
+The daily incidence that is reconstructed after the final iteration of the EM 
+algorithm is then used to estimate Rt using the same process as the original 
+\code{estimate_R} function, with sliding weekly time windows used as the default.
 }
 \examples{
-## load data on SARS in 2003
+## Example for constant aggregation windows e.g. weekly reporting
+
+# Load data on SARS in 2003
 data("SARS2003")
 
-## aggregate the data to weekly counts of cases
+# this is daily data, but for this example we will aggregate it to weekly 
+# counts using the `aggregate_inc()` function
 incid <- SARS2003$incidence
 dt <- 7L
-weekly_inc <- aggregate_inc(incid, dt)
+weekly_incid <- aggregate_inc(incid, dt)
 si_distr <- SARS2003$si_distr
 
-## estimate Rt using the default parameters (method "non_parametric_si")
+# estimate Rt using the default parameters (method "non_parametric_si")
 method <- "non_parametric_si"
 config <- make_config(list(si_distr = si_distr))
-res_weekly <- estimate_R_agg(incid = weekly_inc, 
-                            dt = 7, # aggregation window of the data
-                            dt_out = 7, # desired sliding window length
-                            iter = 10,
+res_weekly <- estimate_R_agg(incid = weekly_incid, 
+                            dt = 7L, # aggregation window of the data
+                            dt_out = 7L, # desired sliding window length
+                            iter = 10L,
                             config = config,
                             method = method,
                             grid = list(precision = 0.001, min = -1, max = 1))
 
-## plot the result
+# Plot the result
 plot(res_weekly)
+
+
+## Example using repeating vector of aggregation windows e.g. for consistent 
+## reporting 3 times a week
+
+# Using the SARS data again
+data("SARS2003")
+
+# For this example we will pretend data is being reported three times a week,
+# in 2-day, 2-day, 3-day aggregations
+incid <- SARS2003$incidence
+dt <- c(2L,2L,3L)
+agg_incid <- aggregate_inc(incid, dt)
+si_distr <- SARS2003$si_distr 
+
+# estimate Rt using the default parameters (method "non_parametric_si")
+method <- "non_parametric_si"
+config <- make_config(list(si_distr = si_distr))
+res_agg <- estimate_R_agg(incid = agg_incid, 
+                            dt = c(2L,2L,3L), # aggregation windows of the data
+                            dt_out = 7L, # desired sliding window length
+                            iter = 10L,
+                            config = config,
+                            method = method,
+                            grid = list(precision = 0.001, min = -1, max = 1))
+
+# Plot the result
+plot(res_agg)
+
+## Example using full vector of aggregation windows
+
+dt <- rep(c(2L,2L,3L), length.out=length(agg_incid))
+si_distr <- SARS2003$si_distr 
+
+# estimate Rt using the default parameters (method "non_parametric_si")
+method <- "non_parametric_si"
+config <- make_config(list(si_distr = si_distr))
+res_agg <- estimate_R_agg(incid = agg_incid, 
+                            dt = dt, # aggregation windows of the data
+                            dt_out = 7L, # desired sliding window length
+                            iter = 10L,
+                            config = config,
+                            method = method,
+                            grid = list(precision = 0.001, min = -1, max = 1))
+
+# Plot the result
+plot(res_agg)
+
+}
+\references{
+{
+Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number from 
+temporally aggregated incidence data: a statistical modelling approach and software 
+tool. medRxiv pre-print. (medRxiv pre-print)
+
+Wallinga & Lipsitch. How generation intervals shape the relationship between 
+growth rates and reproductive numbers (Proc Biol Sci 2007).
+}
+}
+\seealso{
+\itemize{
+ \item{\code{\link{estimate_R}}}{ for details of the core function}
+ }
+}
+\author{
+Rebecca Nash \email{r.nash@imperial.ac.uk} and Anne Cori \email{a.cori@imperial.ac.uk}
 }

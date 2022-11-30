@@ -127,13 +127,15 @@
 #'  \item{\code{\link{estimate_R}}}{ for details of the core function}
 #'  }
 #'  
-#' @author Rebecca Nash \email{r.nash@imperial.ac.uk} and Anne Cori 
-#' \email{a.cori@imperial.ac.uk}
-#'  @references {
-#' TODO: add Nash, R et al. 
+#' @author Rebecca Nash \email{r.nash@imperial.ac.uk} and Anne Cori \email{a.cori@imperial.ac.uk}
+#' @references {
+#' Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number from 
+#' temporally aggregated incidence data: a statistical modelling approach and software 
+#' tool. medRxiv pre-print. (medRxiv pre-print)
+#' 
 #' Wallinga & Lipsitch. How generation intervals shape the relationship between 
 #' growth rates and reproductive numbers (Proc Biol Sci 2007).
-#' 
+#' }
 #' 
 #' @examples 
 #' ## Example for constant aggregation windows e.g. weekly reporting

@@ -18,8 +18,16 @@ a vector of incidence values, aggregated to dt
 Aggregating daily incidence to longer time windows
 }
 \examples{
+## Constant aggregation e.g. weekly reporting
 data("SARS2003")
 incid <- SARS2003$incidence
 dt <- 7L
 aggregate_inc(incid, dt)
+
+## Non-constant aggregation e.g. reporting 3x week
+#' data("SARS2003")
+incid <- SARS2003$incidence
+dt <- c(2L,2L,3L)
+aggregate_inc(incid, dt)
+
 }

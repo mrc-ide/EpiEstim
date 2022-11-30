@@ -11,9 +11,9 @@ estimate_R(
   si_data = NULL,
   si_sample = NULL,
   config = make_config(incid = incid, method = method),
-  dt = 1,
-  dt_out = 7,
-  iter = 10,
+  dt = 1L,
+  dt_out = 7L,
+  iter = 10L,
   grid = list(precision = 0.001, min = -1, max = 1)
 )
 }
