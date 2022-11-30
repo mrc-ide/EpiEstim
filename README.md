@@ -20,6 +20,12 @@ vignette("short_demo", package = "EpiEstim")
 vignette("full_EpiEstim_vignette", package = "EpiEstim")
 ```
 
+To apply EpiEstim to temporally aggregated incidence data (e.g. weekly), please see:
+
+```r
+vignette("EpiEstim_aggregated_data", package = "EpiEstim")
+```
+
 To estimate the transmission advantage of pathogen variants or strains in real-time, please see the pre-print by Bhatia et al (https://www.medrxiv.org/content/10.1101/2021.11.26.21266899v1) and the vignette below:
 
 ```r
