@@ -26,9 +26,9 @@ test_that("function to aggregate incidence works", {
     "dt should be an integer or vector of integers >=2 e.g. 2L or c(2L,2L,3L)", 
     fixed=TRUE)
   expect_error(aggregate_inc(SARS2003$incidence, 1L),
-               "dt should be an integer or vector of integers >=2")
+               "at least one value of dt should be an integer >=2")
   expect_error(aggregate_inc(SARS2003$incidence, -1L),
-               "dt should be an integer or vector of integers >=2")
+               "at least one value of dt should be an integer >=2")
   expect_true(aggregate_inc(SARS2003$incidence, 7L)[1] == 
                 sum(SARS2003$incidence[1:7]))
   expect_true(sum(aggregate_inc(SARS2003$incidence, c(2L,2L,3L))[1:3]) == 

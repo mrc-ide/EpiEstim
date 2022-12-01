@@ -277,9 +277,9 @@ estimate_R_agg <- function(incid,
         reo_dt_start <- c(dt[2:length(dt)], dt[1])
         reo_dt_end <- c(reo_dt_start[2:length(reo_dt_start)], reo_dt_start[1])
         config$t_start <- cumsum(c(dt[1] + 1, 
-                               rep(reo_dt_start, length.out = n_dt - (dt[1] + 1))))
+                               rep(reo_dt_start, length.out = n_dt - 2)))
         config$t_end <- cumsum(c(config$t_start[1] + reo_dt_start[1] - 1, 
-                             rep(reo_dt_end, length.out = n_dt - (dt[1] + 1))))
+                             rep(reo_dt_end, length.out = n_dt - 2)))
   }
   
   niter <- seq(1, iter, 1) 
