@@ -255,8 +255,10 @@ estimate_R_agg <- function(incid,
   # Rt estimation starts on 1st day of second dt. 
   # Width of fixed time windows match aggregations (dt):
   
+  n_dt <- length(incid) # number of aggregations
+  
   if (length(dt) == 1){
-    T <- length(incid) * dt
+    T <- n_dt * dt
     config$t_start <- seq(from = dt + 1, to = T - (dt - 1), dt)
     config$t_end <- seq(from = min(config$t_start) + (dt - 1),to = T, dt)
     } else if (length(dt) == length(incid)){
@@ -264,15 +266,14 @@ estimate_R_agg <- function(incid,
       config$t_start <- cumsum(c(dt[1] + 1, dt[2:length(dt[-1])]))
       config$t_end <- cumsum(c(config$t_start[1] + dt[2] - 1, dt[3:length(dt)]))
       } else { # vector of repeating aggregations
-        T <- sum(rep(dt, length.out = length(incid)))
-        n_dt <- length(incid) # number of aggregations
+        T <- sum(rep(dt, length.out = n_dt))
         # reorder dt as R estimation starts on second aggregation window
         reo_dt_start <- c(dt[2:length(dt)], dt[1])
         reo_dt_end <- c(reo_dt_start[2:length(reo_dt_start)], reo_dt_start[1])
         config$t_start <- cumsum(c(dt[1] + 1, 
-                               rep(reo_dt_start, length.out = n_dt - dt[1])))
+                               rep(reo_dt_start, length.out = n_dt - (dt[1] + 1))))
         config$t_end <- cumsum(c(config$t_start[1] + reo_dt_start[1] - 1, 
-                             rep(reo_dt_end, length.out = n_dt - dt[1])))
+                             rep(reo_dt_end, length.out = n_dt - (dt[1] + 1))))
   }
   
   niter <- seq(1, iter, 1) 
@@ -284,16 +285,17 @@ estimate_R_agg <- function(incid,
       if (length(dt) == 1){
       dis <- incid / dt
       dis_inc <- rep(dis, each = dt)
-      full_dt <- rep(dt, length(incid))
-      } else if (length(dt) == length(incid)){
+      full_dt <- rep(dt, n_dt)
+      } else if (length(dt) == n_dt){
         dis <- incid / dt
         dis_inc <- rep(dis, times = dt)
         full_dt <- dt
         } else {
-          full_dt <- rep(dt, length.out = length(incid))
+          full_dt <- rep(dt, length.out = n_dt)
           dis <- incid / full_dt
           dis_inc <- rep(dis, times = full_dt)
           }
+      
       
       # Estimate R
       R <- estimate_R(dis_inc, 
@@ -316,7 +318,8 @@ estimate_R_agg <- function(incid,
       incid_not_to_reconstruct <- dis_inc[-idx_reconstruct]
       
       ## Incidence that can be reconstructed
-      aggs_to_reconstruct <- seq(ceiling(idx_reconstruct[1] / dt[1]), length(incid))
+      idx_aggregation <- rep(seq(1:n_dt), times=full_dt) ## index for aggregation windows
+      aggs_to_reconstruct <- seq(idx_aggregation[idx_reconstruct[1]], n_dt)
       incid_to_reconstruct <- incid[aggs_to_reconstruct]
       
       # Translate R to growth rate
@@ -362,8 +365,14 @@ estimate_R_agg <- function(incid,
       dt_seq <- full_dt[aggs_to_reconstruct]
       
       for (w in 1:length(k)){
+        if (dt_seq[w] > 1){
         d[w] <- sum(exp(gr[w] * seq(1, dt_seq[w] - 1, 1)))
         k[w] <- incid_to_reconstruct[w] / (exp(gr[w]) * (1 + d[w]))
+        } else { # if dt is 1 no need to reconstruct
+          d[w] <- 0
+          k[w] <- incid_to_reconstruct[w]
+          gr[w] <- 0
+        }
       }
       
       recon_df <- data.frame(k = k, gr = gr, dt = dt_seq)
@@ -424,7 +433,9 @@ estimate_R_agg <- function(incid,
       
       incid_not_to_reconstruct <- dis_inc[-idx_reconstruct]
       
-      aggs_to_reconstruct <- seq(ceiling(idx_reconstruct[1] / dt[1]), length(incid))
+      ## Incidence that can be reconstructed
+      idx_aggregation <- rep(seq(1:n_dt), times=full_dt) ## index for aggregation windows
+      aggs_to_reconstruct <- seq(idx_aggregation[idx_reconstruct[1]], n_dt)
       incid_to_reconstruct <- incid[aggs_to_reconstruct]
       
       # Translate R to growth rate again
@@ -439,8 +450,14 @@ estimate_R_agg <- function(incid,
       dt_seq <- full_dt[aggs_to_reconstruct]
       
       for (w in 1:length(k)){
-        d[w] <- sum(exp(gr[w] * seq(1, dt_seq[w] - 1, 1)))
-        k[w] <- incid_to_reconstruct[w] / (exp(gr[w]) * (1 + d[w]))
+        if (dt_seq[w] > 1){
+          d[w] <- sum(exp(gr[w] * seq(1, dt_seq[w] - 1, 1)))
+          k[w] <- incid_to_reconstruct[w] / (exp(gr[w]) * (1 + d[w]))
+        } else { # if dt is 1 no need to reconstruct
+          d[w] <- 0
+          k[w] <- incid_to_reconstruct[w]
+          gr[w] <- 0
+        }
       }
       
       recon_df <- data.frame(k = k, gr = gr, dt = dt_seq)
