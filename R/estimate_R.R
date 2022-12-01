@@ -56,16 +56,26 @@
 #' @param config An object of class \code{estimate_R_config}, as returned by 
 #' function \code{make_config}. 
 #' 
-#' @param dt length of temporal aggregation of the data (numeric, 1 time unit (typically days) by default)
+#' @param dt length of temporal aggregations of the incidencedata. This should 
+#' be an integer or vector of integers. If a vector, this will be recycled. For 
+#' example, \code{dt = c(3L, 4L)} would correspond to alternating incidence 
+#' aggregation windows of 3 and 4 days. The default value is 1 time unit 
+#' (typically day).
 #' 
-#' @param dt_out length of the sliding windows for R estimates (numeric, 7 time units (typically days)  by default).
+#' @param dt_out length of the sliding windows used for R estimates (numeric, 
+#' 7 time units (typically days)  by default). 
 #' Only used if \code{dt > 1}; 
-#' in this case this will superseed config$t_start and config$t_end, see \code{\link{estimate_R_agg}}. 
+#' in this case this will superseed config$t_start and config$t_end, 
+#' see \code{\link{estimate_R_agg}}. 
 #' 
-#' @param iter number of iterations of the EM algorithm (numeric, 10 by default). Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.
+#' @param iter number of iterations of the EM algorithm used to reconstruct 
+#' incidence at 1-time-unit intervals(numeric, 10 by default). 
+#' Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.
 #' 
-#' @param grid named list containing "precision", "min", and "max" which are used to
-#' define a grid of growth rate parameters that are used inside the EM algorithm. Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.
+#' @param grid named list containing "precision", "min", and "max" which are 
+#' used to define a grid of growth rate parameters that are used inside the EM 
+#' algorithm used to reconstruct incidence at 1-time-unit intervals. 
+#' Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.
 #'
 #' @return {
 #' an object of class \code{estimate_R}, with components:
@@ -322,7 +332,7 @@ estimate_R <- function(incid,
   method <- match.arg(method)
   
   # switch between the standard estimate_R version and that which disaggregates
-  # coarsely aggregated data
+  # coarsely aggregated incidence data
   if(any(dt >= 2)) {
     out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, iter = iter,
                           config = config, method = method, grid = grid)

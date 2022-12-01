@@ -17,11 +17,17 @@ estimate_R_agg(
 \arguments{
 \item{incid}{aggregated incidence data, supplied as a vector}
 
-\item{dt}{length of temporal aggregations of the data (integer or vector of 
-integers, integer of 7 time units (typically days) by default - see details).}
+\item{dt}{length of temporal aggregations of the incidence data. This should 
+be an integer or vector of integers. If a vector, this will be recycled. For 
+example, \code{dt = c(3L, 4L)} would correspond to alternating incidence 
+aggregation windows of 3 and 4 days. The default value is 7 time units 
+(typically days) - see details.}
 
-\item{dt_out}{length of the sliding windows for R estimates (integer, 7 time 
-units (typically days) by default).}
+\item{dt_out}{length of the sliding windows used for R estimates (numeric, 
+7 time units (typically days)  by default). 
+Only used if \code{dt > 1}; 
+in this case this will superseed config$t_start and config$t_end, 
+see.}
 
 \item{iter}{number of iterations of the EM algorithm (integer, 10 by default)}
 

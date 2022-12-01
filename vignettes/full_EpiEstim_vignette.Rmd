@@ -158,7 +158,7 @@ column_spec(table2,1:4,width="5.5cm")
 <div style="margin-top:20px;">
 **Temporally aggregated incidence data:**
 </div>
-This vignette provides examples using incidence data that is available on a daily basis. If you have data that is reported over aggregated timescales, such as weekly data or incidence reported 3 times a week, you will need to provide an additional parameter 'dt' to the `estimate_R()` function introduced in step C.
+This vignette provides examples using incidence data that is available on a daily basis. If you have incidence data that is reported over aggregated timescales, such as weekly data or incidence reported 3 times a week, you will need to provide an additional parameter 'dt' to the `estimate_R()` function introduced in step C.
 
 For full details about using EpiEstim for temporally aggregated incidence data, see the "EpiEstim_aggregated_incidence" vignette.
 
@@ -780,10 +780,10 @@ plot(R_diff_prior, "R", legend=FALSE)
 Below, both the estimate with the default prior from example A and the modified prior from this example are plotted together. After changing the prior to a mean of 2 and standard deviation of 1 the initial estimate for R~t~ is lower than the initial estimate using the default prior. Once there is more data (mid-May) the R estimates converge regardless of the prior. It is important to be aware of the weight the prior can have on your estimate when incidence is low.
 
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE, fig.width=7}
-test = rbind(R_diff_prior$R, R_si_parametric$R)
-nR = nrow(R_diff_prior$R)
-test$type = c(rep("Mean prior 2",nR), rep("Mean prior 5",nR))
-test$dates =rep(R_si_parametric$dates[15:84],2)
+test <- rbind(R_diff_prior$R, R_si_parametric$R)
+nR <- nrow(R_diff_prior$R)
+test$type <- c(rep("Mean prior 2",nR), rep("Mean prior 5",nR))
+test$dates <- rep(R_si_parametric$dates[15:84],2)
 ggplot(test, aes(dates,`Mean(R)`,group=type,col=type)) +
   scale_colour_manual(values=c("#3c3b5f","#f06553"), name="")+
   geom_ribbon(aes(ymin = `Quantile.0.025(R)`, ymax=`Quantile.0.975(R)`, fill=test$type), col=NA, alpha=0.3)+
@@ -816,9 +816,9 @@ plot(R_window, legend=FALSE, "R") # "R" means that only the "Estimated R" panel 
 Below, the R estimates from example A (with the default weekly time windows) are plotted against the estimates made using three-week windows. Notice that because R has been estimated over longer time windows, the estimates for R~t~ are smoother than the estimates made in example A.
 
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE, fig.width=7}
-test2 = rbind(R_si_parametric$R, R_window$R)
-test2$type=c(rep("1 week window",70),rep("3 week window",63)) # new variable to distinguish between each
-test2$dates=c(R_si_parametric$dates[15:84],R_window$dates[22:84])
+test2 <- rbind(R_si_parametric$R, R_window$R)
+test2$type <- c(rep("1 week window",70),rep("3 week window",63)) # new variable to distinguish between each
+test2$dates <- c(R_si_parametric$dates[15:84],R_window$dates[22:84])
 ggplot(test2, aes(dates,`Mean(R)`,group=type,col=type)) +
   scale_colour_manual(values=c("#f06553","#3c3b5f"), name="")+
   geom_ribbon(aes(ymin = `Quantile.0.025(R)`, ymax=`Quantile.0.975(R)`, fill=test2$type), colour=NA, alpha=0.3)+
