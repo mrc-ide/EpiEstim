@@ -71,20 +71,21 @@ gives one distribution of the serial interval to be explored (see details).}
 \item{config}{An object of class \code{estimate_R_config}, as returned by 
 function \code{make_config}.}
 
-\item{dt}{length of temporal aggregations of the incidencedata. This should 
-be an integer or vector of integers. If a vector, this will be recycled. For 
+\item{dt}{length of temporal aggregations of the incidence data. This should 
+be an integer or vector of integers. If a vector, this can either match the
+length of the incidence data supplied, or it will be recycled. For 
 example, \code{dt = c(3L, 4L)} would correspond to alternating incidence 
 aggregation windows of 3 and 4 days. The default value is 1 time unit 
 (typically day).}
 
-\item{dt_out}{length of the sliding windows used for R estimates (numeric, 
-7 time units (typically days)  by default). 
+\item{dt_out}{length of the sliding windows used for R estimates (integer, 
+7 time units (typically days) by default). 
 Only used if \code{dt > 1}; 
 in this case this will superseed config$t_start and config$t_end, 
 see \code{\link{estimate_R_agg}}.}
 
 \item{iter}{number of iterations of the EM algorithm used to reconstruct 
-incidence at 1-time-unit intervals(numeric, 10 by default). 
+incidence at 1-time-unit intervals(integer, 10 by default). 
 Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.}
 
 \item{grid}{named list containing "precision", "min", and "max" which are 
@@ -331,8 +332,6 @@ data (Statis. Med. 2009)
  \item{\code{\link{sample_posterior_R}}}{ to draw samples of R values from
 the posterior distribution from the output of \code{estimate_R()}
 }}
-
-TODO: add something about \code{dt > 1} linking to \code{\link{estimate_R_agg}}
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}
