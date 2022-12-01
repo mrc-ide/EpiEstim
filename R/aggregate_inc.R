@@ -1,7 +1,10 @@
 #' Aggregating daily incidence to longer time windows
 #'
 #' @param incid a vector of daily incidence values
-#' @param dt a positive integer indicating the length of the desired aggregation window
+#' @param dt a positive integer, or vector thereof, indicating the length(s) of 
+#' the desired aggregation window(s). If a vector, this will be recycled. For 
+#' example, \code{dt = c(3L, 4L)} would correspond to alternating aggregation 
+#' windows of 3 and 4 days
 #'
 #' @return a vector of incidence values, aggregated to dt
 #' @export

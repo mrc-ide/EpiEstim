@@ -1,6 +1,6 @@
 # EpiEstim 2.4
 
-* estimate_R can now be applied to coarsely (non-daily) aggregated data
+* estimate_R can now be applied to coarsely (non-daily) aggregated incidence data
 
 # EpiEstim 2.3
 

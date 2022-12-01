@@ -12,7 +12,8 @@ weekly_inc <- aggregate_inc(incid, dt)
 agg_inc <- aggregate_inc(incid, dt_vec)
 
 mean_si <- sum(SARS2003$si_distr * seq_along(SARS2003$si_distr))
-std_si <- sqrt(sum(SARS2003$si_distr * seq_along(SARS2003$si_distr)^2))
+std_si <- 
+  sqrt(sum(SARS2003$si_distr * seq_along(SARS2003$si_distr)^2) - mean_si^2)
 si_distr <- SARS2003$si_distr
 
 ### ### ### ### ### ### ### ### ### ### ### ### ### 
@@ -20,14 +21,18 @@ si_distr <- SARS2003$si_distr
 test_that("function to aggregate incidence works", {
   expect_error(aggregate_inc(Flu2009$incidence, 7L),
                "incid should be a vector of integer values")
-  expect_error(aggregate_inc(SARS2003$incidence, 7),
-               "dt should be an integer or integers >=2 e.g. 2L or c(2L,2L,3L)", fixed=TRUE)
+  expect_error(
+    aggregate_inc(SARS2003$incidence, 7),
+    "dt should be an integer or vector of integers >=2 e.g. 2L or c(2L,2L,3L)", 
+    fixed=TRUE)
   expect_error(aggregate_inc(SARS2003$incidence, 1L),
-               "dt should be an integer or integers >=2")
+               "dt should be an integer or vector of integers >=2")
   expect_error(aggregate_inc(SARS2003$incidence, -1L),
-               "dt should be an integer or integers >=2")
-  expect_true(aggregate_inc(SARS2003$incidence, 7L)[1] == sum(SARS2003$incidence[1:7]))
-  expect_true(sum(aggregate_inc(SARS2003$incidence, c(2L,2L,3L))[1:3]) == sum(SARS2003$incidence[1:7]))
+               "dt should be an integer or vector of integers >=2")
+  expect_true(aggregate_inc(SARS2003$incidence, 7L)[1] == 
+                sum(SARS2003$incidence[1:7]))
+  expect_true(sum(aggregate_inc(SARS2003$incidence, c(2L,2L,3L))[1:3]) == 
+                sum(SARS2003$incidence[1:7]))
 })
 
 
@@ -568,7 +573,7 @@ test_that("result of weekly version of estimate_R can be plotted without error",
                                                 method = method,
                                                 grid = list(precision = 0.001, min = -1, max = 1)))
   
-  expect_error(suppressWarnings(plot(res_weekly),NA))
+  expect_error(suppressWarnings(plot(res_weekly)),NA)
   
 }) 
 
@@ -637,7 +642,7 @@ test_that("method works with different dt", {
   
   ## lot of variation early on so excluding first part
   expect_true(all(relative_error_three[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
-  expect_true(all(relative_error_ten[-c(1:20)] < 0.4)) 
+  expect_true(all(relative_error_ten[-c(1:20)] < 0.5)) 
   
 })
   
