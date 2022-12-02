@@ -1,15 +1,17 @@
 # devtools::load_all()
 require(testthat)
 
-### everything needed for the tests in this file ###
-
 data("Flu2009")
 data("SARS2003")
 incid <- SARS2003$incidence
+
 dt <- 7L
 dt_vec <- c(2L,2L,3L)
+dt_vec_1 <- c(2L,1L,3L)
+
 weekly_inc <- aggregate_inc(incid, dt)
 agg_inc <- aggregate_inc(incid, dt_vec)
+agg_inc_1 <- aggregate_inc(incid, dt_vec_1)
 
 mean_si <- sum(SARS2003$si_distr * seq_along(SARS2003$si_distr))
 std_si <- 
@@ -23,7 +25,7 @@ test_that("function to aggregate incidence works", {
                "incid should be a vector of integer values")
   expect_error(
     aggregate_inc(SARS2003$incidence, 7),
-    "dt should be an integer or vector of integers >=2 e.g. 2L or c(2L,2L,3L)", 
+    "dt should be an integer or vector of integers e.g. 2L or c(2L,2L,3L)", 
     fixed=TRUE)
   expect_error(aggregate_inc(SARS2003$incidence, 1L),
                "at least one value of dt should be an integer >=2")
@@ -67,6 +69,14 @@ test_that("estimate_R_agg works in parametric mode", {
                                               method = method,
                                               grid = list(precision = 0.001, min = -1, max = 1)))
   
+  res_agg3 <- suppressWarnings(estimate_R_agg(incid = agg_inc_1, 
+                                              dt = c(2L,1L,3L), 
+                                              dt_out = 7L, 
+                                              iter = 10L,
+                                              config = config,
+                                              method = method,
+                                              grid = list(precision = 0.001, min = -1, max = 1)))
+  
   
   res_daily <- suppressWarnings(estimate_R(incid = incid, 
                                config = config,
@@ -96,6 +106,7 @@ test_that("estimate_R_agg works in parametric mode", {
   common_t_start <- intersect(res_daily$R$t_start, res_weekly$R$t_start)
   common_t_start2 <- intersect(res_daily$R$t_start, res_agg1$R$t_start)
   common_t_start3 <- intersect(res_daily$R$t_start, res_agg2$R$t_start)
+  common_t_start4 <- intersect(res_daily$R$t_start, res_agg3$R$t_start)
   
   relative_error <- abs(res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start] -   
                           res_weekly$R$`Mean(R)`[res_weekly$R$t_start %in% common_t_start]) / 
@@ -109,11 +120,16 @@ test_that("estimate_R_agg works in parametric mode", {
                            res_agg2$R$`Mean(R)`[res_agg2$R$t_start %in% common_t_start3]) / 
     res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start3]
   
+  relative_error4 <- abs(res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start4] -   
+                           res_agg3$R$`Mean(R)`[res_agg3$R$t_start %in% common_t_start4]) / 
+    res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start4]
+  
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
   expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
   expect_true(all(relative_error2[-c(1:20)] < 0.4)) 
   expect_true(all(relative_error3[-c(1:20)] < 0.4)) 
+  expect_true(all(relative_error4[-c(1:20)] < 0.4)) 
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -169,6 +185,14 @@ test_that("estimate_R_agg works in non-parametric mode", {
                                               method = method,
                                               grid = list(precision = 0.001, min = -1, max = 1)))
   
+  res_agg3 <- suppressWarnings(estimate_R_agg(incid = agg_inc_1, 
+                                              dt = c(2L,1L,3L), 
+                                              dt_out = 7L, 
+                                              iter = 10L,
+                                              config = config,
+                                              method = method,
+                                              grid = list(precision = 0.001, min = -1, max = 1)))
+  
   res_daily <- suppressWarnings(estimate_R(incid = incid, 
                           config = config,
                           method = method))
@@ -197,6 +221,7 @@ test_that("estimate_R_agg works in non-parametric mode", {
   common_t_start <- intersect(res_daily$R$t_start, res_weekly$R$t_start)
   common_t_start2 <- intersect(res_daily$R$t_start, res_agg1$R$t_start)
   common_t_start3 <- intersect(res_daily$R$t_start, res_agg2$R$t_start)
+  common_t_start4 <- intersect(res_daily$R$t_start, res_agg3$R$t_start)
   
   relative_error <- abs(res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start] -   
                           res_weekly$R$`Mean(R)`[res_weekly$R$t_start %in% common_t_start]) / 
@@ -210,11 +235,16 @@ test_that("estimate_R_agg works in non-parametric mode", {
                            res_agg2$R$`Mean(R)`[res_agg2$R$t_start %in% common_t_start3]) / 
     res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start3]
   
+  relative_error4 <- abs(res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start4] -   
+                           res_agg3$R$`Mean(R)`[res_agg3$R$t_start %in% common_t_start4]) / 
+    res_daily$R$`Mean(R)`[res_daily$R$t_start %in% common_t_start4]
+  
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
   expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
   expect_true(all(relative_error2[-c(1:20)] < 0.4)) 
   expect_true(all(relative_error3[-c(1:20)] < 0.4)) 
+  expect_true(all(relative_error4[-c(1:20)] < 0.4)) 
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -391,6 +421,47 @@ test_that("estimate_R works with aggregated data in non-parametric mode", {
 })
 
 
+test_that("aggregated reconstructed incidence matches original input", {
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si))
+  
+  res_agg <- suppressWarnings(estimate_R(incid = agg_inc, 
+                                         dt = c(2L,2L,3L), 
+                                         dt_out = 7L, 
+                                         iter = 10L,
+                                         config = config,
+                                         method = method,
+                                         grid = list(precision = 0.001, min = -1, max = 1)))
+  
+  res_agg_1 <- suppressWarnings(estimate_R(incid = agg_inc_1, 
+                                            dt = c(2L,1L,3L), 
+                                            dt_out = 7L, 
+                                            iter = 10L,
+                                            config = config,
+                                            method = method,
+                                            grid = list(precision = 0.001, min = -1, max = 1)))
+  
+  res_weekly <- suppressWarnings(estimate_R(incid = weekly_inc,
+                                            dt = 7L,
+                                           config = config,
+                                           method = method))
+
+  
+  ## Aggregating the reconstructed incidence matches original input
+  
+  expect_equal(agg_inc, 
+               aggregate_inc(res_agg$I, dt_vec))  
+  
+  expect_equal(agg_inc_1, 
+                 aggregate_inc(res_agg_1$I, dt_vec_1))
+  
+  expect_equal(weekly_inc,
+               aggregate_inc(res_weekly$I, 7L))
+  
+})
+  
+
 
 test_that("r grid can be automatically updated with similar results", {
   ## estimate the reproduction number (method "parametric_si")
@@ -432,7 +503,8 @@ test_that("dt and dt_out in estimate_R_agg are in the correct format", {
                                                iter = 10L,
                                                config = config,
                                                method = method)),
-               "dt and dt_out must be integers e.g. 7L") 
+               "dt must be an integer or a vector of integers e.g. dt = 7L, dt = c(2L,2L,3L)",
+               fixed = TRUE) 
   
   expect_error(suppressWarnings(estimate_R_agg(incid = weekly_inc, 
                                                dt = 7L, 
@@ -440,7 +512,8 @@ test_that("dt and dt_out in estimate_R_agg are in the correct format", {
                                                iter = 10L,
                                                config = config,
                                                method = method)),
-               "dt and dt_out must be integers e.g. 7L") 
+               "dt_out must be an integer e.g. dt_out = 7L",
+               fixed = TRUE)  
   
 })
 
@@ -560,7 +633,6 @@ test_that("you can't run estimate_R_agg unless using parametric/non-parametric S
 })
 
 
-# Note: need to fix incorrect incidence plotting
 test_that("result of weekly version of estimate_R can be plotted without error", {
   method <- "parametric_si"
   config <- make_config(list(mean_si = mean_si,
@@ -577,8 +649,8 @@ test_that("result of weekly version of estimate_R can be plotted without error",
   
 }) 
 
-# Note: need to add checks for the fix
-test_that("method works with different dt", {
+
+test_that("method works with different single integers of dt", {
 
   inc_three <- aggregate_inc(incid, 3L)
   inc_ten <- aggregate_inc(incid, 10L)
@@ -645,4 +717,5 @@ test_that("method works with different dt", {
   expect_true(all(relative_error_ten[-c(1:20)] < 0.5)) 
   
 })
+
   

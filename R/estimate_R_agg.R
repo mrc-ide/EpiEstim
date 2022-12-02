@@ -225,8 +225,11 @@ estimate_R_agg <- function(incid,
                            method = c("non_parametric_si", "parametric_si"),
                            grid = list(precision = 0.001, min = -1, max = 1)){ 
   
-  if (!is.integer(dt) | !is.integer(dt_out)) {
-    stop ("dt and dt_out must be integers e.g. 7L")
+  if (!is.integer(dt)) {
+    stop ("dt must be an integer or a vector of integers e.g. dt = 7L, dt = c(2L,2L,3L)")
+  }
+  if (!is.integer(dt_out)) {
+    stop ("dt_out must be an integer e.g. dt_out = 7L")
   }
   if (!is.integer(iter)) {
     stop ("iter must be an integer e.g. 10L")
