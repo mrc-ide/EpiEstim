@@ -33,7 +33,7 @@ test_that("function to aggregate incidence works", {
                "at least one value of dt should be an integer >=2")
   expect_true(aggregate_inc(SARS2003$incidence, 7L)[1] == 
                 sum(SARS2003$incidence[1:7]))
-  expect_true(sum(aggregate_inc(SARS2003$incidence, c(2L,2L,3L))[1:3]) == 
+  expect_true(sum(aggregate_inc(SARS2003$incidence, dt_vec)[1:3]) == 
                 sum(SARS2003$incidence[1:7]))
 })
 
@@ -54,7 +54,7 @@ test_that("estimate_R_agg works in parametric mode", {
                         grid = list(precision = 0.001, min = -1, max = 1)))
   
   res_agg1 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
-                                              dt = c(2L,2L,3L), 
+                                              dt = dt_vec, 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
@@ -62,7 +62,7 @@ test_that("estimate_R_agg works in parametric mode", {
                                               grid = list(precision = 0.001, min = -1, max = 1)))
   
   res_agg2 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
-                                              dt = rep(c(2L,2L,3L), length.out=length(agg_inc)), 
+                                              dt = rep(dt_vec, length.out=length(agg_inc)), 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
@@ -70,7 +70,7 @@ test_that("estimate_R_agg works in parametric mode", {
                                               grid = list(precision = 0.001, min = -1, max = 1)))
   
   res_agg3 <- suppressWarnings(estimate_R_agg(incid = agg_inc_1, 
-                                              dt = c(2L,1L,3L), 
+                                              dt = dt_vec_1, 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
@@ -170,7 +170,7 @@ test_that("estimate_R_agg works in non-parametric mode", {
                                grid = list(precision = 0.001, min = -1, max = 1)))
   
   res_agg1 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
-                                                dt = c(2L,2L,3L), 
+                                                dt = dt_vec, 
                                                 dt_out = 7L, 
                                                 iter = 10L,
                                                 config = config,
@@ -178,7 +178,7 @@ test_that("estimate_R_agg works in non-parametric mode", {
                                                 grid = list(precision = 0.001, min = -1, max = 1)))
   
   res_agg2 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
-                                              dt = rep(c(2L,2L,3L), length.out=length(agg_inc)), 
+                                              dt = rep(dt_vec, length.out=length(agg_inc)), 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
@@ -186,7 +186,7 @@ test_that("estimate_R_agg works in non-parametric mode", {
                                               grid = list(precision = 0.001, min = -1, max = 1)))
   
   res_agg3 <- suppressWarnings(estimate_R_agg(incid = agg_inc_1, 
-                                              dt = c(2L,1L,3L), 
+                                              dt = dt_vec_1, 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
@@ -427,7 +427,7 @@ test_that("aggregated reconstructed incidence matches original input", {
                              std_si = std_si))
   
   res_agg <- suppressWarnings(estimate_R(incid = agg_inc, 
-                                         dt = c(2L,2L,3L), 
+                                         dt = dt_vec, 
                                          dt_out = 7L, 
                                          iter = 10L,
                                          config = config,
@@ -435,7 +435,7 @@ test_that("aggregated reconstructed incidence matches original input", {
                                          grid = list(precision = 0.001, min = -1, max = 1)))
   
   res_agg_1 <- suppressWarnings(estimate_R(incid = agg_inc_1, 
-                                            dt = c(2L,1L,3L), 
+                                            dt = dt_vec_1, 
                                             dt_out = 7L, 
                                             iter = 10L,
                                             config = config,
