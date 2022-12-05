@@ -490,7 +490,9 @@ NULL
 #' 
 #' @references
 #'
-#' Nash R, Cori A, Nouvellet P, in preparation.
+#' Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number 
+#' from temporally aggregated incidence data: a statistical modelling approach 
+#' and software tool. (medRxiv pre-print)
 #'
 #' Bi Q, Wu Y, Mei S, Ye C, Zou X, Zhang Z, et al. Epidemiology and 
 #' transmission of COVID-19 in 391 cases and 1286 of their close contacts in 
