@@ -90,13 +90,20 @@ test_that("estimate_R_agg works in parametric mode", {
   {
     expect_equal(sum(res_daily$I[i*dt+(1:dt)]), 
                  sum(res_weekly$I[i*dt+(1:dt)]))
+    
+    expect_equal(sum(res_daily$I[i*dt+(1:dt)]), 
+                 sum(res_agg1$I[i*dt+(1:dt)]))
+    
+    expect_equal(sum(res_daily$I[i*dt+(1:dt)]),
+                 sum(res_agg2$I[i*dt+(1:dt)]))
+    
   }
   
-  for(i in seq_len(floor(length(res_daily$I) / dt))[-1])
+  for(i in seq_len(floor(length(res_daily$I) / sum(dt_vec_1)))[-1])
   {
-    expect_equal(sum(res_daily$I[i*dt+(1:dt)]), 
-                 sum(res_agg1$I[i*dt+(1:dt)]),
-                 sum(res_agg2$I[i*dt+(1:dt)]))
+    expect_equal(sum(res_daily$I[i*sum(dt_vec_1)+(1:sum(dt_vec_1))]),
+                 sum(res_agg3$I[i*sum(dt_vec_1)+(1:sum(dt_vec_1))]))
+    
   }
   
   ######################################################################
@@ -205,13 +212,20 @@ test_that("estimate_R_agg works in non-parametric mode", {
   {
     expect_equal(sum(res_daily$I[i*dt+(1:dt)]), 
                  sum(res_weekly$I[i*dt+(1:dt)]))
+    
+    expect_equal(sum(res_daily$I[i*dt+(1:dt)]), 
+                 sum(res_agg1$I[i*dt+(1:dt)]))
+    
+    expect_equal(sum(res_daily$I[i*dt+(1:dt)]),
+                 sum(res_agg2$I[i*dt+(1:dt)]))
+    
   }
   
-  for(i in seq_len(floor(length(res_daily$I) / dt))[-1])
+  for(i in seq_len(floor(length(res_daily$I) / sum(dt_vec_1)))[-1])
   {
-    expect_equal(sum(res_daily$I[i*dt+(1:dt)]), 
-                 sum(res_agg1$I[i*dt+(1:dt)]),
-                 sum(res_agg2$I[i*dt+(1:dt)]))
+    expect_equal(sum(res_daily$I[i*sum(dt_vec_1)+(1:sum(dt_vec_1))]),
+                 sum(res_agg3$I[i*sum(dt_vec_1)+(1:sum(dt_vec_1))]))
+    
   }
   
   ######################################################################
