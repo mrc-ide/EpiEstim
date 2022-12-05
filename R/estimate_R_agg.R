@@ -234,6 +234,9 @@ estimate_R_agg <- function(incid,
   if (!is.integer(iter)) {
     stop ("iter must be an integer e.g. 10L")
   }
+  if (iter < 2L) {
+    stop ("iter must be at least 2L")
+  }
   if (!is.list(grid) | !length(grid) == 3){
     stop ("grid must be a list of 3 elements: precision, min, and max")
   }
@@ -248,6 +251,11 @@ estimate_R_agg <- function(incid,
   }
   if (!method == "parametric_si" && !method == "non_parametric_si"){
     stop ("'arg' should be one of 'non_parametric_si' and 'parametric_si'")
+  }
+  
+  
+  if (dt_out < max(dt)) {
+    warning ("dt_out should be at least the length of the longest aggregation present in the data")
   }
   
   # Two configs:
@@ -518,6 +526,6 @@ estimate_R_agg <- function(incid,
     }
   }
   
-  R_out
+    R_out
   
 }
