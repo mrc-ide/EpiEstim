@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4</span>
       </span>
     </div>
 
@@ -32,6 +32,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/EpiEstim_aggregated_data.html">EpiEstim for aggregated incidence data</a>
+    </li>
+    <li>
       <a href="../articles/MV_EpiEstim_vignette.html">MV-EpiEstim</a>
     </li>
     <li>
@@ -110,6 +113,10 @@
         </td>
         <td><p>Function to ensure compatibility with EpiEstim versions &lt;2.0</p></td>
       </tr><tr><td>
+          <p><code><a href="aggregate_inc.html">aggregate_inc()</a></code> </p>
+        </td>
+        <td><p>Aggregating daily incidence to longer time windows</p></td>
+      </tr><tr><td>
           <p><code><a href="check_cdt_samples_convergence.html">check_cdt_samples_convergence()</a></code> </p>
         </td>
         <td><p>Checking convergence of an MCMC chain by using the Gelman-Rubin algorithm</p></td>
@@ -131,6 +138,10 @@ mass is captured</p></td>
         </td>
         <td><p>Compute the smallest index at which joint estimation
 should start</p></td>
+      </tr><tr><td>
+          <p><code><a href="covid_deaths_2020_uk.html">covid_deaths_2020_uk</a></code> </p>
+        </td>
+        <td><p>Data on the 2020-2022 SARS-CoV-2 epidemic in the UK.</p></td>
       </tr><tr><td>
           <p><code><a href="default_mcmc_controls.html">default_mcmc_controls()</a></code> </p>
         </td>
@@ -155,10 +166,11 @@ Distribution</p></td>
       </tr><tr><td>
           <p><code><a href="estimate_R.html">estimate_R()</a></code> </p>
         </td>
-        <td><p>Estimated Instantaneous Reproduction Number
-
-<code>estimate_R</code> estimates the reproduction number of an epidemic, given the
-incidence time series and the serial interval distribution.</p></td>
+        <td><p>Estimated Instantaneous Reproduction Number</p></td>
+      </tr><tr><td>
+          <p><code><a href="estimate_R_agg.html">estimate_R_agg()</a></code> </p>
+        </td>
+        <td><p>Estimated Instantaneous Reproduction Number from coarsely aggregated data</p></td>
       </tr><tr><td>
           <p><code><a href="estimate_R_plots.html">estimate_R_plots()</a></code> </p>
         </td>

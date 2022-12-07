@@ -4,6 +4,9 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/articles/EpiEstim_aggregated_data.html</loc>
+  </url>
+  <url>
     <loc>/articles/MV_EpiEstim_vignette.html</loc>
   </url>
   <url>
@@ -61,6 +64,9 @@
     <loc>/reference/WT.html</loc>
   </url>
   <url>
+    <loc>/reference/aggregate_inc.html</loc>
+  </url>
+  <url>
     <loc>/reference/check_cdt_samples_convergence.html</loc>
   </url>
   <url>
@@ -74,6 +80,9 @@
   </url>
   <url>
     <loc>/reference/compute_t_min.html</loc>
+  </url>
+  <url>
+    <loc>/reference/covid_deaths_2020_uk.html</loc>
   </url>
   <url>
     <loc>/reference/default_mcmc_controls.html</loc>
@@ -92,6 +101,9 @@
   </url>
   <url>
     <loc>/reference/estimate_R.html</loc>
+  </url>
+  <url>
+    <loc>/reference/estimate_R_agg.html</loc>
   </url>
   <url>
     <loc>/reference/estimate_R_plots.html</loc>

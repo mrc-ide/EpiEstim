@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4</span>
       </span>
     </div>
 
@@ -50,6 +50,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/EpiEstim_aggregated_data.html">EpiEstim for aggregated incidence data</a>
+    </li>
+    <li>
       <a href="../articles/MV_EpiEstim_vignette.html">MV-EpiEstim</a>
     </li>
     <li>
@@ -91,7 +94,7 @@
       <h1 data-toc-skip>EpiEstim Vignette</h1>
                         <h4 data-toc-skip class="author">Rebecca Nash</h4>
             
-            <h4 data-toc-skip class="date">2022-10-10</h4>
+            <h4 data-toc-skip class="date">2022-12-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/HEAD/vignettes/full_EpiEstim_vignette.Rmd" class="external-link"><code>vignettes/full_EpiEstim_vignette.Rmd</code></a></small>
       <div class="hidden name"><code>full_EpiEstim_vignette.Rmd</code></div>
@@ -560,6 +563,11 @@ dd/mm/yy
 </tr>
 </tbody>
 </table>
+<div style="margin-top:20px;">
+<p><strong>Temporally aggregated incidence data:</strong></p>
+</div>
+<p>This vignette provides examples using incidence data that is available on a daily basis. If you have incidence data that is reported over aggregated timescales, such as weekly data or incidence reported 3 times a week, you will need to provide an additional parameter ‘dt’ to the <code><a href="../reference/estimate_R.html">estimate_R()</a></code> function introduced in step C.</p>
+<p>For full details about using EpiEstim for temporally aggregated incidence data, see the “EpiEstim_aggregated_incidence” vignette.</p>
 <p>##Estimate R<sub>t</sub></p>
 <p>Once you have an incidence object (based on the dates of symptom onset) and information on the serial interval distribution, we can use the renewal equation (a form of branching process model) to estimate R<sub>t</sub>. R<sub>t</sub> is the average number of secondary cases that an infected individual would infect if the conditions remained as they were at time t (Cori et al 2013).</p>
 <p><img src="figs/Renewal_equation.png" width="100%"></p>
@@ -577,6 +585,8 @@ dd/mm/yy
 <span><span class="op">)</span></span></code></pre></div>
 <p>As mentioned, the serial interval (SI) can be defined using one of the following methods:</p>
 <p><strong>Parametric</strong> - <code>"parametric_si"</code> uses the mean and standard deviation. Ex. The user can supply <code>mean_si=3</code> and <code>std_si=1</code>, which generates an offset gamma distribution as the default:</p>
+<pre><code><span><span class="co">#&gt; Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use the `linewidth` argument instead.</span></span></code></pre>
 <p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-12-1.png" width="30%" style="display: block; margin: auto;"></p>
 <p><strong>Non-parametric</strong> - <code>"non_parametric_si"</code> uses the discrete distribution of the SI. Ex. The user can supply <code>si_distr=c(0.000,0.233,0.359,0.198,0.103,0.053,0.027,0.014,0.007,0.003,0.002,0.001)</code>, which generates:</p>
 <p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-13-1.png" width="30%" style="display: block; margin: auto;"></p>
@@ -584,7 +594,7 @@ dd/mm/yy
 <p>Ex. Here, the mean of the SI will be drawn from a normal distribution with a mean of 3 and SD of 1, truncated at 1 and 4 (left). The SD of the SI will be drawn from a normal distribution with a mean of 1.5 and SD of 0.5, truncated at 0.5 and 2.5 (centre). The drawn values will parameterise multiple SI distributions to be considered, but for clarity, the example below only displays 5 (right).</p>
 <p><img src="full_EpiEstim_vignette_files/figure-html/figures-side-1.png" width="30%"><img src="full_EpiEstim_vignette_files/figure-html/figures-side-2.png" width="30%"><img src="full_EpiEstim_vignette_files/figure-html/figures-side-3.png" width="30%"></p>
 <p>This would be written within the <code>config</code> argument in <code><a href="../reference/estimate_R.html">estimate_R()</a></code> as:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid</span>,</span>
 <span>           method <span class="op">=</span> <span class="st">"uncertain_si"</span>,</span>
 <span>           config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -599,12 +609,12 @@ dd/mm/yy
 <p><strong>From data</strong> - <code>"si_from_data"</code> allows you to estimate the SI by Markov chain Monte Carlo (MCMC) from infector-infected data. The user has the choice of which parametric distribution the SI will take, either: Gamma <code>"G"</code>, Weibull <code>"W"</code>, Lognormal <code>"L"</code>, or shifted by 1: Gamma <code>"off1G"</code>, Weibull <code>"off1W"</code>, Lognormal <code>"off1L"</code></p>
 <p><code>mcmc_control</code> is where you define the properties of the MCMC, i.e. the burn-in and the thinning of MCMC chains. Burn-in is the number of iterations to be discarded as “warm-up”, for instance, if <code>burnin=1000</code> the output is only recorded <em>after</em> 1000 iterations have run. Thinning determines how much the MCMC chains should be thinned out, if <code>thin = 10</code> then 1 in every 10 iterations will be kept. The seed, e.g. <code>seed = 1</code>, acts as the starting point for the random number generator of the MCMC estimation. Setting the seed allows you to obtain reproducible results as you will get the same result each time you run the same process.</p>
 </div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mcmc_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_mcmc_control.html">make_mcmc_control</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="va">burnin</span>, <span class="co"># number of iterations to be discarded as burn-in </span></span>
 <span>                                  thin <span class="op">=</span> <span class="va">thin</span>, <span class="co"># defining how much the MCMC chains should be thinned</span></span>
 <span>                                  seed <span class="op">=</span> <span class="va">mcmc_seed</span><span class="op">)</span> <span class="co"># set the seed for reproducibility</span></span></code></pre></div>
 <p>This then feeds into the <code>config</code> argument of <code><a href="../reference/estimate_R.html">estimate_R()</a></code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid</span>, </span>
 <span>           method <span class="op">=</span> <span class="st">"si_from_data"</span>,</span>
 <span>           si_data <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">si_data</span>, <span class="co"># supply dataframe with symptom onset data</span></span>
@@ -652,7 +662,7 @@ dd/mm/yy
 <div style="margin-top:30px;">
 <p><strong>From sample</strong> - (<code>"si_from_sample"</code>) allows you to input the posterior sample from a previously estimated SI distribution. This means that you don’t have to re-estimate the SI every time you run <code><a href="../reference/estimate_R.html">estimate_R()</a></code> if you don’t want to, and you can also estimate the SI elsewhere and put that into EpiEstim. Ex. The user would need to supply <code>si_sample</code> with a matrix where each column corresponds to one SI distribution to be explored. This would look something like this:</p>
 </div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">si_sample</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;               1         11         21         31         41         51</span></span>
 <span><span class="co">#&gt; [1,] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000</span></span>
@@ -662,7 +672,7 @@ dd/mm/yy
 <span><span class="co">#&gt; [5,] 0.06311048 0.04613796 0.08431215 0.07734176 0.07102036 0.07289353</span></span>
 <span><span class="co">#&gt; [6,] 0.03433206 0.01741882 0.04378072 0.04249667 0.03992217 0.04107379</span></span></code></pre></div>
 <p>and would be written in estimate_R() as:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid</span>,</span>
 <span>           method<span class="op">=</span><span class="st">"si_from_sample"</span>,</span>
 <span>           si_sample<span class="op">=</span><span class="va">si_sample</span>, <span class="co"># matrix of SI distributions</span></span>
@@ -679,7 +689,7 @@ dd/mm/yy
 </div>
 </div>
 <p>By default R<sub>t</sub> is estimated over weekly sliding windows, i.e. successive overlapping 7 day time windows as shown above. If you wish to specify a different time window over which R<sub>t</sub> is estimated, you use the <code>t_start=</code> and <code>t_end=</code> arguments within <code>config=</code> of the <code><a href="../reference/estimate_R.html">estimate_R()</a></code> function. <code>t_start</code> is the starting time for the window of R<sub>t</sub> estimation and <code>t_end</code> is the end time of the window. As EpiEstim relies on past incidence to generate estimates of R<sub>t</sub>, the earliest a time window can start is on day 2 of the epidemic. For example, if you wanted to estimate R<sub>t</sub> over biweekly sliding windows you could do so as follows:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Each row of Flu2009$incidence corresponds to one day in the outbreak. `t_start` is a sequence of start days for the sliding window, starting on day 2 ending 2 weeks before the last day in the dataset:</span></span>
@@ -707,7 +717,7 @@ dd/mm/yy
 <span></span>
 <span><span class="co"># Each row now corresponds to a biweekly window. If you take the first row here you can see that R has been estimated over 14 days where all cases with onset from day 2 to day 15 of the outbreak are included.</span></span></code></pre></div>
 <p>R<sub>t</sub> is then plotted for each time window on the last day of that window. So in the example above, the estimate of R<sub>t</sub> for the window from day 2 to day 15 will be plotted on day 15 (11th May). This means that it appears as if you’re starting your estimation later than you are because the plot for R<sub>t</sub> does not start until the end of the first window.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, legend<span class="op">=</span><span class="cn">FALSE</span>, <span class="st">"R"</span><span class="op">)</span> <span class="co"># specifying "R", "SI" or "incid" allows you to plot just the single panel</span></span></code></pre></div>
 <p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-26-1.png" width="576"></p>
 <p>When choosing the length of the time window, there is essentially a trade-off. A longer window may give you less uncertainty in your estimate, but could disguise important temporal changes, whereas a shorter window may be more influenced by random noise in the data. A good starting point might be to choose a window length that is at least the mean of the SI distribution. A longer time window is more appropriate if you believe the epidemiological situation has not changed (e.g. no new interventions have been implemented).</p>
@@ -715,7 +725,7 @@ dd/mm/yy
 <p><strong>Non-overlapping time windows</strong></p>
 </div>
 <p>You may want to compare R<sub>t</sub> before and after an intervention has been implemented. In this instance, you won’t necessarily need smooth overlapping time windows. For example, imagine that you implemented an intervention on the 11th May. You could compare the average estimate for R<sub>t</sub> before the intervention was implemented and then after.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># set t_start for day 2 of the outbreak and day 15 of the outbreak (11th May):</span></span>
@@ -738,7 +748,7 @@ dd/mm/yy
 <p>###<strong>Prior for R<sub>t</sub></strong></p>
 <p>The gamma distributed prior for the mean and standard deviation of R<sub>t</sub> can be set using the <code>mean_prior=</code> and <code>std_prior=</code> arguments within <code>config=</code> of the <code><a href="../reference/estimate_R.html">estimate_R()</a></code> function. If you do not define any values for these arguments then the default values are used, which are a mean of 5 and standard deviation of 5. The default has been set for an unknown pathogen with relatively high R and high uncertainty. With this prior, if we estimate R to be below 1, then we can be more confident that the result is strongly data-driven.</p>
 <p>For example, if you do not want to use the default prior, you can set a mean of 2 and standard deviation of 1:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">data</span><span class="op">$</span><span class="va">incid</span>,</span>
 <span>           method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span>
 <span>           config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -750,7 +760,7 @@ dd/mm/yy
 <p>###Step D: <code>Projections</code> package</p>
 <p>The projections package uses the daily incidence, serial interval and R<sub>t</sub> estimate to simulate epidemic trajectories using branching processes.</p>
 <p>First, you need to estimate R<sub>t</sub> over a recent time window that you specify using <code>t_start</code> and <code>t_end</code>. When estimating R and making projections in real time, there are very likely to be people who have become symptomatic but are yet to have been reported (known as right censoring). If you don’t use a method to account for this then you will underestimate R<sub>t</sub>, here we are truncating the incidence so that the last week of data isn’t included.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Truncate the incidence to account for right censoring (e.g. 7 days)</span></span>
 <span><span class="va">trunc_date</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">date_of_onset</span><span class="op">)</span><span class="op">-</span><span class="fl">7</span></span>
 <span><span class="va">trunc_linelist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">data</span><span class="op">$</span><span class="va">date_of_onset</span> <span class="op">&lt;</span> <span class="va">trunc_date</span><span class="op">)</span></span>
@@ -765,7 +775,7 @@ dd/mm/yy
 <span>                                       t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">trunc_incidence</span><span class="op">)</span><span class="op">-</span><span class="fl">14</span>,</span>
 <span>                                       t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">trunc_incidence</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># 2 week window that ended a week ago</span></span></code></pre></div>
 <p>We can then supply the incidence, median estimate of R, and the SI distribution to the <code>project()</code> function in the <code>projections</code> package. Note: The <code>project()</code> function requires that the distribution of the serial interval starts on day 1, not on day 0 as in EpiEstim.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Use the project function</span></span>
 <span><span class="va">proj</span> <span class="op">&lt;-</span> <span class="fu">project</span><span class="op">(</span><span class="va">trunc_incidence</span>, <span class="co"># truncated incidence object</span></span>
 <span>                R <span class="op">=</span> <span class="va">Res</span><span class="op">$</span><span class="va">R</span><span class="op">$</span><span class="va">`Median(R)`</span>, <span class="co"># median R estimate</span></span>
@@ -774,7 +784,7 @@ dd/mm/yy
 <span>                n_days <span class="op">=</span> <span class="fl">30</span>, <span class="co"># number of days to make projections over e.g. 30 </span></span>
 <span>                R_fix_within <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># whether to keep the same value of R every day (TRUE/FALSE)</span></span></code></pre></div>
 <p>You can then plot the incidence and use the pipe operator <code>%&gt;%</code> to add the projections with lower, median and upper quantiles.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">trunc_incidence</span>, xlab<span class="op">=</span><span class="st">"Date of Symptom Onset"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">add_projections</span><span class="op">(</span><span class="va">proj</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>For a worked example, see example A. For more information on the <code>projections</code> package see: <a href="https://www.repidemicsconsortium.org/projections/" class="external-link uri">https://www.repidemicsconsortium.org/projections/</a></p>
 <div style="margin-top:30px;">
@@ -788,37 +798,37 @@ dd/mm/yy
 <p>We will be using the data from a simulated outbreak of Ebola Virus Disease (EVD) in West Africa, taken from <a href="https://www.reconlearn.org/post/real-time-response-1.html" class="external-link uri">https://www.reconlearn.org/post/real-time-response-1.html</a></p>
 <p><strong>Incidence</strong></p>
 <p>Let us say we have line list data in the format below, where each row corresponds to a reported case of EVD.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">linelist</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 11</span></span></span>
-<span><span class="co">#&gt;   case_id generat…¹ date_…² date_…³ date_…⁴ date_…⁵ outcome gender hospi…⁶   lon</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> d1fafd          0 NA      2014-0… 2014-0… 2014-0… NA      f      Milita… -<span style="color: #BB0000;">13.2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 53371b          1 2014-0… 2014-0… 2014-0… NA      NA      m      Connau… -<span style="color: #BB0000;">13.2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> f5c3d8          1 2014-0… 2014-0… 2014-0… 2014-0… Recover f      other   -<span style="color: #BB0000;">13.2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 6c286a          2 NA      2014-0… 2014-0… 2014-0… Death   f      NA      -<span style="color: #BB0000;">13.2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 0f58c4          2 2014-0… 2014-0… 2014-0… 2014-0… Recover f      other   -<span style="color: #BB0000;">13.2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 49731d          0 2014-0… 2014-0… 2014-0… 2014-0… NA      f      NA      -<span style="color: #BB0000;">13.2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 1 more variable: lat &lt;dbl&gt;, and abbreviated variable names</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ¹​generation, ²​date_of_infection, ³​date_of_onset, ⁴​date_of_hospitalisation,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ⁵​date_of_outcome, ⁶​hospital</span></span></span></code></pre></div>
-<p>We can create an incidence object for all the cases of EVD with a known date of symptom onset (date_of_onset) using the <code>incidence</code> package:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">linelist</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   case_id generation date_of_infection date_of_onset date_of_hospitalisation</span></span>
+<span><span class="co">#&gt; 1  d1fafd          0              &lt;NA&gt;    07/04/2014              17/04/2014</span></span>
+<span><span class="co">#&gt; 2  53371b          1        09/04/2014    15/04/2014              20/04/2014</span></span>
+<span><span class="co">#&gt; 3  f5c3d8          1        18/04/2014    21/04/2014              25/04/2014</span></span>
+<span><span class="co">#&gt; 4  6c286a          2              &lt;NA&gt;    27/04/2014              27/04/2014</span></span>
+<span><span class="co">#&gt; 5  0f58c4          2        22/04/2014    26/04/2014              29/04/2014</span></span>
+<span><span class="co">#&gt; 6  49731d          0        19/03/2014    25/04/2014              02/05/2014</span></span>
+<span><span class="co">#&gt;   date_of_outcome outcome gender           hospital       lon      lat</span></span>
+<span><span class="co">#&gt; 1      19/04/2014    &lt;NA&gt;      f  Military Hospital -13.21799 8.473514</span></span>
+<span><span class="co">#&gt; 2            &lt;NA&gt;    &lt;NA&gt;      m Connaught Hospital -13.21491 8.464927</span></span>
+<span><span class="co">#&gt; 3      30/04/2014 Recover      f              other -13.22804 8.483356</span></span>
+<span><span class="co">#&gt; 4      07/05/2014   Death      f               &lt;NA&gt; -13.23112 8.464776</span></span>
+<span><span class="co">#&gt; 5      17/05/2014 Recover      f              other -13.21016 8.452143</span></span>
+<span><span class="co">#&gt; 6      07/05/2014    &lt;NA&gt;      f               &lt;NA&gt; -13.23443 8.468572</span></span></code></pre></div>
+<p>We can create an incidence object for all the cases of EVD with a known date of symptom onset (date_of_onset) using the <code>incidence</code> package:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># linelist$date_of_onset is class 'character', but we need it to be a date:</span></span>
-<span><span class="va">linelist</span><span class="op">$</span><span class="va">date_of_onset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">linelist</span><span class="op">$</span><span class="va">date_of_onset</span>, format<span class="op">=</span><span class="st">"%Y-%m-%d"</span><span class="op">)</span></span>
+<span><span class="va">linelist</span><span class="op">$</span><span class="va">date_of_onset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="va">linelist</span><span class="op">$</span><span class="va">date_of_onset</span>, format<span class="op">=</span><span class="st">"%d/%m/%Y"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create an incidence object:</span></span>
 <span><span class="va">evd_incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/incidence.html" class="external-link">incidence</a></span><span class="op">(</span><span class="va">linelist</span><span class="op">$</span><span class="va">date_of_onset</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot the incidence:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evd_incid</span>, xlab<span class="op">=</span><span class="st">"Date"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: It is deprecated to specify `guide = FALSE` to remove a guide. Please</span></span>
-<span><span class="co">#&gt; use `guide = "none"` instead.</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evd_incid</span>, xlab<span class="op">=</span><span class="st">"Date"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-34-1.png" width="576"></p>
 <p><strong>Estimate R<sub>t</sub> using parametric SI distribution</strong></p>
 <p>Now that we have an incidence object we need to supply <code>EpiEstim</code> with the SI distribution. As explained above, when we estimate R<sub>t</sub> using a parametric SI distribution we only need to supply a mean and standard deviation. We will assume that the mean of the SI distribution is 14.2 and that the SD is 9.6 using an estimate found in the literature (WHO Ebola Response Team, 2015).</p>
 <p>We supply <code><a href="../reference/estimate_R.html">estimate_R()</a></code> with the incidence object and parameters for the parametric SI and this generates the following 3 panel plot:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">R_si_parametric</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">evd_incid</span>, </span>
 <span>                             method <span class="op">=</span> <span class="st">"parametric_si"</span>,</span>
 <span>                             config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span>mean_si<span class="op">=</span><span class="fl">14.2</span>, std_si<span class="op">=</span><span class="fl">9.6</span><span class="op">)</span><span class="op">)</span></span>
@@ -829,7 +839,7 @@ dd/mm/yy
 <p>You will notice in the “Estimated R” panel that there is a lot of uncertainty around the initial estimates for R<sub>t</sub> in the outbreak due to very little data. This is why we recommend that you do not try to estimate R<sub>t</sub> until there have been <em>at least</em> 10 cases so that you can be confident that your estimates reflect the data (Cori 2013).</p>
 <p><strong>Make Projections</strong></p>
 <p>The <code>projections</code> package takes the estimated reproduction number, serial interval distribution and incidence object to simulate epidemic trajectories using branching processes. Note: The <code>project()</code> function requires that the distribution of the serial interval starts on day 1, not on day 0 as in EpiEstim.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Truncate the linelist so that the last 7 days of data are not included</span></span>
 <span><span class="co"># (some people who have become symptomatic are yet to be reported)</span></span>
 <span><span class="va">trunc_date</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">linelist</span><span class="op">$</span><span class="va">date_of_onset</span><span class="op">)</span><span class="op">-</span><span class="fl">7</span></span>
@@ -854,9 +864,7 @@ dd/mm/yy
 <span>                R_fix_within <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># keep the same value of R every day</span></span>
 <span></span>
 <span><span class="co"># Use the pipe operator (%&gt;%) from the dplyr package to add the projections over all incidence data</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evd_incid</span>, xlab<span class="op">=</span><span class="st">"Date of Symptom Onset"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">add_projections</span><span class="op">(</span><span class="va">proj</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: It is deprecated to specify `guide = FALSE` to remove a guide. Please</span></span>
-<span><span class="co">#&gt; use `guide = "none"` instead.</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evd_incid</span>, xlab<span class="op">=</span><span class="st">"Date of Symptom Onset"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">add_projections</span><span class="op">(</span><span class="va">proj</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-36-1.png" width="576"></p>
 <p>Here, we have plotted the original untruncated incidence object to illustrate that the projections have started over the uncertain week of data.</p>
 </div>
@@ -864,7 +872,7 @@ dd/mm/yy
 <h3 id="example-b-estimating-rt-using-non-parametric-distribution">Example B: Estimating R<sub>t</sub> using non-parametric distribution<a class="anchor" aria-label="anchor" href="#example-b-estimating-rt-using-non-parametric-distribution"></a>
 </h3>
 <p>If you want to supply a discrete SI distribution instead of a mean and standard deviation, this can be done using method <code>non_parametric_si</code>.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">)</span> <span class="co"># example dataset within EpiEstim</span></span>
 <span></span>
 <span><span class="co"># This dataset already has a discrete SI distribution:</span></span>
@@ -883,7 +891,7 @@ dd/mm/yy
 <h3 id="example-c-estimating-rt-using-infector-infected-cases">Example C: Estimating R<sub>t</sub> using infector-infected cases<a class="anchor" aria-label="anchor" href="#example-c-estimating-rt-using-infector-infected-cases"></a>
 </h3>
 <p>In this example we will be using a pre-loaded dataset for a mock outbreak of rotavirus. We have interval-censored data for symptom onset in infector-infected cases that can be used to estimate the SI distribution directly from the data.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MockRotavirus"</span><span class="op">)</span> <span class="co"># example dataset within EpiEstim</span></span>
 <span></span>
 <span><span class="co"># Symptom onset data with upper and lower bounds that can be used to estimate the SI distribution</span></span>
@@ -897,7 +905,7 @@ dd/mm/yy
 <span><span class="co">#&gt; 6  5  6  8  9    0</span></span></code></pre></div>
 <p>Here EL/ER are the lower/upper bounds for the day of symptom onset for the infector and SL/SR are the lower/upper bounds of the day of symptom onset for the infected individual. The last column “type” is optional and corresponds to whether the data is doubly interval-censored (0), single interval-censored (1) or exact observations (2), but if this is not supplied it will automatically be computed from the dates.</p>
 <p>This can be used to estimate the SI distribution using MCMC:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Configure the MCMC chain used to estimate the SI</span></span>
 <span><span class="va">mcmc_control</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_mcmc_control.html">make_mcmc_control</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">1000</span>, <span class="co"># first 1000 iterations discarded as burn-in</span></span>
 <span>                                  thin <span class="op">=</span> <span class="fl">10</span>, <span class="co"># every 10th iteration will be kept, the rest discarded</span></span>
@@ -921,7 +929,7 @@ dd/mm/yy
 <h3 id="example-d-estimating-rt-using-si_from_sample">Example D: Estimating R<sub>t</sub> using “si_from_sample”<a class="anchor" aria-label="anchor" href="#example-d-estimating-rt-using-si_from_sample"></a>
 </h3>
 <p>Running <code><a href="../reference/estimate_R.html">estimate_R()</a></code> when using the method <code>si_from_data</code> can take longer depending on the amount of data you have. If you don’t want to re-estimate the SI each time you run <code><a href="../reference/estimate_R.html">estimate_R()</a></code> you can save the estimated SI distributions and use the method <code>si_from_sample</code> instead.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Take the R estimate object from Example C and extract the SI distribution</span></span>
 <span><span class="va">si_from_est</span> <span class="op">&lt;-</span> <span class="va">R_si_from_data</span><span class="op">$</span><span class="va">si_distr</span></span>
 <span></span>
@@ -942,7 +950,7 @@ dd/mm/yy
 <h3 id="example-e-estimating-rt-using-uncertain_si">Example E: Estimating R<sub>t</sub> using “uncertain_si”<a class="anchor" aria-label="anchor" href="#example-e-estimating-rt-using-uncertain_si"></a>
 </h3>
 <p>If we pretend we don’t have data on infector-infected pairs for this mock rotavirus outbreak, we might be pretty uncertain about the SI distribution. We can choose to draw the mean and standard deviation of the SI from truncated normal distributions that we parameterise based on what we think the SI might look like using our current knowledge. This means that <code><a href="../reference/estimate_R.html">estimate_R()</a></code> would integrate results over each SI drawn from these distributions of the mean and standard deviation.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MockRotavirus"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">R_si_uncertain</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span>incid<span class="op">=</span><span class="va">MockRotavirus</span><span class="op">$</span><span class="va">incidence</span>,</span>
@@ -960,7 +968,7 @@ dd/mm/yy
 <h3 id="example-f-changing-the-prior-for-estimating-rt">Example F: Changing the prior for estimating R<sub>t</sub><a class="anchor" aria-label="anchor" href="#example-f-changing-the-prior-for-estimating-rt"></a>
 </h3>
 <p>If we go back to example A you will notice that the initial R estimate in the “Estimated R” panel output is very high. When there is less data, the prior for R will have more weight on the value of the estimate. This example shows you how to modify the prior and the impact it can have on the initial estimate for R.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">R_diff_prior</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">evd_incid</span>, </span>
 <span>                           method <span class="op">=</span> <span class="st">"parametric_si"</span>,</span>
 <span>                           config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span>mean_si<span class="op">=</span><span class="fl">14.2</span>, std_si<span class="op">=</span><span class="fl">9.6</span>,</span>
@@ -975,7 +983,7 @@ dd/mm/yy
 <h3 id="example-g-changing-the-time-window-to-estimate-rt">Example G: Changing the time window to estimate R<sub>t</sub><a class="anchor" aria-label="anchor" href="#example-g-changing-the-time-window-to-estimate-rt"></a>
 </h3>
 <p>If we take the data from example A again, we could estimate R<sub>t</sub> over three-week windows instead of the weekly windows used as the default.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># t_start` is a sequence of start days for the sliding window, starting on day 2 ending 3 weeks before the last day in the dataset:</span></span>
 <span><span class="va">t_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">evd_incid</span><span class="op">)</span><span class="op">-</span><span class="fl">20</span><span class="op">)</span> </span>
 <span></span>
@@ -1036,7 +1044,7 @@ Figure courtesy of Anne Cori
 </li>
 <li>
 <p><strong>Can I use EpiEstim to estimate R from aggregated data e.g. weekly data?</strong></p>
-<p>Currently, EpiEstim only allows you to estimate R using the same time unit for the incidence and serial interval data. If you have weekly incidence data, you would need to specify the distribution of the serial interval with week as the time unit.</p>
+<p>Yes! Please see the ‘EpiEstim_aggregated_data’ vignette for further details.</p>
 </li>
 </ul>
 <div class="section level4">
