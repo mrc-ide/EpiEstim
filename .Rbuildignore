@@ -6,3 +6,5 @@ fitRotavirus.R
 ^CRAN-RELEASE$
 ^cran-comments\.md$
 ^\.github$
+^doc$
+^Meta$

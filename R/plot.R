@@ -232,6 +232,12 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
     mean_si.sample <- x$SI.Moments["Mean"]
     std_si.sample <- x$SI.Moments["Std"]
   }
+  ## temp fix for estimate_R_agg to be able to plot disaggreated incidence <1
+  if (any(rowSums(incid) < 1 & rowSums(incid) > 0)){
+    idx_round <- which(rowSums(incid) < 1 & rowSums(incid) > 0)
+    incid[idx_round,] <- ceiling(incid[idx_round,])
+  }
+  ## TODO: change plot to allow for non-integer incidence
   what <- match.arg(what)
   if (what == "incid" | what == "all") {
     if (add_imported_cases) {
