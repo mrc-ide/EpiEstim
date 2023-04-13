@@ -555,7 +555,7 @@ estimate_R_func <- function(incid,
     si_uncertainty <- "Y"
     parametric_si <- "Y"
   }
-  if (method == "si_from_data" | method == "si_from_sample") {
+  if (method %in% c("si_from_data", "si_from_sample")) {
     si_uncertainty <- "Y"
     parametric_si <- "N"
   }

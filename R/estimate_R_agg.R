@@ -237,7 +237,7 @@ estimate_R_agg <- function(incid,
   if (iter < 2L) {
     stop ("iter must be at least 2L")
   }
-  if (!is.list(grid) | !length(grid) == 3){
+  if (!is.list(grid) || !length(grid) == 3){
     stop ("grid must be a list of 3 elements: precision, min, and max")
   }
   if (grid$max < grid$min){
@@ -246,7 +246,7 @@ estimate_R_agg <- function(incid,
   if (grid$precision > grid$max-grid$min){
     stop ("grid precision must be less than grid max - grid min")
   }
-  if (!is.numeric(grid$precision) | !is.numeric(grid$min) | !is.numeric(grid$max)){
+  if (!is.numeric(grid$precision) || !is.numeric(grid$min) || !is.numeric(grid$max)){
     stop ("grid precision, min, and max, must all be numeric")
   }
   if (!method == "parametric_si" && !method == "non_parametric_si"){

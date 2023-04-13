@@ -279,19 +279,19 @@ draw_epsilon <- function(R, incid, lambda, priors,
                          shape_epsilon = NULL,
                          t_min = 2L, t_max = nrow(incid),
                          seed = NULL) {
-  if (!is.integer(t_min) | !is.integer(t_max)){
+  if (!is.integer(t_min) || !is.integer(t_max)){
     stop("t_min and t_max must be integers")
   }
-  if (t_min < 2 | t_max < 2){
+  if (t_min < 2 || t_max < 2){
     stop("t_min and t_max must be >=2")
   }
-  if(t_min > nrow(incid) | t_max > nrow(incid)){
+  if(t_min > nrow(incid) || t_max > nrow(incid)){
     stop("t_min and t_max must be <= nrow(incid)")
   }
   if(any(R[!is.na(R)] < 0)) {
     stop("R must be >= 0")
   }
-  if (!is.null(seed) & !is.numeric(seed)){
+  if (!is.null(seed) && !is.numeric(seed)){
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
@@ -373,19 +373,19 @@ draw_R <- function(epsilon, incid, lambda, priors,
                    shape_R_flat = NULL,
                    t_min = NULL, t_max = nrow(incid),
                    seed = NULL) {
-  if (!is.integer(t_min) | !is.integer(t_max)){
+  if (!is.integer(t_min) || !is.integer(t_max)){
     stop("t_min and t_max must be integers")
   }
-  if (t_min < 2 | t_max < 2){
+  if (t_min < 2 || t_max < 2){
     stop("t_min and t_max must be >=2")
   }
-  if(t_min > nrow(incid) | t_max > nrow(incid)){
+  if(t_min > nrow(incid) || t_max > nrow(incid)){
     stop("t_min and t_max must be <= nrow(incid)")
   }
   if (any(epsilon < 0)){
     stop("epsilon must be > 0")
   }
-  if (!is.null(seed) & !is.numeric(seed)){
+  if (!is.null(seed) && !is.numeric(seed)){
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
@@ -606,13 +606,13 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   if (is.null(t_min)) {
     t_min <- compute_t_min(incid, si_distr)
   }
-  if (!is.integer(t_min) | !is.integer(t_max)) {
+  if (!is.integer(t_min) || !is.integer(t_max)) {
     stop("t_min and t_max must be integers")
   }
-  if (t_min < 2 | t_max < 2){
+  if (t_min < 2 || t_max < 2){
     stop("t_min and t_max must be >=2")
   }
-  if(t_min > nrow(incid) | t_max > nrow(incid)){
+  if(t_min > nrow(incid) || t_max > nrow(incid)){
     stop("t_min and t_max must be <= nrow(incid)")
   }
   if (any(si_distr[1,] != 0)){
@@ -624,19 +624,19 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   if (any(si_distr < 0)){
     stop("si_distr must be >=0")
   }
-  if (mcmc_control$n_iter < 0 | !is.integer(mcmc_control$n_iter)){
+  if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)){
     stop("n_iter in mcmc_control must be a positive integer")
   }
-  if (mcmc_control$burnin < 0 | !is.integer(mcmc_control$burnin)){
+  if (mcmc_control$burnin < 0 || !is.integer(mcmc_control$burnin)){
     stop("burnin in mcmc_control must be a positive integer")
   }
-  if (mcmc_control$thin < 0 | !is.integer(mcmc_control$thin)){
+  if (mcmc_control$thin < 0 || !is.integer(mcmc_control$thin)){
     stop("thin in mcmc_control must be a positive integer")
   }
   if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
     stop("In mcmc_control, n_iter must be greater than burnin + thin")
   }
-  if (!is.null(seed) & !is.numeric(seed)){
+  if (!is.null(seed) && !is.numeric(seed)){
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
