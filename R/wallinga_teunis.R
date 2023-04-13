@@ -123,7 +123,7 @@ wallinga_teunis <- function(incid,
     res <- vector()
     for (t in seq_len(T))
     {
-      if (length(which(Onset == t)) > 0) {
+      if (any(Onset == t)) {
         if (length(possible_ances_time[[t]]) > 0) {
           prob <- config$si_distr[t - possible_ances_time[[t]] + 1] *
             incid[possible_ances_time[[t]]]
