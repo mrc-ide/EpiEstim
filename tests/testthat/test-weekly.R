@@ -133,10 +133,10 @@ test_that("estimate_R_agg works in parametric mode", {
   
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
-  expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
-  expect_true(all(relative_error2[-c(1:20)] < 0.4)) 
-  expect_true(all(relative_error3[-c(1:20)] < 0.4)) 
-  expect_true(all(relative_error4[-c(1:20)] < 0.4)) 
+  expect_true(all(relative_error[-(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error2[-(1:20)] < 0.4)) 
+  expect_true(all(relative_error3[-(1:20)] < 0.4)) 
+  expect_true(all(relative_error4[-(1:20)] < 0.4)) 
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -255,10 +255,10 @@ test_that("estimate_R_agg works in non-parametric mode", {
   
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
-  expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
-  expect_true(all(relative_error2[-c(1:20)] < 0.4)) 
-  expect_true(all(relative_error3[-c(1:20)] < 0.4)) 
-  expect_true(all(relative_error4[-c(1:20)] < 0.4)) 
+  expect_true(all(relative_error[-(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error2[-(1:20)] < 0.4)) 
+  expect_true(all(relative_error3[-(1:20)] < 0.4)) 
+  expect_true(all(relative_error4[-(1:20)] < 0.4)) 
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -332,7 +332,7 @@ test_that("estimate_R works with aggregated data in parametric mode", {
   
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
-  expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error[-(1:20)] < 0.4)) # 0.4 arbitrarily small
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -408,7 +408,7 @@ test_that("estimate_R works with aggregated data in non-parametric mode", {
   
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
-  expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error[-(1:20)] < 0.4)) # 0.4 arbitrarily small
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -727,8 +727,8 @@ test_that("method works with different single integers of dt", {
     res_weekly$R$`Mean(R)`[res_weekly$R$t_end %in% common_t_end_ten]
   
   ## lot of variation early on so excluding first part
-  expect_true(all(relative_error_three[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
-  expect_true(all(relative_error_ten[-c(1:20)] < 0.5)) 
+  expect_true(all(relative_error_three[-(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error_ten[-(1:20)] < 0.5)) 
   
 })
 
