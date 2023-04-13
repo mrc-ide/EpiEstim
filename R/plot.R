@@ -329,7 +329,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
         }
 
         if (is.null(options_R$ylim)) {
-          options_R$ylim <- c(0, max(df[, grep("upper", names(df))],
+          options_R$ylim <- c(0, max(df[, grep("upper", names(df), fixed = TRUE)],
                                      na.rm = TRUE))
         }
 
@@ -423,7 +423,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
         }
 
         if (is.null(options_R$ylim)) {
-          options_R$ylim <- c(0, max(df[, grep("upper", names(df))],
+          options_R$ylim <- c(0, max(df[, grep("upper", names(df), fixed = TRUE)],
                                      na.rm = TRUE))
         }
 
