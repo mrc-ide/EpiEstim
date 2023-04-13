@@ -209,8 +209,8 @@ check_si_distr <- function(si_distr, sumToOne = c("error", "warning"),
 {
   sumToOne <- match.arg(sumToOne)
   if (is.null(si_distr)) {
-    stop(paste0("si_distr argument is missing but is required for method ", 
-                method, "."))
+    stop("si_distr argument is missing but is required for method ",
+         method, ".")
   }
   if (!is.vector(si_distr)) {
     stop("si_distr must be a vector.")
@@ -296,11 +296,11 @@ process_config_si_from_data <- function(config, si_data) {
     config$si_parametric_distr == "off1W" ||
     config$si_parametric_distr == "off1L") &&
     any(si_data$SR - si_data$EL <= 1)) {
-    stop(paste(
-      "You cannot fit a distribution with offset 1 to this SI",
-      "dataset, because for some data points the maximum serial",
+    stop(
+      "You cannot fit a distribution with offset 1 to this SI ",
+      "dataset, because for some data points the maximum serial ",
       "interval is <=1.\nChoose a different distribution"
-    ))
+    )
   }
   return(config)
 }

@@ -187,9 +187,9 @@ default_mcmc_controls <- function() {
 
 compute_lambda <- function(incid, si_distr) {
   if (!inherits(incid, "incid_multivariant")) {
-    msg1 <- "'incid 'should be an 'incid_multivariant' object."
+    msg1 <- "'incid 'should be an 'incid_multivariant' object. "
     msg2 <- "Use function 'process_I_multivariant' first"
-    stop(paste(msg1, msg2))
+    stop(msg1, msg2)
   }
   if (any(si_distr[1,] != 0)){
     stop("Values in the first row of si_distr must be 0")
