@@ -21,7 +21,7 @@ process_si_data <- function(si_data) {
   }
 
   # non integer entries in date columns
-  if (!all(vlapply(seq_len(4), function(e) class(si_data[, e]) == "integer"))) {
+  if (!all(vlapply(seq_len(4), function(e) is.integer(si_data[, e])))) {
     stop("si_data has entries for which EL, ER, SL or SR are non integers.")
   }
 
@@ -233,7 +233,7 @@ check_si_distr <- function(si_distr, sumToOne = c("error", "warning"),
 
 check_dates <- function(incid) {
   dates <- incid$dates
-  if (class(dates) != "Date" && class(dates) != "numeric") {
+  if (!inherits(dates, "Date") && !is.numeric(dates)) {
     stop("incid$dates must be an object of class date or numeric.")
   } else {
     if (unique(diff(dates)) != 1) {
