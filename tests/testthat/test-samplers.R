@@ -870,8 +870,8 @@ test_that("estimate_advantage convergence checks work with >2 variants", {
   ## convergence should be a list of length 2.
   ## not checking whether chains have converged or not.
   ## that is tested in a different set of tests.
-  expect_equal(length(x$convergence), 2)
-  expect_equal(length(x$diag), 2)
+  expect_length(x$convergence, 2)
+  expect_length(x$diag, 2)
 })
 
 test_that("estimate_advantage produces expected warning message", {
