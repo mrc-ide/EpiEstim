@@ -839,13 +839,13 @@ test_that("estimate_advantage uses the correct t_min", {
   ## If t_min is 2, the first row if x$R will be NA
   expect_true(all(is.na(x$R[1, , ])))
   ## and not after that.
-  expect_true(! anyNA(x$R[seq(2, dim(x$R)[1]), , ]))
+  expect_false(anyNA(x$R[seq(2, dim(x$R)[1]), , ]))
   ## if t_min is NULL, t_min would be set to
   ## compute_t_min.
   t_min <- compute_t_min(incid, si_distr)
   x <- estimate_advantage(incid, si_distr, priors, seed = 1)
   expect_true(all(is.na(x$R[seq(1, t_min - 1, 1), , ])))
-  expect_true(! anyNA(x$R[seq(t_min, dim(x$R)[1]), , ]))
+  expect_false(anyNA(x$R[seq(t_min, dim(x$R)[1]), , ]))
 })
 
 
