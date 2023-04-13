@@ -48,7 +48,7 @@ process_si_data <- function(si_data) {
     warning("si_data contains no 'type' column. This is inferred automatically 
             from the other columns.")
     si_data$type <- tmp_type
-  } else if (any(is.na(si_data$type)) || !all(si_data$type == tmp_type)) {
+  } else if (anyNA(si_data$type) || !all(si_data$type == tmp_type)) {
     warning("si_data contains unexpected entries in the 'type' column. This is 
             inferred automatically from the other columns.")
     si_data$type <- tmp_type

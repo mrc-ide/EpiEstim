@@ -454,7 +454,7 @@ first_nonzero_incid <- function(incid) {
     incid, c(2, 3),
     function(vec) Position(function(x) x > 0, vec)
   )
-  if (any(is.na(t_min_incid))) {
+  if (anyNA(t_min_incid)) {
     warning(
       "For some variants/locations, incidence is
        always zero. This will cause estimate_advantage to fail."

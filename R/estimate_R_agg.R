@@ -322,7 +322,7 @@ estimate_R_agg <- function(incid,
       message("Estimated R for iteration: ", i)
       Mean_R <- R$R$`Mean(R)`
       
-      if (any(is.na(Mean_R))){
+      if (anyNA(Mean_R)){
         idx_na <- which(is.na(Mean_R))
         idx_reconstruct <- seq(min(R$R$t_start[-idx_na]), length(dis_inc))
         Mean_R <- Mean_R[!is.na(Mean_R)]
@@ -440,7 +440,7 @@ estimate_R_agg <- function(incid,
       
       Mean_R <- R$R$`Mean(R)`
       
-      if (any(is.na(Mean_R))){
+      if (anyNA(Mean_R)){
         idx_na <- which(is.na(Mean_R))
         idx_reconstruct <- seq(min(R$R$t_start[-idx_na]), length(dis_inc))
         Mean_R <- Mean_R[!is.na(Mean_R)]
