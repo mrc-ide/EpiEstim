@@ -46,7 +46,7 @@ aggregate_inc <- function(incid, dt = 7L)
   
   agg_inc <- numeric(length = length(start))
   
-  for (i in 1:length(start)){
+  for (i in seq_along(start)){
     agg_inc[i] <- sum(incid[start[i]:end[i]])
   }
   

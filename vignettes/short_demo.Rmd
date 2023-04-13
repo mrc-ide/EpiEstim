@@ -365,7 +365,7 @@ instance by the function `incidence` of the `incidence` package.
 Let's artificially create a line-list corresponding to our flu incidence data:
 
 ```{r line_list}
-dates_onset <- Flu2009$incidence$dates[unlist(lapply(1:nrow(Flu2009$incidence), function(i) 
+dates_onset <- Flu2009$incidence$dates[unlist(lapply(seq_len(nrow(Flu2009$incidence)), function(i) 
   rep(i, Flu2009$incidence$I[i])))]
 ```
 

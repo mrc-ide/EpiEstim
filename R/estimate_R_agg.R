@@ -296,7 +296,7 @@ estimate_R_agg <- function(incid,
   niter <- seq(1, iter, 1) 
   sim_inc <- matrix(NA, nrow = T, ncol = iter)
   
-  for (i in 1:length(niter)){
+  for (i in seq_along(niter)){
     if (niter[i] == 1){
       # Initialisation of EM. Aggregated incidence split evenly:
       if (length(dt) == 1){
@@ -381,7 +381,7 @@ estimate_R_agg <- function(incid,
       k <- numeric(length(aggs_to_reconstruct))
       dt_seq <- full_dt[aggs_to_reconstruct]
       
-      for (w in 1:length(k)){
+      for (w in seq_along(k)){
         if (dt_seq[w] > 1){
         d[w] <- sum(exp(gr[w] * seq(1, dt_seq[w] - 1, 1)))
         k[w] <- incid_to_reconstruct[w] / (exp(gr[w]) * (1 + d[w]))
@@ -396,7 +396,7 @@ estimate_R_agg <- function(incid,
       k_ls <- list()
       gr_ls <- list()
       
-      for (f in 1:length(incid_to_reconstruct)){
+      for (f in seq_along(incid_to_reconstruct)){
         k_ls[[f]] <- rep(recon_df$k[f], recon_df$dt[f])
         gr_ls[[f]] <- rep(recon_df$gr[f], recon_df$dt[f])
       }
@@ -406,7 +406,7 @@ estimate_R_agg <- function(incid,
       recon_days <- seq(1, sum(dt_seq))
       w_day <- list()
 
-      for (x in 1:length(dt_seq)){
+      for (x in seq_along(dt_seq)){
         w_day[[x]] <- seq(1,dt_seq[x])
       }
 
@@ -466,7 +466,7 @@ estimate_R_agg <- function(incid,
       k <- numeric(length(aggs_to_reconstruct))
       dt_seq <- full_dt[aggs_to_reconstruct]
       
-      for (w in 1:length(k)){
+      for (w in seq_along(k)){
         if (dt_seq[w] > 1){
           d[w] <- sum(exp(gr[w] * seq(1, dt_seq[w] - 1, 1)))
           k[w] <- incid_to_reconstruct[w] / (exp(gr[w]) * (1 + d[w]))
@@ -481,7 +481,7 @@ estimate_R_agg <- function(incid,
       k_ls <- list()
       gr_ls <- list()
       
-      for (f in 1:length(incid_to_reconstruct)){
+      for (f in seq_along(incid_to_reconstruct)){
         k_ls[[f]] <- rep(recon_df$k[f], recon_df$dt[f])
         gr_ls[[f]] <- rep(recon_df$gr[f], recon_df$dt[f])
       }
@@ -489,7 +489,7 @@ estimate_R_agg <- function(incid,
       gr_seq <- unlist(gr_ls)
       
       w_day <- list()
-      for (x in 1:length(dt_seq)){
+      for (x in seq_along(dt_seq)){
         w_day[[x]] <- seq(1 , dt_seq[x])
       }
       w_day <- unlist(w_day)
