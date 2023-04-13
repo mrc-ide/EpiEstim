@@ -131,8 +131,8 @@ wallinga_teunis <- function(incid,
           if (any(prob > 0)) {
             res[ot] <-
               possible_ances_time[[t]][which(rmultinom(length(ot),
-                                                       size = 1, prob = prob)
-                                             == TRUE, arr.ind = TRUE)[, 1]]
+                                                       size = 1, prob = prob) 
+                                             == 1, arr.ind = TRUE)[, 1]]
           } else {
             res[ot] <- NA
           }
