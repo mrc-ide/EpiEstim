@@ -500,7 +500,7 @@ test_that("r grid can be automatically updated with similar results", {
                                          config = config,
                                          method = method))
  
- expect_true(max(abs(res_weekly_small_grid$R - res_weekly_default_grid$R)) < 1e-9)
+ expect_lt(max(abs(res_weekly_small_grid$R - res_weekly_default_grid$R)), 1e-9)
   
 })
 
