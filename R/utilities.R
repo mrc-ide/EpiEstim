@@ -70,10 +70,8 @@ process_I <- function(incid) {
   single_col_df_I <- FALSE
   if (is.vector(incid)) {
     vector_I <- TRUE
-  } else if (is.data.frame(incid)) {
-    if (ncol(incid) == 1) {
-      single_col_df_I <- TRUE
-    }
+  } else if (is.data.frame(incid) && ncol(incid) == 1) {
+    single_col_df_I <- TRUE
   }
   if (vector_I || single_col_df_I) {
     if (single_col_df_I) {

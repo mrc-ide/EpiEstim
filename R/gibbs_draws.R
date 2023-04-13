@@ -738,16 +738,14 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   ## IF we have not re-ordered, we don't need to
   ## divide. Caution: this will only work for
   ## 2 variants at the moment.
-  if (reorder_incid) {
-    if (max_transmiss != 1) {
-      epsilon_out[1 , ] <-  1 / epsilon_out[1 , ]
-      if (nrow(epsilon_out) > 1) {
-        for (row in 2:nrow(epsilon_out)) {
-          epsilon_out[row, ] <- epsilon_out[row, ] *  epsilon_out[1, ]
-        }
+  if (reorder_incid && max_transmiss != 1) {
+    epsilon_out[1 , ] <-  1 / epsilon_out[1 , ]
+    if (nrow(epsilon_out) > 1) {
+      for (row in 2:nrow(epsilon_out)) {
+        epsilon_out[row, ] <- epsilon_out[row, ] *  epsilon_out[1, ]
       }
-      R_out <- R_out / as.vector(epsilon_out)
     }
+    R_out <- R_out / as.vector(epsilon_out)
   }
   
   # Add in convergence check (gelman diagnostic)
