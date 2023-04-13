@@ -31,10 +31,14 @@ test_that("function to aggregate incidence works", {
                "at least one value of dt should be an integer >=2")
   expect_error(aggregate_inc(SARS2003$incidence, -1L),
                "at least one value of dt should be an integer >=2")
-  expect_true(aggregate_inc(SARS2003$incidence, 7L)[1] == 
-                sum(SARS2003$incidence[1:7]))
-  expect_true(sum(aggregate_inc(SARS2003$incidence, dt_vec)[1:3]) == 
-                sum(SARS2003$incidence[1:7]))
+  expect_equal(
+    aggregate_inc(SARS2003$incidence, 7L)[1],
+    sum(SARS2003$incidence[1:7])
+  )
+  expect_equal(
+    sum(aggregate_inc(SARS2003$incidence, dt_vec)[1:3]),
+    sum(SARS2003$incidence[1:7])
+  )
 })
 
 
