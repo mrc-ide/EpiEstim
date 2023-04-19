@@ -326,6 +326,7 @@ estimate_R <- function(incid,
                        config = make_config(incid = incid, method = method),
                        dt = 1L, # aggregation window of the data
                        dt_out = 7L, # desired sliding window length
+                       recon_opt = "naive",
                        iter = 10L,
                        grid = list(precision = 0.001, min = -1, max = 1)) {
   
@@ -334,8 +335,8 @@ estimate_R <- function(incid,
   # switch between the standard estimate_R version and that which disaggregates
   # coarsely aggregated incidence data
   if(any(dt >= 2)) {
-    out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, iter = iter,
-                          config = config, method = method, grid = grid)
+    out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
+                          iter = iter, config = config, method = method, grid = grid)
   } else {
     
     config <- make_config(incid = incid, method = method, config = config)
