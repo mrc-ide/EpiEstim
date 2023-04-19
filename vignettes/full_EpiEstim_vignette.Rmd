@@ -171,7 +171,7 @@ Once you have an incidence object (based on the dates of symptom onset) and info
 knitr::include_graphics("./figs/Renewal_equation.png")
 ```
 
-Here I~t~ represents the incidence of symptom onset at time t, which is approximated by a Poisson process using the renewal equation. R~t~ is what we want to estimate, I~t-s~ is the past indidence and $\omega$ is the serial interval distribution.
+Here I~t~ represents the incidence of symptom onset at time t, which is approximated by a Poisson process using the renewal equation. R~t~ is what we want to estimate, I~t-s~ is the past incidence and $\omega$ is the serial interval distribution.
 
 ###Step C: `estimate_R()`
 

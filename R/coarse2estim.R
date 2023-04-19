@@ -135,7 +135,7 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
       plnorm(max_interval + 0.5, meanlog = x[1], sdlog = x[2]) - 
         plnorm(max_interval - 0.5, meanlog = x[1], sdlog = x[2]))
   } else {
-    stop(sprintf("Distribtion (%s) not supported", dist))
+    stop(sprintf("Distribution (%s) not supported", dist))
   }
   # adding initial 0 for P(SI=0)
   prob_matrix <- rbind(rep(0, n_samples), prob_matrix)
