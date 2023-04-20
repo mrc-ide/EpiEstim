@@ -337,7 +337,7 @@ estimate_R <- function(incid,
   # coarsely aggregated incidence data
   if(any(dt >= 2)) {
     out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
-                          iter = iter, config = config, method = method, grid = grid)
+                          iter = iter, tol = tol, config = config, method = method, grid = grid)
   } else {
     
     config <- make_config(incid = incid, method = method, config = config)
