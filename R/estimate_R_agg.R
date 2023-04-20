@@ -221,6 +221,7 @@ estimate_R_agg <- function(incid,
                            dt = 7L, # aggregation window of the data
                            dt_out = 7L, # desired sliding window length
                            iter = 10L,
+                           tol = 1e-6, # tolerance for convergence check
                            recon_opt = "naive", # initial naive disaggregation or match growth rate to reconstruct
                            config = make_config(), 
                            method = c("non_parametric_si", "parametric_si"),
@@ -554,6 +555,10 @@ estimate_R_agg <- function(incid,
       }
       
       if (niter[i] == max(niter)){
+        if (any(abs(sim_inc[,i] - sim_inc[,i-1]) > tol)){
+          message("Reconstructed incidence has not converged within the set
+                  tolerance. Please run again with greater number of iterations.")
+        }
         R_out <- estimate_R(sim_inc[,i],
                             method = method,
                             config = config_out)

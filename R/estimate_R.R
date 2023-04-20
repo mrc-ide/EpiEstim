@@ -328,6 +328,7 @@ estimate_R <- function(incid,
                        dt_out = 7L, # desired sliding window length
                        recon_opt = "naive",
                        iter = 10L,
+                       tol = 1e-6,
                        grid = list(precision = 0.001, min = -1, max = 1)) {
   
   method <- match.arg(method)
