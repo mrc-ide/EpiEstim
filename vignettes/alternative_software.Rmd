@@ -59,7 +59,7 @@ df <- data.frame(Theme, Mod_type, APEestim, bayEStim, earlyR,
 
 knitr::kable(df, col.names = c("Theme","Modification Type","APEestim","bayEStim","earlyR",
                                "epicontacts","Epidemia","EpiFilter","EpiNow2"),
-             align = c("llccccccc"),
+             align = "llccccccc",
              format = "html") %>%
 kableExtra::kable_styling(font_size = 12,
                           full_width = T) %>%

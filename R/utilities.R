@@ -21,7 +21,7 @@ process_si_data <- function(si_data) {
   }
 
   # non integer entries in date columns
-  if (!all(vlapply(seq_len(4), function(e) class(si_data[, e]) == "integer"))) {
+  if (!all(vlapply(seq_len(4), function(e) is.integer(si_data[, e])))) {
     stop("si_data has entries for which EL, ER, SL or SR are non integers.")
   }
 
@@ -48,7 +48,7 @@ process_si_data <- function(si_data) {
     warning("si_data contains no 'type' column. This is inferred automatically 
             from the other columns.")
     si_data$type <- tmp_type
-  } else if (any(is.na(si_data$type)) | !all(si_data$type == tmp_type)) {
+  } else if (anyNA(si_data$type) || !all(si_data$type == tmp_type)) {
     warning("si_data contains unexpected entries in the 'type' column. This is 
             inferred automatically from the other columns.")
     si_data$type <- tmp_type
@@ -70,12 +70,10 @@ process_I <- function(incid) {
   single_col_df_I <- FALSE
   if (is.vector(incid)) {
     vector_I <- TRUE
-  } else if (is.data.frame(incid)) {
-    if (ncol(incid) == 1) {
-      single_col_df_I <- TRUE
-    }
+  } else if (is.data.frame(incid) && ncol(incid) == 1) {
+    single_col_df_I <- TRUE
   }
-  if (vector_I | single_col_df_I) {
+  if (vector_I || single_col_df_I) {
     if (single_col_df_I) {
       I_tmp <- incid[[1]]
     } else {
@@ -85,13 +83,13 @@ process_I <- function(incid) {
     I_init     <- sum(incid[1, ])
     incid[1, ] <- c(0, I_init)
   } else {
-    if (!is.data.frame(incid) | 
-        (!("I" %in% names(incid)) &
+    if (!is.data.frame(incid) || 
+        (!("I" %in% names(incid)) &&
          !all(c("local", "imported") %in% names(incid)))) {
       stop("incid must be a vector or a dataframe with either i) a column 
            called 'I', or ii) 2 columns called 'local' and 'imported'.")
     }
-    if (("I" %in% names(incid)) & 
+    if (("I" %in% names(incid)) && 
         !all(c("local", "imported") %in% names(incid))) {
       incid$local    <- incid$I
       incid$local[1] <- 0
@@ -209,8 +207,8 @@ check_si_distr <- function(si_distr, sumToOne = c("error", "warning"),
 {
   sumToOne <- match.arg(sumToOne)
   if (is.null(si_distr)) {
-    stop(paste0("si_distr argument is missing but is required for method ", 
-                method, "."))
+    stop("si_distr argument is missing but is required for method ",
+         method, ".")
   }
   if (!is.vector(si_distr)) {
     stop("si_distr must be a vector.")
@@ -233,7 +231,7 @@ check_si_distr <- function(si_distr, sumToOne = c("error", "warning"),
 
 check_dates <- function(incid) {
   dates <- incid$dates
-  if (class(dates) != "Date" & class(dates) != "numeric") {
+  if (!inherits(dates, "Date") && !is.numeric(dates)) {
     stop("incid$dates must be an object of class date or numeric.")
   } else {
     if (unique(diff(dates)) != 1) {
@@ -292,15 +290,15 @@ process_config_si_from_data <- function(config, si_data) {
     config$mcmc_control$init_pars <-
       init_mcmc_params(si_data, config$si_parametric_distr)
   }
-  if ((config$si_parametric_distr == "off1G" |
-    config$si_parametric_distr == "off1W" |
-    config$si_parametric_distr == "off1L") &
+  if ((config$si_parametric_distr == "off1G" ||
+    config$si_parametric_distr == "off1W" ||
+    config$si_parametric_distr == "off1L") &&
     any(si_data$SR - si_data$EL <= 1)) {
-    stop(paste(
-      "You cannot fit a distribution with offset 1 to this SI",
-      "dataset, because for some data points the maximum serial",
+    stop(
+      "You cannot fit a distribution with offset 1 to this SI ",
+      "dataset, because for some data points the maximum serial ",
       "interval is <=1.\nChoose a different distribution"
-    ))
+    )
   }
   return(config)
 }
@@ -443,7 +441,7 @@ vcapply <- function(X, FUN, ...) {
 modify_defaults <- function(defaults, x, strict = TRUE) {
   extra <- setdiff(names(x), names(defaults))
   if (strict && (length(extra) > 0L)) {
-    stop("Additional invalid options: ", paste(extra, collapse=", "))
+    stop("Additional invalid options: ", toString(extra))
   }
   utils::modifyList(defaults, x, keep.null = TRUE) # keep.null is needed here
 }

@@ -84,7 +84,7 @@ test_that("draw_epsilon produces expected results (>2 variants, 4 locations)", {
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   expect_equal(
-    apply(x, 1, mean), c(1, 1), tolerance = 0.05
+    rowMeans(x), c(1, 1), tolerance = 0.05
   )
 })
 
@@ -114,7 +114,7 @@ test_that("draw_epsilon produces expected results (>2 variants, 1 location)", {
 
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
-  expect_equal(apply(x, 1, mean), c(1, 1), tolerance = 0.05)
+  expect_equal(rowMeans(x), c(1, 1), tolerance = 0.05)
 })
 
 
@@ -144,7 +144,7 @@ test_that("draw_R produces expected results (2 variants, 4 locations)", {
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  expect_true(max(abs(x_mean[-c(1, 2, 3), ] - 1)) < 0.05)
+  expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
 })
 
 
@@ -174,7 +174,7 @@ test_that("draw_R produces expected results (2 variants, 1 location)", {
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  expect_true(max(abs(x_mean[-c(1, 2, 3), ] - 1)) < 0.05)
+  expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
 })
 
 
@@ -204,7 +204,7 @@ test_that("draw_R produces expected results (>2 variants, 4 locations)", {
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  expect_true(max(abs(x_mean[-c(1, 2, 3), ] - 1)) < 0.05)
+  expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
 })
 
 
@@ -234,7 +234,7 @@ test_that("draw_R produces expected results (>2 variants, 1 location)", {
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  expect_true(max(abs(x_mean[-c(1, 2, 3), ] - 1)) < 0.05)
+  expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
 })
 
 
@@ -260,8 +260,8 @@ test_that("estimate_advantage produces expected results (2 variants 3 locations)
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R <- apply(x$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R <- rowMeans(x$R, dims = 2)
+  expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -287,8 +287,8 @@ test_that("estimate_advantage produces expected results (2 variants 1 location)"
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R <- apply(x$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R <- rowMeans(x$R, dims = 2)
+  expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -313,14 +313,14 @@ test_that("estimate_advantage produces expected results (>2 variants 4 locs)", {
   ## as 2 epsilons are returned here.
 
   expect_equal(
-    apply(x$epsilon, 1, mean), c(1, 1), tolerance = 0.05
+    rowMeans(x$epsilon), c(1, 1), tolerance = 0.05
   )
 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R <- apply(x$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R <- rowMeans(x$R, dims = 2)
+  expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -342,14 +342,14 @@ test_that("estimate_advantage produces expected results (>2 variants 1 loc)", {
 
   ## epsilon should be approximately 1
   expect_equal(
-    apply(x$epsilon, 1, mean), c(1, 1), tolerance = 0.05
+    rowMeans(x$epsilon), c(1, 1), tolerance = 0.05
   )
 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R <- apply(x$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R <- rowMeans(x$R, dims = 2)
+  expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -433,14 +433,14 @@ test_that("estimate_advantage produces expected results (>2var, 1loc, imports)",
 
   ## epsilon should be approximately 0
   expect_equal(
-    apply(x$epsilon, 1, mean), c(0, 0), tolerance = 0.05
+    rowMeans(x$epsilon), c(0, 0), tolerance = 0.05
   )
 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R <- apply(x$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R <- rowMeans(x$R, dims = 2)
+  expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -471,14 +471,14 @@ test_that("estimate_advantage produces expected results (>2var, 4loc, imports)",
 
   ## epsilon should be approximately 0
   expect_equal(
-    apply(x$epsilon, 1, mean), c(0, 0), tolerance = 0.05
+    rowMeans(x$epsilon), c(0, 0), tolerance = 0.05
   )
 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R <- apply(x$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R <- rowMeans(x$R, dims = 2)
+  expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -510,8 +510,8 @@ test_that("estimate_advantage produces expected results (2var, 1loc, imports)", 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R <- apply(x$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R <- rowMeans(x$R, dims = 2)
+  expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -546,8 +546,8 @@ test_that("estimate_advantage produces expected results (2var, 4loc, imports)", 
   ## R should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R <- apply(x$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R <- rowMeans(x$R, dims = 2)
+  expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -635,7 +635,7 @@ test_that("estimate_advantage faster with precompute (2 variants 3 locations)", 
   )
 
   ## t1 should be < t2
-  expect_true(t1[["elapsed"]] < t2[["elapsed"]])
+  expect_lt(t1[["elapsed"]], t2[["elapsed"]])
 
   ## epsilon should be approximately 1 in both cases
   expect_equal(mean(x1$epsilon), 1, tolerance = 0.05)
@@ -644,10 +644,10 @@ test_that("estimate_advantage faster with precompute (2 variants 3 locations)", 
   ## R should be approximately 1 in both cases
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R1 <- apply(x1$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R1[-c(1, 2, 3), ] - 1)) < 0.1)
-  mean_R2 <- apply(x2$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R2[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R1 <- rowMeans(x1$R, dims = 2)
+  expect_lt(max(abs(mean_R1[-c(1, 2, 3), ] - 1)), 0.1)
+  mean_R2 <- rowMeans(x2$R, dims = 2)
+  expect_lt(max(abs(mean_R2[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -674,7 +674,7 @@ test_that("estimate_advantage faster with precompute (2 variants 1 location)", {
   )
 
   ## t1 should be < t2
-  expect_true(t1[["elapsed"]] < t2[["elapsed"]])
+  expect_lt(t1[["elapsed"]], t2[["elapsed"]])
 
   ## epsilon should be approximately 1 in both cases
   expect_equal(mean(x1$epsilon), 1, tolerance = 0.05)
@@ -683,10 +683,10 @@ test_that("estimate_advantage faster with precompute (2 variants 1 location)", {
   ## R should be approximately 1 in both cases
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R1 <- apply(x1$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R1[-c(1, 2, 3), ] - 1)) < 0.1)
-  mean_R2 <- apply(x2$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R2[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R1 <- rowMeans(x1$R, dims = 2)
+  expect_lt(max(abs(mean_R1[-c(1, 2, 3), ] - 1)), 0.1)
+  mean_R2 <- rowMeans(x2$R, dims = 2)
+  expect_lt(max(abs(mean_R2[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -713,7 +713,7 @@ test_that("estimate_advantage faster with precompute (3 variants 4 locations)", 
   )
 
   ## t1 should be < t2
-  expect_true(t1[["elapsed"]] < t2[["elapsed"]])
+  expect_lt(t1[["elapsed"]], t2[["elapsed"]])
 
     ## epsilon should be approximately 1 in both cases
   expect_equal(mean(x1$epsilon), 1, tolerance = 0.05)
@@ -722,10 +722,10 @@ test_that("estimate_advantage faster with precompute (3 variants 4 locations)", 
   ## R should be approximately 1 in both cases
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R1 <- apply(x1$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R1[-c(1, 2, 3), ] - 1)) < 0.1)
-  mean_R2 <- apply(x2$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R2[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R1 <- rowMeans(x1$R, dims = 2)
+  expect_lt(max(abs(mean_R1[-c(1, 2, 3), ] - 1)), 0.1)
+  mean_R2 <- rowMeans(x2$R, dims = 2)
+  expect_lt(max(abs(mean_R2[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -752,7 +752,7 @@ test_that("estimate_advantage faster with precompute (3 variants 1 location)", {
   )
 
   ## t1 should be < t2
-  expect_true(t1[["elapsed"]] < t2[["elapsed"]])
+  expect_lt(t1[["elapsed"]], t2[["elapsed"]])
 
   ## epsilon should be approximately 1 in both cases
   expect_equal(mean(x1$epsilon), 1, tolerance = 0.05)
@@ -761,10 +761,10 @@ test_that("estimate_advantage faster with precompute (3 variants 1 location)", {
   ## R should be approximately 1 in both cases
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
-  mean_R1 <- apply(x1$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R1[-c(1, 2, 3), ] - 1)) < 0.1)
-  mean_R2 <- apply(x2$R, c(1, 2), mean)
-  expect_true(max(abs(mean_R2[-c(1, 2, 3), ] - 1)) < 0.1)
+  mean_R1 <- rowMeans(x1$R, dims = 2)
+  expect_lt(max(abs(mean_R1[-c(1, 2, 3), ] - 1)), 0.1)
+  mean_R2 <- rowMeans(x2$R, dims = 2)
+  expect_lt(max(abs(mean_R2[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
 
@@ -839,13 +839,13 @@ test_that("estimate_advantage uses the correct t_min", {
   ## If t_min is 2, the first row if x$R will be NA
   expect_true(all(is.na(x$R[1, , ])))
   ## and not after that.
-  expect_true(! any(is.na(x$R[seq(2, dim(x$R)[1]), , ])))
+  expect_false(anyNA(x$R[seq(2, dim(x$R)[1]), , ]))
   ## if t_min is NULL, t_min would be set to
   ## compute_t_min.
   t_min <- compute_t_min(incid, si_distr)
   x <- estimate_advantage(incid, si_distr, priors, seed = 1)
   expect_true(all(is.na(x$R[seq(1, t_min - 1, 1), , ])))
-  expect_true(! any(is.na(x$R[seq(t_min, dim(x$R)[1]), , ])))
+  expect_false(anyNA(x$R[seq(t_min, dim(x$R)[1]), , ]))
 })
 
 
@@ -870,8 +870,8 @@ test_that("estimate_advantage convergence checks work with >2 variants", {
   ## convergence should be a list of length 2.
   ## not checking whether chains have converged or not.
   ## that is tested in a different set of tests.
-  expect_equal(length(x$convergence), 2)
-  expect_equal(length(x$diag), 2)
+  expect_length(x$convergence, 2)
+  expect_length(x$diag, 2)
 })
 
 test_that("estimate_advantage produces expected warning message", {

@@ -31,10 +31,14 @@ test_that("function to aggregate incidence works", {
                "at least one value of dt should be an integer >=2")
   expect_error(aggregate_inc(SARS2003$incidence, -1L),
                "at least one value of dt should be an integer >=2")
-  expect_true(aggregate_inc(SARS2003$incidence, 7L)[1] == 
-                sum(SARS2003$incidence[1:7]))
-  expect_true(sum(aggregate_inc(SARS2003$incidence, dt_vec)[1:3]) == 
-                sum(SARS2003$incidence[1:7]))
+  expect_equal(
+    aggregate_inc(SARS2003$incidence, 7L)[1],
+    sum(SARS2003$incidence[1:7])
+  )
+  expect_equal(
+    sum(aggregate_inc(SARS2003$incidence, dt_vec)[1:3]),
+    sum(SARS2003$incidence[1:7])
+  )
 })
 
 
@@ -133,10 +137,10 @@ test_that("estimate_R_agg works in parametric mode", {
   
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
-  expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
-  expect_true(all(relative_error2[-c(1:20)] < 0.4)) 
-  expect_true(all(relative_error3[-c(1:20)] < 0.4)) 
-  expect_true(all(relative_error4[-c(1:20)] < 0.4)) 
+  expect_true(all(relative_error[-(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error2[-(1:20)] < 0.4)) 
+  expect_true(all(relative_error3[-(1:20)] < 0.4)) 
+  expect_true(all(relative_error4[-(1:20)] < 0.4)) 
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -255,10 +259,10 @@ test_that("estimate_R_agg works in non-parametric mode", {
   
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
-  expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
-  expect_true(all(relative_error2[-c(1:20)] < 0.4)) 
-  expect_true(all(relative_error3[-c(1:20)] < 0.4)) 
-  expect_true(all(relative_error4[-c(1:20)] < 0.4)) 
+  expect_true(all(relative_error[-(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error2[-(1:20)] < 0.4)) 
+  expect_true(all(relative_error3[-(1:20)] < 0.4)) 
+  expect_true(all(relative_error4[-(1:20)] < 0.4)) 
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -332,7 +336,7 @@ test_that("estimate_R works with aggregated data in parametric mode", {
   
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
-  expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error[-(1:20)] < 0.4)) # 0.4 arbitrarily small
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -408,7 +412,7 @@ test_that("estimate_R works with aggregated data in non-parametric mode", {
   
   ## only check after the 10th common_t_start as before hand there is a lot of
   ## day to day variation
-  expect_true(all(relative_error[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error[-(1:20)] < 0.4)) # 0.4 arbitrarily small
   
   ######################################################################
   ## test that the weekly R estimates from weekly data match exactly the weekly
@@ -500,7 +504,7 @@ test_that("r grid can be automatically updated with similar results", {
                                          config = config,
                                          method = method))
  
- expect_true(max(abs(res_weekly_small_grid$R - res_weekly_default_grid$R)) < 1e-9)
+ expect_lt(max(abs(res_weekly_small_grid$R - res_weekly_default_grid$R)), 1e-9)
   
 })
 
@@ -727,8 +731,8 @@ test_that("method works with different single integers of dt", {
     res_weekly$R$`Mean(R)`[res_weekly$R$t_end %in% common_t_end_ten]
   
   ## lot of variation early on so excluding first part
-  expect_true(all(relative_error_three[-c(1:20)] < 0.4)) # 0.4 arbitrarily small
-  expect_true(all(relative_error_ten[-c(1:20)] < 0.5)) 
+  expect_true(all(relative_error_three[-(1:20)] < 0.4)) # 0.4 arbitrarily small
+  expect_true(all(relative_error_ten[-(1:20)] < 0.5)) 
   
 })
 

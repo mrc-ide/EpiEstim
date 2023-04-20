@@ -238,7 +238,7 @@ estimate_R_agg <- function(incid,
   if (iter < 2L) {
     stop ("iter must be at least 2L")
   }
-  if (!is.list(grid) | !length(grid) == 3){
+  if (!is.list(grid) || !length(grid) == 3){
     stop ("grid must be a list of 3 elements: precision, min, and max")
   }
   if (grid$max < grid$min){
@@ -247,7 +247,7 @@ estimate_R_agg <- function(incid,
   if (grid$precision > grid$max-grid$min){
     stop ("grid precision must be less than grid max - grid min")
   }
-  if (!is.numeric(grid$precision) | !is.numeric(grid$min) | !is.numeric(grid$max)){
+  if (!is.numeric(grid$precision) || !is.numeric(grid$min) || !is.numeric(grid$max)){
     stop ("grid precision, min, and max, must all be numeric")
   }
   if (!method == "parametric_si" && !method == "non_parametric_si"){
@@ -298,7 +298,7 @@ estimate_R_agg <- function(incid,
   niter <- seq(1, iter, 1) 
   sim_inc <- matrix(NA, nrow = T, ncol = iter)
   
-  for (i in 1:length(niter)){
+  for (i in seq_along(niter)){
     if (niter[i] == 1){
       # Initialisation of EM. Aggregated incidence split evenly:
       if (length(dt) == 1){
@@ -324,7 +324,7 @@ estimate_R_agg <- function(incid,
       message("Estimated R for iteration: ", i)
       Mean_R <- R$R$`Mean(R)`
       
-      if (any(is.na(Mean_R))){
+      if (anyNA(Mean_R)){
         idx_na <- which(is.na(Mean_R))
         idx_reconstruct <- seq(min(R$R$t_start[-idx_na]), length(dis_inc))
         Mean_R <- Mean_R[!is.na(Mean_R)]
@@ -403,7 +403,7 @@ estimate_R_agg <- function(incid,
       k <- numeric(length(aggs_to_reconstruct))
       dt_seq <- full_dt[aggs_to_reconstruct]
       
-      for (w in 1:length(k)){
+      for (w in seq_along(k)){
         if (dt_seq[w] > 1){
         d[w] <- sum(exp(gr[w] * seq(1, dt_seq[w] - 1, 1)))
         k[w] <- incid_to_reconstruct[w] / (exp(gr[w]) * (1 + d[w]))
@@ -418,7 +418,7 @@ estimate_R_agg <- function(incid,
       k_ls <- list()
       gr_ls <- list()
       
-      for (f in 1:length(incid_to_reconstruct)){
+      for (f in seq_along(incid_to_reconstruct)){
         k_ls[[f]] <- rep(recon_df$k[f], recon_df$dt[f])
         gr_ls[[f]] <- rep(recon_df$gr[f], recon_df$dt[f])
       }
@@ -428,7 +428,7 @@ estimate_R_agg <- function(incid,
       recon_days <- seq(1, sum(dt_seq))
       w_day <- list()
 
-      for (x in 1:length(dt_seq)){
+      for (x in seq_along(dt_seq)){
         w_day[[x]] <- seq(1,dt_seq[x])
       }
 
@@ -462,7 +462,7 @@ estimate_R_agg <- function(incid,
       
       Mean_R <- R$R$`Mean(R)`
       
-      if (any(is.na(Mean_R))){
+      if (anyNA(Mean_R)){
         idx_na <- which(is.na(Mean_R))
         idx_reconstruct <- seq(min(R$R$t_start[-idx_na]), length(dis_inc))
         Mean_R <- Mean_R[!is.na(Mean_R)]
@@ -503,7 +503,7 @@ estimate_R_agg <- function(incid,
       k <- numeric(length(aggs_to_reconstruct))
       dt_seq <- full_dt[aggs_to_reconstruct]
       
-      for (w in 1:length(k)){
+      for (w in seq_along(k)){
         if (dt_seq[w] > 1){
           d[w] <- sum(exp(gr[w] * seq(1, dt_seq[w] - 1, 1)))
           k[w] <- incid_to_reconstruct[w] / (exp(gr[w]) * (1 + d[w]))
@@ -518,7 +518,7 @@ estimate_R_agg <- function(incid,
       k_ls <- list()
       gr_ls <- list()
       
-      for (f in 1:length(incid_to_reconstruct)){
+      for (f in seq_along(incid_to_reconstruct)){
         k_ls[[f]] <- rep(recon_df$k[f], recon_df$dt[f])
         gr_ls[[f]] <- rep(recon_df$gr[f], recon_df$dt[f])
       }
@@ -526,7 +526,7 @@ estimate_R_agg <- function(incid,
       gr_seq <- unlist(gr_ls)
       
       w_day <- list()
-      for (x in 1:length(dt_seq)){
+      for (x in seq_along(dt_seq)){
         w_day[[x]] <- seq(1 , dt_seq[x])
       }
       w_day <- unlist(w_day)

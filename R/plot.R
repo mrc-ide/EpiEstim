@@ -227,8 +227,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
   si_distr.1 <- NULL
   ########################################################################
 
-  if (method == "uncertain_si" | method == "si_from_data" |
-      method == "si_from_sample") {
+  if (method %in% c("uncertain_si", "si_from_data", "si_from_sample")) {
     mean_si.sample <- x$SI.Moments["Mean"]
     std_si.sample <- x$SI.Moments["Std"]
   }
@@ -239,7 +238,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
   }
   ## TODO: change plot to allow for non-integer incidence
   what <- match.arg(what)
-  if (what == "incid" | what == "all") {
+  if (what %in% c("incid", "all")) {
     if (add_imported_cases) {
       p1 <- plot(as.incidence(incid, dates = x$dates, 
                               interval = options_I$interval),
@@ -262,7 +261,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
       p1 <- p1 + lims(y = options_I$ylim)
     }
   }
-  if (what == "R" | what == "all") {
+  if (what %in% c("R", "all")) {
     time.points <- apply(x$R[, c("t_start", "t_end") ], 1, function(x) 
       seq(x[1], x[2] - 1))
     if (length(time.points) == length(unique(matrix(time.points, ncol = 1)))) {
@@ -330,7 +329,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
         }
 
         if (is.null(options_R$ylim)) {
-          options_R$ylim <- c(0, max(df[, grep("upper", names(df))],
+          options_R$ylim <- c(0, max(df[, grep("upper", names(df), fixed = TRUE)],
                                      na.rm = TRUE))
         }
 
@@ -424,7 +423,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
         }
 
         if (is.null(options_R$ylim)) {
-          options_R$ylim <- c(0, max(df[, grep("upper", names(df))],
+          options_R$ylim <- c(0, max(df[, grep("upper", names(df), fixed = TRUE)],
                                      na.rm = TRUE))
         }
 
@@ -458,9 +457,8 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
       }
     }
   }
-  if (what == "SI" | what == "all") {
-    if (method == "uncertain_si" | method == "si_from_data" |
-        method == "si_from_sample") {
+  if (what %in% c("SI", "all")) {
+    if (method %in% c("uncertain_si", "si_from_data", "si_from_sample")) {
       tmp <- cumsum(apply(si_distr, 2, max) >= options_SI$prob_min)
       stop_at <- min(which(tmp == tmp[length(tmp)]))
 
