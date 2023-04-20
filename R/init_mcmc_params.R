@@ -146,7 +146,7 @@ init_mcmc_params <- function(si_data,
   } else {
     stop(sprintf("Distribtion (%s) not supported", dist))
   }
-  if (any(is.na(param))) {
+  if (anyNA(param)) {
     stop("NA result. Check that si_data is in the right format. ")
   }
   return(param)

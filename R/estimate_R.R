@@ -555,7 +555,7 @@ estimate_R_func <- function(incid,
     si_uncertainty <- "Y"
     parametric_si <- "Y"
   }
-  if (method == "si_from_data" | method == "si_from_sample") {
+  if (method %in% c("si_from_data", "si_from_sample")) {
     si_uncertainty <- "Y"
     parametric_si <- "N"
   }
@@ -592,7 +592,7 @@ estimate_R_func <- function(incid,
                                                                       mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
                                                                                                                         mean_si_sample[k])]
       }
-      mean_posterior <- apply(r_sample, 2, mean, na.rm = TRUE)
+      mean_posterior <- colMeans(r_sample, na.rm = TRUE)
       std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
       quantile_0.025_posterior <- apply(r_sample, 2, quantile,
                                         0.025,
@@ -647,7 +647,7 @@ estimate_R_func <- function(incid,
                                                                      mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
                                                                                                                        mean_si_sample[k])]
       }
-      mean_posterior <- apply(r_sample, 2, mean, na.rm = TRUE)
+      mean_posterior <- colMeans(r_sample, na.rm = TRUE)
       std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
       quantile_0.025_posterior <- apply(r_sample, 2, quantile,
                                         0.025,

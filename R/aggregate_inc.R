@@ -25,7 +25,7 @@
 aggregate_inc <- function(incid, dt = 7L)
 {
   if(all(dt < 2)) {stop("at least one value of dt should be an integer >=2")}
-  if(any(!is.integer(dt))) {stop("dt should be an integer or vector of integers e.g. 2L or c(2L,2L,3L)")}
+  if(!all(is.integer(dt))) {stop("dt should be an integer or vector of integers e.g. 2L or c(2L,2L,3L)")}
   if(!is.vector(incid)) {stop("incid should be a vector of integer values")}
   
   ndays <- length(incid)
@@ -46,7 +46,7 @@ aggregate_inc <- function(incid, dt = 7L)
   
   agg_inc <- numeric(length = length(start))
   
-  for (i in 1:length(start)){
+  for (i in seq_along(start)){
     agg_inc[i] <- sum(incid[start[i]:end[i]])
   }
   
