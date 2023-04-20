@@ -93,7 +93,7 @@
       <h1 data-toc-skip>EpiEstim: a demonstration</h1>
                         <h4 data-toc-skip class="author">Anne Cori</h4>
             
-            <h4 data-toc-skip class="date">2022-12-07</h4>
+            <h4 data-toc-skip class="date">2023-04-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/HEAD/vignettes/short_demo.Rmd" class="external-link"><code>vignettes/short_demo.Rmd</code></a></small>
       <div class="hidden name"><code>short_demo.Rmd</code></div>
@@ -151,7 +151,10 @@
 <span><span class="co">#&gt; ggplot2 3.3.4.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use "none" instead.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">incidence</span> package.</span></span>
-<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/reconhub/incidence/issues&gt;</span>.</span></span></code></pre></div>
+<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/reconhub/incidence/issues&gt;</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
 <p><img src="figs-demo/incidence-1.png" width="576"></p>
 <p>We can run <code>estimate_R</code> on the incidence data to estimate the reproduction number R. For this, we need to specify i) the time window(s) over which to estimate R and ii) information on the distribution of the serial interval.</p>
 <p>For i), the default behavior is to estimate R over weekly sliding windows. This can be changed through the <code>config$t_start</code> and <code>config$t_end</code> arguments (see below, “Changing the time windows for estimation”). For ii), there are several options, specified in the <code>method</code> argument.</p>
@@ -459,7 +462,7 @@
 <p>Finally, <code>incid</code> can be an object of the class <code>incidence</code>, as created for instance by the function <code>incidence</code> of the <code>incidence</code> package.</p>
 <p>Let’s artificially create a line-list corresponding to our flu incidence data:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dates_onset</span> <span class="op">&lt;-</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">dates</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> </span>
+<code class="sourceCode R"><span><span class="va">dates_onset</span> <span class="op">&lt;-</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">dates</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">i</span>, <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">I</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <p>and now use the <code>incidence</code> function to generate an object that we feed to <code>estimate_R</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
@@ -525,7 +528,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
