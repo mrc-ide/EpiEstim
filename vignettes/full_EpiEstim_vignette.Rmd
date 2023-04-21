@@ -59,7 +59,7 @@ knitr::kable(df, col.names = c("Case ID","Date Reported","Date Symptom Onset","D
 
 In order to estimate R~t~, EpiEstim needs to be supplied with an estimate of the serial interval distribution (**step A**) and the incidence of confirmed cases (**step B**). 
 
-###Step A: Serial Interval
+### Step A: Serial Interval
 
 The serial interval is the time between symptom onset in successive cases. The serial interval distribution can be parameterised either by estimates taken from the literature or it can be estimated directly from the linelist if you have data for infector-infected pairs.
 
@@ -120,7 +120,7 @@ For an example of how we can parameterise the SI using this method, see example 
 
 It is important to note that, particularly for outbreaks of emerging diseases, the serial interval estimate can be updated when you gather more data as the epidemic progresses.
 
-###Step B: Incidence
+### Step B: Incidence
 
 The package `incidence` can be used to easily plot incidence, as shown in the following example using a pre-loaded `EpiEstim` dataset of an Influenza outbreak in 2009 ("Flu2009").
 
@@ -162,7 +162,7 @@ This vignette provides examples using incidence data that is available on a dail
 
 For full details about using EpiEstim for temporally aggregated incidence data, see the "EpiEstim_aggregated_incidence" vignette.
 
-##Estimate R~t~
+## Estimate R~t~
 
 Once you have an incidence object (based on the dates of symptom onset) and information on the serial interval distribution, we can use the renewal equation (a form of branching process model) to estimate R~t~. R~t~ is the average number of secondary cases that an infected individual would infect if the conditions remained as they were at time t (Cori et al 2013). 
 
@@ -173,7 +173,7 @@ knitr::include_graphics("./figs/Renewal_equation.png")
 
 Here I~t~ represents the incidence of symptom onset at time t, which is approximated by a Poisson process using the renewal equation. R~t~ is what we want to estimate, I~t-s~ is the past incidence and $\omega$ is the serial interval distribution.
 
-###Step C: `estimate_R()`
+### Step C: `estimate_R()`
 
 This is where the `estimate_R()` function comes in. We supply `EpiEstim` with the incidence and tell the package which method we want to use to parameterise the serial interval.
 
@@ -436,7 +436,7 @@ estimate_R(incid = incid,
 See examples A-E in the Examples section to demonstrate `estimate_R()` with data for each of these methods.
 
 <div style="margin-top:30px;">
-###**Time window for estimating R~t~**
+### **Time window for estimating R~t~**
 </div>
 
 **Overlapping time windows**
@@ -513,7 +513,7 @@ plot(res2, legend=FALSE, "R")
 
 Note that if using incidence by date of symptom onset and depending on the disease you may need to have a buffer that accounts for the incubation period (average time between infection and symptom onset) of the disease. In other words, you need to factor in the people who were infected *before* the intervention was implemented, but became symptomatic *after* the intervention was implemented. Additionally, you need to consider whether the type of intervention implemented would have an immediate effect or whether it's likely to result in a more gradual change.
 
-###**Prior for R~t~**
+### **Prior for R~t~**
 
 The gamma distributed prior for the mean and standard deviation of R~t~ can be set using the `mean_prior=` and `std_prior=` arguments within `config=` of the `estimate_R()` function. If you do not define any values for these arguments then the default values are used, which are a mean of 5 and standard deviation of 5. The default has been set for an unknown pathogen with relatively high R and high uncertainty. With this prior, if we estimate R to be below 1, then we can be more confident that the result is strongly data-driven.
 
@@ -528,11 +528,11 @@ estimate_R(incid = data$incid,
                     std_prior = 1)))
 ```
   
-##Forecast future incidence
+## Forecast future incidence
 
 Estimates for Rt can then feed into packages designed to project or simulate what the future incidence could be based on our estimates. There are various packages available, but here we will use the `projections` package by Nouvellet et al 2018.
 
-###Step D: `Projections` package
+### Step D: `Projections` package
 
 The projections package uses the daily incidence, serial interval and R~t~ estimate to simulate epidemic trajectories using branching processes.
 
