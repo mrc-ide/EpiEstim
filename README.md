@@ -9,45 +9,26 @@
 EpiEstim is a tool to estimate the time-varying instantaneous reproduction number during epidemics.
 To install the latest version, use:
 ```r
-devtools::install_github("mrc-ide/EpiEstim", build_vignettes = TRUE)
+install.packages('EpiEstim', repos = c('https://mrc-ide.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
-## Vignettes
-The following vignettes provide worked examples, FAQs and details about how EpiEstim can be used alongside some other R packages in an outbreak analysis workflow.
+### Vignettes
+Please see https://mrc-ide.github.io/EpiEstim/ for vignettes with worked examples, 
+FAQs and details about how EpiEstim can be used alongside some other R packages 
+in an outbreak analysis workflow.
 
-```r
-vignette("short_demo", package = "EpiEstim")
-vignette("full_EpiEstim_vignette", package = "EpiEstim")
-```
-
-To apply EpiEstim to temporally aggregated incidence data (e.g. weekly), please see:
-
-```r
-vignette("EpiEstim_aggregated_data", package = "EpiEstim")
-```
-
-To estimate the transmission advantage of pathogen variants or strains in real-time, please see the pre-print by Bhatia et al (https://www.medrxiv.org/content/10.1101/2021.11.26.21266899v1) and the vignette below:
-
-```r
-vignette("MV_EpiEstim_vignette", package="EpiEstim")   
-```
-
-To find out more about alternative software that may be more suitable for your specific data or analysis, please see below:
-
-```r
-vignette("alternative_software", package = "EpiEstim")
-```
-
-## Cite our papers
+### Cite our papers
 Anne Cori, Neil M. Ferguson, Christophe Fraser, Simon Cauchemez, [A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics](https://doi.org/10.1093/aje/kwt133), American Journal of Epidemiology, Volume 178, Issue 9, 1 November 2013, Pages 1505–1512. 
 
-> @article{Cori2013,
+```console
+ @article{Cori2013,
  author={Cori, A and Ferguson, NM and Fraser, C and Cauchemez, S},  
  year={2013},  
  title={{A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics}},  
  journal={Am. J. Epidemiol.},  
  doi={10.1093/aje/kwt133},  
 }
+```
 
 Thompson RN, Stockwin JE, van Gaalen RD, Polonsky JA, Kamvar ZN, Demarsh PA, et al. [Improved inference of time-varying reproduction numbers during infectious disease outbreaks](https://doi.org/10.1016/j.epidem.2019.100356), Epidemics, Volume 29, 1 December 2019, 100356.
 
@@ -58,10 +39,11 @@ Bhatia S, Wardle J, Nash RK, Nouvellet P, Cori A. [A generic method and software
 Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number from temporally aggregated incidence data: a statistical modelling approach and software tool. (medRxiv pre-print)
 
 
-## Citing this code resource
+### Citing this code resource
 We kindly request that you cite this codebase as follows (BibTeX format):
 
-> @misc{Cori2022,
+```console
+@misc{Cori2022,
  author={Cori, A and Kamvar, ZN and Stockwin, J and Jombart, T and Dahlqwist, E and FitzJohn, R and Thompson, R and Nash, RK and Wardle, J and Bhatia, S},  
  year={2022},  
  title={{EpiEstim v2.2-4: A tool to estimate time varying instantaneous reproduction number during epidemics}},  
@@ -69,3 +51,4 @@ We kindly request that you cite this codebase as follows (BibTeX format):
  journal={GitHub repository},  
  howpublished = {\url{https://github.com/mrc-ide/EpiEstim}},  
 }
+```
