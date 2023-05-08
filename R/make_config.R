@@ -321,7 +321,8 @@ make_config <- function(..., incid = NULL,
   if(!is.null(incid)) 
   {
     incid <- process_I(incid)
-    T <- nrow(incid)
+    idx_raw_incid <- as.integer(rownames(incid)) > 0
+    T <- sum(idx_raw_incid)
     
     ## filling in / checking t_start and t_end
     if(is.null(config$t_start) || is.null(config$t_end))
