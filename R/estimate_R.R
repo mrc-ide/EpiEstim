@@ -336,74 +336,75 @@ estimate_R <- function(incid,
   if(any(dt >= 2)) {
     out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, iter = iter,
                           config = config, method = method, grid = grid)
-  } else {
+    return(out)
+  } 
+  
+  config <- make_config(incid = incid, method = method, config = config)
+  config <- process_config(config)
+  check_config(config, method)
+  
+  if (method == "si_from_data") {
+    ## Warning if the expected set of parameters is not adequate
+    si_data <- process_si_data(si_data)
+    config <- process_config_si_from_data(config, si_data)
     
-    config <- make_config(incid = incid, method = method, config = config)
-    config <- process_config(config)
-    check_config(config, method)
-    
-    if (method == "si_from_data") {
-      ## Warning if the expected set of parameters is not adequate
-      si_data <- process_si_data(si_data)
-      config <- process_config_si_from_data(config, si_data)
-      
-      ## estimate serial interval from serial interval data first
-      if (!is.null(config$mcmc_control$seed)) {
-        cdt <- dic.fit.mcmc(
-          dat = si_data,
-          dist = config$si_parametric_distr,
-          burnin = config$mcmc_control$burnin,
-          n.samples = config$n1 * config$mcmc_control$thin,
-          init.pars = config$mcmc_control$init_pars,
-          seed = config$mcmc_control$seed
-        )
-      } else {
-        cdt <- dic.fit.mcmc(
-          dat = si_data,
-          dist = config$si_parametric_distr,
-          burnin = config$mcmc_control$burnin,
-          n.samples = config$n1 * config$mcmc_control$thin,
-          init.pars = config$mcmc_control$init_pars
-        )
-      }
-      
-      ## check convergence of the MCMC and print warning if not converged
-      MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
-      
-      ## thin the chain, and turn the two parameters of the SI distribution into a
-      ## whole discrete distribution
-      c2e <- coarse2estim(cdt, thin = config$mcmc_control$thin)
-      
-      cat(paste(
-        "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
-        "\nEstimating the reproduction number for these serial interval",
-        "estimates...\n",
-        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-      ))
-      
-      ## then estimate R for these serial intervals
-      
-      if (!is.null(config$seed)) {
-        set.seed(config$seed)
-      }
-      
-      out <- estimate_R_func(
-        incid = incid,
-        method = "si_from_data",
-        si_sample = c2e$si_sample,
-        config = config
+    ## estimate serial interval from serial interval data first
+    if (!is.null(config$mcmc_control$seed)) {
+      cdt <- dic.fit.mcmc(
+        dat = si_data,
+        dist = config$si_parametric_distr,
+        burnin = config$mcmc_control$burnin,
+        n.samples = config$n1 * config$mcmc_control$thin,
+        init.pars = config$mcmc_control$init_pars,
+        seed = config$mcmc_control$seed
       )
-      out[["MCMC_converged"]] <- MCMC_conv
     } else {
-      if (!is.null(config$seed)) {
-        set.seed(config$seed)
-      }
-      out <- estimate_R_func(
-        incid = incid, method = method, si_sample = si_sample,
-        config = config
+      cdt <- dic.fit.mcmc(
+        dat = si_data,
+        dist = config$si_parametric_distr,
+        burnin = config$mcmc_control$burnin,
+        n.samples = config$n1 * config$mcmc_control$thin,
+        init.pars = config$mcmc_control$init_pars
       )
     }
+    
+    ## check convergence of the MCMC and print warning if not converged
+    MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
+    
+    ## thin the chain, and turn the two parameters of the SI distribution into a
+    ## whole discrete distribution
+    c2e <- coarse2estim(cdt, thin = config$mcmc_control$thin)
+    
+    cat(paste(
+      "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+      "\nEstimating the reproduction number for these serial interval",
+      "estimates...\n",
+      "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    ))
+    
+    ## then estimate R for these serial intervals
+    
+    if (!is.null(config$seed)) {
+      set.seed(config$seed)
+    }
+    
+    out <- estimate_R_func(
+      incid = incid,
+      method = "si_from_data",
+      si_sample = c2e$si_sample,
+      config = config
+    )
+    out[["MCMC_converged"]] <- MCMC_conv
+  } else {
+    if (!is.null(config$seed)) {
+      set.seed(config$seed)
+    }
+    out <- estimate_R_func(
+      incid = incid, method = method, si_sample = si_sample,
+      config = config
+    )
   }
+  
   return(out)
 }
 
