@@ -24,7 +24,7 @@
 #' incid_all
 #'
 
-backimpute_I <- function(incid, window = 10) {
+backimpute_I <- function(incid, window) {
 
     stopifnot("Backimputation window needs to have integer length"=! is.integer(window))
 
