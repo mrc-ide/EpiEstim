@@ -1,0 +1,75 @@
+# require(testthat)
+# require(ggplot2)
+devtools::load_all()
+
+data("covid_deaths_2020_uk")
+
+with(covid_deaths_2020_uk, {
+    incid_covid <<- incidence$Incidence
+    config_covid <<- make_config(list(si_distr = si_distr))
+})
+
+test_that("warnings and errors are working as expected", {
+
+    expect_error(
+        estimate_R(incid = incid_covid, backimputation_window = 2),
+        "Backimputation window needs to contain at least 5 timepoints"
+    )
+
+    expect_error(
+        estimate_R(incid = incid_covid, backimputation_window = 10.4),
+        "Backimputation window needs to have integer length"
+    )
+
+    expect_error(
+        estimate_R(incid = incid_covid[1:10], backimputation_window = 100L),
+        "Backimputation window should be shorter than observed incidence"
+    )
+
+    expect_warning(
+        estimate_R(incid = incid_covid, backimputation_window = 5, config = config_covid),
+        "Estimate of the growth rate is negative, consider removing backimputation, or extending the backimputation window"
+    )
+
+    # TODO: what about imported cases? Check there are none in the incid object and throw warning
+
+})
+
+test_that("outputs are working as expected", {
+
+    # check default is 0.
+    expect_equal(
+        estimate_R(incid = incid_covid, backimputation_window = 0, config=config_covid),
+        estimate_R(incid = incid_covid, config=config_covid),
+    )
+
+    # check adjusted estimates are lower than original...
+    expect_lt({
+        adjusted <- estimate_R(
+            incid = incid_covid[1:10], 
+            backimputation_window = 10,
+            config=config_covid)$R[1, 'Mean(R)']
+        original <- estimate_R(
+            incid = incid_covid[1:10], 
+            config=config_covid)$R[1, 'Mean(R)']
+        adjusted-original
+    },
+        0
+    )
+
+    # ... even if growth rate is negative!
+    suppressWarnings(
+        expect_lt({
+            adjusted <- estimate_R(
+                incid = incid_covid, 
+                backimputation_window = 5,
+                config=config_covid)$R[1, 'Mean(R)']
+            original <- estimate_R(
+                incid = incid_covid, 
+                config=config_covid)$R[1, 'Mean(R)']
+            adjusted-original
+        }, 0 ) 
+    )
+
+})
+

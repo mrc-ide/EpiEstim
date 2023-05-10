@@ -347,9 +347,7 @@ estimate_R <- function(incid,
   
   # Impute missed generations of infections if required
   if(backimputation_window) {
-    stopifnot("We strongly recommed a backimputation window with at least 5 timepoints"=
-                backimputation_window >= 5)
-    incid <- backimpute_I(incid, window = backimputation_window)
+    incid <- backimpute_I(incid, window_b = backimputation_window)
   }
   
   config <- make_config(incid = incid, method = method, config = config)
@@ -790,8 +788,8 @@ estimate_R_func <- function(incid,
   results$I_local <- incid$local[idx_raw_incid]
   results$I_imported <- incid$imported[idx_raw_incid]
 
-  if (T_imputed > 0) {
-    results$I_imputed <- tot_incid[!idx_raw_incid] # new
+  if (T_imputed > 0) { 
+    results$I_imputed <- tot_incid[!idx_raw_incid] 
   } 
   
   class(results) <- "estimate_R"

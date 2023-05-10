@@ -24,9 +24,14 @@
 #' incid_all
 #'
 
-backimpute_I <- function(incid, window) {
+backimpute_I <- function(incid, window_b) {
 
-    stopifnot("Backimputation window needs to have integer length"=! is.integer(window))
+    stopifnot("Backimputation window needs to contain at least 5 timepoints"=
+        window_b >= 5)
+    stopifnot("Backimputation window needs to have integer length"= 
+        window_b %% 1 == 0 )
+    stopifnot("Backimputation window should be shorter than observed incidence" =
+        length(incid) >= window_b )
 
     # process observed incidence
     incid_processed <- process_I(incid)
@@ -35,13 +40,18 @@ backimpute_I <- function(incid, window) {
     # some cases may be 0, implying -infinite logs
     safe_shift <- .5
 
-    # backimpute unobserved, previous cases based on first window of observations
+    # backimpute unobserved, previous cases based on first window_b of observations
     log_incid_start <- data.frame(
-        t = seq(window),
-        li = log(incid[1:window] + safe_shift )
+        t = seq(window_b),
+        li = log(incid[1:window_b] + safe_shift )
     )
     imputed_t <- seq(from = -100, to = 0)
     fit_backimpute <- lm(li ~ t, data = log_incid_start)
+
+    if(fit_backimpute$coefficients[2] < 0) {
+        msg <- "Estimate of the growth rate is negative, consider removing backimputation, or extending the backimputation window"
+        warning(msg)
+    }
 
     predict_backimpute_log <- predict.lm(fit_backimpute, newdata = list(t = imputed_t))
     predict_backimpute <- data.frame(
@@ -51,8 +61,8 @@ backimpute_I <- function(incid, window) {
     rownames(predict_backimpute) <- imputed_t
 
     # exclude negative cases arising from shift before logs.
-    idx_nonnegative <- predict_backimpute$local >= 0
-    predict_backimpute <- predict_backimpute[ idx_nonnegative ]
+    idx_nonnegative <- which(predict_backimpute$local >= 0)
+    predict_backimpute <- predict_backimpute[ idx_nonnegative,  ]
 
     # first observation must be imported, otherwise later warning
     predict_backimpute[1, ] <- c(0, sum(predict_backimpute[1, ]))
