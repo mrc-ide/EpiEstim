@@ -32,20 +32,27 @@ backimpute_I <- function(incid, window) {
     incid_processed <- process_I(incid)
     incid_processed[1, ] <- c(sum(incid_processed[1, ]), 0)
 
+    # some cases may be 0, implying -infinite logs
+    safe_shift <- .5
+
     # backimpute unobserved, previous cases based on first window of observations
     log_incid_start <- data.frame(
         t = seq(window),
-        li = log(incid[1:window])
+        li = log(incid[1:window] + safe_shift )
     )
     imputed_t <- seq(from = -100, to = 0)
     fit_backimpute <- lm(li ~ t, data = log_incid_start)
 
     predict_backimpute_log <- predict.lm(fit_backimpute, newdata = list(t = imputed_t))
     predict_backimpute <- data.frame(
-        local = exp(predict_backimpute_log),
+        local = exp(predict_backimpute_log) - safe_shift,
         imported = rep(0, length(imputed_t))
     )
     rownames(predict_backimpute) <- imputed_t
+
+    # exclude negative cases arising from shift before logs.
+    idx_nonnegative <- predict_backimpute$local >= 0
+    predict_backimpute <- predict_backimpute[ idx_nonnegative ]
 
     # first observation must be imported, otherwise later warning
     predict_backimpute[1, ] <- c(0, sum(predict_backimpute[1, ]))
