@@ -1,10 +1,10 @@
 #' Impute unobserved generations of infection
 #' 
 #' This function imputes incidence prior the first date of reported cases to
-#' tackle bias in R_0 estimates. 
-#' It does so by fitting a simple linear model on the logged-incidence cases,
-#' based on observation in an initial window.
-#' No cases are assumed to be imported.
+#' address early bias in R_t estimates. 
+#' A simple linear model is fitted on shifted, logged-incidence cases, based on 
+#' an initial observation window.
+#' Currently, no cases are assumed to be imported.
 #'
 #' @param incid the raw, reported incidence cases.
 #' @param window length of the observation window to fit the exponential growth
@@ -26,13 +26,24 @@
 
 backimpute_I <- function(incid, window_b) {
 
-    stopifnot("Backimputation window needs to contain at least 5 timepoints"=
-        window_b >= 5)
+    if( 'incidence' %in% class(incid) ){
+      msg <- "incidence objects are currently not supported by backimpute_I()."
+      stop(msg)
+    }
+  
+    stopifnot("Backimputation window needs to contain at least 2 timepoints"=
+        window_b >= 2)
     stopifnot("Backimputation window needs to have integer length"= 
         window_b %% 1 == 0 )
     stopifnot("Backimputation window should be shorter than observed incidence" =
         length(incid) >= window_b )
-
+    
+    
+    if( window_b <= 5 ){
+        msg <- "The backimputation window is short and may lead to an inaccurate estimate of the growth rate."
+        warning(msg)
+    }
+    
     # process observed incidence
     incid_processed <- process_I(incid)
     incid_processed[1, ] <- c(sum(incid_processed[1, ]), 0)
