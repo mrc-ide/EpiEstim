@@ -10,17 +10,19 @@
 #' (typically days) - see details.
 #' 
 #' @param dt_out length of the sliding windows used for R estimates (numeric, 
-#' 7 time units (typically days)  by default). 
-#' Only used if \code{dt > 1}; 
-#' in this case this will superseed config$t_start and config$t_end, 
-#' see. 
+#' 7 time units (typically days)  by default). Only used if \code{dt > 1}; in
+#' this case this will supersede config$t_start and config$t_end, see estimate_R().
+#' 
+#' @param recon_opt one of "naive" or "match" (see details).
 #' 
 #' @param iter number of iterations of the EM algorithm (integer, 10 by default)
 #' 
-#' @param config An object of class \code{estimate_R_config}, as returned by 
+#' @param tol tolerance used in the convergence check (numeric, 1e-6 by default)
+#' 
+#' @param config an object of class \code{estimate_R_config}, as returned by 
 #' function \code{make_config}. 
 #' 
-#' @param method One of "non_parametric_si" or "parametric_si" (see details).
+#' @param method one of "non_parametric_si" or "parametric_si" (see details).
 #' 
 #' @param grid named list containing "precision", "min", and "max" which are used to
 #' define a grid of growth rate parameters that are used inside the EM algorithm 
@@ -91,6 +93,13 @@
 #' reconstructed daily data. By default, Rt estimation uses weekly sliding time 
 #' windows, however, we recommend that the sliding window is at least equal to 
 #' the length of the longest aggregation window (dt) in the data.}
+#' \item{recon_opt specifies how to handle the initial incidence data that cannot
+#' be reconstructed by the EM algorithm (e.g. the incidence data for the aggregation
+#' window that precedes the first aggregation window that R can be estimated for).
+#' If `"naive"` is chosen, the naive disaggregation of the incidence data will be
+#' kept. If `"match"` is chosen, the incidence in the preceding aggregation window
+#' will be reconstructed by assuming that the growth rate matches that of the first
+#' estimation window. This is `"naive"` by default.}
 #' \item{iter is the number of iterations of the EM algorithm used to reconstruct
 #' the daily incidence data. By default, iter = 10L, which has been demonstrated
 #' to exceed the number of iterations necessary to reach convergence in simulation 

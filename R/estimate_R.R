@@ -69,9 +69,14 @@
 #' in this case this will superseed config$t_start and config$t_end, 
 #' see \code{\link{estimate_R_agg}}. 
 #' 
+#' @param recon_opt one of "naive" or "match", see \code{\link{estimate_R_agg}}. 
+#' 
 #' @param iter number of iterations of the EM algorithm used to reconstruct 
 #' incidence at 1-time-unit intervals(integer, 10 by default). 
 #' Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.
+#' 
+#' @param tol tolerance used in the convergence check (numeric, 1e-6 by default),
+#' see \code{\link{estimate_R_agg}}. 
 #' 
 #' @param grid named list containing "precision", "min", and "max" which are 
 #' used to define a grid of growth rate parameters that are used inside the EM 

@@ -55,7 +55,7 @@ The serial interval can be provided on a daily timescale (as usual), either as t
 
 ## Estimate R~t~ from temporally aggregated incidence data
 
-To estimate R~t~ from temporally aggregated incidence data, we simply use the `estimate_R()` function with two additional parameters required, `dt` and `dt_out`, and two optional parameters, `iter` and `grid`. 
+To estimate R~t~ from temporally aggregated incidence data, we simply use the `estimate_R()` function with two additional parameters required, `dt` and `dt_out`, and some optional parameters, `recon_opt`, `iter`, `tol`, and `grid`. 
 
 
 ### `estimate_R()` for aggregated data
@@ -64,7 +64,9 @@ To estimate R~t~ from temporally aggregated incidence data, we simply use the `e
 estimate_R(incid = aggregated_incidence,
            dt = 7L,
            dt_out = 7L,
+           recon_opt = "naive",
            iter = 10L,
+           tol = 1e-6,
            grid = list(precision = 0.001, min = -1, max = 1),
            config = config,
            method = method)
@@ -76,9 +78,13 @@ estimate_R(incid = aggregated_incidence,
 
 - `dt_out` is the length of the sliding windows used to estimate R~t~ from the reconstructed daily incidence data, this is `dt = 7L` (weekly sliding windows) by default. We recommend that `dt_out` is at least equal to the length of the longest aggregation window (`dt`) in the data. 
 
-There are two optional parameters that can be modified, however, we recommend that the default values are used:
+- `recon_opt` can be one of two options: `"naive"` or `"match"`. This specifies how to handle the initial incidence data that cannot be reconstructed by the EM algorithm (e.g. the incidence data for the aggregation window that precedes the first aggregation window that R can be estimated for). If `"naive"` is chosen, the naive disaggregation of the incidence data will be kept. If `"match"` is chosen, the incidence in the preceding aggregation window will be reconstructed by assuming that the growth rate matches that of the first estimation window. This is `"naive"` by default.
 
-- `iter` is the number of iterations of the EM algorithm used to reconstruct the daily data. This is `iter = 10L` by default.
+There are three other optional parameters that can be modified, however, we recommend that the default values are used:
+
+- `iter` is the number of iterations of the EM algorithm used to reconstruct the daily incidence data. This is `iter = 10L` by default.
+
+- `tol` is the tolerance value used for the convergence check. The tolerance is how much the final iteration of the reconstructed daily incidence is allowed to differ from the reconstructed incidence produced in the previous iteration without returning a warning. This is `tol = 1e-6` by default.
 
 - `grid` is a list of "precision", "min", and "max" values to define a grid of growth rate parameters used inside the EM algorithm. The grid is used to convert reproduction number estimates for each aggregation of incidence data into growth rates, which are then used to reconstruct the daily incidence data assuming exponential growth. The grid will auto-adjust if it is not large enough, so we recommend using the default values.
 
@@ -123,13 +129,14 @@ config <- make_config(list(mean_si = mean_si,
 
 **Estimate R~t~**
 
-Now that we have our aggregated incidence, our aggregation time window, and SI distribution, we can supply these to the `estimate_R()` function. We do not need to specify `dt_out`, `iter` or `grid` because we are going to use the default values.
+Now that we have our aggregated incidence, our aggregation time window, and SI distribution, we can supply these to the `estimate_R()` function. We do not need to specify `dt_out`, `iter`, `tol`, or `grid` because we are going to use the default values.
 
 ```{r, message=FALSE, warning=FALSE}
 output <- EpiEstim::estimate_R(incid = incid,
-                             dt = dt,
-                             method = method,
-                             config = config)
+                               dt = dt,
+                               recon_opt = "match",
+                               method = method,
+                               config = config)
 ```
 
 The output consists of multiple elements, including the reconstructed daily incidence data:
@@ -158,31 +165,9 @@ plot(output, "R") # Rt estimates only
 plot(output, "SI") # SI estimates only
 ```
 
-**Check convergence**
+**Convergence**
 
-You can also check convergence by modifying `iter=` and comparing the results to check for large discrepancies.
-
-```{r, results='hide', message=FALSE, warning=FALSE, fig.width=7}
-output_5iter <- EpiEstim::estimate_R(incid = incid,
-                             dt = dt,
-                             iter = 5L,
-                             method = method,
-                             config = config)
-
-iter_diff <- rbind(output$R, output_5iter$R)
-nR <- nrow(output$R)
-iter_diff$iter <- c(rep("10 iterations",nR), rep("5 iterations",nR))
-
-ggplot(iter_diff, aes(t_end, `Mean(R)`,group=iter,col=iter)) +
-  scale_colour_manual(values=c("#3c3b5f","#f06553"), name="")+
-  geom_ribbon(aes(ymin = `Quantile.0.025(R)`, ymax=`Quantile.0.975(R)`, 
-                  fill=iter_diff$iter), col=NA, alpha=0.3)+
-  scale_fill_manual(values=c("#60B7DE","#ff6961"), name="")+
-  geom_line() +
-  ylab("R")+
-  xlab("Time")
-```
-
+Convergence is checked automatically to ensure that the final iteration of the reconstructed daily incidence does not differ from the previous iteration beyond a tolerance of 10$^{-6}$ by default. If convergence is not reached, a warning will be returned and the algorithm can be run with more iterations by modifying `iter =`. The tolerance threshold can also be modified using `tol =`.
 
 <div style="margin-top:30px;">
 # FAQs
@@ -195,7 +180,7 @@ In order to reconstruct daily incidence data, the method requires that R~t~ is e
 Additionally, R~t~ estimation will not start until case numbers are sufficiently high.
 
 
-**Please also see the FAQ section in "full_EpiEstim_vignette".**
+**Please also see the FAQ section in the main "EpiEstim Vignette".**
 
 
 ## References
