@@ -83,11 +83,11 @@ For example, if "Case ID" represents the person who has been exposed and infecte
 
 
 ```{r, echo=FALSE}
-Case_ID <- c(299,302,341,389,"...")
-Infector_ID <- c(208,272,301,312,"...")
-Source_of_exposure <- c("funeral","hospital","household","other","...")
-df <- data.frame(Case_ID,Infector_ID,Source_of_exposure)
-knitr::kable(df, col.names = c("Case ID","Infector ID","Source of Exposure"))
+Case_ID <- c(299, 302, 341, 389, "...")
+Infector_ID <- c(208, 272, 301, 312, "...")
+Source_of_exposure <- c("funeral", "hospital", "household", "other", "...")
+df <- data.frame(Case_ID, Infector_ID, Source_of_exposure)
+knitr::kable(df, col.names = c("Case ID", "Infector ID", "Source of Exposure"))
 ```
 
 Combined with dates of symptom onset in the line list, these can be used to estimate the serial interval distribution in this outbreak. 
@@ -107,12 +107,15 @@ knitr::include_graphics("./figs/interval_censored_example.png",
 This type of data may look like this: 
 
 ```{r, echo=FALSE}
-Time_inf_symp_LB <- c("21","23","34","46","...")
-Time_inf_symp_UB <- c("25","26","39","52","...")
-Time_rec_symp_LB <- c("26","26","41","54","...")
-Time_rec_symp_UB <- c("28","30","43","55","...")
-df <- data.frame(Time_inf_symp_LB,Time_inf_symp_UB,Time_rec_symp_LB,Time_rec_symp_UB)
-knitr::kable(df, "html",col.names = c("Day infector symptom onset (LB)","Day infector symptom onset (UB)","Day infected symptom onset (LB)","Day infected symptom onset (UB)"))
+Time_inf_symp_LB <- c("21", "23", "34", "46", "...")
+Time_inf_symp_UB <- c("25", "26", "39", "52", "...")
+Time_rec_symp_LB <- c("26", "26", "41", "54", "...")
+Time_rec_symp_UB <- c("28", "30", "43", "55", "...")
+df <- data.frame(Time_inf_symp_LB, Time_inf_symp_UB, Time_rec_symp_LB, Time_rec_symp_UB)
+knitr::kable(df, "html", col.names = c("Day infector symptom onset (LB)",
+                                       "Day infector symptom onset (UB)",
+                                       "Day infected symptom onset (LB)",
+                                       "Day infected symptom onset (UB)"))
 ```
 
 
@@ -145,14 +148,15 @@ Please see the `incidence` vignette overview for more details, features and exam
 If you have data that distinguishes between local and imported cases, this can be supplied to EpiEstim with local and imported incidence in two separate columns, for example in this dataset:
 
 ```{r, echo=FALSE}
-Date <- c("dd/mm/yy","dd/mm/yy","dd/mm/yy","dd/mm/yy","...")
-Incid_overall <- c(31,48,45,52,"...")
-Incid_local <- c(28,46,44,48,"...")
-Incid_import <- c(3,2,1,4,"...")
+Date <- c("dd/mm/yy", "dd/mm/yy", "dd/mm/yy", "dd/mm/yy", "...")
+Incid_overall <- c(31, 48, 45, 52, "...")
+Incid_local <- c(28, 46, 44, 48, "...")
+Incid_import <- c(3, 2, 1, 4, "...")
 
-df <- data.frame(Date,Incid_overall,Incid_local,Incid_import)
-table2 <- knitr::kable(df, "html",col.names = c("Date","Incidence Overall","Incidence Local","Incidence Imported"))
-column_spec(table2,1:4,width="5.5cm")
+df <- data.frame(Date, Incid_overall, Incid_local, Incid_import)
+table2 <- knitr::kable(df, "html", col.names = c("Date", "Incidence Overall",
+                                                 "Incidence Local", "Incidence Imported"))
+column_spec(table2, 1:4, width = "5.5cm")
 ```
 
 <div style="margin-top:20px;">
@@ -180,8 +184,8 @@ This is where the `estimate_R()` function comes in. We supply `EpiEstim` with th
 ```{r, eval=FALSE}
 estimate_R(
   incid = incidence_object,
-  method = c("parametric_si","non_parametric_si","si_from_data",
-             "uncertain_si","si_from_sample"), # choose one e.g. method = "parametric_si"
+  method = c("parametric_si", "non_parametric_si", "si_from_data",
+             "uncertain_si", "si_from_sample"), # choose one e.g. method = "parametric_si"
   si_data = NULL, # if using "si_from_data" supply infector-infected data here
   si_sample = NULL, # if using "si_from_sample" supply matrix where each column is an SI to be explored
   config = make_config(list())
@@ -190,47 +194,46 @@ estimate_R(
 
 As mentioned, the serial interval (SI) can be defined using one of the following methods:
 
-**Parametric** - `"parametric_si"` uses the mean and standard deviation. Ex. The user can supply `mean_si=3` and `std_si=1`, which generates an offset gamma distribution as the default:
+**Parametric** - `"parametric_si"` uses the mean and standard deviation. Ex. The user can supply `mean_si = 3` and `std_si = 1`, which generates an offset gamma distribution as the default:
 
-```{r fig.align="center", echo=FALSE, out.width="30%"}
+```{r fig.align = "center", warning = FALSE, echo = FALSE, out.width = "30%"}
 x_lower_norm <- 0
 x_upper_norm <- 7
 ggplot(data.frame(x = c(x_lower_norm , x_upper_norm)), aes(x = x)) + 
   xlim(c(x_lower_norm , x_upper_norm)) + 
-  stat_function(fun = dgamma, args = list(shape = (3/1)^2, rate = 3/1^2)) + # mean = 3, sd = 1
-  theme_ipsum()+
+  stat_function(fun = dgamma,
+                args = list(shape = (3 / 1) ^ 2, rate = 3 / 1 ^ 2)) +
+  theme_ipsum() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
-    axis.title.x = element_text(margin = margin(t=5,r=0,b=0,l=0), size=13),
-    axis.title.y = element_text(margin = margin(t=0,r=10,b=0,l=0), size=13),
-    panel.grid.minor.y = element_blank(),
-    panel.grid.minor.x = element_blank(),
-    panel.grid.major.y = element_blank(),
-    panel.grid.major.x = element_blank(),
-    axis.line.x = element_line(color="lightgrey", size=0.5),
-    axis.line.y = element_line(color="lightgrey", size=0.5)) +
-  xlab("Serial interval") + 
+    axis.title.x = element_text(
+      margin = margin(t = 5, r = 0, b = 0, l = 0), size = 13),
+    axis.title.y = element_text(
+      margin = margin(t = 0, r = 10, b = 0, l = 0), size = 13),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    axis.line = element_line(color = "lightgrey", linewidth = 0.5)) +
+  xlab("Serial interval") +
   ylab("Probability density")
 ```
 
-**Non-parametric** - `"non_parametric_si"` uses the discrete distribution of the SI. Ex. The user can supply `si_distr=c(0.000,0.233,0.359,0.198,0.103,0.053,0.027,0.014,0.007,0.003,0.002,0.001)`, which generates:
+**Non-parametric** - `"non_parametric_si"` uses the discrete distribution of the SI. Ex. The user can supply `si_distr = c(0.000, 0.233, 0.359, 0.198, 0.103, 0.053, 0.027, 0.014, 0.007, 0.003, 0.002, 0.001)`, which generates:
 
 ```{r fig.align="center", echo=FALSE, out.width="30%"}
-y = c(0.000,0.233,0.359,0.198,0.103,0.053,0.027,0.014,0.007,0.003,0.002,0.001) 
-x = seq(0,8,length=12)
+y = c(0.000, 0.233, 0.359, 0.198, 0.103, 0.053, 0.027, 0.014, 0.007, 0.003, 0.002, 0.001) 
+x = seq(0, 8, length = 12)
 spline_int <- as.data.frame(spline(x, y))
-ggplot(data.frame(x = x, y=y), aes(x = x, y=y)) + 
-  theme_ipsum()+
+ggplot(data.frame(x = x, y = y), aes(x = x, y = y)) +
+  theme_ipsum() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
-    axis.title.x = element_text(margin = margin(t=5,r=0,b=0,l=0), size=13),
-    axis.title.y = element_text(margin = margin(t=0,r=10,b=0,l=0), size=13),
-    panel.grid.minor.y = element_blank(),
-    panel.grid.minor.x = element_blank(),
-    panel.grid.major.y = element_blank(),
-    panel.grid.major.x = element_blank(),
-    axis.line.x = element_line(color="lightgrey", size=0.5),
-    axis.line.y = element_line(color="lightgrey", size=0.5)) +
+    axis.title.x = element_text(
+      margin = margin(t = 5, r = 0, b = 0, l = 0), size = 13),
+    axis.title.y = element_text(
+      margin = margin(t = 0, r = 10, b = 0, l = 0), size = 13),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    axis.line = element_line(color = "lightgrey", linewidth = 0.5)) +
   xlab("Serial interval") + 
   ylab("Probability density") +
   geom_line(data = spline_int, aes(x = x, y = y))
@@ -242,62 +245,65 @@ ggplot(data.frame(x = x, y=y), aes(x = x, y=y)) +
 Ex. Here, the mean of the SI will be drawn from a normal distribution with a mean of 3 and SD of 1, truncated at 1 and 4 (left). The SD of the SI will be drawn from a normal distribution with a mean of 1.5 and SD of 0.5, truncated at 0.5 and 2.5 (centre). The drawn values will parameterise multiple SI distributions to be considered, but for clarity, the example below only displays 5 (right).
 
 ```{r, dpi=300, figures-side, fig.show="hold", out.width="30%", echo=FALSE, message=FALSE, warning=FALSE}
-df <- data.frame(x = seq(0, 6, length.out = 100)) %>% mutate(y = dnorm(x, mean=3,sd=1))
-mean.plot <- ggplot(df, aes(x, y)) + geom_area(fill = "sky blue") + gghighlight(x > 1 & x < 4) +
+df <- data.frame(x = seq(0, 6, length.out = 100)) %>%
+  mutate(y = dnorm(x, mean = 3, sd = 1))
+mean.plot <- ggplot(df, aes(x, y)) +
+  geom_area(fill = "sky blue") +
+  gghighlight(x > 1 & x < 4) +
   theme_ipsum()+
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
-    axis.title.x = element_text(margin = margin(t=5,r=0,b=0,l=0), size=13),
-    axis.title.y = element_text(margin = margin(t=0,r=10,b=0,l=0), size=13),
-    panel.grid.minor.y = element_blank(),
-    panel.grid.minor.x = element_blank(),
-    panel.grid.major.y = element_blank(),
-    panel.grid.major.x = element_blank(),
-    axis.line.x = element_line(color="lightgrey", size=0.5),
-    axis.line.y = element_line(color="lightgrey", size=0.5)) +
+    axis.title.x = element_text(
+      margin = margin(t = 5, r = 0, b = 0, l = 0), size = 13),
+    axis.title.y = element_text(
+      margin = margin(t = 0, r = 10, b = 0, l = 0), size = 13),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    axis.line = element_line(color = "lightgrey", linewidth = 0.5)) +
   xlab("Mean") + 
   ylab("Probability density")
 
-df2 <- data.frame(x = seq(0, 3.5, length.out = 100)) %>% mutate(y = dnorm(x, mean=1.5,sd=0.5))
-stdev.plot <-ggplot(df2, aes(x, y)) + geom_area(fill = "sky blue") + gghighlight(x > 0.5 & x < 2.5) +
-  theme_ipsum()+
+df2 <- data.frame(x = seq(0, 3.5, length.out = 100)) %>%
+  mutate(y = dnorm(x, mean = 1.5, sd = 0.5))
+stdev.plot <- ggplot(df2, aes(x, y)) +
+  geom_area(fill = "sky blue") +
+  gghighlight(x > 0.5 & x < 2.5) +
+  theme_ipsum() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
-    axis.title.x = element_text(margin = margin(t=5,r=0,b=0,l=0), size=13),
-    axis.title.y = element_text(margin = margin(t=0,r=10,b=0,l=0), size=13),
-    panel.grid.minor.y = element_blank(),
-    panel.grid.minor.x = element_blank(),
-    panel.grid.major.y = element_blank(),
-    panel.grid.major.x = element_blank(),
-    axis.line.x = element_line(color="lightgrey", size=0.5),
-    axis.line.y = element_line(color="lightgrey", size=0.5)) +
+    axis.title.x = element_text(
+      margin = margin(t = 5, r = 0, b = 0, l = 0), size = 13),
+    axis.title.y = element_text(
+      margin = margin(t = 0, r = 10, b = 0, l = 0), size = 13),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    axis.line = element_line(color = "lightgrey", linewidth = 0.5)) +
   xlab("Standard deviation") + 
   ylab("Probability density")
 
 mean.plot
 stdev.plot
 
-means = c(3.341865,2.100418,3.681627,2.147153,1.939799)
-sds = c(1.466131,1.193257,2.39984,1.524076,1.59843)
+means = c(3.341865, 2.100418, 3.681627, 2.147153, 1.939799)
+sds = c(1.466131, 1.193257, 2.39984, 1.524076, 1.59843)
 
 x_lower_norm <- 0
 x_upper_norm <- 8
 ggplot(data.frame(x = c(x_lower_norm , x_upper_norm)), aes(x = x)) + 
   xlim(c(x_lower_norm , x_upper_norm)) + 
   mapply(function(mean, sd) {
-    stat_function(fun = dgamma, args = list(shape = (mean/sd)^2, rate = mean/sd^2))}, 
-    mean = means, sd = sds) +
-  theme_ipsum()+
+    stat_function(fun = dgamma, args = list(
+      shape = (mean / sd)^2, rate = mean / sd^2))}, mean = means, sd = sds) +
+  theme_ipsum() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
-    axis.title.x = element_text(margin = margin(t=5,r=0,b=0,l=0), size=13),
-    axis.title.y = element_text(margin = margin(t=0,r=10,b=0,l=0), size=13),
-    panel.grid.minor.y = element_blank(),
-    panel.grid.minor.x = element_blank(),
-    panel.grid.major.y = element_blank(),
-    panel.grid.major.x = element_blank(),
-    axis.line.x = element_line(color="lightgrey", size=0.5),
-    axis.line.y = element_line(color="lightgrey", size=0.5)) +
+    axis.title.x = element_text(
+      margin = margin(t = 5, r = 0, b = 0, l = 0), size = 13),
+    axis.title.y = element_text(
+      margin = margin(t = 0, r = 10, b = 0, l = 0), size = 13),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    axis.line = element_line(color = "lightgrey", linewidth = 0.5)) +
   xlab("Serial interval") + 
   ylab("Probability density")
 
@@ -317,12 +323,12 @@ estimate_R(incid = incid,
              n2 = 50)))                          # Size of posterior sample of Rt drawn for each pair
 ```
 
-  Please note that `n1=5` is very low and chosen purely for illustrative purposes. The default values for n1 and n2 are `n1=500` and `n2=50`, which can be modified based on the users preference. If the default values are used, a sample of size 25,000 (`n1` x `n2`) of the joint posterior distribution of R~t~ will be obtained over each time window. Bear in mind that the larger these values, the longer the `estimate_R()` function will take to run.
+  Please note that `n1 = 5` is very low and chosen purely for illustrative purposes. The default values for n1 and n2 are `n1 = 500` and `n2 = 50`, which can be modified based on the users preference. If the default values are used, a sample of size 25,000 (`n1` x `n2`) of the joint posterior distribution of R~t~ will be obtained over each time window. Bear in mind that the larger these values, the longer the `estimate_R()` function will take to run.
 
 <div style="margin-top:30px;">
 **From data** - `"si_from_data"` allows you to estimate the SI by Markov chain Monte Carlo (MCMC) from infector-infected data. The user has the choice of which parametric distribution the SI will take, either: Gamma `"G"`, Weibull `"W"`, Lognormal `"L"`, or shifted by 1: Gamma `"off1G"`, Weibull `"off1W"`, Lognormal `"off1L"` 
 
-`mcmc_control` is where you define the properties of the MCMC, i.e. the burn-in and the thinning of MCMC chains. Burn-in is the number of iterations to be discarded as "warm-up", for instance, if `burnin=1000` the output is only recorded *after* 1000 iterations have run. Thinning determines how much the MCMC chains should be thinned out, if `thin = 10` then 1 in every 10 iterations will be kept. The seed, e.g. `seed = 1`, acts as the starting point for the random number generator of the MCMC estimation. Setting the seed allows you to obtain reproducible results as you will get the same result each time you run the same process.
+`mcmc_control` is where you define the properties of the MCMC, i.e. the burn-in and the thinning of MCMC chains. Burn-in is the number of iterations to be discarded as "warm-up", for instance, if `burnin = 1000` the output is only recorded *after* 1000 iterations have run. Thinning determines how much the MCMC chains should be thinned out, if `thin = 10` then 1 in every 10 iterations will be kept. The seed, e.g. `seed = 1`, acts as the starting point for the random number generator of the MCMC estimation. Setting the seed allows you to obtain reproducible results as you will get the same result each time you run the same process.
 </div>
 
 ```{r, eval=FALSE}
@@ -369,11 +375,11 @@ knitr::include_graphics("./figs/Infector_infected_exact.png")
 This can be supplied as `data$si_data` where EL and ER are both given the symptom onset day for the infector, whilst SL and SR are both given the symptom onset day for the infected individual:
 
 ```{r, echo=FALSE}
-EL <- c("21","23","34","46","...")
-ER <- c("21","23","34","46","...")
-SL <- c("26","26","41","54","...")
-SR <- c("26","26","41","54","...")
-si_data <- data.frame(EL,ER,SL,SR)
+EL <- c("21", "23", "34", "46", "...")
+ER <- c("21", "23", "34", "46", "...")
+SL <- c("26", "26", "41", "54", "...")
+SR <- c("26", "26", "41", "54", "...")
+si_data <- data.frame(EL, ER, SL, SR)
 si_data
 ```
 
@@ -393,11 +399,11 @@ knitr::include_graphics("./figs/Infector_infected_intervals.png")
 In which case, each column in `data$si_data` corresponds to the lower and upper bounds for symptom onset in each pair.
 
 ```{r, echo=FALSE}
-EL <- c("21","23","34","46","...")
-ER <- c("25","26","39","52","...")
-SL <- c("26","26","41","54","...")
-SR <- c("28","30","43","55","...")
-si_data <- data.frame(EL,ER,SL,SR)
+EL <- c("21", "23", "34", "46", "...")
+ER <- c("25", "26", "39", "52", "...")
+SL <- c("26", "26", "41", "54", "...")
+SR <- c("28", "30", "43", "55", "...")
+si_data <- data.frame(EL, ER, SL, SR)
 si_data
 ```
 
@@ -411,8 +417,9 @@ MCMC_seed <- 1
 overall_seed <- 2
 SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
                                         dist = "G",
-                                        init.pars = init_mcmc_params(MockRotavirus$si_data, "G"),
-                                        thin=10,
+                                        init.pars = init_mcmc_params(
+                                          MockRotavirus$si_data, "G"),
+                                        thin = 10,
                                         burnin = 1000,
                                         n.samples = 5000,
                                         seed = MCMC_seed)
@@ -427,8 +434,8 @@ and would be written in estimate_R() as:
 
 ```{r, eval=FALSE}
 estimate_R(incid = incid,
-           method="si_from_sample",
-           si_sample=si_sample, # matrix of SI distributions
+           method = "si_from_sample",
+           si_sample = si_sample, # matrix of SI distributions
            config = make_config(list(n2 = 50)))
 ```
 
@@ -451,19 +458,23 @@ knitr::include_graphics("./figs/Weekly_sliding_windows.png")
 </div>
 </div>
 
-By default R~t~ is estimated over weekly sliding windows, i.e. successive overlapping 7 day time windows as shown above. If you wish to specify a different time window over which R~t~ is estimated, you use the `t_start=` and `t_end=` arguments within `config=` of the `estimate_R()` function. `t_start` is the starting time for the window of R~t~ estimation and `t_end` is the end time of the window. As EpiEstim relies on past incidence to generate estimates of R~t~, the earliest a time window can start is on day 2 of the epidemic.
+By default R~t~ is estimated over weekly sliding windows, i.e. successive overlapping 7 day time windows as shown above. If you wish to specify a different time window over which R~t~ is estimated, you use the `t_start =` and `t_end =` arguments within `config =` of the `estimate_R()` function. `t_start` is the starting time for the window of R~t~ estimation and `t_end` is the end time of the window. As EpiEstim relies on past incidence to generate estimates of R~t~, the earliest a time window can start is on day 2 of the epidemic.
 For example, if you wanted to estimate R~t~ over biweekly sliding windows you could do so as follows:
 
 ```{r}
 data(Flu2009)
 
-# Each row of Flu2009$incidence corresponds to one day in the outbreak. `t_start` is a sequence of start days for the sliding window, starting on day 2 ending 2 weeks before the last day in the dataset:
-t_start <- seq(2, nrow(Flu2009$incidence)-13) 
+# Each row of Flu2009$incidence corresponds to one day in the outbreak. t_start`
+# is a sequence of start days for the sliding window, starting on day 2 ending 
+# 2 weeks before the last day in the dataset:
+t_start <- seq(2, nrow(Flu2009$incidence) - 13) 
 
-# `t_end` is a sequence of end dates for the window 2 weeks after each start date defined above:
+# `t_end` is a sequence of end dates for the window 2 weeks after each start
+# date defined above:
 t_end <- t_start + 13
 
-# Estimate R over biweekly sliding windows by changing `t_start` and `t_end` within config in estimate_R:
+# Estimate R over biweekly sliding windows by changing `t_start` and `t_end`
+# within config in estimate_R:
 res <- estimate_R(incid = Flu2009$incidence,
                   method = "non_parametric_si",
                   config = make_config(list(
@@ -473,13 +484,15 @@ res <- estimate_R(incid = Flu2009$incidence,
 
 head(res$R[1:6])
 
-# Each row now corresponds to a biweekly window. If you take the first row here you can see that R has been estimated over 14 days where all cases with onset from day 2 to day 15 of the outbreak are included.
+# Each row now corresponds to a biweekly window. If you take the first row here 
+# you can see that R has been estimated over 14 days where all cases with onset 
+# from day 2 to day 15 of the outbreak are included.
 ```
 
 R~t~ is then plotted for each time window on the last day of that window. So in the example above, the estimate of R~t~ for the window from day 2 to day 15 will be plotted on day 15 (11th May). This means that it appears as if you're starting your estimation later than you are because the plot for R~t~ does not start until the end of the first window.
 
 ```{r, fig.width=6}
-plot(res, legend=FALSE, "R") # specifying "R", "SI" or "incid" allows you to plot just the single panel
+plot(res, legend = FALSE, "R") # specifying "R", "SI" or "incid" allows you to plot just the single panel
 ```
 
 When choosing the length of the time window, there is essentially a trade-off. A longer window may give you less uncertainty in your estimate, but could disguise important temporal changes, whereas a shorter window may be more influenced by random noise in the data. A good starting point might be to choose a window length that is at least the mean of the SI distribution. A longer time window is more appropriate if you believe the epidemiological situation has not changed (e.g. no new interventions have been implemented).
@@ -495,12 +508,13 @@ You may want to compare R~t~ before and after an intervention has been implement
 data(Flu2009)
 
 # set t_start for day 2 of the outbreak and day 15 of the outbreak (11th May):
-t_start <- c(2,15) 
+t_start <- c(2, 15) 
 
 # set t_end to day 14 and the last day in the dataset:
 t_end <- c(14, nrow(Flu2009$incidence))
 
-# Estimate R over two periods of time (before and after intervention) by changing `t_start` and `t_end` within config in estimate_R:
+# Estimate R over two periods of time (before and after intervention) by changing
+# `t_start` and `t_end` within config in estimate_R:
 res2 <- estimate_R(incid = Flu2009$incidence,
                   method = "non_parametric_si",
                   config = make_config(list(
@@ -508,7 +522,7 @@ res2 <- estimate_R(incid = Flu2009$incidence,
                     t_start = t_start,
                     t_end = t_end)))
 
-plot(res2, legend=FALSE, "R")
+plot(res2, legend = FALSE, "R")
 ```
 
 Note that if using incidence by date of symptom onset and depending on the disease you may need to have a buffer that accounts for the incubation period (average time between infection and symptom onset) of the disease. In other words, you need to factor in the people who were infected *before* the intervention was implemented, but became symptomatic *after* the intervention was implemented. Additionally, you need to consider whether the type of intervention implemented would have an immediate effect or whether it's likely to result in a more gradual change.
@@ -540,7 +554,7 @@ First, you need to estimate R~t~ over a recent time window that you specify usin
 
 ```{r, eval=FALSE}
 # Truncate the incidence to account for right censoring (e.g. 7 days)
-trunc_date <- max(data$date_of_onset)-7
+trunc_date <- max(data$date_of_onset) - 7
 trunc_linelist <- subset(data, data$date_of_onset < trunc_date)
 
 # Create incidence object without last 7 days of data
@@ -549,9 +563,10 @@ trunc_incidence <- incidence(trunc_linelist$date_of_onset)
 # Estimate R over a recent time window
 Res <- estimate_R(incid = trunc_incidence,
                   method = "parametric_si",
-                  config = make_config(mean_si=mean_si, std_si=std_si,
-                                       t_start = length(trunc_incidence)-14,
-                                       t_end = length(trunc_incidence))) # 2 week window that ended a week ago
+                  config = make_config(mean_si = mean_si, std_si = std_si,
+                                       # 2 week window that ended a week ago
+                                       t_start = length(trunc_incidence) - 14,
+                                       t_end = length(trunc_incidence))) 
 ```
 
 We can then supply the incidence, median estimate of R, and the SI distribution to the `project()` function in the `projections` package. Note: The `project()` function requires that the distribution of the serial interval starts on day 1, not on day 0 as in EpiEstim.
@@ -563,13 +578,13 @@ proj <- project(trunc_incidence, # truncated incidence object
                 si = Res$si_distr[-1], # serial interval distribution (starts day 1)
                 n_sim = 1000, # number of trajectories to simulate e.g. 1000
                 n_days = 30, # number of days to make projections over e.g. 30 
-                R_fix_within = TRUE) # whether to keep the same value of R every day (TRUE/FALSE)
+                R_fix_within = TRUE) # keep the same value of R every day (TRUE/FALSE)
 ```
 
 You can then plot the incidence and use the pipe operator `%>%` to add the projections with lower, median and upper quantiles.
 
 ```{r, eval=FALSE}
-plot(trunc_incidence, xlab="Date of Symptom Onset") %>% add_projections(proj, c(0.025, 0.5, 0.975))
+plot(trunc_incidence, xlab = "Date of Symptom Onset") %>% add_projections(proj, c(0.025, 0.5, 0.975))
 ```
 
 For a worked example, see example A. For more information on the `projections` package see: https://www.repidemicsconsortium.org/projections/
@@ -587,11 +602,7 @@ We will be using the data from a simulated outbreak of Ebola Virus Disease (EVD)
 **Incidence**
 
 ```{r, echo=FALSE}
-# temp <- tempfile(fileext = ".xlsx")
-# dataURL <- "https://github.com/reconhub/learn/raw/master/static/data/linelist_20140701.xlsx"
-# download.file(dataURL, destfile=temp, mode='wb')
-# linelist <- readxl::read_xlsx(temp)
-
+#https://github.com/reconhub/learn/raw/master/static/data/linelist_20140701.xlsx"
 linelist <- read.csv("./data_full_vignette/evd_linelist.csv")
 ```
 
@@ -605,13 +616,13 @@ We can create an incidence object for all the cases of EVD with a known date of 
 
 ```{r, fig.width=6}
 # linelist$date_of_onset is class 'character', but we need it to be a date:
-linelist$date_of_onset <- as.Date(linelist$date_of_onset, format="%d/%m/%Y")
+linelist$date_of_onset <- as.Date(linelist$date_of_onset, format = "%d/%m/%Y")
 
 # Create an incidence object:
 evd_incid <- incidence(linelist$date_of_onset)
 
 # Plot the incidence:
-plot(evd_incid, xlab="Date")
+plot(evd_incid, xlab = "Date")
 ```
 
 **Estimate R~t~ using parametric SI distribution**
@@ -623,9 +634,9 @@ We supply `estimate_R()` with the incidence object and parameters for the parame
 ```{r, results='hide', warning=FALSE, message=FALSE, fig.height=7,fig.width=5}
 R_si_parametric <- estimate_R(incid = evd_incid, 
                              method = "parametric_si",
-                             config = make_config(mean_si=14.2, std_si=9.6))
+                             config = make_config(mean_si = 14.2, std_si = 9.6))
 
-plot(R_si_parametric, legend=FALSE)
+plot(R_si_parametric, legend = FALSE)
 ```
 
 The top panel shows the epidemic curve with the incidence of reported cases over time. The middle panel is the estimated value of R over weekly sliding windows and how it varies over time (R~t~), the mean is shown by the solid black line and the 95% credible intervals are represented by the grey shaded area. The final panel is the explored SI distribution that we parameterised and used to estimate R~t~.
@@ -639,7 +650,7 @@ The `projections` package takes the estimated reproduction number, serial interv
 ```{r, message=FALSE, fig.width=6}
 # Truncate the linelist so that the last 7 days of data are not included
 # (some people who have become symptomatic are yet to be reported)
-trunc_date <- max(linelist$date_of_onset)-7
+trunc_date <- max(linelist$date_of_onset) - 7
 trunc_linelist <- subset(linelist, linelist$date_of_onset < trunc_date)
 
 # Create incidence object without last 7 days of data
@@ -648,20 +659,22 @@ evd_incid_trunc <- incidence(trunc_linelist$date_of_onset)
 # Estimate R over a recent time window. 
 R_si_parametric_recent <- estimate_R(incid = evd_incid_trunc, 
                              method = "parametric_si",
-                             config = make_config(mean_si=14.2, std_si=9.6,
-                             t_start = length(evd_incid_trunc$counts)-14,
-                             t_end = length(evd_incid_trunc$counts))) # 2 week window that ended a week ago
+                             config = make_config(mean_si = 14.2, std_si = 9.6,
+                             # 2 week window that ended a week ago:
+                             t_start = length(evd_incid_trunc$counts) - 14,
+                             t_end = length(evd_incid_trunc$counts)))
 
 # Project future incidence over 30 days since last day in truncated incidence
 proj <- project(evd_incid_trunc, # truncated incidence object
                 R = R_si_parametric_recent$R$`Median(R)`, # R estimate
-                si = R_si_parametric_recent$si_distr[-1], # SI distribution (starting on day 1)
+                si = R_si_parametric_recent$si_distr[-1], # SI (starting on day 1)
                 n_sim = 1000, # simulate 1000 trajectories
                 n_days = 30, # over 30 days
                 R_fix_within = TRUE) # keep the same value of R every day
 
-# Use the pipe operator (%>%) from the dplyr package to add the projections over all incidence data
-plot(evd_incid, xlab="Date of Symptom Onset") %>% add_projections(proj, c(0.025, 0.5, 0.975))
+# Add the projections over all incidence data
+plot(evd_incid, xlab = "Date of Symptom Onset") %>%
+  add_projections(proj, c(0.025, 0.5, 0.975))
 ```
 
 Here, we have plotted the original untruncated incidence object to illustrate that the projections have started over the uncertain week of data.
@@ -677,11 +690,11 @@ data(Flu2009) # example dataset within EpiEstim
 Flu2009$si_distr
 
 # Estimate R using non-parametric SI distribution:
-R_np <- estimate_R(incid=Flu2009$incidence,
-                   method="non_parametric_si",
-                   config= make_config(si_distr=Flu2009$si_distr))
+R_np <- estimate_R(incid = Flu2009$incidence,
+                   method = "non_parametric_si",
+                   config = make_config(si_distr = Flu2009$si_distr))
 
-plot(R_np, legend=FALSE)
+plot(R_np, legend = FALSE)
 
 ```
 
@@ -692,7 +705,8 @@ In this example we will be using a pre-loaded dataset for a mock outbreak of rot
 ```{r, messages=FALSE}
 data("MockRotavirus") # example dataset within EpiEstim
 
-# Symptom onset data with upper and lower bounds that can be used to estimate the SI distribution
+# Symptom onset data with upper and lower bounds that can be used to estimate
+# the SI distribution
 head(MockRotavirus$si_data)
 ```
 
@@ -715,7 +729,7 @@ R_si_from_data <- estimate_R(incid = MockRotavirus$incidence,
                                                   n2 = 50, # number of posterior samples of Rt dist.
                                                   seed = 2)) # set seed for reproducibility
 
-plot(R_si_from_data, legend=FALSE)
+plot(R_si_from_data, legend = FALSE)
 ```
 
 In this example, `estimate_R()` should take less than 20 seconds to run on a 2GHz 4 core computer (macOS Big Sur).
@@ -730,13 +744,14 @@ Running `estimate_R()` when using the method `si_from_data` can take longer depe
 # Take the R estimate object from Example C and extract the SI distribution
 si_from_est <- R_si_from_data$si_distr
 
-# Re-arrange the matrix so that each column corresponds to one SI distribution (t() simply transposes the data)
+# Re-arrange the matrix so that each column corresponds to one SI distribution 
+# (t() simply transposes the data)
 si_sample <- t(si_from_est)
 
 # Estimate R using the "si_from_sample" method
-R_samp <- estimate_R(incid=MockRotavirus$incidence,
-                     method="si_from_sample",
-                     si_sample=si_sample)
+R_samp <- estimate_R(incid = MockRotavirus$incidence,
+                     method = "si_from_sample",
+                     si_sample = si_sample)
 
 plot(R_samp, legend = FALSE)
 ```
@@ -752,14 +767,15 @@ If we pretend we don't have data on infector-infected pairs for this mock rotavi
 ```{r, message=FALSE, fig.height=7,fig.width=5}
 data("MockRotavirus")
 
-R_si_uncertain <- estimate_R(incid=MockRotavirus$incidence,
-                             method="uncertain_si",
-                             config=make_config(mean_si= 2.5,std_mean_si=2, # N(2.5,2) truncated at...
-                                                min_mean_si= 1.5, max_mean_si=3.5, # 1.5 and 3.5
-                                                std_si= 1.5, std_std_si= 0.5, # N(1.5,0.5) trunc. at...
-                                                min_std_si= 0.5, max_std_si=2.5)) # 0.5 and 2.5
+R_si_uncertain <- estimate_R(incid = MockRotavirus$incidence,
+                             method = "uncertain_si",
+                             config = make_config(
+                               mean_si = 2.5, std_mean_si = 2, # N(2.5,2) truncated at...
+                               min_mean_si = 1.5, max_mean_si = 3.5, # 1.5 and 3.5
+                               std_si = 1.5, std_std_si = 0.5, # N(1.5,0.5) trunc. at...
+                               min_std_si = 0.5, max_std_si = 2.5)) # 0.5 and 2.5
 
-plot(R_si_uncertain, legend=FALSE)
+plot(R_si_uncertain, legend = FALSE)
 ```
 
 If you don't want to draw the mean and standard deviation of the SI from truncated normal distributions, you can perform the draws yourself from alternative distributions and then supply the estimated SI distributions to `estimate_R()` using the `si_from_sample` method.
@@ -771,10 +787,10 @@ If we go back to example A you will notice that the initial R estimate in the "E
 ```{r, results='hide', warning=FALSE, message=FALSE, fig.width=6}
 R_diff_prior <- estimate_R(incid = evd_incid, 
                            method = "parametric_si",
-                           config = make_config(mean_si=14.2, std_si=9.6,
-                                                mean_prior=2, std_prior=1))
+                           config = make_config(mean_si = 14.2, std_si = 9.6,
+                                                mean_prior = 2, std_prior = 1))
 
-plot(R_diff_prior, "R", legend=FALSE)
+plot(R_diff_prior, "R", legend = FALSE)
 ```
 
 Below, both the estimate with the default prior from example A and the modified prior from this example are plotted together. After changing the prior to a mean of 2 and standard deviation of 1 the initial estimate for R~t~ is lower than the initial estimate using the default prior. Once there is more data (mid-May) the R estimates converge regardless of the prior. It is important to be aware of the weight the prior can have on your estimate when incidence is low.
@@ -782,14 +798,16 @@ Below, both the estimate with the default prior from example A and the modified 
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE, fig.width=7}
 test <- rbind(R_diff_prior$R, R_si_parametric$R)
 nR <- nrow(R_diff_prior$R)
-test$type <- c(rep("Mean prior 2",nR), rep("Mean prior 5",nR))
-test$dates <- rep(R_si_parametric$dates[15:84],2)
-ggplot(test, aes(dates,`Mean(R)`,group=type,col=type)) +
-  scale_colour_manual(values=c("#3c3b5f","#f06553"), name="")+
-  geom_ribbon(aes(ymin = `Quantile.0.025(R)`, ymax=`Quantile.0.975(R)`, fill=test$type), col=NA, alpha=0.3)+
-  scale_fill_manual(values=c("#60B7DE","#ff6961"), name="")+
+test$type <- c(rep("Mean prior 2", nR), rep("Mean prior 5", nR))
+test$dates <- rep(R_si_parametric$dates[15:84], 2)
+
+ggplot(test, aes(dates, `Mean(R)`, group = type, col = type)) +
+  scale_colour_manual(values = c("#3c3b5f", "#f06553"), name = "")+
+  geom_ribbon(aes(ymin = `Quantile.0.025(R)`, ymax = `Quantile.0.975(R)`,
+                  fill = test$type), col = NA, alpha = 0.3) +
+  scale_fill_manual(values = c("#60B7DE", "#ff6961"), name = "")+
   geom_line() +
-  ylab("R")+
+  ylab("R") +
   xlab("Time")
 ```
 
@@ -798,31 +816,35 @@ ggplot(test, aes(dates,`Mean(R)`,group=type,col=type)) +
 If we take the data from example A again, we could estimate R~t~ over three-week windows instead of the weekly windows used as the default.
 
 ```{r, results='hide', warning=FALSE, message=FALSE, fig.width=6}
-# t_start` is a sequence of start days for the sliding window, starting on day 2 ending 3 weeks before the last day in the dataset:
-t_start <- seq(2, nrow(evd_incid)-20) 
+# t_start` is a sequence of start days for the sliding window, starting on day 2
+# ending 3 weeks before the last day in the dataset:
+t_start <- seq(2, nrow(evd_incid) - 20) 
 
-# `t_end` is a sequence of end dates for the window 3 weeks after each start date defined above:
+# `t_end` is a sequence of end dates for the window 3 weeks after each start
+# date defined above:
 t_end <- t_start + 20
 
 R_window <- estimate_R(incid = evd_incid, 
                              method = "parametric_si",
-                             config = make_config(mean_si=14.2, std_si=9.6,
-                                                  t_start= t_start,
-                                                    t_end= t_end))
+                             config = make_config(mean_si = 14.2, std_si = 9.6,
+                                                  t_start = t_start,
+                                                  t_end = t_end))
 
-plot(R_window, legend=FALSE, "R") # "R" means that only the "Estimated R" panel will be displayed
+plot(R_window, legend = FALSE, "R")
 ```
 
 Below, the R estimates from example A (with the default weekly time windows) are plotted against the estimates made using three-week windows. Notice that because R has been estimated over longer time windows, the estimates for R~t~ are smoother than the estimates made in example A.
 
 ```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE, fig.width=7}
 test2 <- rbind(R_si_parametric$R, R_window$R)
-test2$type <- c(rep("1 week window",70),rep("3 week window",63)) # new variable to distinguish between each
-test2$dates <- c(R_si_parametric$dates[15:84],R_window$dates[22:84])
-ggplot(test2, aes(dates,`Mean(R)`,group=type,col=type)) +
-  scale_colour_manual(values=c("#f06553","#3c3b5f"), name="")+
-  geom_ribbon(aes(ymin = `Quantile.0.025(R)`, ymax=`Quantile.0.975(R)`, fill=test2$type), colour=NA, alpha=0.3)+
-  scale_fill_manual(values=c("#ff6961","#60B7DE"), name="") + ##87ceeb
+test2$type <- c(rep("1 week window", 70), rep("3 week window", 63))
+test2$dates <- c(R_si_parametric$dates[15:84], R_window$dates[22:84])
+
+ggplot(test2, aes(dates, `Mean(R)`, group = type, col = type)) +
+  scale_colour_manual(values = c("#f06553", "#3c3b5f"), name = "")+
+  geom_ribbon(aes(ymin = `Quantile.0.025(R)`, ymax = `Quantile.0.975(R)`,
+                  fill = test2$type), colour = NA, alpha = 0.3) +
+  scale_fill_manual(values = c("#ff6961", "#60B7DE"), name = "") +
   geom_line() +
   ylab("R")+
   xlab("Time")
