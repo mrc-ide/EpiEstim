@@ -393,7 +393,7 @@ estimate_R_agg <- function(incid,
           R_grid <- r2R0(r = r_grid, w = gt_distr)
           idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L))
         }
-        r <- vapply(idx_r, function(e) r_grid[e], numeric(1L))
+        vapply(idx_r, function(e) r_grid[e], numeric(1L))
       }
       
       gr <- get_r_from_R(R = Mean_R, 
