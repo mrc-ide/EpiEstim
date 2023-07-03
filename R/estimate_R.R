@@ -69,9 +69,14 @@
 #' in this case this will superseed config$t_start and config$t_end, 
 #' see \code{\link{estimate_R_agg}}. 
 #' 
+#' @param recon_opt one of "naive" or "match", see \code{\link{estimate_R_agg}}. 
+#' 
 #' @param iter number of iterations of the EM algorithm used to reconstruct 
 #' incidence at 1-time-unit intervals(integer, 10 by default). 
 #' Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.
+#' 
+#' @param tol tolerance used in the convergence check (numeric, 1e-6 by default),
+#' see \code{\link{estimate_R_agg}}. 
 #' 
 #' @param grid named list containing "precision", "min", and "max" which are 
 #' used to define a grid of growth rate parameters that are used inside the EM 
@@ -326,7 +331,9 @@ estimate_R <- function(incid,
                        config = make_config(incid = incid, method = method),
                        dt = 1L, # aggregation window of the data
                        dt_out = 7L, # desired sliding window length
+                       recon_opt = "naive",
                        iter = 10L,
+                       tol = 1e-6,
                        grid = list(precision = 0.001, min = -1, max = 1)) {
   
   method <- match.arg(method)
@@ -334,8 +341,8 @@ estimate_R <- function(incid,
   # switch between the standard estimate_R version and that which disaggregates
   # coarsely aggregated incidence data
   if(any(dt >= 2)) {
-    out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, iter = iter,
-                          config = config, method = method, grid = grid)
+    out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
+                          iter = iter, tol = tol, config = config, method = method, grid = grid)
   } else {
     
     config <- make_config(incid = incid, method = method, config = config)

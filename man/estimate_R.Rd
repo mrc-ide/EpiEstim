@@ -13,7 +13,9 @@ estimate_R(
   config = make_config(incid = incid, method = method),
   dt = 1L,
   dt_out = 7L,
+  recon_opt = "naive",
   iter = 10L,
+  tol = 1e-06,
   grid = list(precision = 0.001, min = -1, max = 1)
 )
 }
@@ -84,9 +86,14 @@ Only used if \code{dt > 1};
 in this case this will superseed config$t_start and config$t_end, 
 see \code{\link{estimate_R_agg}}.}
 
+\item{recon_opt}{one of "naive" or "match", see \code{\link{estimate_R_agg}}.}
+
 \item{iter}{number of iterations of the EM algorithm used to reconstruct 
 incidence at 1-time-unit intervals(integer, 10 by default). 
 Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.}
+
+\item{tol}{tolerance used in the convergence check (numeric, 1e-6 by default),
+see \code{\link{estimate_R_agg}}.}
 
 \item{grid}{named list containing "precision", "min", and "max" which are 
 used to define a grid of growth rate parameters that are used inside the EM 
