@@ -87,12 +87,12 @@
 
       
 
-      </header><script src="MV_EpiEstim_vignette_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>MV-EpiEstim</h1>
             
-            <h4 data-toc-skip class="date">2023-04-20</h4>
+            <h4 data-toc-skip class="date">2023-07-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/HEAD/vignettes/MV_EpiEstim_vignette.Rmd" class="external-link"><code>vignettes/MV_EpiEstim_vignette.Rmd</code></a></small>
       <div class="hidden name"><code>MV_EpiEstim_vignette.Rmd</code></div>
@@ -101,11 +101,21 @@
 
     
     
-<p>The <code>EpiEstim</code> package has been extended to allow users to estimate the effective transmission advantage of new pathogens/variants/strains compared to a reference pathogen/variant/strain in real-time. This vignette will take you through the key stages of estimating this advantage and also provide an example of how this method can be applied in a typical outbreak analysis workflow. Please also see the ‘FAQs’ section.</p>
-<div style="margin-top:30px;">
-<h2 id="input-data">Input data</h2>
+<p>The <code>EpiEstim</code> package has been extended to allow users to
+estimate the effective transmission advantage of new
+pathogens/variants/strains compared to a reference
+pathogen/variant/strain in real-time. This vignette will take you
+through the key stages of estimating this advantage and also provide an
+example of how this method can be applied in a typical outbreak analysis
+workflow. Please also see the ‘FAQs’ section.</p>
+<div class="section level3" style="margin-top:30px;">
+<h3 id="input-data">Input data<a class="anchor" aria-label="anchor" href="#input-data"></a>
+</h3>
 </div>
-<p>The <strong>incidence data</strong> needs to be supplied in the form of a multidimensional array, containing the incidence for each day of the outbreak (row), location (column) and variant/strain under investigation (third dimension), e.g.:</p>
+<p>The <strong>incidence data</strong> needs to be supplied in the form
+of a multidimensional array, containing the incidence for each day of
+the outbreak (row), location (column) and variant/strain under
+investigation (third dimension), e.g.:</p>
 <table class="table kable_wrapper"><tbody><tr>
 <td>
 <table class="table">
@@ -292,7 +302,12 @@ Region_3
 </table>
 </td>
 </tr></tbody></table>
-<p>The <strong>serial interval distributions</strong> must be supplied as a matrix with the number of columns matching the number of variants being considered. Each column should contain the probability mass function (PMF) for the discrete serial interval of each variant, starting with the PMF for day zero in the first row (which should be 0) and each column should sum to 1, e.g.:</p>
+<p>The <strong>serial interval distributions</strong> must be supplied
+as a matrix with the number of columns matching the number of variants
+being considered. Each column should contain the probability mass
+function (PMF) for the discrete serial interval of each variant,
+starting with the PMF for day zero in the first row (which should be 0)
+and each column should sum to 1, e.g.:</p>
 <table class="table">
 <thead><tr>
 <th style="text-align:left;">
@@ -363,7 +378,9 @@ Variant_2
 </tbody>
 </table>
 <p>##Estimate advantage</p>
-<p>To estimate the effective transmission advantage of new variants compared to a reference variant we use the <code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> function in <code>EpiEstim</code>.</p>
+<p>To estimate the effective transmission advantage of new variants
+compared to a reference variant we use the
+<code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> function in <code>EpiEstim</code>.</p>
 <p>###<code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/estimate_advantage.html">estimate_advantage</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incidence_object</span>, </span>
@@ -374,29 +391,81 @@ Variant_2
 <span>                   incid_imported <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>                   precompute <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                   reorder_incid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>As described above, the <code>incid=</code> and <code>si_distr=</code> arguments should be supplied with a multidimensional array of incidence and a matrix containing the serial interval for each variant respectively. In addition, the user can supply:</p>
+<p>As described above, the <code>incid=</code> and
+<code>si_distr=</code> arguments should be supplied with a
+multidimensional array of incidence and a matrix containing the serial
+interval for each variant respectively. In addition, the user can
+supply:</p>
 <ul>
-<li><p><code>priors=</code> with a list of the prior parameters (shape and scale) for the reproduction number and the transmission advantage. The default priors can be obtained using the <code><a href="../reference/default_priors.html">default_priors()</a></code> function.</p></li>
-<li><p><code>mcmc_control=</code> with a list of the default properties of the MCMC, i.e. the number of iterations, burn-in and the thinning of the MCMC chains. Burn-in is the number of iterations to be discarded as “warm-up”, for instance, if burnin=10 the output is only recorded after 10 iterations have run. Thinning determines how much the MCMC chains should be thinned out, if thin = 10 then 1 in every 10 iterations will be kept. The default parameters can be obtained using <code><a href="../reference/default_mcmc_controls.html">default_mcmc_controls()</a></code>.</p></li>
-<li><p><code>t_min=</code> and <code>t_max=</code> with integers that give the minimum and maximum time step over which the transmission advantage will be estimated. Note that cases before <code>t_min</code> will still be accounted for as potential infectors in the likelihood. Indeed, cases before <code>t_min</code> can contribute to the overall infectiousness from t_min to t_max through the serial interval distribution. <code>t_min</code> must be &gt;1 and if <code>t_min = NULL</code> then this is automatically calculated as the maximum of the 95th percentile of the SI distribution. <code>t_max</code> must be &gt; <code>t_min</code> and &lt;= the number of rows of the incidence data. The default value of <code>t_max</code> is <code>nrow(incid)</code>.</p></li>
+<li><p><code>priors=</code> with a list of the prior parameters (shape
+and scale) for the reproduction number and the transmission advantage.
+The default priors can be obtained using the
+<code><a href="../reference/default_priors.html">default_priors()</a></code> function.</p></li>
+<li><p><code>mcmc_control=</code> with a list of the default properties
+of the MCMC, i.e. the number of iterations, burn-in and the thinning of
+the MCMC chains. Burn-in is the number of iterations to be discarded as
+“warm-up”, for instance, if burnin=10 the output is only recorded after
+10 iterations have run. Thinning determines how much the MCMC chains
+should be thinned out, if thin = 10 then 1 in every 10 iterations will
+be kept. The default parameters can be obtained using
+<code><a href="../reference/default_mcmc_controls.html">default_mcmc_controls()</a></code>.</p></li>
+<li><p><code>t_min=</code> and <code>t_max=</code> with integers that
+give the minimum and maximum time step over which the transmission
+advantage will be estimated. Note that cases before <code>t_min</code>
+will still be accounted for as potential infectors in the likelihood.
+Indeed, cases before <code>t_min</code> can contribute to the overall
+infectiousness from t_min to t_max through the serial interval
+distribution. <code>t_min</code> must be &gt;1 and if
+<code>t_min = NULL</code> then this is automatically calculated as the
+maximum of the 95th percentile of the SI distribution.
+<code>t_max</code> must be &gt; <code>t_min</code> and &lt;= the number
+of rows of the incidence data. The default value of <code>t_max</code>
+is <code>nrow(incid)</code>.</p></li>
 </ul>
 <p>Other optional parameters include:</p>
 <ul>
-<li><p><code>incid_imported=</code> where a multidimensional array can be supplied (row = time, column = location, third dimension = variant) containing the incidence of imported cases, such that <code>incid - incid_imported</code> would be the incidence of locally infected cases. If <code>incid_imported = NULL</code> it will be assumed that (other than in the first time step) all cases arose from local transmission.</p></li>
-<li><p><code>precompute=</code> which can be <code>TRUE</code> or <code>FALSE</code>, but defaults to <code>TRUE</code>. This determines whether the shape of the posterior distributions for R and the transmission advantage (for the non-reference variant(s)) for each time step and location should be precalculated. This makes <code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> faster, only use <code>precompute=FALSE</code> for debugging.</p></li>
-<li><p><code>reorder_incid=</code> which can be <code>TRUE</code> or <code>FALSE</code>, but defaults to <code>TRUE</code>. If <code>TRUE</code> then during the estimation of the transmission advantage the incidence array will be temporarily re-ordered so that all variants are compared to the most transmissible variant (temporarily considered the reference) regardless of the order in which the user supplied the data. Note that the results will always be returned in the order supplied by the user. We recommend that this is set to <code>TRUE</code>.</p></li>
+<li><p><code>incid_imported=</code> where a multidimensional array can
+be supplied (row = time, column = location, third dimension = variant)
+containing the incidence of imported cases, such that
+<code>incid - incid_imported</code> would be the incidence of locally
+infected cases. If <code>incid_imported = NULL</code> it will be assumed
+that (other than in the first time step) all cases arose from local
+transmission.</p></li>
+<li><p><code>precompute=</code> which can be <code>TRUE</code> or
+<code>FALSE</code>, but defaults to <code>TRUE</code>. This determines
+whether the shape of the posterior distributions for R and the
+transmission advantage (for the non-reference variant(s)) for each time
+step and location should be precalculated. This makes
+<code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> faster, only use
+<code>precompute=FALSE</code> for debugging.</p></li>
+<li><p><code>reorder_incid=</code> which can be <code>TRUE</code> or
+<code>FALSE</code>, but defaults to <code>TRUE</code>. If
+<code>TRUE</code> then during the estimation of the transmission
+advantage the incidence array will be temporarily re-ordered so that all
+variants are compared to the most transmissible variant (temporarily
+considered the reference) regardless of the order in which the user
+supplied the data. Note that the results will always be returned in the
+order supplied by the user. We recommend that this is set to
+<code>TRUE</code>.</p></li>
 </ul>
-<div style="margin-top:30px;">
-<h1 id="examples">Examples</h1>
+<div class="section level2" style="margin-top:30px;">
+<h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h2>
 </div>
 <div class="section level3">
 <h3 id="sars-cov-2-variants">SARS-CoV-2 variants<a class="anchor" aria-label="anchor" href="#sars-cov-2-variants"></a>
 </h3>
-<p>This example will take you through a workflow using incidence data for two variants of SARS-CoV-2 (wildtype and alpha) across 7 NHS regions in England. (For detailed description of the data see Bhatia et al. 2021)</p>
+<p>This example will take you through a workflow using incidence data
+for two variants of SARS-CoV-2 (wildtype and alpha) across 7 NHS regions
+in England. (For detailed description of the data see Bhatia et
+al. 2021)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"./data_mv_vignette/incid.rds"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Incidence</strong></p>
-<p>Let us say we have incidence data in the format below, where each row corresponds to a time step in the outbreak, each column corresponds to a region in England, and each third dimension corresponds to a variant.</p>
+<p>Let us say we have incidence data in the format below, where each row
+corresponds to a time step in the outbreak, each column corresponds to a
+region in England, and each third dimension corresponds to a
+variant.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span></span>
 <span><span class="co">#&gt; , , wild</span></span>
@@ -432,7 +501,10 @@ Variant_2
 <span><span class="co">#&gt; [4,]          0          0</span></span>
 <span><span class="co">#&gt; [5,]          0          0</span></span>
 <span><span class="co">#&gt; [6,]          0          0</span></span></code></pre></div>
-<p>We also assume that the SI is the same for both variants, with a mean of 5.4 days and a standard deviation of 1.5 days (Rai, Shukla, and Dwivedi 2021) and produce a matrix of SI’s with the number of columns equal to the number of variants:</p>
+<p>We also assume that the SI is the same for both variants, with a mean
+of 5.4 days and a standard deviation of 1.5 days (Rai, Shukla, and
+Dwivedi 2021) and produce a matrix of SI’s with the number of columns
+equal to the number of variants:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mean_SI</span> <span class="op">&lt;-</span> <span class="fl">5.4</span></span>
 <span><span class="va">sd_SI</span> <span class="op">&lt;-</span> <span class="fl">1.5</span></span>
@@ -448,7 +520,9 @@ Variant_2
 <span><span class="co">#&gt; [5,] 2.125381e-01 2.125381e-01</span></span>
 <span><span class="co">#&gt; [6,] 2.683362e-01 2.683362e-01</span></span></code></pre></div>
 <p><strong>Estimate transmission advantage</strong></p>
-<p>Now that we have our incidence and SI distributions we can supply these to the <code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> function. We use the default priors and MCMC controls.</p>
+<p>Now that we have our incidence and SI distributions we can supply
+these to the <code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> function. We use the
+default priors and MCMC controls.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu">EpiEstim</span><span class="fu">::</span><span class="fu"><a href="../reference/estimate_advantage.html">estimate_advantage</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid</span>,</span>
 <span>                             si_distr <span class="op">=</span> <span class="va">si_matrix</span>,</span>
@@ -458,45 +532,88 @@ Variant_2
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">epsilon</span></span></code></pre></div>
 <ul>
-<li>epsilon - the estimated effective transmission advantage. This is a matrix containing the MCMC chain (thinned and after burnin) for the relative transmissibility of the “new” variant (alpha) compared to the reference variant (wildtype) across all locations. Each row in the matrix is a “new” variant (in this case only 1) and each column an iteration of the MCMC. If epsilon &gt;1 then the corresponding variant is estimated to have a transmission advantage over the reference variant.</li>
+<li>epsilon - the estimated effective transmission advantage. This is a
+matrix containing the MCMC chain (thinned and after burnin) for the
+relative transmissibility of the “new” variant (alpha) compared to the
+reference variant (wildtype) across all locations. Each row in the
+matrix is a “new” variant (in this case only 1) and each column an
+iteration of the MCMC. If epsilon &gt;1 then the corresponding variant
+is estimated to have a transmission advantage over the reference
+variant.</li>
 </ul>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">R</span></span></code></pre></div>
 <ul>
-<li>R - the reproduction number estimate for the reference variant. This is an array containing the MCMC chain (thinned and after burnin) for the reproduction number of the reference variant. The first dimension of the array is time, the second is the location, and the third is the iteration of the MCMC.</li>
+<li>R - the reproduction number estimate for the reference variant. This
+is an array containing the MCMC chain (thinned and after burnin) for the
+reproduction number of the reference variant. The first dimension of the
+array is time, the second is the location, and the third is the
+iteration of the MCMC.</li>
 </ul>
-<p>In this example, we did not specify <code>t_min=</code> or <code>t_max=</code>. You will notice that the R estimates do not start until day 25, this is because: 1) One of the regions doesn’t have cases of the alpha variant until day 16, 2) The 95th percentile of the SI is 9 days.</p>
+<p>In this example, we did not specify <code>t_min=</code> or
+<code>t_max=</code>. You will notice that the R estimates do not start
+until day 25, this is because: 1) One of the regions doesn’t have cases
+of the alpha variant until day 16, 2) The 95th percentile of the SI is 9
+days.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">convergence</span></span></code></pre></div>
 <ul>
-<li>convergence - result of the Gelman-Rubin convergence diagnostic. This is either ‘TRUE’ or ‘FALSE’ and tells you whether the corresponding epsilon MCMC chain for each “new” variant has converged within the number of iterations specified.</li>
+<li>convergence - result of the Gelman-Rubin convergence diagnostic.
+This is either ‘TRUE’ or ‘FALSE’ and tells you whether the corresponding
+epsilon MCMC chain for each “new” variant has converged within the
+number of iterations specified.</li>
 </ul>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">diag</span></span></code></pre></div>
 <ul>
-<li>diag - nested list of the point estimate and upper confidence limits of the Gelman-Rubin convergence diagnostics (as implemented in the R package <code>coda</code>). The length of diag is equal to the number of rows in epsilon (i.e. the number of non-reference variants, in this case only 1). Each element of diag contains a named list of the point estimate and upper confidence limits.</li>
+<li>diag - nested list of the point estimate and upper confidence limits
+of the Gelman-Rubin convergence diagnostics (as implemented in the R
+package <code>coda</code>). The length of diag is equal to the number of
+rows in epsilon (i.e. the number of non-reference variants, in this case
+only 1). Each element of diag contains a named list of the point
+estimate and upper confidence limits.</li>
 </ul>
 <p><strong>Summarise results</strong></p>
-<p>To summarise the estimated transmission advantage one can use the posterior median and 95% CrI as follows.</p>
+<p>To summarise the estimated transmission advantage one can use the
+posterior median and 95% CrI as follows.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">output</span><span class="op">$</span><span class="va">epsilon</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>,<span class="fl">0.025</span>,<span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      50%     2.5%    97.5% </span></span>
-<span><span class="co">#&gt; 1.492057 1.471760 1.512255</span></span></code></pre></div>
-<div style="margin-top:30px;">
-<h2 id="faqs">FAQs</h2>
+<span><span class="co">#&gt; 1.492081 1.468234 1.513106</span></span></code></pre></div>
+</div>
+<div class="section level2" style="margin-top:30px;">
+<h2 id="faqs">FAQs<a class="anchor" aria-label="anchor" href="#faqs"></a>
+</h2>
 </div>
 <ul>
-<li><strong>Why should the estimates of the reproduction number produced by <code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> be interpreted with caution?</strong></li>
+<li><strong>Why should the estimates of the reproduction number produced
+by <code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> be interpreted with
+caution?</strong></li>
 </ul>
-<p>The inference framework jointly estimates the instantaneous reproduction number of the reference variant and the effective transmission advantage of new variants. R estimates here should be interpreted with caution because they represent estimates from the joint distribution of the reproduction number and transmission advantage, therefore depending on the incidence of the reference <em>as well as</em> the new variant(s). Moreover, temporal variation in estimates of the instantaneous reproduction number can arise from a number of factors, such as the implementation of control measures, changes in population behaviour, or variability in the reporting of cases over time. If only interested in estimating the reference R<sub>t</sub>, we recommend using <code><a href="../reference/estimate_R.html">estimate_R()</a></code>.</p>
+<p>The inference framework jointly estimates the instantaneous
+reproduction number of the reference variant and the effective
+transmission advantage of new variants. R estimates here should be
+interpreted with caution because they represent estimates from the joint
+distribution of the reproduction number and transmission advantage,
+therefore depending on the incidence of the reference <em>as well
+as</em> the new variant(s). Moreover, temporal variation in estimates of
+the instantaneous reproduction number can arise from a number of
+factors, such as the implementation of control measures, changes in
+population behaviour, or variability in the reporting of cases over
+time. If only interested in estimating the reference R<sub>t</sub>, we
+recommend using <code><a href="../reference/estimate_R.html">estimate_R()</a></code>.</p>
 <ul>
-<li><strong>What do some of the common warning/error messages mean?</strong></li>
+<li><strong>What do some of the common warning/error messages
+mean?</strong></li>
 </ul>
 <pre><code><span><span class="st">"The Gelman-Rubin algorithm suggests the MCMC may not have converged within the number of iterations specified."</span></span></code></pre>
-<p>This means that the MCMC chains for the estimation have not converged. To avoid this you may need to run <code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> with more MCMC iterations. E.g. by altering <code>mcmc_control()</code>.</p>
+<p>This means that the MCMC chains for the estimation have not
+converged. To avoid this you may need to run
+<code><a href="../reference/estimate_advantage.html">estimate_advantage()</a></code> with more MCMC iterations. E.g. by
+altering <code>mcmc_control()</code>.</p>
 <pre><code><span><span class="st">"Input SI distributions should sum to 1. Normalising now"</span></span></code></pre>
-<p>The SI distributions supplied have been re-normalised so that they sum to 1.</p>
-</div>
+<p>The SI distributions supplied have been re-normalised so that they
+sum to 1.</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

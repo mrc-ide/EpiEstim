@@ -87,13 +87,13 @@
 
       
 
-      </header><script src="short_demo_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>EpiEstim: a demonstration</h1>
                         <h4 data-toc-skip class="author">Anne Cori</h4>
             
-            <h4 data-toc-skip class="date">2023-04-20</h4>
+            <h4 data-toc-skip class="date">2023-07-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/HEAD/vignettes/short_demo.Rmd" class="external-link"><code>vignettes/short_demo.Rmd</code></a></small>
       <div class="hidden name"><code>short_demo.Rmd</code></div>
@@ -105,11 +105,22 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>This vignette provides a short demonstration of the package. We consider a dataset containing information on pandemic influenza. The dataset contains:</p>
+<p>This vignette provides a short demonstration of the package. We
+consider a dataset containing information on pandemic influenza. The
+dataset contains:</p>
 <ol style="list-style-type: decimal">
-<li><p>the daily incidence of onset of acute respiratory illness (ARI, defined as at least two symptoms among fever, cough, sore throat, and runny nose) amongst children in a school in Pennsylvania during the 2009 H1N1 influenza pandemic (see Cauchemez et al., PNAS, 2011),</p></li>
-<li><p>the discrete daily distribution of the serial interval (time interval between symptoms onset in a case and in their infector) for influenza, assuming a shifted Gamma distribution with mean 2.6 days, standard deviation 1.5 days and shift 1 day (as in Ferguson et al., Nature, 2005).</p></li>
-<li><p>interval-censored serial interval data from the 2009 outbreak of H1N1 influenza in San Antonio, Texas, USA (from Morgan et al., EID 2010).</p></li>
+<li><p>the daily incidence of onset of acute respiratory illness (ARI,
+defined as at least two symptoms among fever, cough, sore throat, and
+runny nose) amongst children in a school in Pennsylvania during the 2009
+H1N1 influenza pandemic (see Cauchemez et al., PNAS, 2011),</p></li>
+<li><p>the discrete daily distribution of the serial interval (time
+interval between symptoms onset in a case and in their infector) for
+influenza, assuming a shifted Gamma distribution with mean 2.6 days,
+standard deviation 1.5 days and shift 1 day (as in Ferguson et al.,
+Nature, 2005).</p></li>
+<li><p>interval-censored serial interval data from the 2009 outbreak of
+H1N1 influenza in San Antonio, Texas, USA (from Morgan et al., EID
+2010).</p></li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mrc-ide/EpiEstim" class="external-link">EpiEstim</a></span><span class="op">)</span></span>
@@ -143,7 +154,8 @@
 <span><span class="co">#&gt; 4  0  1  2  5    0</span></span>
 <span><span class="co">#&gt; 5  0  1  1  9    0</span></span>
 <span><span class="co">#&gt; 6  0  1  2  4    0</span></span></code></pre></div>
-<p>We can use the <code>incidence</code> R package to easily plot the daily incidence data:</p>
+<p>We can use the <code>incidence</code> R package to easily plot the
+daily incidence data:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.repidemicsconsortium.org/incidence/" class="external-link">incidence</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/conversions.html" class="external-link">as.incidence</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">I</span>, dates <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">dates</span><span class="op">)</span><span class="op">)</span></span>
@@ -156,14 +168,27 @@
 <span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
 <p><img src="figs-demo/incidence-1.png" width="576"></p>
-<p>We can run <code>estimate_R</code> on the incidence data to estimate the reproduction number R. For this, we need to specify i) the time window(s) over which to estimate R and ii) information on the distribution of the serial interval.</p>
-<p>For i), the default behavior is to estimate R over weekly sliding windows. This can be changed through the <code>config$t_start</code> and <code>config$t_end</code> arguments (see below, “Changing the time windows for estimation”). For ii), there are several options, specified in the <code>method</code> argument.</p>
-<p>The simplest is the <code>parametric_si</code> method, where you only specify the mean and standard deviation of the SI.</p>
+<p>We can run <code>estimate_R</code> on the incidence data to estimate
+the reproduction number R. For this, we need to specify i) the time
+window(s) over which to estimate R and ii) information on the
+distribution of the serial interval.</p>
+<p>For i), the default behavior is to estimate R over weekly sliding
+windows. This can be changed through the <code>config$t_start</code> and
+<code>config$t_end</code> arguments (see below, “Changing the time
+windows for estimation”). For ii), there are several options, specified
+in the <code>method</code> argument.</p>
+<p>The simplest is the <code>parametric_si</code> method, where you only
+specify the mean and standard deviation of the SI.</p>
 </div>
 <div class="section level2">
-<h2 id="estimating-r-on-sliding-weekly-windows-with-a-parametric-serial-interval">Estimating R on sliding weekly windows, with a parametric serial interval<a class="anchor" aria-label="anchor" href="#estimating-r-on-sliding-weekly-windows-with-a-parametric-serial-interval"></a>
+<h2 id="estimating-r-on-sliding-weekly-windows-with-a-parametric-serial-interval">Estimating R on sliding weekly windows, with a parametric serial
+interval<a class="anchor" aria-label="anchor" href="#estimating-r-on-sliding-weekly-windows-with-a-parametric-serial-interval"></a>
 </h2>
-<p>In this example, we only specify the mean and standard deviation of the serial interval. In that case an offset gamma distribution is used for the serial interval. In the following example, we use the mean and standard deviation of the serial interval for flu from Ferguson et al., Nature, 2005:</p>
+<p>In this example, we only specify the mean and standard deviation of
+the serial interval. In that case an offset gamma distribution is used
+for the serial interval. In the following example, we use the mean and
+standard deviation of the serial interval for flu from Ferguson et al.,
+Nature, 2005:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_parametric_si</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span>
 <span>                                method<span class="op">=</span><span class="st">"parametric_si"</span>,</span>
@@ -196,7 +221,10 @@
 <span><span class="co">#&gt; 4          2.008849</span></span>
 <span><span class="co">#&gt; 5          1.956336</span></span>
 <span><span class="co">#&gt; 6          2.165745</span></span></code></pre></div>
-<p>The output of the estimate_r function is a list containing a number of elements, the most important of which is <code>R</code>, a data.frame containing details on the estimated reproduction number. Each line corresponds to one time window.</p>
+<p>The output of the estimate_r function is a list containing a number
+of elements, the most important of which is <code>R</code>, a data.frame
+containing details on the estimated reproduction number. Each line
+corresponds to one time window.</p>
 <p>The output can be plotted as follows:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_parametric_si</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -204,12 +232,17 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># use `type = "R"`, `type = "incid"` or `type = "SI"` </span></span>
 <span><span class="co"># to generate only one of the 3 plots</span></span></code></pre></div>
-<p>This produces three graphs showing the incidence time series, the estimated reproduction number (posterior mean and 95\% credible interval, with estimates for a time window plotted at the end of the time window) and the discrete distribution of the serial interval.</p>
+<p>This produces three graphs showing the incidence time series, the
+estimated reproduction number (posterior mean and 95\% credible
+interval, with estimates for a time window plotted at the end of the
+time window) and the discrete distribution of the serial interval.</p>
 </div>
 <div class="section level2">
 <h2 id="estimating-r-with-a-non-parametric-serial-interval-distribution">Estimating R with a non parametric serial interval distribution<a class="anchor" aria-label="anchor" href="#estimating-r-with-a-non-parametric-serial-interval-distribution"></a>
 </h2>
-<p>If one already has a full distribution of the serial interval, and not only a mean and standard deviation, this can be fed into <code>estimate_r</code> as follows:</p>
+<p>If one already has a full distribution of the serial interval, and
+not only a mean and standard deviation, this can be fed into
+<code>estimate_r</code> as follows:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_non_parametric_si</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span>
 <span>                                    method<span class="op">=</span><span class="st">"non_parametric_si"</span>,</span>
@@ -222,7 +255,10 @@
 <span><span class="co"># time intervals 0, 1, 2, etc.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_non_parametric_si</span>, <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figs-demo/estimate_r_non_parametric_si-1.png" width="576"></p>
-<p>Note that you can obtain such a full distribution of the serial interval using <code>discr_si</code> function (this is how <code>Flu2009$si_distr</code> was obtained, with additional rounding):</p>
+<p>Note that you can obtain such a full distribution of the serial
+interval using <code>discr_si</code> function (this is how
+<code>Flu2009$si_distr</code> was obtained, with additional
+rounding):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/discr_si.html">discr_si</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span>, mu <span class="op">=</span> <span class="fl">2.6</span>, sigma <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] 0.000000e+00 2.331721e-01 3.585794e-01 1.981108e-01 1.033427e-01</span></span>
@@ -232,9 +268,15 @@
 <span><span class="co">#&gt; [21] 1.534394e-06</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="estimating-r-accounting-for-uncertainty-on-the-serial-interval-distribution">Estimating R accounting for uncertainty on the serial interval distribution<a class="anchor" aria-label="anchor" href="#estimating-r-accounting-for-uncertainty-on-the-serial-interval-distribution"></a>
+<h2 id="estimating-r-accounting-for-uncertainty-on-the-serial-interval-distribution">Estimating R accounting for uncertainty on the serial interval
+distribution<a class="anchor" aria-label="anchor" href="#estimating-r-accounting-for-uncertainty-on-the-serial-interval-distribution"></a>
 </h2>
-<p>Sometimes, especially early in outbreaks, the serial interval distribution can be poorly specified. Therefore <code>estimate_R</code> also allows integrating results over various distributions of the serial interval. To do so, the mean and sd of the serial interval are each drawn from truncated normal distributions, with parameters specified by the user, as in the example below:</p>
+<p>Sometimes, especially early in outbreaks, the serial interval
+distribution can be poorly specified. Therefore <code>estimate_R</code>
+also allows integrating results over various distributions of the serial
+interval. To do so, the mean and sd of the serial interval are each
+drawn from truncated normal distributions, with parameters specified by
+the user, as in the example below:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## we choose to draw:</span></span>
 <span><span class="co">## - the mean of the SI in a Normal(2.6, 1), truncated at 1 and 4.2</span></span>
@@ -252,17 +294,37 @@
 <p><img src="figs-demo/estimate_r_uncertain_si-1.png" width="576"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## the third plot now shows all the SI distributions considered</span></span></code></pre></div>
-<p>Note that the results above are obtained numerically and thus can be slower to compute. You can adjust the parameters governing the sample sizes by altering the default values of <code>config$n1</code> and <code>config$n2</code> (<code>n1</code> is the number of pairs of mean and sd of the SI that are drawn and <code>n2</code> is the size of the posterior sample drawn for each pair of mean, sd of SI).</p>
+<p>Note that the results above are obtained numerically and thus can be
+slower to compute. You can adjust the parameters governing the sample
+sizes by altering the default values of <code>config$n1</code> and
+<code>config$n2</code> (<code>n1</code> is the number of pairs of mean
+and sd of the SI that are drawn and <code>n2</code> is the size of the
+posterior sample drawn for each pair of mean, sd of SI).</p>
 </div>
 <div class="section level2">
-<h2 id="estimating-r-and-the-serial-interval-using-data-on-pairs-infectorinfected">Estimating R and the serial interval using data on pairs infector/infected<a class="anchor" aria-label="anchor" href="#estimating-r-and-the-serial-interval-using-data-on-pairs-infectorinfected"></a>
+<h2 id="estimating-r-and-the-serial-interval-using-data-on-pairs-infectorinfected">Estimating R and the serial interval using data on pairs
+infector/infected<a class="anchor" aria-label="anchor" href="#estimating-r-and-the-serial-interval-using-data-on-pairs-infectorinfected"></a>
 </h2>
-<p>Usually, the serial interval distribution is estimated using data on the date of symptoms onset in pairs of infectors / infected individuals. The serial interval distribution estimate is then fed into reproduction number estimates. Typically, a single SI distribution is used to estimate the reproduction number throughout an outbreak.</p>
-<p>This approach doesn’t account for uncertainty in the serial interval distribution, and doesn’t allow to incorporate data collected later in the outbreak which could inform the serial interval distribution.</p>
-<p>In <code>estimate_R</code>, we now allow the serial interval distribution to be directly estimated, using MCMC, from interval censored exposure data. The reproduction number is then estimated using the posterior distribution of the SI, hence accounting for the uncertainty associated with this estimate.</p>
-<p>As the epidemic progresses, newly collected exposure data can be incorporated to update the serial interval estimate.</p>
-<p>This method is new to <code>EpiEstim</code> and described in a manuscript in preparation (Thompson et al.).</p>
-<p>The <code>Flu2009</code> dataset contains interval-censored serial interval data from the 2009 outbreak of H1N1 influenza in San Antonio, Texas, USA (from Morgan et al., EID 2010).</p>
+<p>Usually, the serial interval distribution is estimated using data on
+the date of symptoms onset in pairs of infectors / infected individuals.
+The serial interval distribution estimate is then fed into reproduction
+number estimates. Typically, a single SI distribution is used to
+estimate the reproduction number throughout an outbreak.</p>
+<p>This approach doesn’t account for uncertainty in the serial interval
+distribution, and doesn’t allow to incorporate data collected later in
+the outbreak which could inform the serial interval distribution.</p>
+<p>In <code>estimate_R</code>, we now allow the serial interval
+distribution to be directly estimated, using MCMC, from interval
+censored exposure data. The reproduction number is then estimated using
+the posterior distribution of the SI, hence accounting for the
+uncertainty associated with this estimate.</p>
+<p>As the epidemic progresses, newly collected exposure data can be
+incorporated to update the serial interval estimate.</p>
+<p>This method is new to <code>EpiEstim</code> and described in a
+manuscript in preparation (Thompson et al.).</p>
+<p>The <code>Flu2009</code> dataset contains interval-censored serial
+interval data from the 2009 outbreak of H1N1 influenza in San Antonio,
+Texas, USA (from Morgan et al., EID 2010).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## interval-ceonsored serial interval data:</span></span>
 <span><span class="co">## each line represents a transmission event, </span></span>
@@ -278,7 +340,9 @@
 <span><span class="co">#&gt; 4  0  1  2  5    0</span></span>
 <span><span class="co">#&gt; 5  0  1  1  9    0</span></span>
 <span><span class="co">#&gt; 6  0  1  2  4    0</span></span></code></pre></div>
-<p>These can be used to estimate the SI within <code>estimate_R</code>, and produce estimates of the reproduction number based on the full SI posterior distribution:</p>
+<p>These can be used to estimate the SI within <code>estimate_R</code>,
+and produce estimates of the reproduction number based on the full SI
+posterior distribution:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## fixing the random seeds</span></span>
 <span><span class="va">MCMC_seed</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -329,7 +393,12 @@
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## the third plot now shows the posterior sample of SI distributions </span></span>
 <span><span class="co">## that were integrated over</span></span></code></pre></div>
-<p>Now say you want to save your estimates of the serial interval first, and then use them within <code>estimate_R</code>. This can be useful e.g. if you want to explore several time windows for R estimation, but based on the same SI data, and so you don’t want to run the MCMC to estimate the SI within <code>estimate_R</code> every time. You can do this as follow:</p>
+<p>Now say you want to save your estimates of the serial interval first,
+and then use them within <code>estimate_R</code>. This can be useful
+e.g. if you want to explore several time windows for R estimation, but
+based on the same SI data, and so you don’t want to run the MCMC to
+estimate the SI within <code>estimate_R</code> every time. You can do
+this as follow:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## using the same random seeds as before to be able to compare results</span></span>
 <span></span>
@@ -381,7 +450,10 @@
 <div class="section level2">
 <h2 id="changing-the-time-windows-for-estimation">Changing the time windows for estimation<a class="anchor" aria-label="anchor" href="#changing-the-time-windows-for-estimation"></a>
 </h2>
-<p>The time window can be specified through arguments <code>config$t_start</code> and <code>config$t_end</code>. For instance, the default weekly sliding windows can also be obtained by specifying:</p>
+<p>The time window can be specified through arguments
+<code>config$t_start</code> and <code>config$t_end</code>. For instance,
+the default weekly sliding windows can also be obtained by
+specifying:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="cn">T</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">)</span></span>
 <span><span class="va">t_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="cn">T</span><span class="op">-</span><span class="fl">6</span><span class="op">)</span> <span class="co"># starting at 2 as conditional on the past observations</span></span>
@@ -410,7 +482,13 @@
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_biweekly</span>, <span class="st">"R"</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="figs-demo/estimate_r_biweekly-1.png" width="576"></p>
-<p>So far we have used estimates on sliding windows. Sometimes it may be useful to consider consecutive non overlapping windows as well. For instance, in the flu outbreak we are considering, the school closed from 14th to 20th May 2009, i.e. days 18 to 24 in our dataset (Cauchemez et al., PNAS, 2011). It is interesting to estimate the reproduction number before, during, and after the school closure to assess whether this had an impact on transmissibility.</p>
+<p>So far we have used estimates on sliding windows. Sometimes it may be
+useful to consider consecutive non overlapping windows as well. For
+instance, in the flu outbreak we are considering, the school closed from
+14th to 20th May 2009, i.e. days 18 to 24 in our dataset (Cauchemez et
+al., PNAS, 2011). It is interesting to estimate the reproduction number
+before, during, and after the school closure to assess whether this had
+an impact on transmissibility.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">18</span>, <span class="fl">25</span><span class="op">)</span> <span class="co"># starting at 2 as conditional on the past observations</span></span>
 <span><span class="va">t_end</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">17</span>, <span class="fl">24</span>, <span class="fl">32</span><span class="op">)</span></span>
@@ -425,14 +503,23 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_before_during_after_closure</span>, <span class="st">"R"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figs-demo/estimate_r_before_during_after_closure-1.png" width="576"></p>
-<p>The results above suggest that the school closure was effective in terms of reducing transmissibility, as the estimated reproduction number during the school closure was significantly lower than that before closure, and was estimated to be under the threshold value 1.</p>
+<p>The results above suggest that the school closure was effective in
+terms of reducing transmissibility, as the estimated reproduction number
+during the school closure was significantly lower than that before
+closure, and was estimated to be under the threshold value 1.</p>
 </div>
 <div class="section level2">
 <h2 id="different-ways-of-specifying-the-incidence">Different ways of specifying the incidence<a class="anchor" aria-label="anchor" href="#different-ways-of-specifying-the-incidence"></a>
 </h2>
-<p>So far we have specified the <code>incid</code> argument using a table with two columns indicating the dates and the number of incident cases for each date.</p>
-<p><code>estimate_R</code> accepts a range of formats for its <code>incid</code> argument.</p>
-<p>This can be a table, as we’ve seen. In that case there needs to be a column called <code>I</code> containing the number of incident cases. If a column <code>dates</code> is present it is used in the x-axes when producing plots:</p>
+<p>So far we have specified the <code>incid</code> argument using a
+table with two columns indicating the dates and the number of incident
+cases for each date.</p>
+<p><code>estimate_R</code> accepts a range of formats for its
+<code>incid</code> argument.</p>
+<p>This can be a table, as we’ve seen. In that case there needs to be a
+column called <code>I</code> containing the number of incident cases. If
+a column <code>dates</code> is present it is used in the x-axes when
+producing plots:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        dates I</span></span>
@@ -450,7 +537,8 @@
 <span><span class="co">#&gt;     To change this change the t_start and t_end arguments.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_incid_table</span>, <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figs-demo/incid_table-1.png" width="576"></p>
-<p>It can just be a vector (but then the x-axis in your plots is measured in time steps since start of the outbreak)</p>
+<p>It can just be a vector (but then the x-axis in your plots is
+measured in time steps since start of the outbreak)</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_incid_vector</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">I</span>, </span>
 <span>                               method<span class="op">=</span><span class="st">"parametric_si"</span>,</span>
@@ -459,12 +547,16 @@
 <span><span class="co">#&gt;     To change this change the t_start and t_end arguments.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_incid_vector</span>, <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figs-demo/incid_vector-1.png" width="576"></p>
-<p>Finally, <code>incid</code> can be an object of the class <code>incidence</code>, as created for instance by the function <code>incidence</code> of the <code>incidence</code> package.</p>
-<p>Let’s artificially create a line-list corresponding to our flu incidence data:</p>
+<p>Finally, <code>incid</code> can be an object of the class
+<code>incidence</code>, as created for instance by the function
+<code>incidence</code> of the <code>incidence</code> package.</p>
+<p>Let’s artificially create a line-list corresponding to our flu
+incidence data:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates_onset</span> <span class="op">&lt;-</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">dates</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">i</span>, <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">I</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
-<p>and now use the <code>incidence</code> function to generate an object that we feed to <code>estimate_R</code>:</p>
+<p>and now use the <code>incidence</code> function to generate an object
+that we feed to <code>estimate_R</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">last_date</span> <span class="op">&lt;-</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">date</span><span class="op">[</span><span class="cn">T</span><span class="op">]</span></span>
 <span><span class="va">res_incid_class</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/incidence.html" class="external-link">incidence</a></span><span class="op">(</span><span class="va">dates_onset</span>, last_date <span class="op">=</span> <span class="va">last_date</span><span class="op">)</span>, </span>
@@ -478,7 +570,12 @@
 <div class="section level2">
 <h2 id="specifying-imported-cases">Specifying imported cases<a class="anchor" aria-label="anchor" href="#specifying-imported-cases"></a>
 </h2>
-<p>All of the above assumes that all cases are linked by local transmission. Sometimes you may have information (from field epidemiological investigations for instance) indicating that some cases are in fact imported (from another location, or from an animal reservoir). We allow to include such information, when available, as illustrated in the example below:</p>
+<p>All of the above assumes that all cases are linked by local
+transmission. Sometimes you may have information (from field
+epidemiological investigations for instance) indicating that some cases
+are in fact imported (from another location, or from an animal
+reservoir). We allow to include such information, when available, as
+illustrated in the example below:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># generating fake information on our cases:</span></span>
 <span><span class="va">location</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"local"</span>,<span class="st">"imported"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">dates_onset</span><span class="op">)</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
@@ -501,13 +598,18 @@
 <span><span class="co">#&gt; The number of colors (8) did not match the number of groups (2).</span></span>
 <span><span class="co">#&gt; Using `col_pal` instead.</span></span></code></pre></div>
 <p><img src="figs-demo/imports-2.png" width="576"></p>
-<p>Note that in the above the estimated reproduction number is, as expected, much lower than estimated before when assuming that all cases were linked by local transmission.</p>
-<p>This feature is new to <code>EpiEstim</code> and described in a manuscript in preparation (Thompson et al.).</p>
+<p>Note that in the above the estimated reproduction number is, as
+expected, much lower than estimated before when assuming that all cases
+were linked by local transmission.</p>
+<p>This feature is new to <code>EpiEstim</code> and described in a
+manuscript in preparation (Thompson et al.).</p>
 </div>
 <div class="section level2">
 <h2 id="epiestimapp">EpiEstimApp<a class="anchor" aria-label="anchor" href="#epiestimapp"></a>
 </h2>
-<p>We have a shiny app in development which integrates all the features presented above. You can follow its developments here: <a href="https://github.com/jstockwin/EpiEstimApp" class="external-link">https://github.com/jstockwin/EpiEstimApp</a> Please note the app is still in development!</p>
+<p>We have a shiny app in development which integrates all the features
+presented above. You can follow its developments here: <a href="https://github.com/jstockwin/EpiEstimApp" class="external-link">https://github.com/jstockwin/EpiEstimApp</a>
+Please note the app is still in development!</p>
 </div>
   </div>
 

@@ -80,6 +80,8 @@
 <span>  dt <span class="op">=</span> <span class="fl">7L</span>,</span>
 <span>  dt_out <span class="op">=</span> <span class="fl">7L</span>,</span>
 <span>  iter <span class="op">=</span> <span class="fl">10L</span>,</span>
+<span>  tol <span class="op">=</span> <span class="fl">1e-06</span>,</span>
+<span>  recon_opt <span class="op">=</span> <span class="st">"naive"</span>,</span>
 <span>  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"non_parametric_si"</span>, <span class="st">"parametric_si"</span><span class="op">)</span>,</span>
 <span>  grid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>precision <span class="op">=</span> <span class="fl">0.001</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
@@ -102,23 +104,29 @@ aggregation windows of 3 and 4 days. The default value is 7 time units
 
 <dt>dt_out</dt>
 <dd><p>length of the sliding windows used for R estimates (numeric, 
-7 time units (typically days)  by default). 
-Only used if <code>dt &gt; 1</code>; 
-in this case this will superseed config$t_start and config$t_end, 
-see.</p></dd>
+7 time units (typically days)  by default). Only used if <code>dt &gt; 1</code>; in
+this case this will supersede config$t_start and config$t_end, see estimate_R().</p></dd>
 
 
 <dt>iter</dt>
 <dd><p>number of iterations of the EM algorithm (integer, 10 by default)</p></dd>
 
 
+<dt>tol</dt>
+<dd><p>tolerance used in the convergence check (numeric, 1e-6 by default)</p></dd>
+
+
+<dt>recon_opt</dt>
+<dd><p>one of "naive" or "match" (see details).</p></dd>
+
+
 <dt>config</dt>
-<dd><p>An object of class <code>estimate_R_config</code>, as returned by 
+<dd><p>an object of class <code>estimate_R_config</code>, as returned by 
 function <code>make_config</code>.</p></dd>
 
 
 <dt>method</dt>
-<dd><p>One of "non_parametric_si" or "parametric_si" (see details).</p></dd>
+<dd><p>one of "non_parametric_si" or "parametric_si" (see details).</p></dd>
 
 
 <dt>grid</dt>
@@ -178,6 +186,13 @@ the length of the incidence data supplied.</p></li>
 reconstructed daily data. By default, Rt estimation uses weekly sliding time 
 windows, however, we recommend that the sliding window is at least equal to 
 the length of the longest aggregation window (dt) in the data.</p></li>
+<li><p>recon_opt specifies how to handle the initial incidence data that cannot
+be reconstructed by the EM algorithm (e.g. the incidence data for the aggregation
+window that precedes the first aggregation window that R can be estimated for).
+If `"naive"` is chosen, the naive disaggregation of the incidence data will be
+kept. If `"match"` is chosen, the incidence in the preceding aggregation window
+will be reconstructed by assuming that the growth rate matches that of the first
+estimation window. This is `"naive"` by default.</p></li>
 <li><p>iter is the number of iterations of the EM algorithm used to reconstruct
 the daily incidence data. By default, iter = 10L, which has been demonstrated
 to exceed the number of iterations necessary to reach convergence in simulation 
