@@ -11,10 +11,8 @@ incid_imported <- incidence::incidence(incid_raw, groups = location)
 
 data("covid_deaths_2020_uk")
 
-with(covid_deaths_2020_uk, {
-    incid_covid <<- incidence$Incidence
-    config_covid <<- make_config(list(si_distr = si_distr))
-})
+incid_covid <- covid_deaths_2020_uk$incidence$Incidence
+config_covid <- covid_deaths_2020_uk$make_config(list(si_distr = si_distr))
 
 test_that("warnings and errors are working as expected", {
 
@@ -62,7 +60,7 @@ test_that("outputs are working as expected", {
     # check default is 0.
     expect_equal(
         estimate_R(incid = incid_covid, backimputation_window = 0, config=config_covid),
-        estimate_R(incid = incid_covid, config=config_covid),
+        estimate_R(incid = incid_covid, config=config_covid)
     )
 
     # check adjusted estimates are lower than original...

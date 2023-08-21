@@ -35,7 +35,7 @@ where $(I_t)_{t}$ denotes incidence and $(w_j)_{j}$ the serial interval distribu
 In Brizzi, O'Driscoll and Dorigatti (10.1093/cid/ciac138), we proposed a simple exponential growth model to impute missed generations of infections, leading to a reduction in bias in early R~t~ estimates.
 This can now be implemented through `EpiEstim`'s `estimate_R` function, by setting the `backimputation_window` to an integer greater than 5, specifying the number of observations used to fit the exponential growth model.
 
-In short, the method combines the strength of the exponential growth to estimate the basic reproduction number R~0 together with the capabilities of EpiEstim to detect changes in transmission dynamics.
+In short, the method combines the strength of the exponential growth to estimate the basic reproduction number R~0~ together with the capabilities of EpiEstim to detect changes in transmission dynamics.
 
 
 # Why do we need backimputation?
@@ -77,11 +77,8 @@ We focus on the first 50 days of reports.
 ```{r covid-load, fig.width=7}
 data(covid_deaths_2020_uk)
 maxT <- 50
-
-with(covid_deaths_2020_uk, {
-    incid_covid <<- incidence$Incidence[1:maxT]
-    config_covid <<- make_config(list(si_distr = si_distr))
-})
+incid_covid <- covid_deaths_2020_uk$incidence$Incidence[1:maxT]
+config_covid <- make_config(list(si_distr=covid_deaths_2020_uk$si_distr))
 ```
 
 ### No left-censoring: early R~t~ estimates remain similar
@@ -101,11 +98,10 @@ no_truncation_with_imputation <- estimate_R(
                                             method = "non_parametric_si",
                                             config= config_covid
 )
-ggpubr::ggarrange(
+gridExtra::grid.arrange(
   plot(no_truncation_no_imputation, "R") + ggtitle("No imputation") ,
-  plot(no_truncation_with_imputation, "R") + ggtitle("With imputation"),
-  common.legend = TRUE, legend.position="bottom", ncol=2, nrow=1
-)[[1]]
+  plot(no_truncation_with_imputation, "R") + ggtitle("With imputation")
+)
 ```
 The reduction in R~t~ estimates is strongest in the early stages, and vanishes with time.
 
@@ -148,7 +144,7 @@ truncation_with_imputation <- estimate_R(
                                    backimputation_window = 10,
                                    incid = incid_covid[ -(1:truncT) ],
                                    method = "non_parametric_si",
-                                   config= config_covid,
+                                   config= config_covid
 )
 
 # specify classes
@@ -178,7 +174,7 @@ plot.postmeans.side.by.side <- function(res1, res2, res3)
 
 plot.postmeans.side.by.side(
                             truncation_with_imputation,
-                            truncation_no_imputation,
+                            truncation_no_imputation
 )
 ```
 

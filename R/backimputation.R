@@ -17,8 +17,8 @@
 #'
 #' @examples
 #' incid_all <- ceiling( exp(.3 * 0:20) )
-#' incid_trunc <- tail(incid, 10)
-#' x <- backimpute_I(incid=incid_trunc, window=6)
+#' incid_trunc <- tail(incid_all, 10)
+#' x <- backimpute_I(incid=incid_trunc, window_b=6)
 #' idx <- as.integer(rownames(x)) > -10
 #' x[idx, ]$local 
 #' incid_all
@@ -26,7 +26,7 @@
 
 backimpute_I <- function(incid, window_b) {
 
-    if( 'incidence' %in% class(incid) ){
+    if( inherits(incid, 'incidence') ){
       msg <- "incidence objects are currently not supported by backimpute_I()."
       stop(msg)
     }
