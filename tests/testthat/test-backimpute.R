@@ -50,9 +50,6 @@ test_that("warnings and errors are working as expected", {
         estimate_R(incid = incid_covid, backimputation_window = 3, config = config_covid),
         "The backimputation window is short and may lead to an inaccurate estimate of the growth rate."
     )
-
-    # TODO: what about imported cases? Check there are none in the incid object and throw warning
-
 })
 
 test_that("outputs are working as expected", {
