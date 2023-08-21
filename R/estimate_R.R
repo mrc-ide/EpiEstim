@@ -29,7 +29,7 @@
 #'   "si_from_data" or "si_from_sample" (see details).
 #'
 #' @param backimputation_window Length of the window used to impute incidence
-#'    prior to the reported cases.
+#'    prior to the first reported cases.
 #'
 #' @param si_sample For method "si_from_sample" ; a matrix where each column
 #'   gives one distribution of the serial interval to be explored (see details).
