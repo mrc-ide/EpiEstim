@@ -18,6 +18,7 @@ Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("a
   person("Rebecca", "Nash", email = "r.nash@imperial.ac.uk", role = "ctb", comment = c(ORCID = "0000-0002-5213-4364")),
   person("Sangeeta", "Bhatia", role = "ctb", comment = c(ORCID = "0000-0001-6525-101X")),
   person("Jack", "Wardle", role = "ctb", comment = c(ORCID = "0000-0002-5363-1653"))
+  person("Andrea", "Brizzi", role = "ctb", comment = c(ORCID = "0000-0002-5639-8260"))
   )
 Maintainer: Anne Cori <a.cori@imperial.ac.uk>
 Description: Tools to quantify transmissibility throughout
