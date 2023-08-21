@@ -57,6 +57,8 @@ Bhatia S, Wardle J, Nash RK, Nouvellet P, Cori A. [A generic method and software
 
 Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number from temporally aggregated incidence data: a statistical modelling approach and software tool. (medRxiv pre-print)
 
+Brizzi A, O'Driscoll M, Dorigatti I., [Refining Reproduction Number Estimates to Account for Unobserved Generations of Infection in Emerging Epidemics](https://doi.org/10.1093/cid/ciac138), Clinical Infectious Diseases, Volume 75, Issue 1, 1 July 2022, Pages e114–e121.
+
 
 ## Citing this code resource
 We kindly request that you cite this codebase as follows (BibTeX format):
