@@ -1,8 +1,3 @@
-# require(testthat)
-# require(ggplot2)
-devtools::load_all()
-#require(incidence)
-
 # get imported 
 incid_raw <- as.Date('2001-01-01') + c(0, 1, 5, 5, 6, 7,7,7, 9, 10, 12, 13)
 location <- sample(c("local", "imported"), length(incid_raw), replace=TRUE)
