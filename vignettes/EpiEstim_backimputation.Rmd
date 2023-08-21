@@ -1,8 +1,8 @@
 ---
 title: "Dealing with missed generations of infections with EpiEstim"
 author: "Andrea Brizzi"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
+toc: true
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Dealing with missed generations of infections with EpiEstim}
@@ -71,7 +71,7 @@ In this case, the estimates are constant, as expected.
 
 Let us now consider some real world data: UK COVID-19 deaths from 2020.
 As reporting of deaths is more accurate and reliable than case reporting, it is unlikely that a large proportion of people died of COVID before the first reported death. 
-However, we can use this dataset to show how left-censoring incidence may affects traditional EpiEstim estimates, and how the adjustment behaves more robustly.
+However, we can use this dataset to show how left-censoring incidence may affect traditional EpiEstim estimates, and how the adjustment behaves more robustly. 
 We focus on the first 50 days of reports.
 
 ```{r covid-load, fig.width=7}
@@ -84,27 +84,32 @@ with(covid_deaths_2020_uk, {
 })
 ```
 
+### No left-censoring: early R~t~ estimates remain similar
+
+We first consider a scenario where the back-imputation shouldn't be necessary: i.e. when no generations of infections (or deaths) are missed. We would hope that performing back-imputation would not drastically lower the estimates for the reproduction number.
+Indeed, this is the case.
+
 ```{r covid-no-imputation, fig.width=7}
 no_truncation_no_imputation <- estimate_R(
                                           incid = incid_covid,
                                           method = "non_parametric_si",
                                           config= config_covid
 )
-plot(no_truncation_no_imputation, "R")
-```
-
-```{r covid-with-imputation, fig.width=7}
 no_truncation_with_imputation <- estimate_R(
                                             backimputation_window = 8,
                                             incid = incid_covid,
                                             method = "non_parametric_si",
                                             config= config_covid
 )
-plot(no_truncation_with_imputation, "R")
+ggpubr::ggarrange(
+  plot(no_truncation_no_imputation, "R") + ggtitle("No imputation") ,
+  plot(no_truncation_with_imputation, "R") + ggtitle("With imputation"),
+  common.legend = TRUE, legend.position="bottom", ncol=2, nrow=1
+)[[1]]
 ```
+The reduction in R~t~ estimates is strongest in the early stages, and vanishes with time.
 
 ```{r covid-imputation-comparison, fig.width=7}
-
 time <- no_truncation_no_imputation$R[,c("t_start", "t_end")]
 window_midpoint <- (time[,1] + time[,2])/2
 original <- no_truncation_no_imputation$R[, "Mean(R)"]
@@ -122,6 +127,8 @@ plot(
 In this case, the shape of the R~t~ estimates are similar for the two methods. 
 Still, the imputation reduces the first R~t~ estimate from 
 `r round(original[1],1)` to `r round(adjusted[1], 1)`.
+
+### Left-censoring: back-imputation reduces bias.
 
 Now let us assume the first two weeks of deaths were not observed.
 How would the two methods compare?
@@ -144,34 +151,26 @@ truncation_with_imputation <- estimate_R(
                                    config= config_covid,
 )
 
-# add truncT to keep time consistent with previous estimates
-truncation_with_imputation$R$t_end <- truncation_with_imputation$R$t_end + truncT 
-truncation_with_imputation$R$t_start <- truncation_with_imputation$R$t_start + truncT 
-
-truncation_no_imputation$R$t_end <- truncation_no_imputation$R$t_end + truncT 
-truncation_no_imputation$R$t_start <- truncation_no_imputation$R$t_start + truncT 
-
 # specify classes
 truncation_with_imputation$R$imputation <- TRUE
-truncation_with_imputation$R$truncation <- TRUE
 truncation_no_imputation$R$imputation <- FALSE
-truncation_no_imputation$R$truncation <- TRUE
-no_truncation_with_imputation$R$imputation <- TRUE
-no_truncation_with_imputation$R$truncation <- FALSE
-no_truncation_no_imputation$R$imputation <- FALSE
-no_truncation_no_imputation$R$truncation <- FALSE
 
 plot.postmeans.side.by.side <- function(res1, res2, res3)
 {
     ggplot(data=res1$R, aes( 
                           x= (t_start + t_end)/2,
                           y=`Mean(R)`,
-                          color=truncation,
+                          ymin=`Quantile.0.025(R)`,
+                          ymax=`Quantile.0.975(R)`,
+                          color=imputation,
+                          fill=imputation,
                           linetype=imputation
                           ) ) + 
+        geom_ribbon(alpha=.3, color=NA) +
+        geom_ribbon(data=res2$R, alpha=.3, color=NA) +
         geom_line() +
         geom_line(data=res2$R) +
-        geom_line(data=res3$R) +
+        # geom_line(data=res3$R) +
         labs(x="Midpoint of sliding window", y="EpiEstim Posterior Mean") +
         theme_bw() +
         theme(legend.position = 'bottom')
@@ -180,7 +179,6 @@ plot.postmeans.side.by.side <- function(res1, res2, res3)
 plot.postmeans.side.by.side(
                             truncation_with_imputation,
                             truncation_no_imputation,
-                            no_truncation_no_imputation
 )
 ```
 
