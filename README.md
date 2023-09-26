@@ -36,7 +36,7 @@ Nash RK, Nouvellet P, Cori A. [Real-time estimation of the epidemic reproduction
 
 Bhatia S, Wardle J, Nash RK, Nouvellet P, Cori A. [Extending EpiEstim to estimate the transmission advantage of pathogen variants in real-time: SARS-CoV-2 as a case-study](https://doi.org/10.1016/j.epidem.2023.100692), Epidemics, 21 June 2023, 100692.
 
-Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number from temporally aggregated incidence data: a statistical modelling approach and software tool. (medRxiv pre-print)
+Nash RK, Cori A, Nouvellet P. [Estimating the epidemic reproduction number from temporally aggregated incidence data: a statistical modelling approach and software tool](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011439), PLOS Computational Biology, Volume 19, Issue 8, 28 August 2023, e1011439.
 
 
 ### Citing this code resource
