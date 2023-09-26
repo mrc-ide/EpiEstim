@@ -69,11 +69,23 @@
 #' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori
 #'   \email{a.cori@imperial.ac.uk}; S3 method by Thibaut Jombart
 #'
-#' @importFrom ggplot2 aes aes_string theme
-#'
+#' @import reshape2 grid gridExtra
+#' 
 #' @importFrom scales alpha
 #'
 #' @importFrom grDevices palette
+#' 
+#' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle
+#'   geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
+#'   scale_colour_manual scale_fill_manual scale_linetype_manual lims theme
+#'   margin element_rect
+#'
+#' @importFrom graphics plot
+#'
+#' @importFrom incidence as.incidence
+#'
+#' @importFrom graphics plot
+#'
 #'
 #' @export
 #'
@@ -118,17 +130,7 @@
 #'         # plots the estimated case reproduction number
 #' gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
 #'
-#' @import reshape2 grid gridExtra
-#' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle
-#'   geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
-#'   scale_colour_manual scale_fill_manual scale_linetype_manual lims
-#'
-#' @importFrom graphics plot
-#'
-#' @importFrom incidence as.incidence
-#'
-#' @importFrom graphics plot
-#'
+
 plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
                   add_imported_cases = FALSE,
                   options_I = list(col = palette(), transp = 0.7,
@@ -509,7 +511,15 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
     return(p1)
   }
   if (what == "R") {
-    if (!legend) p2 <- p2 + theme(legend.position = "none")
+    if (!legend) {
+      p2 <- p2 + theme(legend.position = "none")
+    } else {
+      p2 <- p2 + theme(legend.position = c(.03, .90),
+                 legend.justification = c("left", "top"),
+                 legend.background = element_blank(),
+                 legend.margin = margin(-0.8, 0, 0, 0, unit = "cm"),
+                 legend.key = element_rect(fill = NA))
+    }
     return(p2)
   }
   if (what == "SI") {
@@ -520,6 +530,14 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
     if (!legend) {
       p1 <- p1 + theme(legend.position = "none")
       p2 <- p2 + theme(legend.position = "none")
+      p3 <- p3 + theme(legend.position = "none")
+    } else {
+      p1 <- p1 + theme(legend.position = "none")
+      p2 <- p2 + theme(legend.position = c(.03, .90),
+                       legend.justification = c("left", "top"),
+                       legend.background = element_blank(),
+                       legend.margin = margin(-0.8, 0, 0, 0, unit = "cm"),
+                       legend.key = element_rect(fill = NA))
       p3 <- p3 + theme(legend.position = "none")
     }
     return(grid.arrange(incide = p1, R = p2, SI = p3, ncol = 1))
