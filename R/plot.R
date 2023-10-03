@@ -16,6 +16,10 @@
 #'   series (\code{what='incid'}), the estimated reproduction number
 #'   (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or
 #'   all three (\code{what='all'})).
+#'   
+#' @param plot_theme A string specifying whether to use the original plot theme
+#' (plot_theme = "original") or an alternative plot theme (plot_theme = "v2").
+#' The plot_theme is "v2" by default.
 #'
 #' @param add_imported_cases A boolean to specify whether, on the incidence time
 #'   series plot, to add the incidence of imported cases.
@@ -78,13 +82,11 @@
 #' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle
 #'   geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
 #'   scale_colour_manual scale_fill_manual scale_linetype_manual lims theme
-#'   margin element_rect
+#'   margin element_rect theme_light
 #'
 #' @importFrom graphics plot
 #'
 #' @importFrom incidence as.incidence
-#'
-#' @importFrom graphics plot
 #'
 #'
 #' @export
@@ -131,7 +133,7 @@
 #' gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
 #'
 
-plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
+plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme = "v2",
                   add_imported_cases = FALSE,
                   options_I = list(col = palette(), transp = 0.7,
                                    xlim = NULL, ylim = NULL,
@@ -168,12 +170,66 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
   if (is.null(options_SI$transp)) options_SI$transp <- 0.25
   if (is.null(options_SI$xlab)) options_SI$xlab <- "Time"
   if (is.null(options_SI$ylab)) options_SI$ylab <- "Frequency"
+  
+  ## New theme
+
+  if(plot_theme == "v2") {
+    
+    theme_epiestim <- function() { 
+      
+      theme_light() %+replace%
+        
+        theme(
+          
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          axis.line = element_line(colour = "black",
+                                   size = 0.2),
+          
+          plot.title = element_text(
+            size = 12,
+            hjust = 0,
+            vjust = 4,
+            margin = margin(5, b = 5, t = 10)),
+          
+          axis.title = element_text(
+            size = 11),
+          
+          axis.text = element_text(
+            size = 9),
+          
+          axis.text.x = element_text(
+            margin = margin(5, b = 10)),
+          
+          axis.text.y = element_text(
+            margin = margin(5, l = 10, r = 4))
+        )
+      
+  } 
+    } else {
+      
+      if (plot_theme == "original") {
+        
+        theme_epiestim <- function() {
+          
+          theme()
+        }
+        
+      }
+      
+  }
+  
 
   # check if x is a single output of EpiEstim or a list of such outputs
   if (is.data.frame(x[[1]])) # x is a single output of EpiEstim
   {
     multiple_input <- FALSE
-    options_R$col <- options_R$col[1]
+    if (plot_theme == "v2") {
+      options_R$col <- "#5983AB"
+    } else {
+      options_R$col <- options_R$col[1]
+    }
   } else {
     multiple_input <- TRUE
     if (length(unique(vapply(x, function(e) nrow(e$R), integer(1)))) > 1)
@@ -239,6 +295,10 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
     incid[idx_round,] <- ceiling(incid[idx_round,])
   }
   ## TODO: change plot to allow for non-integer incidence
+  if (plot_theme == "v2") {
+    options_I$col <- "#5983AB"
+  }
+  
   what <- match.arg(what)
   if (what %in% c("incid", "all")) {
     if (add_imported_cases) {
@@ -507,38 +567,44 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"),
   }
 
   if (what == "incid") {
-    if (!legend) p1 <- p1 + theme(legend.position = "none")
+    if (!legend) p1 <- p1 +
+        theme_epiestim() +
+        theme(legend.position = "none")
     return(p1)
   }
   if (what == "R") {
     if (!legend) {
-      p2 <- p2 + theme(legend.position = "none")
+      p2 <- p2 +
+        theme_epiestim() + 
+        theme(legend.position = "none")
     } else {
-      p2 <- p2 + theme(legend.position = c(.03, .90),
-                 legend.justification = c("left", "top"),
-                 legend.background = element_blank(),
-                 legend.margin = margin(-0.8, 0, 0, 0, unit = "cm"),
-                 legend.key = element_rect(fill = NA))
+      p2 <- p2 + 
+        theme_epiestim() +
+        theme(legend.position = c(.03, .90),
+              legend.justification = c("left", "top"),
+              legend.background = element_blank(),
+              legend.margin = margin(-0.8, 0, 0, 0, unit = "cm"),
+              legend.key = element_rect(fill = NA))
     }
     return(p2)
   }
   if (what == "SI") {
-    if (!legend) p3 <- p3 + theme(legend.position = "none")
+    if (!legend) p3 <- p3 + theme_epiestim() + theme(legend.position = "none")
     return(p3)
   }
   if (what == "all") {
     if (!legend) {
-      p1 <- p1 + theme(legend.position = "none")
-      p2 <- p2 + theme(legend.position = "none")
-      p3 <- p3 + theme(legend.position = "none")
+      p1 <- p1 + theme_epiestim() + theme(legend.position = "none")
+      p2 <- p2 + theme_epiestim() + theme(legend.position = "none")
+      p3 <- p3 + theme_epiestim() + theme(legend.position = "none")
     } else {
-      p1 <- p1 + theme(legend.position = "none")
-      p2 <- p2 + theme(legend.position = c(.03, .90),
+      p1 <- p1 + theme_epiestim() + theme(legend.position = "none")
+      p2 <- p2 + theme_epiestim() + theme(legend.position = c(.03, .90),
                        legend.justification = c("left", "top"),
                        legend.background = element_blank(),
                        legend.margin = margin(-0.8, 0, 0, 0, unit = "cm"),
-                       legend.key = element_rect(fill = NA))
-      p3 <- p3 + theme(legend.position = "none")
+                       legend.key = element_rect(fill = NA)) 
+      p3 <- p3 + theme_epiestim() + theme(legend.position = "none")
     }
     return(grid.arrange(incide = p1, R = p2, SI = p3, ncol = 1))
   }
