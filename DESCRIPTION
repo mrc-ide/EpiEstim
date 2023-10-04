@@ -40,7 +40,6 @@ Imports:
     scales,
     grDevices,
     abind,
-    gghighlight,
     epitrix,
     distcrete,
     patchwork
