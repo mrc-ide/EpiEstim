@@ -87,6 +87,8 @@
 #' @importFrom graphics plot
 #'
 #' @importFrom incidence as.incidence
+#' 
+#' @importFrom patchwork plot_layout
 #'
 #'
 #' @export
@@ -180,9 +182,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
       theme_light() %+replace%
         
         theme(
-          
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
+
           panel.border = element_blank(),
           axis.line = element_line(colour = "black",
                                    size = 0.2),
@@ -206,7 +206,10 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
             margin = margin(5, l = 10, r = 4))
         )
       
-  } 
+    } 
+    
+      options_I$col <- "#5983AB"
+    
     } else {
       
       if (plot_theme == "original") {
@@ -295,9 +298,6 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
     incid[idx_round,] <- ceiling(incid[idx_round,])
   }
   ## TODO: change plot to allow for non-integer incidence
-  if (plot_theme == "v2") {
-    options_I$col <- "#5983AB"
-  }
   
   what <- match.arg(what)
   if (what %in% c("incid", "all")) {
@@ -357,7 +357,9 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           scale_fill_manual("", values = alpha(options_R$col,
                                                options_R$transp)) +
           ggtitle("Estimated R")
+        
       } else {
+        
         df_tmp <- data.frame(
           start = dates[t_start], end = dates[t_end], meanR = mean_posterior,
           lower = quantile_0.025_posterior,
@@ -454,7 +456,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           scale_colour_manual("", values = options_R$col) +
           scale_fill_manual("", values = alpha(options_R$col, options_R$transp))
       } else {
-        ####
+        
 
         df_tmp <- data.frame(
           start = dates[t_start], end = dates[t_end],
@@ -520,7 +522,9 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
     }
   }
   if (what %in% c("SI", "all")) {
+    
     if (method %in% c("uncertain_si", "si_from_data", "si_from_sample")) {
+      
       tmp <- cumsum(apply(si_distr, 2, max) >= options_SI$prob_min)
       stop_at <- min(which(tmp == tmp[length(tmp)]))
 
@@ -536,13 +540,19 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
         ylab(options_SI$ylab)
 
       if (!is.null(options_SI$xlim)) {
+        
         p3 <- p3 + lims(x = options_SI$xlim)
+        
       }
 
       if (!is.null(options_SI$ylim)) {
+        
         p3 <- p3 + lims(y = options_SI$ylim)
+        
       }
+      
     } else {
+      
       tmp <- cumsum(si_distr >= options_SI$prob_min)
       stop_at <- min(which(tmp == tmp[length(tmp)]))
 
@@ -557,55 +567,91 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
         ylab(options_SI$ylab)
 
       if (!is.null(options_SI$xlim)) {
+        
         p3 <- p3 + lims(x = options_SI$xlim)
+        
       }
 
       if (!is.null(options_SI$ylim)) {
+        
         p3 <- p3 + lims(y = options_SI$ylim)
+        
       }
     }
   }
 
   if (what == "incid") {
-    if (!legend) p1 <- p1 +
+      
+      p1 <- p1 +
         theme_epiestim() +
-        theme(legend.position = "none")
+        theme(legend.position = "none") +
+        scale_y_continuous(expand = c(0, 0))
+    
     return(p1)
+    
   }
+  
   if (what == "R") {
+    
     if (!legend) {
+      
       p2 <- p2 +
         theme_epiestim() + 
         theme(legend.position = "none")
+      
     } else {
+      
       p2 <- p2 + 
         theme_epiestim() +
-        theme(legend.position = c(.03, .90),
-              legend.justification = c("left", "top"),
-              legend.background = element_blank(),
+        theme(legend.background = element_blank(),
               legend.margin = margin(-0.8, 0, 0, 0, unit = "cm"),
               legend.key = element_rect(fill = NA))
+      
     }
     return(p2)
   }
+  
   if (what == "SI") {
-    if (!legend) p3 <- p3 + theme_epiestim() + theme(legend.position = "none")
+    
+      p3 <- p3 +
+        theme_epiestim() +
+        theme(legend.position = "none") +
+        scale_y_continuous(expand = c(0, 0))
+    
     return(p3)
+    
   }
+  
   if (what == "all") {
+    
+    p1 <- p1 +
+      theme_epiestim() +
+      theme(legend.position = "none") +
+      scale_y_continuous(expand = c(0, 0))
+    
+    p3 <- p3 +
+      theme_epiestim() +
+      theme(legend.position = "none") +
+      scale_y_continuous(expand = c(0, 0))
+    
     if (!legend) {
-      p1 <- p1 + theme_epiestim() + theme(legend.position = "none")
-      p2 <- p2 + theme_epiestim() + theme(legend.position = "none")
-      p3 <- p3 + theme_epiestim() + theme(legend.position = "none")
+      
+      p2 <- p2 +
+        theme_epiestim() +
+        theme(legend.position = "none")
+      
     } else {
-      p1 <- p1 + theme_epiestim() + theme(legend.position = "none")
-      p2 <- p2 + theme_epiestim() + theme(legend.position = c(.03, .90),
-                       legend.justification = c("left", "top"),
-                       legend.background = element_blank(),
-                       legend.margin = margin(-0.8, 0, 0, 0, unit = "cm"),
-                       legend.key = element_rect(fill = NA)) 
-      p3 <- p3 + theme_epiestim() + theme(legend.position = "none")
+      
+      p2 <- p2 +
+        theme_epiestim() +
+        theme(legend.background = element_blank(),
+              legend.margin = margin(-0.8, 0, 0, 0, unit = "cm"),
+              legend.key = element_rect(fill = NA))
+      
     }
-    return(grid.arrange(incide = p1, R = p2, SI = p3, ncol = 1))
+    
+    plot <- p1 + p2 + p3 + plot_layout(ncol = 1)
+    
+    return(plot)
   }
 }
