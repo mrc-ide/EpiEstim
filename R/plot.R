@@ -71,7 +71,8 @@
 #'   \code{\link{estimate_R_plots}}
 #'
 #' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori
-#'   \email{a.cori@imperial.ac.uk}; S3 method by Thibaut Jombart
+#'   \email{a.cori@imperial.ac.uk}; S3 method by Thibaut Jombart; v2 theme by
+#'   Rebecca Nash
 #'
 #' @import reshape2 grid gridExtra
 #' 
@@ -112,11 +113,12 @@
 #'
 #' ## estimate the instantaneous reproduction number
 #' ## (method "non_parametric_si")
-#' R_c <- wallinga_teunis(Flu2009$incidence, 
+#' R_c <- wallinga_teunis(Flu2009$incidence,
 #'                        method = "non_parametric_si",
-#'                        config = list(t_start = seq(2, 26), 
-#'                                      t_end = seq(8, 32), 
-#'                                      si_distr = Flu2009$si_distr
+#'                        config = list(t_start = seq(2, 26),
+#'                                      t_end = seq(8, 32),
+#'                                      si_distr = Flu2009$si_distr,
+#'                                      n_sim = 10
 #'                                     )
 #'                       )
 #'
@@ -124,16 +126,16 @@
 #' ## (with, on top of total incidence, the incidence of imported cases),
 #' ## estimated instantaneous and case reproduction numbers
 #' ## and serial interval distribution used
-#' p_I <- plot(R_i, "incid", add_imported_cases=TRUE) # plots the incidence
-#' p_SI <- plot(R_i, "SI") # plots the serial interval distribution
-#' p_Ri <- plot(R_i, "R",
-#'              options_R = list(ylim = c(0, 4)))
-#'         # plots the estimated instantaneous reproduction number
-#' p_Rc <- plot(R_c, "R",
-#'              options_R = list(ylim = c(0, 4)))
-#'         # plots the estimated case reproduction number
-#' gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
-#'
+# p_I <- plot(R_i, "incid", add_imported_cases=TRUE) # plots the incidence
+# p_SI <- plot(R_i, "SI") # plots the serial interval distribution
+# p_Ri <- plot(R_i, "R",
+#              options_R = list(ylim = c(0, 4)))
+#         # plots the estimated instantaneous reproduction number
+# p_Rc <- plot(R_c, "R",
+#              options_R = list(ylim = c(0, 4)))
+#         # plots the estimated case reproduction number
+# gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
+
 
 plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme = "v2",
                   add_imported_cases = FALSE,
@@ -306,12 +308,14 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
                               interval = options_I$interval),
                  ylab = options_I$ylab, xlab = options_I$xlab,
                  color = options_I$col, alpha = options_I$transp) +
+        theme_epiestim() +
         ggtitle("Epidemic curve")
     } else {
       p1 <- plot(as.incidence(rowSums(incid), dates = x$dates, 
                               interval = options_I$interval),
                  ylab = options_I$ylab, xlab = options_I$xlab,
                  color = options_I$col, alpha = options_I$transp) +
+        theme_epiestim() +
         ggtitle("Epidemic curve")
     }
 
@@ -347,6 +351,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
 
         p2 <- ggplot(df, aes(x = value, y = as.numeric(meanR),
                              group = as.factor(group))) +
+          theme_epiestim() +
           geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
           geom_line(aes(y = meanR, colour = "Mean")) +
           xlab(options_R$xlab) +
@@ -407,12 +412,14 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
 
         p2 <- ggplot(df, aes(x = value, y = as.numeric(meanR),
                              group = as.factor(group))) +
+          theme_epiestim() +
           geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
           geom_line(aes(y = meanR, colour = "Mean"))
 
         for (i in seq(2, length(x_list)))
         {
           p2 <- p2 +
+            theme_epiestim() +
             geom_ribbon(aes_string(ymin = paste0("lower", i),
                                    ymax = paste0("upper", i),
                                    fill = shQuote(paste0("95%CrI", i)))) +
@@ -421,6 +428,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
         }
 
         p2 <- p2 +
+          theme_epiestim() +
           xlab(options_R$xlab) +
           ylab(options_R$ylab) +
           xlim(options_R$xlim) +
@@ -445,6 +453,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
         ), aes(end, meanR)) +
+          theme_epiestim() +
           geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
           geom_line(aes(colour = "Mean")) +
           geom_hline(yintercept = 1, linetype = "dotted") +
@@ -496,12 +505,14 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
         }
 
         p2 <- ggplot(df, aes(end, meanR)) +
+          theme_epiestim() +
           geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
           geom_line(aes(y = meanR, colour = "Mean"))
 
         for (i in seq(2, length(x_list)))
         {
           p2 <- p2 +
+            theme_epiestim() +
             geom_ribbon(aes_string(ymin = paste0("lower", i),
                                    ymax = paste0("upper", i),
                                    fill = shQuote(paste0("95%CrI", i)))) +
@@ -510,6 +521,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
         }
 
         p2 <- p2 +
+          theme_epiestim() +
           geom_hline(yintercept = 1, linetype = "dotted") +
           xlab(options_R$xlab) +
           ylab(options_R$ylab) +
@@ -534,6 +546,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
       dataL$Var1 <- seq(0, (ncol(si_distr_for_plot) - 1))
       p3 <- ggplot(dataL, aes_string(x = "Var1", y = "value", 
                                      group = "Var2")) +
+        theme_epiestim() +
         geom_line(col = options_SI$col, alpha = options_SI$transp) +
         ggtitle("Explored SI distributions") +
         xlab(options_SI$xlab) +
@@ -541,13 +554,17 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
 
       if (!is.null(options_SI$xlim)) {
         
-        p3 <- p3 + lims(x = options_SI$xlim)
+        p3 <- p3 +
+          theme_epiestim() +
+          lims(x = options_SI$xlim)
         
       }
 
       if (!is.null(options_SI$ylim)) {
         
-        p3 <- p3 + lims(y = options_SI$ylim)
+        p3 <- p3 +
+          theme_epiestim() +
+          lims(y = options_SI$ylim)
         
       }
       
@@ -561,6 +578,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
       dataL <- data.frame(Times = seq(0, length(si_distr_for_plot) - 1), 
                           SIDistr = si_distr_for_plot)
       p3 <- ggplot(dataL, aes_string(x = "Times", y = "SIDistr")) +
+        theme_epiestim() +
         geom_line(col = options_SI$col, alpha = options_SI$transp) +
         ggtitle("Explored SI distribution") +
         xlab(options_SI$xlab) +
@@ -568,13 +586,17 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
 
       if (!is.null(options_SI$xlim)) {
         
-        p3 <- p3 + lims(x = options_SI$xlim)
+        p3 <- p3 +
+          theme_epiestim() +
+          lims(x = options_SI$xlim)
         
       }
 
       if (!is.null(options_SI$ylim)) {
         
-        p3 <- p3 + lims(y = options_SI$ylim)
+        p3 <- p3 +
+          theme_epiestim() +
+          lims(y = options_SI$ylim)
         
       }
     }
