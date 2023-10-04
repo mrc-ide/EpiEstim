@@ -42,7 +42,8 @@ Imports:
     abind,
     gghighlight,
     epitrix,
-    distcrete
+    distcrete,
+    patchwork
 Suggests:
     testthat,
     utils,
