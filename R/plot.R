@@ -129,15 +129,15 @@
 #' ## (with, on top of total incidence, the incidence of imported cases),
 #' ## estimated instantaneous and case reproduction numbers
 #' ## and serial interval distribution used
-# p_I <- plot(R_i, "incid", add_imported_cases=TRUE) # plots the incidence
-# p_SI <- plot(R_i, "SI") # plots the serial interval distribution
-# p_Ri <- plot(R_i, "R",
-#              options_R = list(ylim = c(0, 4)))
-#         # plots the estimated instantaneous reproduction number
-# p_Rc <- plot(R_c, "R",
-#              options_R = list(ylim = c(0, 4)))
-#         # plots the estimated case reproduction number
-# gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
+#' p_I <- plot(R_i, "incid", add_imported_cases=TRUE) # plots the incidence
+#' p_SI <- plot(R_i, "SI") # plots the serial interval distribution
+#' p_Ri <- plot(R_i, "R",
+#'              options_R = list(ylim = c(0, 4)))
+#'         # plots the estimated instantaneous reproduction number
+#' p_Rc <- plot(R_c, "R",
+#'              options_R = list(ylim = c(0, 4)))
+#'         # plots the estimated case reproduction number
+#' gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
 plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme = "v2",
                             add_imported_cases = FALSE,
                             options_I = list(
