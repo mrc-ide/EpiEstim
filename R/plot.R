@@ -271,28 +271,14 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
 
   ########################################################################
   ### these few lines are to make CRAN checks happy with ggplot2... ###
-  Time <- NULL
-  incidence <- NULL
-  incidence_imported <- NULL
   value <- NULL
   meanR <- NULL
-  meanR2 <- NULL
   group <- NULL
-  lower2 <- NULL
   lower <- NULL
   upper <- NULL
-  upper2 <- NULL
-  Times <- NULL
-  ..density.. <- NULL
-  start <- NULL
   end <- NULL
-  si_distr.1 <- NULL
   ########################################################################
 
-  if (method %in% c("uncertain_si", "si_from_data", "si_from_sample")) {
-    mean_si.sample <- x$SI.Moments["Mean"]
-    std_si.sample <- x$SI.Moments["Std"]
-  }
   ## temp fix for estimate_R_agg to be able to plot disaggreated incidence <1
   if (any(rowSums(incid) < 1 & rowSums(incid) > 0)) {
     idx_round <- which(rowSums(incid) < 1 & rowSums(incid) > 0)
