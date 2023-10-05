@@ -7,6 +7,7 @@
 \method{plot}{estimate_R}(
   x,
   what = c("all", "incid", "R", "SI"),
+  plot_theme = "v2",
   add_imported_cases = FALSE,
   options_I = list(col = palette(), transp = 0.7, xlim = NULL, ylim = NULL, interval =
     1L, xlab = "Time", ylab = "Incidence"),
@@ -20,13 +21,17 @@
 }
 \arguments{
 \item{x}{The output of function \code{\link{estimate_R}} or function
-\code{\link{wallinga_teunis}}. To plot simultaneous outputs on the same 
+\code{\link{wallinga_teunis}}. To plot simultaneous outputs on the same
 plot use \code{\link{estimate_R_plots}} function}
 
 \item{what}{A string specifying what to plot, namely the incidence time
 series (\code{what='incid'}), the estimated reproduction number
 (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or
 all three (\code{what='all'})).}
+
+\item{plot_theme}{A string specifying whether to use the original plot theme
+(plot_theme = "original") or an alternative plot theme (plot_theme = "v2").
+The plot_theme is "v2" by default.}
 
 \item{add_imported_cases}{A boolean to specify whether, on the incidence time
 series plot, to add the incidence of imported cases.}
@@ -38,9 +43,9 @@ value between 0 and 1 used to monitor transparency of the bars
 plotted. Defaults to 0.7.}  \item{xlim}{A parameter similar to that in
 \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
 parameter similar to that in \code{par}, to monitor the limits of the
-vertical axis} \item{interval}{An integer or character indicating the 
-(fixed) size of the time interval used for plotting the incidence; 
-defaults to 1 day.} \item{xlab, ylab}{Labels for the axes of the 
+vertical axis} \item{interval}{An integer or character indicating the
+(fixed) size of the time interval used for plotting the incidence;
+defaults to 1 day.} \item{xlab, ylab}{Labels for the axes of the
 incidence plot}}}
 
 \item{options_R}{For what = "R" or "all". A list of graphical options:
@@ -49,7 +54,7 @@ default uses the default R colors.}  \item{transp}{A numeric value between
 0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
 \item{xlim}{A parameter similar to that in \code{par}, to monitor the
 limits of the horizontal axis} \item{ylim}{A parameter similar to that in
-\code{par}, to monitor the limits of the vertical axis} 
+\code{par}, to monitor the limits of the vertical axis}
 \item{xlab, ylab}{Labels for the axes of the R plot}}}
 
 \item{options_SI}{For what = "SI" or "all". A list of graphical options:
@@ -89,25 +94,28 @@ data("Flu2009")
 ## estimate the instantaneous reproduction number
 ## (method "non_parametric_si")
 R_i <- estimate_R(Flu2009$incidence,
-                  method = "non_parametric_si",
-                  config = list(t_start = seq(2, 26), 
-                                t_end = seq(8, 32), 
-                                si_distr = Flu2009$si_distr
-                               )
-                 )
+  method = "non_parametric_si",
+  config = list(
+    t_start = seq(2, 26),
+    t_end = seq(8, 32),
+    si_distr = Flu2009$si_distr
+  )
+)
 
 ## visualise results
 plot(R_i, legend = FALSE)
 
 ## estimate the instantaneous reproduction number
 ## (method "non_parametric_si")
-R_c <- wallinga_teunis(Flu2009$incidence, 
-                       method = "non_parametric_si",
-                       config = list(t_start = seq(2, 26), 
-                                     t_end = seq(8, 32), 
-                                     si_distr = Flu2009$si_distr
-                                    )
-                      )
+R_c <- wallinga_teunis(Flu2009$incidence,
+  method = "non_parametric_si",
+  config = list(
+    t_start = seq(2, 26),
+    t_end = seq(8, 32),
+    si_distr = Flu2009$si_distr,
+    n_sim = 10
+  )
+)
 
 ## produce plot of the incidence
 ## (with, on top of total incidence, the incidence of imported cases),
@@ -122,14 +130,14 @@ p_Rc <- plot(R_c, "R",
              options_R = list(ylim = c(0, 4)))
         # plots the estimated case reproduction number
 gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
-
 }
 \seealso{
-\code{\link{estimate_R}}, 
-  \code{\link{wallinga_teunis}} and 
+\code{\link{estimate_R}},
+  \code{\link{wallinga_teunis}} and
   \code{\link{estimate_R_plots}}
 }
 \author{
 Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori
-  \email{a.cori@imperial.ac.uk}; S3 method by Thibaut Jombart
+  \email{a.cori@imperial.ac.uk}; S3 method by Thibaut Jombart; v2 theme by
+  Rebecca Nash
 }
