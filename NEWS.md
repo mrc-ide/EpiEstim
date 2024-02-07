@@ -1,3 +1,7 @@
+# EpiEstim 2.5
+
+* fixed bug in process_I whereby NAs in incidence were not able to be processed
+
 # EpiEstim 2.4
 
 * estimate_R can now be applied to coarsely (non-daily) aggregated incidence data
