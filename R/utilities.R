@@ -104,7 +104,7 @@ process_I <- function(incid) {
     }
   }
 
-  incid[which(is.na(incid))] <- 0
+  incid[which(is.na(incid), arr.ind = TRUE)] <- 0
   date_col <- names(incid) == "dates"
   if (any(date_col)) {
     if (any(incid[, !date_col] < 0)) {
