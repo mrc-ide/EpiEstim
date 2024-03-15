@@ -43,7 +43,8 @@ Imports:
     abind,
     gghighlight,
     epitrix,
-    distcrete
+    distcrete,
+    patchwork
 Suggests:
     testthat,
     utils,
@@ -60,5 +61,5 @@ Suggests:
 License: GPL (>=2)
 LazyLoad: yes
 Encoding: UTF-8
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr

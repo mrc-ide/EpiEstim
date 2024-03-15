@@ -10,17 +10,19 @@
 #' (typically days) - see details.
 #' 
 #' @param dt_out length of the sliding windows used for R estimates (numeric, 
-#' 7 time units (typically days)  by default). 
-#' Only used if \code{dt > 1}; 
-#' in this case this will superseed config$t_start and config$t_end, 
-#' see. 
+#' 7 time units (typically days)  by default). Only used if \code{dt > 1}; in
+#' this case this will supersede config$t_start and config$t_end, see estimate_R().
+#' 
+#' @param recon_opt one of "naive" or "match" (see details).
 #' 
 #' @param iter number of iterations of the EM algorithm (integer, 10 by default)
 #' 
-#' @param config An object of class \code{estimate_R_config}, as returned by 
+#' @param tol tolerance used in the convergence check (numeric, 1e-6 by default)
+#' 
+#' @param config an object of class \code{estimate_R_config}, as returned by 
 #' function \code{make_config}. 
 #' 
-#' @param method One of "non_parametric_si" or "parametric_si" (see details).
+#' @param method one of "non_parametric_si" or "parametric_si" (see details).
 #' 
 #' @param grid named list containing "precision", "min", and "max" which are used to
 #' define a grid of growth rate parameters that are used inside the EM algorithm 
@@ -91,6 +93,13 @@
 #' reconstructed daily data. By default, Rt estimation uses weekly sliding time 
 #' windows, however, we recommend that the sliding window is at least equal to 
 #' the length of the longest aggregation window (dt) in the data.}
+#' \item{recon_opt specifies how to handle the initial incidence data that cannot
+#' be reconstructed by the EM algorithm (e.g. the incidence data for the aggregation
+#' window that precedes the first aggregation window that R can be estimated for).
+#' If `"naive"` is chosen, the naive disaggregation of the incidence data will be
+#' kept. If `"match"` is chosen, the incidence in the preceding aggregation window
+#' will be reconstructed by assuming that the growth rate matches that of the first
+#' estimation window. This is `"naive"` by default.}
 #' \item{iter is the number of iterations of the EM algorithm used to reconstruct
 #' the daily incidence data. By default, iter = 10L, which has been demonstrated
 #' to exceed the number of iterations necessary to reach convergence in simulation 
@@ -221,6 +230,8 @@ estimate_R_agg <- function(incid,
                            dt = 7L, # aggregation window of the data
                            dt_out = 7L, # desired sliding window length
                            iter = 10L,
+                           tol = 1e-6, # tolerance for convergence check
+                           recon_opt = "naive", # initial naive disaggregation or match growth rate to reconstruct
                            config = make_config(), 
                            method = c("non_parametric_si", "parametric_si"),
                            grid = list(precision = 0.001, min = -1, max = 1)){ 
@@ -252,8 +263,9 @@ estimate_R_agg <- function(incid,
   if (!method == "parametric_si" && !method == "non_parametric_si"){
     stop ("'arg' should be one of 'non_parametric_si' and 'parametric_si'")
   }
-  
-  
+  if (!recon_opt == "naive" && !recon_opt == "match"){
+    stop ("'recon_opt' should be one of 'naive' and 'match'")
+  }
   if (dt_out < max(dt)) {
     warning ("dt_out should be at least the length of the longest aggregation present in the data")
   }
@@ -329,14 +341,29 @@ estimate_R_agg <- function(incid,
       } else {
         idx_reconstruct <- seq(min(R$R$t_start), length(dis_inc))
       }
+     
+      # Index for aggregation windows
+      idx_aggregation <- rep(seq(1:n_dt), times=full_dt) 
       
-      ## Incidence that can't be reconstructed (can't estimate R for
-      ## first agg window or if incidence is too low)
+      # Two options:
+      # Opt 1) To keep naive disaggregation of the incidence for the aggregation 
+      # window which precedes the first window that R can be estimated for:
+      if (recon_opt == "naive"){
+        aggs_to_reconstruct <- seq(idx_aggregation[idx_reconstruct[1]], n_dt)
+      } 
+      
+      # Opt 2) To reconstruct the incidence in the preceding aggregation window by 
+      # assuming that the growth rate matches that of the first estimation window:
+      if (recon_opt == "match"){
+        aggs_with_estimate <- seq(idx_aggregation[idx_reconstruct[1]], n_dt)
+        aggs_to_reconstruct <- c(min(aggs_with_estimate) - 1, aggs_with_estimate)
+        add_idx <- rev((min(idx_reconstruct) - 1) : (min(idx_reconstruct) - dt))
+        idx_reconstruct <- c(add_idx, idx_reconstruct)
+      }
+      
+      ## Incidence that can't be reconstructed (e.g. if recon_opt = "naive" and 
+      # can't estimate R for first agg window or if incidence is too low)
       incid_not_to_reconstruct <- dis_inc[-idx_reconstruct]
-      
-      ## Incidence that can be reconstructed
-      idx_aggregation <- rep(seq(1:n_dt), times=full_dt) ## index for aggregation windows
-      aggs_to_reconstruct <- seq(idx_aggregation[idx_reconstruct[1]], n_dt)
       incid_to_reconstruct <- incid[aggs_to_reconstruct]
       
       # Translate R to growth rate
@@ -366,13 +393,18 @@ estimate_R_agg <- function(incid,
           R_grid <- r2R0(r = r_grid, w = gt_distr)
           idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L))
         }
-        r <- vapply(idx_r, function(e) r_grid[e], numeric(1L))
+        vapply(idx_r, function(e) r_grid[e], numeric(1L))
       }
       
       gr <- get_r_from_R(R = Mean_R, 
                          gt_mean = config$mean_si, gt_sd = config$std_si, 
                          gt_distr = config$si_distr,
                          grid = grid)
+      
+      # Assume the growth rates match to reconstruct preceding aggregation window:
+      if (recon_opt == "match") {
+        gr <- c(gr[1], gr)
+      }
       
       # Estimate incidence using growth rate
       
@@ -448,11 +480,22 @@ estimate_R_agg <- function(incid,
         idx_reconstruct <- seq(min(R$R$t_start), length(dis_inc))
       }
       
-      incid_not_to_reconstruct <- dis_inc[-idx_reconstruct]
+
+      # Index for aggregation windows
+      idx_aggregation <- rep(seq(1:n_dt), times=full_dt) 
       
-      ## Incidence that can be reconstructed
-      idx_aggregation <- rep(seq(1:n_dt), times=full_dt) ## index for aggregation windows
-      aggs_to_reconstruct <- seq(idx_aggregation[idx_reconstruct[1]], n_dt)
+      if (recon_opt == "naive"){
+        aggs_to_reconstruct <- seq(idx_aggregation[idx_reconstruct[1]], n_dt)
+      } 
+      
+      if (recon_opt == "match"){
+        aggs_with_estimate <- seq(idx_aggregation[idx_reconstruct[1]], n_dt)
+        aggs_to_reconstruct <- c(min(aggs_with_estimate) - 1, aggs_with_estimate)
+        add_idx <- rev((min(idx_reconstruct) - 1) : (min(idx_reconstruct) - dt))
+        idx_reconstruct <- c(add_idx, idx_reconstruct)
+      }
+      
+      incid_not_to_reconstruct <- dis_inc[-idx_reconstruct]
       incid_to_reconstruct <- incid[aggs_to_reconstruct]
       
       # Translate R to growth rate again
@@ -460,6 +503,10 @@ estimate_R_agg <- function(incid,
                          gt_mean = config$mean_si, gt_sd = config$std_si, 
                          gt_distr = config$si_distr,
                          grid = grid)
+      
+      if (recon_opt == "match"){
+      gr <- c(gr[1], gr)
+      }
       
       # Estimate incidence
       d <- numeric(length(aggs_to_reconstruct))
@@ -517,6 +564,10 @@ estimate_R_agg <- function(incid,
       }
       
       if (niter[i] == max(niter)){
+        if (any(abs(sim_inc[,i] - sim_inc[,i-1]) > tol)){
+          message("Reconstructed incidence has not converged within the set
+                  tolerance. Please run again with greater number of iterations.")
+        }
         R_out <- estimate_R(sim_inc[,i],
                             method = method,
                             config = config_out)
