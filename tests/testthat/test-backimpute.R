@@ -1,6 +1,6 @@
-# get imported 
-incid_raw <- as.Date('2001-01-01') + c(0, 1, 5, 5, 6, 7,7,7, 9, 10, 12, 13)
-location <- sample(c("local", "imported"), length(incid_raw), replace=TRUE)
+# get imported
+incid_raw <- as.Date("2001-01-01") + c(0, 1, 5, 5, 6, 7, 7, 7, 9, 10, 12, 13)
+location <- sample(c("local", "imported"), length(incid_raw), replace = TRUE)
 location[1] <- "imported"
 incid_imported <- incidence::incidence(incid_raw, groups = location)
 
@@ -25,12 +25,12 @@ test_that("warnings and errors are working as expected", {
         estimate_R(incid = incid_covid[1:10], backimputation_window = 100L),
         "Backimputation window should be shorter than observed incidence"
     )
-    
+
     expect_error(
         estimate_R(incid = incid_covid[1:10], backimputation_window = 100L),
         "Backimputation window should be shorter than observed incidence"
     )
-    
+
     expect_error(
         estimate_R(incid = incid_imported, backimputation_window = 7L),
         "incidence objects are currently not supported by backimpute_I()."
@@ -40,7 +40,7 @@ test_that("warnings and errors are working as expected", {
         estimate_R(incid = incid_covid, backimputation_window = 5, config = config_covid),
         "Estimate of the growth rate is negative, consider removing backimputation, or extending the backimputation window"
     )
-    
+
     expect_warning(
         estimate_R(incid = incid_covid, backimputation_window = 3, config = config_covid),
         "The backimputation window is short and may lead to an inaccurate estimate of the growth rate."
@@ -51,19 +51,19 @@ test_that("outputs are working as expected", {
 
     # check default is 0.
     expect_equal(
-        estimate_R(incid = incid_covid, backimputation_window = 0, config=config_covid),
-        estimate_R(incid = incid_covid, config=config_covid)
+        estimate_R(incid = incid_covid, backimputation_window = 0, config = config_covid),
+        estimate_R(incid = incid_covid, config = config_covid)
     )
 
     # check adjusted estimates are lower than original...
     expect_lt({
         adjusted <- estimate_R(
-            incid = incid_covid[1:10], 
+            incid = incid_covid[1:10],
             backimputation_window = 10,
-            config=config_covid)$R[1, 'Mean(R)']
+            config = config_covid)$R[1, "Mean(R)"]
         original <- estimate_R(
-            incid = incid_covid[1:10], 
-            config=config_covid)$R[1, 'Mean(R)']
+            incid = incid_covid[1:10],
+            config = config_covid)$R[1, "Mean(R)"]
         adjusted-original
     },
         0
@@ -73,14 +73,14 @@ test_that("outputs are working as expected", {
     suppressWarnings(
         expect_lt({
             adjusted <- estimate_R(
-                incid = incid_covid, 
+                incid = incid_covid,
                 backimputation_window = 5,
-                config=config_covid)$R[1, 'Mean(R)']
+                config = config_covid)$R[1, "Mean(R)"]
             original <- estimate_R(
-                incid = incid_covid, 
-                config=config_covid)$R[1, 'Mean(R)']
+                incid = incid_covid,
+                config = config_covid)$R[1, "Mean(R)"]
             adjusted-original
-        }, 0 ) 
+        }, 0)
     )
 
 })

@@ -45,10 +45,10 @@ In short, the method combines the strength of the exponential growth to estimate
 
 To quickly introduce early overestimation issue, consider the case of constant incidence, for example $I_t = 10$. We would expect R~t~ to be constantly close to 1. However, estimates of R~t~ are decreasing, suggesting a reduction in pathogen infectiousness.
 
-```{r early-bias, fig.width=7}
+```{r early-bias, fig.width = 7}
 incid_constant <- rep(10, 50)
 config <- make_config(list(mean_si = 7, std_si = 4))
-estimate_R(incid=incid_constant, config=config, method='parametric_si') |> 
+estimate_R(incid = incid_constant, config = config, method = "parametric_si") |> 
     plot("R")
 ```
 
@@ -56,12 +56,12 @@ The problem here is that EpiEstim implicitly assumes the 10 cases in day 2 to ha
 If this seems like an unlikely scenario, perform backimputation by setting `imputation_window` to an integer larger than 2. 
 When working with daily incidemce, we suggest to set this window to at least 5 observations. 
 
-```{r early-bias-fix, fig.width=7}
+```{r early-bias-fix, fig.width = 7}
 estimate_R(
-    incid=incid_constant,
-    backimputation_window=7,
-    config=config,
-    method='parametric_si') |> 
+    incid = incid_constant,
+    backimputation_window = 7,
+    config = config,
+    method = "parametric_si") |> 
     plot("R")
 ```
 
@@ -74,11 +74,11 @@ As reporting of deaths is more accurate and reliable than case reporting, it is 
 However, we can use this dataset to show how left-censoring incidence may affect traditional EpiEstim estimates, and how the adjustment behaves more robustly. 
 We focus on the first 50 days of reports.
 
-```{r covid-load, fig.width=7}
+```{r covid-load, fig.width = 7}
 data(covid_deaths_2020_uk)
-maxT <- 50
-incid_covid <- covid_deaths_2020_uk$incidence$Incidence[1:maxT]
-config_covid <- make_config(list(si_distr=covid_deaths_2020_uk$si_distr))
+max_t <- 50
+incid_covid <- covid_deaths_2020_uk$incidence$Incidence[1:max_t]
+config_covid <- make_config(list(si_distr = covid_deaths_2020_uk$si_distr))
 ```
 
 ### No left-censoring: early R~t~ estimates remain similar
@@ -86,27 +86,27 @@ config_covid <- make_config(list(si_distr=covid_deaths_2020_uk$si_distr))
 We first consider a scenario where the back-imputation shouldn't be necessary: i.e. when no generations of infections (or deaths) are missed. We would hope that performing back-imputation would not drastically lower the estimates for the reproduction number.
 Indeed, this is the case.
 
-```{r covid-no-imputation, fig.width=7}
+```{r covid-no-imputation, fig.width = 7}
 no_truncation_no_imputation <- estimate_R(
                                           incid = incid_covid,
                                           method = "non_parametric_si",
-                                          config= config_covid
+                                          config =  config_covid
 )
 no_truncation_with_imputation <- estimate_R(
                                             backimputation_window = 8,
                                             incid = incid_covid,
                                             method = "non_parametric_si",
-                                            config= config_covid
+                                            config =  config_covid
 )
 gridExtra::grid.arrange(
-  plot(no_truncation_no_imputation, "R") + ggtitle("No imputation") ,
+  plot(no_truncation_no_imputation, "R") + ggtitle("No imputation"),
   plot(no_truncation_with_imputation, "R") + ggtitle("With imputation")
 )
 ```
 The reduction in R~t~ estimates is strongest in the early stages, and vanishes with time.
 
-```{r covid-imputation-comparison, fig.width=7}
-time <- no_truncation_no_imputation$R[,c("t_start", "t_end")]
+```{r covid-imputation-comparison, fig.width = 7}
+time <- no_truncation_no_imputation$R[, c("t_start", "t_end")]
 window_midpoint <- (time[,1] + time[,2])/2
 original <- no_truncation_no_imputation$R[, "Mean(R)"]
 adjusted <- no_truncation_with_imputation$R[, "Mean(R)"]
@@ -129,47 +129,46 @@ Still, the imputation reduces the first R~t~ estimate from
 Now let us assume the first two weeks of deaths were not observed.
 How would the two methods compare?
 
-```{r, fig.width=7}
+```{r, fig.width = 7}
 
-truncT <- 14
+trunc_t <- 14
 
 # fit EpiEstim
 truncation_no_imputation <- estimate_R(
-                                     incid = incid_covid[ -(1:truncT) ], 
+                                     incid = incid_covid[ -(1:trunc_t)], 
                                      method = "non_parametric_si",
-                                     config= config_covid
+                                     config = config_covid
 )
 
 truncation_with_imputation <- estimate_R(
                                    backimputation_window = 10,
-                                   incid = incid_covid[ -(1:truncT) ],
+                                   incid = incid_covid[ -(1:trunc_t)],
                                    method = "non_parametric_si",
-                                   config= config_covid
+                                   config = config_covid
 )
 
 # specify classes
 truncation_with_imputation$R$imputation <- TRUE
 truncation_no_imputation$R$imputation <- FALSE
 
-plot.postmeans.side.by.side <- function(res1, res2, res3)
-{
-    ggplot(data=res1$R, aes( 
-                          x= (t_start + t_end)/2,
-                          y=`Mean(R)`,
-                          ymin=`Quantile.0.025(R)`,
-                          ymax=`Quantile.0.975(R)`,
-                          color=imputation,
-                          fill=imputation,
-                          linetype=imputation
-                          ) ) + 
-        geom_ribbon(alpha=.3, color=NA) +
-        geom_ribbon(data=res2$R, alpha=.3, color=NA) +
+plot.postmeans.side.by.side <- function(res1, res2, res3) {
+    ggplot(data = res1$R, aes( 
+                          x =  (t_start + t_end)/2,
+                          y = `Mean(R)`,
+                          ymin = `Quantile.0.025(R)`,
+                          ymax = `Quantile.0.975(R)`,
+                          color = imputation,
+                          fill = imputation,
+                          linetype = imputation
+                          )) + 
+        geom_ribbon(alpha = .3, color = NA) +
+        geom_ribbon(data = res2$R, alpha = .3, color = NA) +
         geom_line() +
-        geom_line(data=res2$R) +
-        # geom_line(data=res3$R) +
-        labs(x="Midpoint of sliding window", y="EpiEstim Posterior Mean") +
+        geom_line(data = res2$R) +
+        # geom_line(data = res3$R) +
+        labs(x = "Midpoint of sliding window", y = "EpiEstim Posterior Mean") +
         theme_bw() +
-        theme(legend.position = 'bottom')
+        theme(legend.position = "bottom")
 }
 
 plot.postmeans.side.by.side(
