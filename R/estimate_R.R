@@ -326,12 +326,12 @@
 #' }
 #'
 estimate_R <- function(incid,
-                       backimputation_window = 0, # if 0, no backimputation, else impute
                        method = c(
                          "non_parametric_si", "parametric_si",
                          "uncertain_si", "si_from_data",
                          "si_from_sample"
                        ),
+                       backimputation_window = 0, # if 0, no backimputation, else impute
                        si_data = NULL,
                        si_sample = NULL,
                        config = make_config(incid = incid, method = method),
