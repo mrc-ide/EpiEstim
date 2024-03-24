@@ -7,8 +7,8 @@
 #' Currently, no cases are assumed to be imported.
 #'
 #' @param incid the raw, reported incidence cases.
-#' @param window length of the observation window to fit the exponential growth
-#' model for back-imputation
+#' @param window_b length of the observation window to fit the exponential 
+#' growth model for back-imputation
 #'
 #' @return an incidence data.frame, combining back-imputed cases for 100 time 
 #' points(with rows indexed by a negative integer rowname) and cases (with rows

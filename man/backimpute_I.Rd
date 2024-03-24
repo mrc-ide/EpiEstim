@@ -9,8 +9,8 @@ backimpute_I(incid, window_b)
 \arguments{
 \item{incid}{the raw, reported incidence cases.}
 
-\item{window}{length of the observation window to fit the exponential growth
-model for back-imputation}
+\item{window_b}{length of the observation window to fit the exponential 
+growth model for back-imputation}
 }
 \value{
 an incidence data.frame, combining back-imputed cases for 100 time 
