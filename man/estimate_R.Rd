@@ -8,6 +8,7 @@ estimate_R(
   incid,
   method = c("non_parametric_si", "parametric_si", "uncertain_si", "si_from_data",
     "si_from_sample"),
+  backimputation_window = 0,
   si_data = NULL,
   si_sample = NULL,
   config = make_config(incid = incid, method = method),
@@ -44,6 +45,9 @@ imported cases.}
 
 \item{method}{One of "non_parametric_si", "parametric_si", "uncertain_si",
 "si_from_data" or "si_from_sample" (see details).}
+
+\item{backimputation_window}{Length of the window used to impute incidence
+prior to the first reported cases.}
 
 \item{si_data}{For method "si_from_data" ; the data on dates of symptoms of
 pairs of infector/infected individuals to be used to estimate the serial
@@ -128,6 +132,7 @@ used for estimation}
 \item{I_imported}{: the time series of incidence of imported cases (so that
 \code{I_local + I_imported = I})}
 
+\item{I_imputed}{: the time series of incidence of imputed cases}
 \item{dates}{: a vector of dates corresponding to the incidence time series}
 
 \item{MCMC_converged}{ (only for method \code{si_from_data}): a boolean
