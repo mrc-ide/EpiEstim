@@ -9,6 +9,11 @@ data("covid_deaths_2020_uk")
 incid_covid <- covid_deaths_2020_uk$incidence$Incidence
 config_covid <- make_config(list(si_distr = covid_deaths_2020_uk$si_distr))
 
+incid_constant <- rep(10, 20)
+config_constant <- make_config(list(mean_si = 5, std_si = 2))
+
+
+
 test_that("warnings and errors are working as expected", {
 
     expect_error(
@@ -82,6 +87,15 @@ test_that("outputs are working as expected", {
             adjusted-original
         }, 0)
     )
+    
+    expect_lt({
+      R_constant <- estimate_R(
+        incid = incid_constant,
+        backimputation_window = 7,
+        config = config_constant,
+        method = "parametric_si")
+      diff(range(R_constant$R$`Mean(R)`)) 
+    }, 1e-6)
 
 })
 

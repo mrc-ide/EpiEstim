@@ -340,6 +340,3 @@ make_config <- function(..., incid = NULL,
 
 }
 
-
-
-

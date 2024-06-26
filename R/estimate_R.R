@@ -29,7 +29,10 @@
 #'   "si_from_data" or "si_from_sample" (see details).
 #'
 #' @param backimputation_window Length of the window used to impute incidence
-#'    prior to the first reported cases.
+#'    prior to the first reported cases. The default value is 0, meaning that no
+#'    back-imputation is performed. If a positive integer is provided, the
+#'    incidence is imputed for the first \code{backimputation_window} time 
+#'    units.
 #'
 #' @param si_sample For method "si_from_sample" ; a matrix where each column
 #'   gives one distribution of the serial interval to be explored (see details).
@@ -362,6 +365,7 @@ estimate_R <- function(incid,
   check_config(config, method)
 
 
+  # If the serial interval distribution is not provided, estimate it
   if (method == "si_from_data") {
     ## Warning if the expected set of parameters is not adequate
     si_data <- process_si_data(si_data)
@@ -400,30 +404,22 @@ estimate_R <- function(incid,
       "estimates...\n",
       "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     ))
-
-    ## then estimate R for these serial intervals
-
-    if (!is.null(config$seed)) {
-      set.seed(config$seed)
-    }
-
-    out <- estimate_R_func(
-      incid = incid,
-      method = "si_from_data",
-      si_sample = c2e$si_sample,
-      config = config
-    )
-    out[["MCMC_converged"]] <- MCMC_conv
-  } else {
-    if (!is.null(config$seed)) {
-      set.seed(config$seed)
-    }
-    out <- estimate_R_func(
-      incid = incid, method = method, si_sample = si_sample,
-      config = config
-    )
+    si_sample <- c2e$si_sample
   }
 
+  ## estimate R whether or not si_sample is simulated
+  if (!is.null(config$seed)) {
+    set.seed(config$seed)
+  }
+  out <- estimate_R_func(
+    incid = incid,
+    method = method, 
+    si_sample = si_sample,
+    config = config
+  )
+  if (method == "si_from_sample") {
+    out[["si_distr"]] <- si_sample
+  }
   return(out)
 }
 
@@ -537,12 +533,14 @@ estimate_R_func <- function(incid,
   idx_raw_incid <- as.integer(rownames(incid)) > 0
   T <- sum(idx_raw_incid)
   T_imputed <- nrow(incid) - T
+  
+  check_times(config$t_start, config$t_end, T)
+  nb_time_periods <- length(config$t_start)
+  t_start_imputed <- config$t_start + T_imputed
+  t_end_imputed <- config$t_end + T_imputed
 
   a_prior <- (config$mean_prior / config$std_prior)^2
   b_prior <- config$std_prior^2 / config$mean_prior
-
-  check_times(config$t_start, config$t_end, T)
-  nb_time_periods <- length(config$t_start)
 
   if (method == "si_from_sample") {
     if (is.null(config$n2)) {
@@ -554,8 +552,8 @@ estimate_R_func <- function(incid,
   min_nb_cases_per_time_period <- ceiling(1 / config$cv_posterior^2 - a_prior)
   incidence_per_time_step <- calc_incidence_per_time_step(
     incid,
-    T_imputed + config$t_start,
-    T_imputed + config$t_end
+    t_start_imputed, 
+    t_end_imputed
   )
   if (incidence_per_time_step[1] < min_nb_cases_per_time_period) {
     warning("You're estimating R too early in the epidemic to get the desired
@@ -599,7 +597,7 @@ estimate_R_func <- function(incid,
       temp <- lapply(seq_len(config$n1), function(k) { sample_from_posterior(config$n2,
                                                                            incid, mean_si_sample[k], std_si_sample[k],
                                                                            si_distr = NULL, a_prior,
-                                                                           b_prior, T_imputed + config$t_start, T_imputed + config$t_end
+                                                                           b_prior, t_start_imputed, t_end_imputed
       )})
       config$si_distr <- cbind(
         t(vapply(seq_len(config$n1), function(k) (temp[[k]])[[2]], numeric(T))),
@@ -652,7 +650,7 @@ estimate_R_func <- function(incid,
       temp <- lapply(seq_len(config$n1), function(k) sample_from_posterior(config$n2,
                                                                            incid,
                                                                            mean_si = NULL, std_si = NULL, si_sample[, k], a_prior,
-                                                                           b_prior, T_imputed + config$t_start, T_imputed + config$t_end
+                                                                           b_prior, t_start_imputed, t_end_imputed
       ))
       config$si_distr <- cbind(
         t(vapply(seq_len(config$n1), function(k) (temp[[k]])[[2]],
@@ -707,7 +705,7 @@ estimate_R_func <- function(incid,
                                                      1))^2) - final_mean_si^2)
     post <- posterior_from_si_distr(
       incid, config$si_distr, a_prior, b_prior,
-      T_imputed + config$t_start, T_imputed + config$t_end
+      t_start_imputed, t_end_imputed
     )
     a_posterior <- unlist(post[[1]])
     b_posterior <- unlist(post[[2]])
