@@ -45,6 +45,7 @@ influenza in San Antonio, Texas, USA (from Morgan et al., EID 2010).
 ```{r data}
 library(EpiEstim)
 library(ggplot2)
+library(incidence) # used later to showcase compatibility with incidence package
 
 ## load data
 data(Flu2009)
@@ -64,7 +65,6 @@ head(Flu2009$si_data)
 We can use the `incidence` R package to easily plot the daily incidence data:
   
 ```{r, incidence}
-library(incidence)
 plot(as.incidence(Flu2009$incidence$I, dates = Flu2009$incidence$dates))
 ```
 
