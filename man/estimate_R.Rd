@@ -47,61 +47,64 @@ imported cases.}
 "si_from_data" or "si_from_sample" (see details).}
 
 \item{backimputation_window}{Length of the window used to impute incidence
-prior to the first reported cases.}
+prior to the first reported cases. The default value is 0, meaning that no
+back-imputation is performed. If a positive integer is provided, the
+incidence is imputed for the first \code{backimputation_window} time 
+units.}
 
 \item{si_data}{For method "si_from_data" ; the data on dates of symptoms of
 pairs of infector/infected individuals to be used to estimate the serial
-interval distribution should be a dataframe with 5 columns: 
-\itemize{ 
+interval distribution should be a dataframe with 5 columns:
+\itemize{
 \item{EL: the lower bound
-of the symptom onset date of the infector (given as an integer)} 
+of the symptom onset date of the infector (given as an integer)}
 \item{ER:
 the upper bound of the symptom onset date of the infector (given as an
 integer). Should be such that ER>=EL. If the dates are known exactly use
-ER = EL} 
+ER = EL}
 \item{SL: the lower bound of the
-symptom onset date of the infected individual (given as an integer)} 
+symptom onset date of the infected individual (given as an integer)}
 \item{SR: the upper bound of the symptom onset date of the infected
-individual (given as an integer). Should be such that SR>=SL. If the dates 
-are known exactly use SR = SL} 
+individual (given as an integer). Should be such that SR>=SL. If the dates
+are known exactly use SR = SL}
 \item{type
 (optional): can have entries 0, 1, or 2, corresponding to doubly
-interval-censored, single interval-censored or exact observations, 
+interval-censored, single interval-censored or exact observations,
 respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-will be automatically computed from the dates} 
+will be automatically computed from the dates}
 }}
 
 \item{si_sample}{For method "si_from_sample" ; a matrix where each column
 gives one distribution of the serial interval to be explored (see details).}
 
-\item{config}{An object of class \code{estimate_R_config}, as returned by 
+\item{config}{An object of class \code{estimate_R_config}, as returned by
 function \code{make_config}.}
 
-\item{dt}{length of temporal aggregations of the incidence data. This should 
+\item{dt}{length of temporal aggregations of the incidence data. This should
 be an integer or vector of integers. If a vector, this can either match the
-length of the incidence data supplied, or it will be recycled. For 
-example, \code{dt = c(3L, 4L)} would correspond to alternating incidence 
-aggregation windows of 3 and 4 days. The default value is 1 time unit 
+length of the incidence data supplied, or it will be recycled. For
+example, \code{dt = c(3L, 4L)} would correspond to alternating incidence
+aggregation windows of 3 and 4 days. The default value is 1 time unit
 (typically day).}
 
-\item{dt_out}{length of the sliding windows used for R estimates (integer, 
-7 time units (typically days) by default). 
-Only used if \code{dt > 1}; 
-in this case this will superseed config$t_start and config$t_end, 
+\item{dt_out}{length of the sliding windows used for R estimates (integer,
+7 time units (typically days) by default).
+Only used if \code{dt > 1};
+in this case this will superseed config$t_start and config$t_end,
 see \code{\link{estimate_R_agg}}.}
 
 \item{recon_opt}{one of "naive" or "match", see \code{\link{estimate_R_agg}}.}
 
-\item{iter}{number of iterations of the EM algorithm used to reconstruct 
-incidence at 1-time-unit intervals(integer, 10 by default). 
+\item{iter}{number of iterations of the EM algorithm used to reconstruct
+incidence at 1-time-unit intervals(integer, 10 by default).
 Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.}
 
 \item{tol}{tolerance used in the convergence check (numeric, 1e-6 by default),
 see \code{\link{estimate_R_agg}}.}
 
-\item{grid}{named list containing "precision", "min", and "max" which are 
-used to define a grid of growth rate parameters that are used inside the EM 
-algorithm used to reconstruct incidence at 1-time-unit intervals. 
+\item{grid}{named list containing "precision", "min", and "max" which are
+used to define a grid of growth rate parameters that are used inside the EM
+algorithm used to reconstruct incidence at 1-time-unit intervals.
 Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.}
 }
 \value{
@@ -178,15 +181,15 @@ serial interval distribution to use for estimation of R. This can be a useful
  estimate_R is called.}
 }
 
-R is estimated within a Bayesian framework, using a Gamma distributed prior, 
-with mean and standard deviation which can be set using the `mean_prior` 
+R is estimated within a Bayesian framework, using a Gamma distributed prior,
+with mean and standard deviation which can be set using the `mean_prior`
 and `std_prior` arguments within the `make_config` function, which can then
-be used to specify `config` in the `estimate_R` function. 
-Default values are a mean prior of 5 and standard deviation of 5. 
-This was set to a high prior value with large uncertainty so that if one 
-estimates R to be below 1, the result is strongly data-driven. 
+be used to specify `config` in the `estimate_R` function.
+Default values are a mean prior of 5 and standard deviation of 5.
+This was set to a high prior value with large uncertainty so that if one
+estimates R to be below 1, the result is strongly data-driven.
 
-R is estimated on time windows specified through the `config` argument. 
+R is estimated on time windows specified through the `config` argument.
 These can be overlapping or not (see `make_config` function and vignette
 for examples).
 }
@@ -196,30 +199,30 @@ data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
 ## when not specifying t_start and t_end in config, they are set to estimate
-## the reproduction number on sliding weekly windows                          
-res <- estimate_R(incid = Flu2009$incidence, 
+## the reproduction number on sliding weekly windows                      
+res <- estimate_R(incid = Flu2009$incidence,
                   method = "non_parametric_si",
                   config = make_config(list(si_distr = Flu2009$si_distr)))
 plot(res)
 
 ## the second plot produced shows, at each each day,
-## the estimate of the reproduction number over the 7-day window 
+## the estimate of the reproduction number over the 7-day window
 ## finishing on that day.
 
 ## to specify t_start and t_end in config, e.g. to have biweekly sliding
-## windows      
-t_start <- seq(2, nrow(Flu2009$incidence)-13)   
-t_end <- t_start + 13                 
-res <- estimate_R(incid = Flu2009$incidence, 
+## windows  
+t_start <- seq(2, nrow(Flu2009$incidence)-13)
+t_end <- t_start + 13             
+res <- estimate_R(incid = Flu2009$incidence,
                   method = "non_parametric_si",
                   config = make_config(list(
-                      si_distr = Flu2009$si_distr, 
-                      t_start = t_start, 
+                      si_distr = Flu2009$si_distr,
+                      t_start = t_start,
                       t_end = t_end)))
 plot(res)
 
 ## the second plot produced shows, at each each day,
-## the estimate of the reproduction number over the 14-day window 
+## the estimate of the reproduction number over the 14-day window
 ## finishing on that day.
 
 ## example with an incidence object
@@ -276,7 +279,7 @@ mcmc_control <- make_mcmc_control(
   burnin = 1000, # first 1000 iterations discarded as burn-in
   thin = 10, # every 10th iteration will be kept, the rest discarded
   seed = 1) # set the seed to make the process reproducible
- 
+
 R_si_from_data <- estimate_R(
   incid = MockRotavirus$incidence,
   method = "si_from_data",
@@ -316,7 +319,7 @@ si_sample <- coarse2estim(SI.fit, thin = 10)$si_sample
 R_si_from_sample <- estimate_R(MockRotavirus$incidence,
                                method = "si_from_sample",
                                si_sample = si_sample,
-                               config = make_config(list(n2 = 50, 
+                               config = make_config(list(n2 = 50,
                                seed = overall_seed)))
 plot(R_si_from_sample)
 

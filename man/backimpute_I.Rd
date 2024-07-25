@@ -9,27 +9,27 @@ backimpute_I(incid, window_b)
 \arguments{
 \item{incid}{the raw, reported incidence cases.}
 
-\item{window_b}{length of the observation window to fit the exponential 
+\item{window_b}{length of the observation window to fit the exponential
 growth model for back-imputation}
 }
 \value{
-an incidence data.frame, combining back-imputed cases for 100 time 
+an incidence data.frame, combining back-imputed cases for 100 time
 points(with rows indexed by a negative integer rowname) and cases (with rows
 indexed by a non-negative integer)
 }
 \description{
 This function imputes incidence prior the first date of reported cases to
-address early bias in R_t estimates. 
-A simple linear model is fitted on shifted, logged-incidence cases, based on 
+address early bias in R_t estimates.
+A simple linear model is fitted on shifted, logged-incidence cases, based on
 an initial observation window.
 Currently, no cases are assumed to be imported.
 }
 \examples{
-incid_all <- ceiling( exp(.3 * 0:20) )
+incid_all <- ceiling(exp(.3 * 0:20))
 incid_trunc <- tail(incid_all, 10)
 x <- backimpute_I(incid=incid_trunc, window_b=6)
 idx <- as.integer(rownames(x)) > -10
-x[idx, ]$local 
+x[idx, ]$local
 incid_all
 
 }
