@@ -43,8 +43,7 @@ Imports:
     abind,
     epitrix,
     distcrete,
-    patchwork,
-    gghighlight
+    patchwork
 Suggests:
     testthat,
     utils,
@@ -57,7 +56,8 @@ Suggests:
     MCMCglmm,
     projections,
     dplyr,
-    readxl
+    readxl,
+    gghighlight
 License: GPL (>=2)
 LazyLoad: yes
 Encoding: UTF-8
