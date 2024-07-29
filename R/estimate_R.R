@@ -417,9 +417,12 @@ estimate_R <- function(incid,
     si_sample = si_sample,
     config = config
   )
-  if (method == "si_from_sample") {
-    out[["si_distr"]] <- si_sample
+  
+  # Add extra fields based on method
+  if(method == "si_from_sample"){
+    out[["MCMC_converged"]] <- MCMC_conv
   }
+
   return(out)
 }
 
