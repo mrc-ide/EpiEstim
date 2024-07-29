@@ -329,6 +329,37 @@ reducing transmissibility, as the estimated reproduction number during the
 school closure was significantly lower than that before closure, and was 
 estimated to be under the threshold value 1. 
 
+## Accounting for missed generations of infections
+
+A common source of bias for early estimates of the reproduction number is the 
+inability to account for the existence of infections that preceded the first reported
+case (as observed by [O'Driscoll et al. (2021)](https://doi.org/10.1093/cid/ciaa1599)). 
+A simple solution, outlined in [Brizzi, O'Driscoll, and Dorigatti (2022)](https://doi.org/10.1093/cid/ciac138),
+consists in using early incidence to impute the number of past, unobserved infections
+prior to estimating the reproduction number.
+To use this method, specify the `backimputation_window` argument in `estimate_R` 
+to an integer. This specifies the length of the observation window used for
+backimputation.
+
+```{r estimate_r_backimputation}
+res_backimputation <- estimate_R(Flu2009$incidence$I, 
+                                method="parametric_si",
+                                config = make_config(list(
+                                  mean_si = 2.6, 
+                                  std_si = 1.5)),
+                                backimputation_window = 7)
+plot(res_backimputation, "R")
+```
+
+Here, the first $R_t$ estimates obtained with back-imputation (`r res_backimputation$R[1,"Mean(R)"]`) 
+closely match those obtained without back-imputation (`r res_parametric_si$R[1,"Mean(R)"]`) 
+stored in `res_parametric_si`.
+In this case, this suggests that the $R_t$ estimates are are robust to the 
+existence of unobserved cases.
+However, in other scenarios, the difference between the two estimates can be
+substantial. The back-imputation method can then be used to avoid misleading
+conclusions based on early data. For more examples, refer to the [vignette](EpiEstim_backimputation.html)
+
 ## Different ways of specifying the incidence
 
 So far we have specified the `incid` argument using a table with two columns 

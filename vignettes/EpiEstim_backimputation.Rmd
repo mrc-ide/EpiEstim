@@ -17,6 +17,37 @@ knitr::opts_chunk$set(
 )
 library(EpiEstim) 
 library(ggplot2)
+
+theme_epiestim <- function() {
+  theme_light() %+replace%
+    
+    theme(
+      panel.border = element_blank(),
+      axis.line = element_line(
+        colour = "black",
+        size = 0.2
+      ),
+      plot.title = element_text(
+        size = 12,
+        hjust = 0,
+        vjust = 4,
+        margin = margin(5, b = 5, t = 10)
+      ),
+      axis.title = element_text(
+        size = 11
+      ),
+      axis.text = element_text(
+        size = 9
+      ),
+      axis.text.x = element_text(
+        margin = margin(5, b = 10)
+      ),
+      axis.text.y = element_text(
+        margin = margin(5, l = 10, r = 4)
+      )
+    )
+}
+
 ```
 
 
@@ -107,22 +138,25 @@ The reduction in R~t~ estimates is strongest in the early stages, and vanishes w
 
 ```{r covid-imputation-comparison, fig.width = 7}
 time <- no_truncation_no_imputation$R[, c("t_start", "t_end")]
-window_midpoint <- (time[,1] + time[,2])/2
-original <- no_truncation_no_imputation$R[, "Mean(R)"]
-adjusted <- no_truncation_with_imputation$R[, "Mean(R)"]
-
-plot(
-     x = window_midpoint, 
-     y = round((adjusted-original)/original * 100, 2),
-     main = "Percent reduction in mean R_t estimate due to imputation",
-     xlab = "Midpoint of sliding window",
-     ylab = "Percentage reduction"
+estimates <- data.frame(
+  x = time$t_end,
+  original = no_truncation_no_imputation$R[, "Mean(R)"],
+  adjusted = no_truncation_with_imputation$R[, "Mean(R)"]
 )
+
+ggplot(estimates, aes(x=x, y=(adjusted-original)/original * 100 )) +
+  geom_line(colour="#5983AB") +
+  theme_epiestim() +
+  labs(
+     title = "Percent reduction in mean R_t estimate due to imputation",
+     x = "Midpoint of sliding window",
+     y = "Percentage reduction"
+  )
 ```
 
 In this case, the shape of the R~t~ estimates are similar for the two methods. 
 Still, the imputation reduces the first R~t~ estimate from 
-`r round(original[1],1)` to `r round(adjusted[1], 1)`.
+`r round(estimates$original[1],1)` to `r round(estimates$adjusted[1], 1)`.
 
 ### Left-censoring: back-imputation reduces bias.
 
@@ -153,7 +187,7 @@ truncation_no_imputation$R$imputation <- FALSE
 
 plot.postmeans.side.by.side <- function(res1, res2, res3) {
     ggplot(data = res1$R, aes( 
-                          x =  (t_start + t_end)/2,
+                          x =  t_end,
                           y = `Mean(R)`,
                           ymin = `Quantile.0.025(R)`,
                           ymax = `Quantile.0.975(R)`,
@@ -165,10 +199,11 @@ plot.postmeans.side.by.side <- function(res1, res2, res3) {
         geom_ribbon(data = res2$R, alpha = .3, color = NA) +
         geom_line() +
         geom_line(data = res2$R) +
+        scale_color_manual(values=c("#5983AB", "#E5A3A3")) +
+        scale_fill_manual(values=c("#5983AB", "#E5A3A3")) +
         # geom_line(data = res3$R) +
         labs(x = "Midpoint of sliding window", y = "EpiEstim Posterior Mean") +
-        theme_bw() +
-        theme(legend.position = "bottom")
+        theme_epiestim()
 }
 
 plot.postmeans.side.by.side(
@@ -177,10 +212,10 @@ plot.postmeans.side.by.side(
 )
 ```
 
-With truncated deaths data, the imputation procedure brought the R~t~ estimates from 
-`r round(truncation_no_imputation$R[1,3],1)` to
+With truncated deaths data, the imputation procedure brought the R~t~ mean estimate 
+from  `r round(truncation_no_imputation$R[1,3],1)` to
 `r round(truncation_with_imputation$R[1,3],1)` . 
-This is closer to the estimate obtained from the complete data 
+This is closer to the estimate obtained from the complete data at the same time point 
 (`r round(no_truncation_no_imputation$R[15,3], 1)`).
 
 
