@@ -41,7 +41,6 @@ Imports:
     scales,
     grDevices,
     abind,
-    gghighlight,
     epitrix,
     distcrete,
     patchwork
@@ -57,9 +56,10 @@ Suggests:
     MCMCglmm,
     projections,
     dplyr,
-    readxl
+    readxl,
+    gghighlight
 License: GPL (>=2)
 LazyLoad: yes
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr

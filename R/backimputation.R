@@ -23,6 +23,7 @@
 #' x[idx, ]$local
 #' incid_all
 #'
+#' @importFrom stats lm predict.lm
 
 backimpute_I <- function(incid, window_b) {
 

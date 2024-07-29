@@ -742,13 +742,20 @@ test_that("estimate_advantage faster with precompute (3 variants 1 location)", {
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
+  
+  mcmc_control <- default_mcmc_controls()
+  mcmc_control$n_iter <- 2100L
 
   t1 <- system.time(
-    x1 <- estimate_advantage(incid, si_distr, priors, seed = 1, precompute = TRUE, t_min = 2L)
+    x1 <- estimate_advantage(incid, si_distr, priors, seed = 1, 
+                             precompute = TRUE, t_min = 2L, 
+                             mcmc_control = mcmc_control)
   )
 
   t2 <- system.time(
-    x2 <- estimate_advantage(incid, si_distr, priors, seed = 1, precompute = FALSE, t_min = 2L)
+    x2 <- estimate_advantage(incid, si_distr, priors, seed = 1, 
+                             precompute = FALSE, t_min = 2L, 
+                             mcmc_control = mcmc_control)
   )
 
   ## t1 should be < t2

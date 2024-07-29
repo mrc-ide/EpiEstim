@@ -392,7 +392,7 @@ estimate_R <- function(incid,
     }
 
     ## check convergence of the MCMC and print warning if not converged
-    MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
+    check_cdt_samples_convergence(cdt@samples)
 
     ## thin the chain, and turn the two parameters of the SI distribution into a
     ## whole discrete distribution
