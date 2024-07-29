@@ -265,6 +265,23 @@
 #' ## the estimate of the reproduction number over the 7-day window
 #' ## finishing on that day.
 #'
+#' ## Example with back-imputation:
+#' ## here we use the first 6 days of incidence to impute cases that preceded
+#' ## the first reported cases:
+#' 
+#' res_bi <- estimate_R(incid = Flu2009$incidence,
+#'                  method = "parametric_si",
+#'                  mean_si = 2.6, std_mean_si = 1,
+#'                  backimputation_window = 6,
+#'                  config = make_config(list(
+#'                       si_distr = Flu2009$si_distr,
+#'                       t_start = t_start,
+#'                       t_end = t_end)))
+#' plot(res_bi, "R")
+#' 
+#' We can see the early estimates of R are lower when back-imputation is used,
+#' even though the difference is marginal in this case.
+#'
 #' \dontrun{
 #' ## Note the following examples use an MCMC routine
 #' ## to estimate the serial interval distribution from data,
