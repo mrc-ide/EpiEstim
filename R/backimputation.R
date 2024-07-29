@@ -30,31 +30,34 @@ backimpute_I <- function(incid, window_b) {
       msg <- "incidence objects are currently not supported by backimpute_I()."
       stop(msg)
     }
+  
+    if (window_b <= 5) {
+        msg <- "The backimputation window is short and may lead to an inaccurate estimate of the growth rate."
+        warning(msg)
+    }
+
+    # process observed incidence, and move the first imported cases to local
+    incid_processed <- process_I(incid)
+    incid_processed$local[1] <- with(incid_processed, imported[1] + local[1])
+    incid_processed$imported[1] <- 0
 
     stopifnot("Backimputation window needs to contain at least 2 timepoints" =
         window_b >= 2)
     stopifnot("Backimputation window needs to have integer length" =
         window_b %% 1 == 0)
     stopifnot("Backimputation window should be shorter than observed incidence" =
-        length(incid) >= window_b)
-
-
-    if (window_b <= 5) {
-        msg <- "The backimputation window is short and may lead to an inaccurate estimate of the growth rate."
-        warning(msg)
-    }
-
-    # process observed incidence
-    incid_processed <- process_I(incid)
-    incid_processed[1, ] <- c(sum(incid_processed[1, ]), 0)
-
+        nrow(incid_processed) >= window_b)
+    
+    # incid could be a data.frame. Better to work with a vector of integers
+    local_incidence <- incid_processed$local
+    
     # some cases may be 0, implying -infinite logs
     safe_shift <- .5
 
     # backimpute unobserved, previous cases based on first window_b of observations
     log_incid_start <- data.frame(
         t = seq(window_b),
-        li = log(incid[1:window_b] + safe_shift)
+        li = log(local_incidence[1:window_b] + safe_shift)
    )
     imputed_t <- seq(from = -100, to = 0)
     fit_backimpute <- lm(li ~ t, data = log_incid_start)
@@ -77,8 +80,18 @@ backimpute_I <- function(incid, window_b) {
 
     # first observation must be imported, otherwise later warning
     predict_backimpute[1, ] <- c(0, sum(predict_backimpute[1, ]))
-
-    # bind imputed with observed
+    
+    # bind imputed with observed:
+    # 1st make sure the imputed data.frame has the same columns as the original
+    diff_cols <- setdiff(names(incid_processed), names(predict_backimpute))
+    predict_backimpute[diff_cols] <- NA
+    # if the original df has dates, keep consistency with date_col:
+    if ("dates" %in% diff_cols) {
+      # find time-difference between successive date entries
+      t_unit <- with(incid_processed, dates[2] - dates[1])
+      predict_backimpute$dates <- incid_processed$dates[1] - t_unit * rev(seq(from=1, to=nrow(predict_backimpute)))
+    }
+    # Finally, bind and return
     incid_with_imputed <- rbind(predict_backimpute, incid_processed)
     return(incid_with_imputed)
 }
