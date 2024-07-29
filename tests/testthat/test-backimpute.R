@@ -51,6 +51,11 @@ test_that("warnings and errors are working as expected", {
     "incidence objects are currently not supported by backimpute_I()."
   )
   
+  expect_error(
+    suppressWarnings(estimate_R(incid = incid_covid, backimputation_window = 6, dt=2)),
+    "backimputation_window is currently not supported when dt > 1"
+  )
+  
   expect_warning(
     estimate_R(incid = incid_covid, backimputation_window = 5, config = config_covid2),
     "Estimate of the growth rate is negative, consider removing backimputation, or extending the backimputation window"
