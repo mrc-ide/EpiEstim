@@ -13,15 +13,16 @@ backimpute_I(incid, window_b)
 growth model for back-imputation}
 }
 \value{
-an incidence data.frame, combining back-imputed cases for 100 time
-points(with rows indexed by a negative integer rowname) and cases (with rows
-indexed by a non-negative integer)
+an incidence data.frame, combining back-imputed cases for a maximum 
+of 100 time points (with rows indexed by a negative integer rowname) and 
+cases (with rows #' indexed by a non-negative integer)
 }
 \description{
 This function imputes incidence prior the first date of reported cases to
 address early bias in R_t estimates.
 A simple linear model is fitted on shifted, logged-incidence cases, based on
 an initial observation window.
+Log-incidence is computed as log(local + 0.5) to avoid -infinite logs.
 Currently, no cases are assumed to be imported.
 }
 \examples{
