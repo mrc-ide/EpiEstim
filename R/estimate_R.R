@@ -28,12 +28,6 @@
 #' @param method One of "non_parametric_si", "parametric_si", "uncertain_si",
 #'   "si_from_data" or "si_from_sample" (see details).
 #'
-#' @param backimputation_window Length of the window used to impute incidence
-#'    prior to the first reported cases. The default value is 0, meaning that no
-#'    back-imputation is performed. If a positive integer is provided, the
-#'    incidence is imputed for the first \code{backimputation_window} time 
-#'    units.
-#'
 #' @param si_sample For method "si_from_sample" ; a matrix where each column
 #'   gives one distribution of the serial interval to be explored (see details).
 #'
@@ -88,6 +82,12 @@
 #' used to define a grid of growth rate parameters that are used inside the EM
 #' algorithm used to reconstruct incidence at 1-time-unit intervals.
 #' Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.
+#'
+#' @param backimputation_window Length of the window used to impute incidence
+#'    prior to the first reported cases. The default value is 0, meaning that no
+#'    back-imputation is performed. If a positive integer is provided, the
+#'    incidence is imputed for the first \code{backimputation_window} time 
+#'    units.
 #'
 #' @return {
 #' an object of class \code{estimate_R}, with components:
@@ -351,7 +351,6 @@ estimate_R <- function(incid,
                          "uncertain_si", "si_from_data",
                          "si_from_sample"
                        ),
-                       backimputation_window = 0,
                        si_data = NULL,
                        si_sample = NULL,
                        config = make_config(incid = incid, method = method),
@@ -360,7 +359,9 @@ estimate_R <- function(incid,
                        recon_opt = "naive",
                        iter = 10L,
                        tol = 1e-6,
-                       grid = list(precision = 0.001, min = -1, max = 1)) {
+                       grid = list(precision = 0.001, min = -1, max = 1),
+                       backimputation_window = 0
+                       ) {
 
   method <- match.arg(method)
 
