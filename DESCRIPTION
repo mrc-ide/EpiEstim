@@ -43,7 +43,7 @@ Imports:
     abind,
     epitrix,
     distcrete,
-    patchwork
+    patchwork (>= 1.2.0)
 Suggests:
     testthat,
     utils,

@@ -441,7 +441,7 @@ estimate_R <- function(incid,
   )
   
   # Add extra fields based on method
-  if(method == "si_from_sample"){
+  if(method == "si_from_data"){
     out[["MCMC_converged"]] <- MCMC_conv
   }
 

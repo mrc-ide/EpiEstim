@@ -213,7 +213,7 @@ ggplot(test, aes(
         scale_color_manual(values=c("#5983AB", "#E5A3A3")) +
         scale_fill_manual(values=c("#5983AB", "#E5A3A3")) +
         labs(x = "Midpoint of sliding window", y = "EpiEstim Posterior Mean") +
-        theme_epiestim()
+        theme_epiestim() +
         geom_line(data = test2) +
         labs(x = "Midpoint of sliding window", y = "EpiEstim Posterior Mean") +
         theme_bw() +
