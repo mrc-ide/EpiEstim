@@ -1,11 +1,11 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
-  EpiEstim_aggregated_data: EpiEstim_aggregated_data.html
-  MV_EpiEstim_vignette: MV_EpiEstim_vignette.html
   alternative_software: alternative_software.html
+  EpiEstim_aggregated_data: EpiEstim_aggregated_data.html
+  EpiEstim_backimputation: EpiEstim_backimputation.html
   full_EpiEstim_vignette: full_EpiEstim_vignette.html
+  MV_EpiEstim_vignette: MV_EpiEstim_vignette.html
   short_demo: short_demo.html
-last_built: 2023-10-05T07:46Z
-
+last_built: 2024-08-30T08:52Z
