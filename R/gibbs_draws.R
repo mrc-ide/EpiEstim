@@ -644,7 +644,6 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   if (t_min > t_max) {
     stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
   }
-  t <- seq(t_min, t_max, 1)
   
   if (!identical(priors, default_priors())) {
     warning("Priors where the mean of epsilon is different from 1 are not currently supported.")

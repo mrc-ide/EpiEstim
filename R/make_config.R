@@ -2,7 +2,7 @@
 #'
 #' This function defines settings for estimate_R  It takes a list of named
 #' items as input, set defaults where arguments are
-#' missing, and return a list of settings. 
+#' missing, and return a list of settings.
 #'
 #' @param ... Acceptable arguments for ... are:
 #'
@@ -12,94 +12,94 @@
 #' window over which the reproduction number will be estimated. These must be in
 #'  ascending order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}.
 #'  t_start[1] should be strictly after the first day with non null incidence.}
-#'  
+#'
 #' \item{t_end}{Vector of positive integers giving the ending times of each
 #' window over which the reproduction number will be estimated. These must be
 #' in ascending order, and so that for all \code{i},
 #' \code{t_start[i]<=t_end[i]}.}
-#' 
+#'
 #' \item{n1}{For method "uncertain_si" and "si_from_data"; positive integer
 #' giving the size of the sample of SI distributions to be drawn (see details).}
-#' 
+#'
 #' \item{n2}{For methods "uncertain_si", "si_from_data" and "si_from_sample";
 #' positive integer giving the size of the sample drawn from the posterior
 #' distribution of R for each serial interval distribution considered (see
 #' details).}
-#' 
+#'
 #' \item{mean_si}{For method "parametric_si" and "uncertain_si" ; positive real
 #' giving the mean serial interval (method "parametric_si") or the average mean
 #' serial interval (method "uncertain_si", see details).}
-#' 
+#'
 #' \item{std_si}{For method "parametric_si" and "uncertain_si" ; non negative
 #' real giving the standard deviation of the serial interval
 #' (method "parametric_si") or the average standard deviation of the serial
 #' interval (method "uncertain_si", see details).}
-#' 
+#'
 #' \item{std_mean_si}{For method "uncertain_si" ; standard deviation of the
 #' distribution from which mean serial intervals are drawn (see details).}
-#' 
+#'
 #' \item{min_mean_si}{For method "uncertain_si" ; lower bound of the
 #' distribution from which mean serial intervals are drawn (see details).}
-#' 
+#'
 #' \item{max_mean_si}{For method "uncertain_si" ; upper bound of the
 #' distribution from which mean serial intervals are drawn (see details).}
-#' 
+#'
 #' \item{std_std_si}{For method "uncertain_si" ; standard deviation of the
 #' distribution from which standard deviations of the serial interval are drawn
 #' (see details).}
-#' 
+#'
 #' \item{min_std_si}{For method "uncertain_si" ; lower bound of the distribution
 #'  from which standard deviations of the serial interval are drawn (see
 #'  details).}
-#'  
+#'
 #' \item{max_std_si}{For method "uncertain_si" ; upper bound of the distribution
 #'  from which standard deviations of the serial interval are drawn (see
 #'  details).}
-#'  
+#'
 #' \item{si_distr}{For method "non_parametric_si" ; vector of probabilities
 #' giving the discrete distribution of the serial interval, starting with
 #' \code{si_distr[1]} (probability that the serial interval is zero), which
 #' should be zero.}
-#' 
+#'
 #' \item{si_parametric_distr}{For method "si_from_data" ; the parametric
 #' distribution to use when estimating the serial interval from data on dates of
 #'  symptoms of pairs of infector/infected individuals (see details).
 #' Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
 #' shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal shifted
 #' by 1).}
-#' 
-#' \item{mcmc_control}{An object of class \code{estimate_R_mcmc_control}, as 
+#'
+#' \item{mcmc_control}{An object of class \code{estimate_R_mcmc_control}, as
 #' returned by function \code{make_mcmc_control}. }
-#' 
+#'
 #' \item{seed}{An optional integer used as the seed for the random number
 #' generator at the start of the function (then potentially reset within the
 #' MCMC for method \code{si_from_data}); useful to get reproducible results.}
-#' 
+#'
 #' \item{mean_prior}{A positive number giving the mean of the common prior
 #' distribution for all reproduction numbers (see details).}
-#' 
+#'
 #' \item{std_prior}{A positive number giving the standard deviation of the
 #' common prior distribution for all reproduction numbers (see details).}
-#' 
+#'
 #' \item{cv_posterior}{A positive number giving the aimed posterior coefficient
 #' of variation (see details).}
 #'
 #' }
-#' @param incid As in function\code{estimate_R}. 
+#' @param incid As in function\code{estimate_R}.
 #' @param method As in function\code{estimate_R}.
 #'
 #' @details
 #' Analytical estimates of the reproduction number for an epidemic over
-#' predefined time windows can be obtained using function \code{estimate_R},  
+#' predefined time windows can be obtained using function \code{estimate_R},
 #' for a given discrete distribution of the serial interval. \code{make_config}
 #' allows to generate a configuration specifying the way the estimation will
-#' be performed. 
+#' be performed.
 #'
 #' The more incident cases are observed over a time window, the smallest the
 #' posterior coefficient of variation (CV, ratio of standard deviation over
 #' mean) of the reproduction number.
-#' An aimed CV can be specified in the argument \code{cv_posterior} 
-#' (default is \code{0.3}), and a warning will be produced if the incidence 
+#' An aimed CV can be specified in the argument \code{cv_posterior}
+#' (default is \code{0.3}), and a warning will be produced if the incidence
 #' within one of the time windows considered is too low to get this CV.
 #'
 #' The methods vary in the way the serial interval distribution is specified.
@@ -233,11 +233,11 @@
 #'  explored.
 #'
 #'
-#' @return An object of class \code{estimate_R_config} with components 
-#' t_start, t_end, n1, n2, mean_si, std_si, 
+#' @return An object of class \code{estimate_R_config} with components
+#' t_start, t_end, n1, n2, mean_si, std_si,
 #' std_mean_si, min_mean_si, max_mean_si, std_std_si, min_std_si, max_std_si,
-#' si_distr, si_parametric_distr, mcmc_control, seed, mean_prior, std_prior, 
-#' cv_posterior, which can be used as an argument of function \code{estimate_R}.  
+#' si_distr, si_parametric_distr, mcmc_control, seed, mean_prior, std_prior,
+#' cv_posterior, which can be used as an argument of function \code{estimate_R}.
 #' @export
 #'
 #' @examples
@@ -254,22 +254,22 @@
 #' ## R on sliding weekly windows
 #' incid <- MockRotavirus$incidence
 #' method <- "si_from_data"
-#' config <- make_config(incid = incid, 
-#'                      method = method, 
+#' config <- make_config(incid = incid,
+#'                      method = method,
 #'                      list(si_parametric_distr = "G",
-#'                      mcmc_control = make_mcmc_control(burnin = 1000, 
+#'                      mcmc_control = make_mcmc_control(burnin = 1000,
 #'                      thin = 10, seed = 1),
-#'                      n1 = 500, 
+#'                      n1 = 500,
 #'                      n2 = 50,
 #'                      seed = 2))
-#' 
+#'
 #' R_si_from_data <- estimate_R(incid,
 #'                             method = method,
 #'                             si_data = MockRotavirus$si_data,
 #'                             config = config)
-#' plot(R_si_from_data)                          
-#' 
-#' ## you can also create the config straight within the estimate_R call, 
+#' plot(R_si_from_data)                     
+#'
+#' ## you can also create the config straight within the estimate_R call,
 #' ## in that case incid and method are automatically used from the estimate_R
 #' ## arguments:
 #' R_si_from_data <- estimate_R(incid,
@@ -277,27 +277,27 @@
 #'                             si_data = MockRotavirus$si_data,
 #'                             config = make_config(
 #'                      list(si_parametric_distr = "G",
-#'                      mcmc_control = make_mcmc_control(burnin = 1000, 
+#'                      mcmc_control = make_mcmc_control(burnin = 1000,
 #'                      thin = 10, seed = 1),
-#'                      n1 = 500, 
+#'                      n1 = 500,
 #'                      n2 = 50,
 #'                      seed = 2)))
-#' plot(R_si_from_data)    
+#' plot(R_si_from_data)
 #' }
-make_config <- function(..., incid = NULL, 
-                        method = c("non_parametric_si", "parametric_si", 
-                                   "uncertain_si", "si_from_data", 
-                                   "si_from_sample")){
+make_config <- function(..., incid = NULL,
+                        method = c("non_parametric_si", "parametric_si",
+                                   "uncertain_si", "si_from_data",
+                                   "si_from_sample")) {
   config <- list(...)
   if (length(config) == 1L && is.list(config[[1]])) {
     config <- config[[1]]
   }
-  
+
   ## SET DEFAULTS
-  defaults <- list(t_start = NULL, 
-                   t_end = NULL, 
-                   n1 = 500, 
-                   n2 = 50, 
+  defaults <- list(t_start = NULL,
+                   t_end = NULL,
+                   n1 = 500,
+                   n2 = 50,
                    mean_si = NULL,
                    std_si = NULL,
                    std_mean_si = NULL,
@@ -309,39 +309,34 @@ make_config <- function(..., incid = NULL,
                    si_distr = NULL,
                    si_parametric_distr = NULL,
                    mcmc_control = make_mcmc_control(),
-                   seed = NULL, 
-                   mean_prior = 5, 
-                   std_prior = 5, 
+                   seed = NULL,
+                   mean_prior = 5,
+                   std_prior = 5,
                    cv_posterior = 0.3)
-  
+
   ## MODIFY CONFIG WITH ARGUMENTS ##
   config <- modify_defaults(defaults, config)
-  
+
   ## checking and processing incid
-  if(!is.null(incid)) 
-  {
+  if (!is.null(incid)) {
     incid <- process_I(incid)
-    T <- nrow(incid)
-    
+    idx_raw_incid <- as.integer(rownames(incid)) > 0
+    T <- sum(idx_raw_incid)
+
     ## filling in / checking t_start and t_end
-    if(is.null(config$t_start) || is.null(config$t_end))
-    {
+    if (is.null(config$t_start) || is.null(config$t_end)) {
       msg <- "Default config will estimate R on weekly sliding windows.
     To change this change the t_start and t_end arguments. "
       message(msg)
       config$t_start <- seq(2, T-6)
       config$t_end <- seq(8, T)
-    }else
-    {
+    } else {
       check_times(config$t_start, config$t_end, T)
     }
   }
-  
+
   class(config) <- "estimate_R_config"
   return(config)
-  
+
 }
-
-
-
 

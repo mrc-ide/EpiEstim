@@ -33,55 +33,61 @@
 #'
 #' @param si_data For method "si_from_data" ; the data on dates of symptoms of
 #'   pairs of infector/infected individuals to be used to estimate the serial
-#'   interval distribution should be a dataframe with 5 columns: 
-#'   \itemize{ 
+#'   interval distribution should be a dataframe with 5 columns:
+#'   \itemize{
 #'   \item{EL: the lower bound
-#'   of the symptom onset date of the infector (given as an integer)} 
+#'   of the symptom onset date of the infector (given as an integer)}
 #'   \item{ER:
 #'   the upper bound of the symptom onset date of the infector (given as an
 #'   integer). Should be such that ER>=EL. If the dates are known exactly use
-#'   ER = EL} 
+#'   ER = EL}
 #'   \item{SL: the lower bound of the
-#'   symptom onset date of the infected individual (given as an integer)} 
+#'   symptom onset date of the infected individual (given as an integer)}
 #'   \item{SR: the upper bound of the symptom onset date of the infected
-#'   individual (given as an integer). Should be such that SR>=SL. If the dates 
-#'   are known exactly use SR = SL} 
+#'   individual (given as an integer). Should be such that SR>=SL. If the dates
+#'   are known exactly use SR = SL}
 #'   \item{type
 #'   (optional): can have entries 0, 1, or 2, corresponding to doubly
-#'   interval-censored, single interval-censored or exact observations, 
+#'   interval-censored, single interval-censored or exact observations,
 #'   respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-#'   will be automatically computed from the dates} 
+#'   will be automatically computed from the dates}
 #'   }
 #'
-#' @param config An object of class \code{estimate_R_config}, as returned by 
-#' function \code{make_config}. 
-#' 
-#' @param dt length of temporal aggregations of the incidence data. This should 
+#' @param config An object of class \code{estimate_R_config}, as returned by
+#' function \code{make_config}.
+#'
+#' @param dt length of temporal aggregations of the incidence data. This should
 #' be an integer or vector of integers. If a vector, this can either match the
-#' length of the incidence data supplied, or it will be recycled. For 
-#' example, \code{dt = c(3L, 4L)} would correspond to alternating incidence 
-#' aggregation windows of 3 and 4 days. The default value is 1 time unit 
+#' length of the incidence data supplied, or it will be recycled. For
+#' example, \code{dt = c(3L, 4L)} would correspond to alternating incidence
+#' aggregation windows of 3 and 4 days. The default value is 1 time unit
 #' (typically day).
-#' 
-#' @param dt_out length of the sliding windows used for R estimates (integer, 
-#' 7 time units (typically days) by default). 
-#' Only used if \code{dt > 1}; 
-#' in this case this will superseed config$t_start and config$t_end, 
-#' see \code{\link{estimate_R_agg}}. 
-#' 
-#' @param recon_opt one of "naive" or "match", see \code{\link{estimate_R_agg}}. 
-#' 
-#' @param iter number of iterations of the EM algorithm used to reconstruct 
-#' incidence at 1-time-unit intervals(integer, 10 by default). 
+#'
+#' @param dt_out length of the sliding windows used for R estimates (integer,
+#' 7 time units (typically days) by default).
+#' Only used if \code{dt > 1};
+#' in this case this will superseed config$t_start and config$t_end,
+#' see \code{\link{estimate_R_agg}}.
+#'
+#' @param recon_opt one of "naive" or "match", see \code{\link{estimate_R_agg}}.
+#'
+#' @param iter number of iterations of the EM algorithm used to reconstruct
+#' incidence at 1-time-unit intervals(integer, 10 by default).
 #' Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.
-#' 
+#'
 #' @param tol tolerance used in the convergence check (numeric, 1e-6 by default),
-#' see \code{\link{estimate_R_agg}}. 
-#' 
-#' @param grid named list containing "precision", "min", and "max" which are 
-#' used to define a grid of growth rate parameters that are used inside the EM 
-#' algorithm used to reconstruct incidence at 1-time-unit intervals. 
+#' see \code{\link{estimate_R_agg}}.
+#'
+#' @param grid named list containing "precision", "min", and "max" which are
+#' used to define a grid of growth rate parameters that are used inside the EM
+#' algorithm used to reconstruct incidence at 1-time-unit intervals.
 #' Only used if \code{dt > 1}, see \code{\link{estimate_R_agg}}.
+#'
+#' @param backimputation_window Length of the window used to impute incidence
+#'    prior to the first reported cases. The default value is 0, meaning that no
+#'    back-imputation is performed. If a positive integer is provided, the
+#'    incidence is imputed for the first \code{backimputation_window} time 
+#'    units.
 #'
 #' @return {
 #' an object of class \code{estimate_R}, with components:
@@ -110,6 +116,8 @@
 #' \item{I_imported}{: the time series of incidence of imported cases (so that
 #' \code{I_local + I_imported = I})}
 #'
+#' \item{I_imputed}{: the time series of incidence of imputed cases}
+
 #' \item{dates}{: a vector of dates corresponding to the incidence time series}
 #'
 #' \item{MCMC_converged}{ (only for method \code{si_from_data}): a boolean
@@ -150,19 +158,19 @@
 #'  different time windows, hence avoiding to rerun the MCMC every time
 #'  estimate_R is called.}
 #' }
-#' 
-#' R is estimated within a Bayesian framework, using a Gamma distributed prior, 
-#' with mean and standard deviation which can be set using the `mean_prior` 
+#'
+#' R is estimated within a Bayesian framework, using a Gamma distributed prior,
+#' with mean and standard deviation which can be set using the `mean_prior`
 #' and `std_prior` arguments within the `make_config` function, which can then
-#' be used to specify `config` in the `estimate_R` function. 
-#' Default values are a mean prior of 5 and standard deviation of 5. 
-#' This was set to a high prior value with large uncertainty so that if one 
-#' estimates R to be below 1, the result is strongly data-driven. 
-#' 
-#' R is estimated on time windows specified through the `config` argument. 
+#' be used to specify `config` in the `estimate_R` function.
+#' Default values are a mean prior of 5 and standard deviation of 5.
+#' This was set to a high prior value with large uncertainty so that if one
+#' estimates R to be below 1, the result is strongly data-driven.
+#'
+#' R is estimated on time windows specified through the `config` argument.
 #' These can be overlapping or not (see `make_config` function and vignette
 #' for examples).
-#' 
+#'
 #' @seealso \itemize{
 #'  \item{\code{\link{make_config}}}{ for general settings of the estimation}
 #'  \item{\code{\link{discr_si}}}{ to build serial interval distributions}
@@ -170,7 +178,7 @@
 #' the posterior distribution from the output of \code{estimate_R()}
 #' }}
 #'
-#' 
+#'
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
 #' @references {
 #' Cori, A. et al. A new framework and software to estimate time-varying
@@ -190,30 +198,30 @@
 #'
 #' ## estimate the reproduction number (method "non_parametric_si")
 #' ## when not specifying t_start and t_end in config, they are set to estimate
-#' ## the reproduction number on sliding weekly windows                          
-#' res <- estimate_R(incid = Flu2009$incidence, 
+#' ## the reproduction number on sliding weekly windows                      
+#' res <- estimate_R(incid = Flu2009$incidence,
 #'                   method = "non_parametric_si",
 #'                   config = make_config(list(si_distr = Flu2009$si_distr)))
 #' plot(res)
 #'
 #' ## the second plot produced shows, at each each day,
-#' ## the estimate of the reproduction number over the 7-day window 
+#' ## the estimate of the reproduction number over the 7-day window
 #' ## finishing on that day.
-#' 
+#'
 #' ## to specify t_start and t_end in config, e.g. to have biweekly sliding
-#' ## windows      
-#' t_start <- seq(2, nrow(Flu2009$incidence)-13)   
-#' t_end <- t_start + 13                 
-#' res <- estimate_R(incid = Flu2009$incidence, 
+#' ## windows  
+#' t_start <- seq(2, nrow(Flu2009$incidence)-13)
+#' t_end <- t_start + 13             
+#' res <- estimate_R(incid = Flu2009$incidence,
 #'                   method = "non_parametric_si",
 #'                   config = make_config(list(
-#'                       si_distr = Flu2009$si_distr, 
-#'                       t_start = t_start, 
+#'                       si_distr = Flu2009$si_distr,
+#'                       t_start = t_start,
 #'                       t_end = t_end)))
 #' plot(res)
 #'
 #' ## the second plot produced shows, at each each day,
-#' ## the estimate of the reproduction number over the 14-day window 
+#' ## the estimate of the reproduction number over the 14-day window
 #' ## finishing on that day.
 #'
 #' ## example with an incidence object
@@ -257,6 +265,23 @@
 #' ## the estimate of the reproduction number over the 7-day window
 #' ## finishing on that day.
 #'
+#' ## Example with back-imputation:
+#' ## here we use the first 6 days of incidence to impute cases that preceded
+#' ## the first reported cases:
+#' 
+#' res_bi <- estimate_R(incid = Flu2009$incidence,
+#'                  method = "parametric_si",
+#'                  backimputation_window = 6,
+#'                  config = make_config(list(
+#'                       mean_si = 2.6, 
+#'                       std_si = 1,
+#'                       t_start = t_start,
+#'                       t_end = t_end)))
+#' plot(res_bi, "R")
+#' 
+#' ## We can see that early estimates of R are lower when back-imputation is 
+#' ## used, even though the difference is marginal in this case.
+#'
 #' \dontrun{
 #' ## Note the following examples use an MCMC routine
 #' ## to estimate the serial interval distribution from data,
@@ -270,7 +295,7 @@
 #'   burnin = 1000, # first 1000 iterations discarded as burn-in
 #'   thin = 10, # every 10th iteration will be kept, the rest discarded
 #'   seed = 1) # set the seed to make the process reproducible
-#'  
+#'
 #' R_si_from_data <- estimate_R(
 #'   incid = MockRotavirus$incidence,
 #'   method = "si_from_data",
@@ -310,7 +335,7 @@
 #' R_si_from_sample <- estimate_R(MockRotavirus$incidence,
 #'                                method = "si_from_sample",
 #'                                si_sample = si_sample,
-#'                                config = make_config(list(n2 = 50, 
+#'                                config = make_config(list(n2 = 50,
 #'                                seed = overall_seed)))
 #' plot(R_si_from_sample)
 #'
@@ -334,83 +359,92 @@ estimate_R <- function(incid,
                        recon_opt = "naive",
                        iter = 10L,
                        tol = 1e-6,
-                       grid = list(precision = 0.001, min = -1, max = 1)) {
-  
+                       grid = list(precision = 0.001, min = -1, max = 1),
+                       backimputation_window = 0
+                       ) {
+
   method <- match.arg(method)
-  
+
   # switch between the standard estimate_R version and that which disaggregates
   # coarsely aggregated incidence data
-  if(any(dt >= 2)) {
-    out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
-                          iter = iter, tol = tol, config = config, method = method, grid = grid)
-  } else {
+  if (any(dt >= 2)) {
     
-    config <- make_config(incid = incid, method = method, config = config)
-    config <- process_config(config)
-    check_config(config, method)
+    msg <- "backimputation_window is currently not supported when dt > 1"
+    if(backimputation_window > 0) stop(msg)
     
-    if (method == "si_from_data") {
-      ## Warning if the expected set of parameters is not adequate
-      si_data <- process_si_data(si_data)
-      config <- process_config_si_from_data(config, si_data)
-      
-      ## estimate serial interval from serial interval data first
-      if (!is.null(config$mcmc_control$seed)) {
-        cdt <- dic.fit.mcmc(
-          dat = si_data,
-          dist = config$si_parametric_distr,
-          burnin = config$mcmc_control$burnin,
-          n.samples = config$n1 * config$mcmc_control$thin,
-          init.pars = config$mcmc_control$init_pars,
-          seed = config$mcmc_control$seed
-        )
-      } else {
-        cdt <- dic.fit.mcmc(
-          dat = si_data,
-          dist = config$si_parametric_distr,
-          burnin = config$mcmc_control$burnin,
-          n.samples = config$n1 * config$mcmc_control$thin,
-          init.pars = config$mcmc_control$init_pars
-        )
-      }
-      
-      ## check convergence of the MCMC and print warning if not converged
-      MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
-      
-      ## thin the chain, and turn the two parameters of the SI distribution into a
-      ## whole discrete distribution
-      c2e <- coarse2estim(cdt, thin = config$mcmc_control$thin)
-      
-      cat(paste(
-        "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
-        "\nEstimating the reproduction number for these serial interval",
-        "estimates...\n",
-        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-      ))
-      
-      ## then estimate R for these serial intervals
-      
-      if (!is.null(config$seed)) {
-        set.seed(config$seed)
-      }
-      
-      out <- estimate_R_func(
-        incid = incid,
-        method = "si_from_data",
-        si_sample = c2e$si_sample,
-        config = config
+    out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, iter = iter,
+                          config = config, method = method, grid = grid)
+    return(out)
+  }
+
+  # Impute missed generations of infections if required
+  if (backimputation_window) {
+    incid <- backimpute_I(incid, window_b = backimputation_window)
+  }
+
+  config <- make_config(incid = incid, method = method, config = config)
+  config <- process_config(config)
+  check_config(config, method)
+
+
+  # If the serial interval distribution is not provided, estimate it
+  if (method == "si_from_data") {
+    ## Warning if the expected set of parameters is not adequate
+    si_data <- process_si_data(si_data)
+    config <- process_config_si_from_data(config, si_data)
+
+    ## estimate serial interval from serial interval data first
+    if (!is.null(config$mcmc_control$seed)) {
+      cdt <- dic.fit.mcmc(
+        dat = si_data,
+        dist = config$si_parametric_distr,
+        burnin = config$mcmc_control$burnin,
+        n.samples = config$n1 * config$mcmc_control$thin,
+        init.pars = config$mcmc_control$init_pars,
+        seed = config$mcmc_control$seed
       )
-      out[["MCMC_converged"]] <- MCMC_conv
     } else {
-      if (!is.null(config$seed)) {
-        set.seed(config$seed)
-      }
-      out <- estimate_R_func(
-        incid = incid, method = method, si_sample = si_sample,
-        config = config
+      cdt <- dic.fit.mcmc(
+        dat = si_data,
+        dist = config$si_parametric_distr,
+        burnin = config$mcmc_control$burnin,
+        n.samples = config$n1 * config$mcmc_control$thin,
+        init.pars = config$mcmc_control$init_pars
       )
     }
+
+    ## check convergence of the MCMC and print warning if not converged
+    MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
+
+    ## thin the chain, and turn the two parameters of the SI distribution into a
+    ## whole discrete distribution
+    c2e <- coarse2estim(cdt, thin = config$mcmc_control$thin)
+
+    cat(paste(
+      "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
+      "\nEstimating the reproduction number for these serial interval",
+      "estimates...\n",
+      "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    ))
+    si_sample <- c2e$si_sample
   }
+
+  ## estimate R whether or not si_sample is simulated
+  if (!is.null(config$seed)) {
+    set.seed(config$seed)
+  }
+  out <- estimate_R_func(
+    incid = incid,
+    method = method, 
+    si_sample = si_sample,
+    config = config
+  )
+  
+  # Add extra fields based on method
+  if(method == "si_from_data"){
+    out[["MCMC_converged"]] <- MCMC_conv
+  }
+
   return(out)
 }
 
@@ -430,23 +464,24 @@ estimate_R_func <- function(incid,
                               "uncertain_si", "si_from_data", "si_from_sample"
                             ),
                             config) {
-  
+
   #########################################################
   # Calculates the cumulative incidence over time steps   #
   #########################################################
-  
+
   calc_incidence_per_time_step <- function(incid, t_start, t_end) {
     nb_time_periods <- length(t_start)
-    incidence_per_time_step <- vnapply(seq_len(nb_time_periods), function(i) 
-      sum(incid[seq(t_start[i], t_end[i]), c("local", "imported")]))
+    incidence_per_time_step <- vnapply(seq_len(nb_time_periods), function(i) {
+      sum(incid[seq(t_start[i], t_end[i]), c("local", "imported")])
+    })
     return(incidence_per_time_step)
   }
-  
+
   #########################################################
   # Calculates the parameters of the Gamma posterior      #
   # distribution from the discrete SI distribution        #
   #########################################################
-  
+
   posterior_from_si_distr <- function(incid, si_distr, a_prior, b_prior,
                                       t_start, t_end) {
     nb_time_periods <- length(t_start)
@@ -457,36 +492,34 @@ estimate_R_func <- function(incid,
     b_posterior <- vector()
     a_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
                                                                      final_mean_si) {
-      a_prior + sum(incid[seq(t_start[t], t_end[t]), "local"]) 
+      a_prior + sum(incid[seq(t_start[t], t_end[t]), "local"])
       ## only counting local cases on the "numerator"
-    }
-    else {
+    } else {
       NA
     })
     b_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
                                                                      final_mean_si) {
       1 / (1 / b_prior + sum(lambda[seq(t_start[t], t_end[t])]))
-    }
-    else {
+    } else {
       NA
     })
     return(list(a_posterior, b_posterior))
   }
-  
+
   #########################################################
   # Samples from the Gamma posterior distribution for a   #
   # given mean SI and std SI                              #
   #########################################################
-  
+
   sample_from_posterior <- function(sample_size, incid, mean_si, std_si,
                                     si_distr = NULL,
                                     a_prior, b_prior, t_start, t_end) {
     nb_time_periods <- length(t_start)
-    
+
     if (is.null(si_distr)) {
       si_distr <- discr_si(seq(0, T - 1), mean_si, std_si)
     }
-    
+
     final_mean_si <- sum(si_distr * (seq(0, length(si_distr) -
                                            1)))
     lambda <- overall_infectivity(incid, si_distr)
@@ -494,27 +527,24 @@ estimate_R_func <- function(incid,
     b_posterior <- vector()
     a_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
                                                                      final_mean_si) {
-      a_prior + sum(incid[seq(t_start[t], t_end[t]), "local"]) 
+      a_prior + sum(incid[seq(t_start[t], t_end[t]), "local"])
       ## only counting local cases on the "numerator"
-    }
-    else {
+    } else {
       NA
     })
     b_posterior <- vnapply(seq_len(nb_time_periods), function(t) if (t_end[t] >
                                                                      final_mean_si) {
       1 / (1 / b_prior + sum(lambda[seq(t_start[t], t_end[t])], na.rm = TRUE))
-    }
-    else {
+    } else {
       NA
     })
-    sample_r_posterior <- vapply(seq_len(nb_time_periods), function(t) 
+    sample_r_posterior <- vapply(seq_len(nb_time_periods), function(t)
       if (!is.na(a_posterior[t])) {
         rgamma(sample_size,
                shape = unlist(a_posterior[t]),
                scale = unlist(b_posterior[t])
         )
-      }
-      else {
+      } else {
         rep(NA, sample_size)
       }, numeric(sample_size))
     if (sample_size == 1L) {
@@ -522,34 +552,39 @@ estimate_R_func <- function(incid,
     }
     return(list(sample_r_posterior, si_distr))
   }
-  
+
   method <- match.arg(method)
   incid <- process_I(incid)
-  T <- nrow(incid)
-  
-  a_prior <- (config$mean_prior / config$std_prior)^2
-  b_prior <- config$std_prior^2 / config$mean_prior
+  idx_raw_incid <- as.integer(rownames(incid)) > 0
+  T <- sum(idx_raw_incid)
+  T_imputed <- nrow(incid) - T
   
   check_times(config$t_start, config$t_end, T)
   nb_time_periods <- length(config$t_start)
-  
+  t_start_imputed <- config$t_start + T_imputed
+  t_end_imputed <- config$t_end + T_imputed
+
+  a_prior <- (config$mean_prior / config$std_prior)^2
+  b_prior <- config$std_prior^2 / config$mean_prior
+
   if (method == "si_from_sample") {
     if (is.null(config$n2)) {
       stop("method si_from_sample requires to specify the config$n2 argument.")
     }
     si_sample <- process_si_sample(si_sample)
   }
-  
+
   min_nb_cases_per_time_period <- ceiling(1 / config$cv_posterior^2 - a_prior)
   incidence_per_time_step <- calc_incidence_per_time_step(
-    incid, config$t_start,
-    config$t_end
+    incid,
+    t_start_imputed, 
+    t_end_imputed
   )
   if (incidence_per_time_step[1] < min_nb_cases_per_time_period) {
     warning("You're estimating R too early in the epidemic to get the desired
             posterior CV.")
   }
-  
+
   if (method == "non_parametric_si") {
     si_uncertainty <- "N"
     parametric_si <- "N"
@@ -584,19 +619,19 @@ estimate_R_func <- function(incid,
                                     sd = config$std_std_si)
         }
       }
-      temp <- lapply(seq_len(config$n1), function(k) sample_from_posterior(config$n2,
+      temp <- lapply(seq_len(config$n1), function(k) { sample_from_posterior(config$n2,
                                                                            incid, mean_si_sample[k], std_si_sample[k],
                                                                            si_distr = NULL, a_prior,
-                                                                           b_prior, config$t_start, config$t_end
-      ))
+                                                                           b_prior, t_start_imputed, t_end_imputed
+      )})
       config$si_distr <- cbind(
         t(vapply(seq_len(config$n1), function(k) (temp[[k]])[[2]], numeric(T))),
         rep(0, config$n1)
       )
       r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
       for (k in seq_len(config$n1)) {
-        r_sample[seq((k - 1) * config$n2 + 1, k * config$n2), which(config$t_end >
-                                                                      mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
+        r_sample[seq((k - 1) * config$n2 + 1, k * config$n2), which(T_imputed + config$t_end >
+                                                                      mean_si_sample[k])] <- (temp[[k]])[[1]][, which(T_imputed + config$t_end >
                                                                                                                         mean_si_sample[k])]
       }
       mean_posterior <- colMeans(r_sample, na.rm = TRUE)
@@ -626,32 +661,31 @@ estimate_R_func <- function(incid,
                                         0.975,
                                         na.rm = TRUE
       )
-    }
-    else {
+    } else {
       config$n1 <- dim(si_sample)[2]
       mean_si_sample <- rep(-1, config$n1)
       std_si_sample <- rep(-1, config$n1)
       for (k in seq_len(config$n1)) {
-        mean_si_sample[k] <- sum((seq_len(dim(si_sample)[1]) - 1) * 
+        mean_si_sample[k] <- sum((seq_len(dim(si_sample)[1]) - 1) *
                                    si_sample[, k])
-        std_si_sample[k] <- sqrt(sum(si_sample[, k] * 
-                                       ((seq_len(dim(si_sample)[1]) - 1) - 
+        std_si_sample[k] <- sqrt(sum(si_sample[, k] *
+                                       ((seq_len(dim(si_sample)[1]) - 1) -
                                           mean_si_sample[k])^2))
       }
       temp <- lapply(seq_len(config$n1), function(k) sample_from_posterior(config$n2,
                                                                            incid,
                                                                            mean_si = NULL, std_si = NULL, si_sample[, k], a_prior,
-                                                                           b_prior, config$t_start, config$t_end
+                                                                           b_prior, t_start_imputed, t_end_imputed
       ))
       config$si_distr <- cbind(
-        t(vapply(seq_len(config$n1), function(k) (temp[[k]])[[2]], 
+        t(vapply(seq_len(config$n1), function(k) (temp[[k]])[[2]],
                  numeric(nrow(si_sample)))),
         rep(0, config$n1)
       )
       r_sample <- matrix(NA, config$n2 * config$n1, nb_time_periods)
       for (k in seq_len(config$n1)) {
-        r_sample[seq((k - 1) * config$n2 + 1,k * config$n2), which(config$t_end >
-                                                                     mean_si_sample[k])] <- (temp[[k]])[[1]][, which(config$t_end >
+        r_sample[seq((k - 1) * config$n2 + 1,k * config$n2), which(T_imputed + config$t_end >
+                                                                     mean_si_sample[k])] <- (temp[[k]])[[1]][, which(T_imputed + config$t_end >
                                                                                                                        mean_si_sample[k])]
       }
       mean_posterior <- colMeans(r_sample, na.rm = TRUE)
@@ -696,7 +730,7 @@ estimate_R_func <- function(incid,
                                                      1))^2) - final_mean_si^2)
     post <- posterior_from_si_distr(
       incid, config$si_distr, a_prior, b_prior,
-      config$t_start, config$t_end
+      t_start_imputed, t_end_imputed
     )
     a_posterior <- unlist(post[[1]])
     b_posterior <- unlist(post[[2]])
@@ -731,17 +765,17 @@ estimate_R_func <- function(incid,
                                        scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
   }
-  
+
   results <- list(R = as.data.frame(cbind(
     config$t_start, config$t_end, mean_posterior,
     std_posterior, quantile_0.025_posterior, quantile_0.05_posterior,
     quantile_0.25_posterior, median_posterior, quantile_0.75_posterior,
     quantile_0.95_posterior, quantile_0.975_posterior
   )))
-  
+
   non_na_rows <- !is.na(results$R$mean_posterior)
   results$R <- results$R[non_na_rows, ]
-  
+
   names(results$R) <- c(
     "t_start", "t_end", "Mean(R)", "Std(R)",
     "Quantile.0.025(R)", "Quantile.0.05(R)", "Quantile.0.25(R)",
@@ -767,16 +801,22 @@ estimate_R_func <- function(incid,
     ))
   }
   names(results$SI.Moments) <- c("Mean", "Std")
-  
+
   if (!is.null(incid$dates)) {
     results$dates <- check_dates(incid)
   } else {
     results$dates <- seq_len(T)
   }
-  results$I <- rowSums(incid[, c("local", "imported")])
-  results$I_local <- incid$local
-  results$I_imported <- incid$imported
-  
+
+  tot_incid <- rowSums(incid[, c("local", "imported")])
+  results$I <- tot_incid[idx_raw_incid]
+  results$I_local <- incid$local[idx_raw_incid]
+  results$I_imported <- incid$imported[idx_raw_incid]
+
+  if (T_imputed > 0) {
+    results$I_imputed <- tot_incid[!idx_raw_incid]
+  }
+
   class(results) <- "estimate_R"
   return(results)
 }

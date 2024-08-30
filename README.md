@@ -38,6 +38,8 @@ Bhatia S, Wardle J, Nash RK, Nouvellet P, Cori A. [Extending EpiEstim to estimat
 
 Nash RK, Cori A, Nouvellet P. [Estimating the epidemic reproduction number from temporally aggregated incidence data: a statistical modelling approach and software tool](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011439), PLOS Computational Biology, Volume 19, Issue 8, 28 August 2023, e1011439.
 
+Brizzi A, O'Driscoll M, Dorigatti I., [Refining Reproduction Number Estimates to Account for Unobserved Generations of Infection in Emerging Epidemics](https://doi.org/10.1093/cid/ciac138), Clinical Infectious Diseases, Volume 75, Issue 1, 1 July 2022, Pages e114–e121.
+
 
 ### Citing this code resource
 We kindly request that you cite this codebase as follows (BibTeX format):

@@ -343,7 +343,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           start = dates[t_start] - 0.5, end = dates[t_end] + 0.5, meanR = mean_posterior,
           lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
-        ), id = c("meanR", "lower", "upper"))
+        ), id.vars = c("meanR", "lower", "upper"))
         df$group <- as.factor(rep(
           seq_len(length(t_start)),
           dim(df)[1] / length(t_start)

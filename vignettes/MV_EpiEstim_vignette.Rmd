@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 )
 library(kableExtra)
 library(hrbrthemes)
-library(gghighlight)
 library(MCMCglmm)
 library(projections)
 library(EpiEstim) 

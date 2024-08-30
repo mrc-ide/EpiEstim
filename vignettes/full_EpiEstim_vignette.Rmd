@@ -7,6 +7,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Full EpiEstim vignette}
   %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{gghighlight}
 ---
 
 ```{r setup, include = FALSE}
