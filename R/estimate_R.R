@@ -279,8 +279,8 @@
 #'                       t_end = t_end)))
 #' plot(res_bi, "R")
 #' 
-#' ## We can see the early estimates of R are lower when back-imputation is used,
-#' ## even though the difference is marginal in this case.
+#' ## We can see that early estimates of R are lower when back-imputation is 
+#' ## used, even though the difference is marginal in this case.
 #'
 #' \dontrun{
 #' ## Note the following examples use an MCMC routine
