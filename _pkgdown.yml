@@ -1,0 +1,65 @@
+url: https://mrc-ide.github.io/EpiEstim
+template:
+  bootstrap: 3
+
+reference:
+  - title: Pre-processing
+    contents:
+    - aggregate_inc
+    - backimpute_I
+    - compute_si_cutoff
+    - compute_t_min
+    - discr_si
+    - first_nonzero_incid
+    - get_shape_R_flat
+    - get_shape_epsilon
+  - title: Estimation
+    contents:
+    - estimate_R
+    - estimate_R_agg
+    - estimate_advantage
+    - compute_lambda
+    - overall_infectivity
+    - process_I_multivariant
+    - wallinga_teunis
+  - title: Post-processing
+  - subtitle: MCMC diagnostics
+    contents:
+      - check_cdt_samples_convergence
+  - subtitle: Draw from posterior
+    contents:
+    - starts_with("draw_")
+    - sample_posterior_R
+  - title: Helpers
+  - subtitle: Default settings
+    contents:
+    - starts_with("default_")
+    - init_mcmc_params
+    - make_config
+    - make_mcmc_control
+  - subtitle: Plotting functions
+    contents:
+    - plot.estimate_R
+    - estimate_R_plots
+  - subtitle: Backwards-compatibility functions
+    contents:
+    - DiscrSI
+    - EstimateR
+    - OverallInfectivity
+    - WT
+  - subtitle: External package compatibility functions
+    contents:
+    - coarse2estim
+  - title: Datasets
+    contents:
+    - Flu1918
+    - Flu2009
+    - Measles1861
+    - MockRotavirus
+    - SARS2003
+    - Smallpox1972
+    - covid_deaths_2020_uk
+    - flu_2009_NYC_school
+    - mers_2014_15
+
+

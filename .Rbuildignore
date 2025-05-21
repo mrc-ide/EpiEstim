@@ -8,3 +8,6 @@
 ^doc$
 ^Meta$
 .lintr
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
