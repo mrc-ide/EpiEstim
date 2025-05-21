@@ -72,7 +72,143 @@
     </div>
 
     <table class="ref-index"><colgroup><col class="alias"><col class="title"></colgroup><tbody><tr><th colspan="2">
-          <h2 id="all-functions">All functions <a href="#all-functions" class="anchor" aria-hidden="true"></a></h2>
+          <h2 id="pre-processing">Pre-processing <a href="#pre-processing" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="aggregate_inc.html">aggregate_inc()</a></code> </p>
+        </td>
+        <td><p>Aggregating daily incidence to longer time windows</p></td>
+      </tr><tr><td>
+          <p><code><a href="backimpute_I.html">backimpute_I()</a></code> </p>
+        </td>
+        <td><p>Impute unobserved generations of infection</p></td>
+      </tr><tr><td>
+          <p><code><a href="compute_si_cutoff.html">compute_si_cutoff()</a></code> </p>
+        </td>
+        <td><p>Index before which at most a given probability mass is captured</p></td>
+      </tr><tr><td>
+          <p><code><a href="compute_t_min.html">compute_t_min()</a></code> </p>
+        </td>
+        <td><p>Compute the smallest index at which joint estimation should start</p></td>
+      </tr><tr><td>
+          <p><code><a href="discr_si.html">discr_si()</a></code> </p>
+        </td>
+        <td><p>Discretized Generation Time Distribution Assuming A Shifted Gamma Distribution</p></td>
+      </tr><tr><td>
+          <p><code><a href="first_nonzero_incid.html">first_nonzero_incid()</a></code> </p>
+        </td>
+        <td><p>Get the first day of non-zero incidence across all variants and locations.</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_shape_R_flat.html">get_shape_R_flat()</a></code> </p>
+        </td>
+        <td><p>Precompute shape of posterior distribution for R</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_shape_epsilon.html">get_shape_epsilon()</a></code> </p>
+        </td>
+        <td><p>Precompute shape of posterior distribution for epsilon</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="estimation">Estimation <a href="#estimation" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="estimate_R.html">estimate_R()</a></code> </p>
+        </td>
+        <td><p>Estimated Instantaneous Reproduction Number</p></td>
+      </tr><tr><td>
+          <p><code><a href="estimate_R_agg.html">estimate_R_agg()</a></code> </p>
+        </td>
+        <td><p>Estimated Instantaneous Reproduction Number from coarsely aggregated data</p></td>
+      </tr><tr><td>
+          <p><code><a href="estimate_advantage.html">estimate_advantage()</a></code> </p>
+        </td>
+        <td><p>Jointly estimate the instantaneous reproduction number for a reference pathogen/strain/variant and the relative transmissibility of a "new" pathogen/strain/variant</p></td>
+      </tr><tr><td>
+          <p><code><a href="compute_lambda.html">compute_lambda()</a></code> </p>
+        </td>
+        <td><p>Compute the overall infectivity</p></td>
+      </tr><tr><td>
+          <p><code><a href="overall_infectivity.html">overall_infectivity()</a></code> </p>
+        </td>
+        <td><p>Overall Infectivity Due To Previously Infected Individuals</p></td>
+      </tr><tr><td>
+          <p><code><a href="process_I_multivariant.html">process_I_multivariant()</a></code> </p>
+        </td>
+        <td><p>Process incidence input for multivariant analyses with estimate_advantage</p></td>
+      </tr><tr><td>
+          <p><code><a href="wallinga_teunis.html">wallinga_teunis()</a></code> </p>
+        </td>
+        <td><p>Estimation of the case reproduction number using the Wallinga and Teunis method</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="post-processing">Post-processing <a href="#post-processing" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="mcmc-diagnostics">MCMC diagnostics <a href="#mcmc-diagnostics" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="check_cdt_samples_convergence.html">check_cdt_samples_convergence()</a></code> </p>
+        </td>
+        <td><p>Checking convergence of an MCMC chain by using the Gelman-Rubin algorithm</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="draw-from-posterior">Draw from posterior <a href="#draw-from-posterior" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="draw_R.html">draw_R()</a></code> </p>
+        </td>
+        <td><p>Draw R from marginal posterior distribution</p></td>
+      </tr><tr><td>
+          <p><code><a href="draw_epsilon.html">draw_epsilon()</a></code> </p>
+        </td>
+        <td><p>Draw epsilon from marginal posterior distribution</p></td>
+      </tr><tr><td>
+          <p><code><a href="sample_posterior_R.html">sample_posterior_R()</a></code> </p>
+        </td>
+        <td><p>sample from the posterior R distribution</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="helpers">Helpers <a href="#helpers" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="default-settings">Default settings <a href="#default-settings" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="default_mcmc_controls.html">default_mcmc_controls()</a></code> </p>
+        </td>
+        <td><p>Set default for MCMC control</p></td>
+      </tr><tr><td>
+          <p><code><a href="default_priors.html">default_priors()</a></code> </p>
+        </td>
+        <td><p>Set default for Gamma priors</p></td>
+      </tr><tr><td>
+          <p><code><a href="init_mcmc_params.html">init_mcmc_params()</a></code> </p>
+        </td>
+        <td><p>init_mcmc_params Finds clever starting points for the MCMC to be used to estimate the serial interval, e.g. when using option <code>si_from_data</code> in <code>estimate_R</code></p></td>
+      </tr><tr><td>
+          <p><code><a href="make_config.html">make_config()</a></code> </p>
+        </td>
+        <td><p>Set and check parameter settings of estimate_R</p></td>
+      </tr><tr><td>
+          <p><code><a href="make_mcmc_control.html">make_mcmc_control()</a></code> </p>
+        </td>
+        <td><p>make_mcmc_control Creates a list of mcmc control parameters to be used in <code>config$mcmc_control</code>, where <code>config</code> is an argument of the <code>estimate_R</code> function. This is used to configure the MCMC chain used to estimate the serial interval within <code>estimate_R</code> (with method "si_from_data").</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="plotting-functions">Plotting functions <a href="#plotting-functions" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="plot.estimate_R.html">plot(<i>&lt;estimate_R&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plot outputs of estimate_r</p></td>
+      </tr><tr><td>
+          <p><code><a href="estimate_R_plots.html">estimate_R_plots()</a></code> </p>
+        </td>
+        <td><p>Wrapper for plot.estimate_R</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="backwards-compatibility-functions">Backwards-compatibility functions <a href="#backwards-compatibility-functions" class="anchor" aria-hidden="true"></a></h3>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
@@ -84,6 +220,26 @@
         </td>
         <td><p>Function to ensure compatibility with EpiEstim versions &lt;2.0</p></td>
       </tr><tr><td>
+          <p><code><a href="OverallInfectivity.html">OverallInfectivity()</a></code> </p>
+        </td>
+        <td><p>Function to ensure compatibility with EpiEstim versions &lt;2.0</p></td>
+      </tr><tr><td>
+          <p><code><a href="WT.html">WT()</a></code> </p>
+        </td>
+        <td><p>Function to ensure compatibility with EpiEstim versions &lt;2.0</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h3 id="external-package-compatibility-functions">External package compatibility functions <a href="#external-package-compatibility-functions" class="anchor" aria-hidden="true"></a></h3>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="coarse2estim.html">coarse2estim()</a></code> </p>
+        </td>
+        <td><p>Link coarseDataTools and EpiEstim</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="datasets">Datasets <a href="#datasets" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
           <p><code><a href="Flu1918.html">Flu1918</a></code> </p>
         </td>
         <td><p>Data on the 1918 H1N1 influenza pandemic in Baltimore.</p></td>
@@ -100,10 +256,6 @@
         </td>
         <td><p>Mock data on a rotavirus epidemic.</p></td>
       </tr><tr><td>
-          <p><code><a href="OverallInfectivity.html">OverallInfectivity()</a></code> </p>
-        </td>
-        <td><p>Function to ensure compatibility with EpiEstim versions &lt;2.0</p></td>
-      </tr><tr><td>
           <p><code><a href="SARS2003.html">SARS2003</a></code> </p>
         </td>
         <td><p>Data on the 2003 SARS epidemic in Hong Kong.</p></td>
@@ -112,129 +264,17 @@
         </td>
         <td><p>Data on the 1972 smallpox epidemic in Kosovo</p></td>
       </tr><tr><td>
-          <p><code><a href="WT.html">WT()</a></code> </p>
-        </td>
-        <td><p>Function to ensure compatibility with EpiEstim versions &lt;2.0</p></td>
-      </tr><tr><td>
-          <p><code><a href="aggregate_inc.html">aggregate_inc()</a></code> </p>
-        </td>
-        <td><p>Aggregating daily incidence to longer time windows</p></td>
-      </tr><tr><td>
-          <p><code><a href="backimpute_I.html">backimpute_I()</a></code> </p>
-        </td>
-        <td><p>Impute unobserved generations of infection</p></td>
-      </tr><tr><td>
-          <p><code><a href="check_cdt_samples_convergence.html">check_cdt_samples_convergence()</a></code> </p>
-        </td>
-        <td><p>Checking convergence of an MCMC chain by using the Gelman-Rubin algorithm</p></td>
-      </tr><tr><td>
-          <p><code><a href="coarse2estim.html">coarse2estim()</a></code> </p>
-        </td>
-        <td><p>Link coarseDataTools and EpiEstim</p></td>
-      </tr><tr><td>
-          <p><code><a href="compute_lambda.html">compute_lambda()</a></code> </p>
-        </td>
-        <td><p>Compute the overall infectivity</p></td>
-      </tr><tr><td>
-          <p><code><a href="compute_si_cutoff.html">compute_si_cutoff()</a></code> </p>
-        </td>
-        <td><p>Index before which at most a given probability mass is captured</p></td>
-      </tr><tr><td>
-          <p><code><a href="compute_t_min.html">compute_t_min()</a></code> </p>
-        </td>
-        <td><p>Compute the smallest index at which joint estimation should start</p></td>
-      </tr><tr><td>
           <p><code><a href="covid_deaths_2020_uk.html">covid_deaths_2020_uk</a></code> </p>
         </td>
         <td><p>Data on the 2020-2022 SARS-CoV-2 epidemic in the UK.</p></td>
-      </tr><tr><td>
-          <p><code><a href="default_mcmc_controls.html">default_mcmc_controls()</a></code> </p>
-        </td>
-        <td><p>Set default for MCMC control</p></td>
-      </tr><tr><td>
-          <p><code><a href="default_priors.html">default_priors()</a></code> </p>
-        </td>
-        <td><p>Set default for Gamma priors</p></td>
-      </tr><tr><td>
-          <p><code><a href="discr_si.html">discr_si()</a></code> </p>
-        </td>
-        <td><p>Discretized Generation Time Distribution Assuming A Shifted Gamma Distribution</p></td>
-      </tr><tr><td>
-          <p><code><a href="draw_R.html">draw_R()</a></code> </p>
-        </td>
-        <td><p>Draw R from marginal posterior distribution</p></td>
-      </tr><tr><td>
-          <p><code><a href="draw_epsilon.html">draw_epsilon()</a></code> </p>
-        </td>
-        <td><p>Draw epsilon from marginal posterior distribution</p></td>
-      </tr><tr><td>
-          <p><code><a href="estimate_R.html">estimate_R()</a></code> </p>
-        </td>
-        <td><p>Estimated Instantaneous Reproduction Number</p></td>
-      </tr><tr><td>
-          <p><code><a href="estimate_R_agg.html">estimate_R_agg()</a></code> </p>
-        </td>
-        <td><p>Estimated Instantaneous Reproduction Number from coarsely aggregated data</p></td>
-      </tr><tr><td>
-          <p><code><a href="estimate_R_plots.html">estimate_R_plots()</a></code> </p>
-        </td>
-        <td><p>Wrapper for plot.estimate_R</p></td>
-      </tr><tr><td>
-          <p><code><a href="estimate_advantage.html">estimate_advantage()</a></code> </p>
-        </td>
-        <td><p>Jointly estimate the instantaneous reproduction number for a reference pathogen/strain/variant and the relative transmissibility of a "new" pathogen/strain/variant</p></td>
-      </tr><tr><td>
-          <p><code><a href="first_nonzero_incid.html">first_nonzero_incid()</a></code> </p>
-        </td>
-        <td><p>Get the first day of non-zero incidence across all variants and locations.</p></td>
       </tr><tr><td>
           <p><code><a href="flu_2009_NYC_school.html">flu_2009_NYC_school</a></code> </p>
         </td>
         <td><p>Data on the 2009 H1N1 influenza pandemic in a school in New York city</p></td>
       </tr><tr><td>
-          <p><code><a href="get_shape_R_flat.html">get_shape_R_flat()</a></code> </p>
-        </td>
-        <td><p>Precompute shape of posterior distribution for R</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_shape_epsilon.html">get_shape_epsilon()</a></code> </p>
-        </td>
-        <td><p>Precompute shape of posterior distribution for epsilon</p></td>
-      </tr><tr><td>
-          <p><code><a href="init_mcmc_params.html">init_mcmc_params()</a></code> </p>
-        </td>
-        <td><p>init_mcmc_params Finds clever starting points for the MCMC to be used to estimate the serial interval, e.g. when using option <code>si_from_data</code> in <code>estimate_R</code></p></td>
-      </tr><tr><td>
-          <p><code><a href="make_config.html">make_config()</a></code> </p>
-        </td>
-        <td><p>Set and check parameter settings of estimate_R</p></td>
-      </tr><tr><td>
-          <p><code><a href="make_mcmc_control.html">make_mcmc_control()</a></code> </p>
-        </td>
-        <td><p>make_mcmc_control Creates a list of mcmc control parameters to be used in <code>config$mcmc_control</code>, where <code>config</code> is an argument of the <code>estimate_R</code> function. This is used to configure the MCMC chain used to estimate the serial interval within <code>estimate_R</code> (with method "si_from_data").</p></td>
-      </tr><tr><td>
           <p><code><a href="mers_2014_15.html">mers_2014_15</a></code> </p>
         </td>
         <td><p>Data on Middle East Respiratory Syndrome (MERS) in Saudi Arabia.</p></td>
-      </tr><tr><td>
-          <p><code><a href="overall_infectivity.html">overall_infectivity()</a></code> </p>
-        </td>
-        <td><p>Overall Infectivity Due To Previously Infected Individuals</p></td>
-      </tr><tr><td>
-          <p><code><a href="plot.estimate_R.html">plot(<i>&lt;estimate_R&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Plot outputs of estimate_r</p></td>
-      </tr><tr><td>
-          <p><code><a href="process_I_multivariant.html">process_I_multivariant()</a></code> </p>
-        </td>
-        <td><p>Process incidence input for multivariant analyses with estimate_advantage</p></td>
-      </tr><tr><td>
-          <p><code><a href="sample_posterior_R.html">sample_posterior_R()</a></code> </p>
-        </td>
-        <td><p>sample from the posterior R distribution</p></td>
-      </tr><tr><td>
-          <p><code><a href="wallinga_teunis.html">wallinga_teunis()</a></code> </p>
-        </td>
-        <td><p>Estimation of the case reproduction number using the Wallinga and Teunis method</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -248,7 +288,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer></div>

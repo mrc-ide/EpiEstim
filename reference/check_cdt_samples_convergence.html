@@ -122,7 +122,7 @@ algorithm to assess convergence of the chain by comparing its two halves.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MockRotavirus"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## estimate the serial interval from data</span></span></span>
-<span class="r-in"><span><span class="va">SI_fit</span> <span class="op">&lt;-</span> <span class="fu">coarseDataTools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/coarseDataTools/man/dic.fit.mcmc.html" class="external-link">dic.fit.mcmc</a></span><span class="op">(</span>dat <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span></span>
+<span class="r-in"><span><span class="va">SI_fit</span> <span class="op">&lt;-</span> <span class="fu">coarseDataTools</span><span class="fu">::</span><span class="fu"><a href="http://nickreich.github.io/coarseDataTools/reference/dic.fit.mcmc.html" class="external-link">dic.fit.mcmc</a></span><span class="op">(</span>dat <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>,</span></span>
 <span class="r-in"><span>                     dist<span class="op">=</span><span class="st">"G"</span>,</span></span>
 <span class="r-in"><span>                     init_pars<span class="op">=</span><span class="fu"><a href="init_mcmc_params.html">init_mcmc_params</a></span><span class="op">(</span><span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>, <span class="st">"G"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                     burnin <span class="op">=</span> <span class="fl">1000</span>,</span></span>
@@ -148,7 +148,7 @@ algorithm to assess convergence of the chain by comparing its two halves.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
       </footer></div>

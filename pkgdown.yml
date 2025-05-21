@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   alternative_software: alternative_software.html
@@ -8,4 +8,7 @@ articles:
   full_EpiEstim_vignette: full_EpiEstim_vignette.html
   MV_EpiEstim_vignette: MV_EpiEstim_vignette.html
   short_demo: short_demo.html
-last_built: 2024-08-30T08:52Z
+last_built: 2025-05-21T14:07Z
+urls:
+  reference: https://mrc-ide.github.io/EpiEstim/reference
+  article: https://mrc-ide.github.io/EpiEstim/articles
