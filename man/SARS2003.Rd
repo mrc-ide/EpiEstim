@@ -4,11 +4,13 @@
 \name{SARS2003}
 \alias{SARS2003}
 \title{Data on the 2003 SARS epidemic in Hong Kong.}
-\format{A list of two elements:
+\format{
+A list of two elements:
 \itemize{
 \item \strong{incidence:} a vector containing 107 days of observation,
 \item \strong{si_distr:} a vector containing a set of 25 probabilities.
-}}
+}
+}
 \source{
 Cori A. et al. (2009) Temporal variability and social heterogeneity
 in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8)

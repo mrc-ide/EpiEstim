@@ -25,45 +25,57 @@ plot use \code{\link{estimate_R_plots}} function}
 
 \item{what}{A string specifying what to plot, namely the incidence time
 series (\code{what='incid'}), the estimated reproduction number
-(\code{what='R'}), the serial interval distribution (\code{what='SI'}, or
-all three (\code{what='all'})).}
+(\code{what='R'}), the serial interval distribution (\code{what='SI'}), or
+all three (\code{what='all'}).}
 
 \item{add_imported_cases}{A boolean to specify whether, on the incidence time
 series plot, to add the incidence of imported cases.}
 
 \item{options_I}{For what = "incid" or "all". A list of graphical options:
-\describe{ \item{col}{A color or vector of colors used for plotting
-incid. By default uses the default R colors.}  \item{transp}{A numeric
+* col: A color or vector of colors used for plotting
+incid. By default uses the default R colors.
+* transp: A numeric
 value between 0 and 1 used to monitor transparency of the bars
-plotted. Defaults to 0.7.}  \item{xlim}{A parameter similar to that in
-\code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
+plotted. Defaults to 0.7.
+* xlim: A parameter similar to that in
+\code{par}, to monitor the limits of the horizontal axis
+* ylim:A
 parameter similar to that in \code{par}, to monitor the limits of the
-vertical axis} \item{interval}{An integer or character indicating the 
+vertical axis
+* interval: An integer or character indicating the 
 (fixed) size of the time interval used for plotting the incidence; 
-defaults to 1 day.} \item{xlab, ylab}{Labels for the axes of the 
-incidence plot}}}
+defaults to 1 day.
+* xlab, ylab: Labels for the axes of the 
+incidence plot}
 
 \item{options_R}{For what = "R" or "all". A list of graphical options:
-\describe{ \item{col}{A color or vector of colors used for plotting R. By
-default uses the default R colors.}  \item{transp}{A numeric value between
-0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
-\item{xlim}{A parameter similar to that in \code{par}, to monitor the
-limits of the horizontal axis} \item{ylim}{A parameter similar to that in
-\code{par}, to monitor the limits of the vertical axis} 
-\item{xlab, ylab}{Labels for the axes of the R plot}}}
+* col: A color or vector of colors used for plotting R. By
+default uses the default R colors.
+* transp: A numeric value between
+0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.
+* xlim: A parameter similar to that in \code{par}, to monitor the
+limits of the horizontal axis
+* ylim: A parameter similar to that in
+\code{par}, to monitor the limits of the vertical axis
+* xlab, ylab: Labels for the axes of the R plot}
 
 \item{options_SI}{For what = "SI" or "all". A list of graphical options:
-\describe{ \item{prob_min}{A numeric value between 0 and 1. The SI
+* prob_min: A numeric value between 0 and 1. The SI
 distributions explored are only shown from time 0 up to the time t so that
 each distribution explored has probability < \code{prob_min} to be on any
-time step after t. Defaults to 0.001.}  \item{col}{A color or vector of
-colors used for plotting the SI. Defaults to black.}  \item{transp}{A
+time step after t. Defaults to 0.001.
+* col: A color or vector of
+colors used for plotting the SI. Defaults to black.
+* transp: A
 numeric value between 0 and 1 used to monitor transparency of the
-lines. Defaults to 0.25} \item{xlim}{A parameter similar to that in
-\code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
+lines. Defaults to 0.25
+* xlim: A parameter similar to that in
+\code{par}, to monitor the limits of the horizontal axis
+* ylim: A
 parameter similar to that in \code{par}, to monitor the limits of the
-vertical axis} \item{xlab, ylab}{Labels for the axes of the serial interval
- distribution plot}}}
+vertical axis
+* xlab, ylab: Labels for the axes of the serial interval
+ distribution plot}
 
 \item{legend}{A boolean (TRUE by default) governing the presence / absence of
 legends on the plots}

@@ -4,14 +4,16 @@
 \name{mers_2014_15}
 \alias{mers_2014_15}
 \title{Data on Middle East Respiratory Syndrome (MERS) in Saudi Arabia.}
-\format{A list of two elements:
+\format{
+A list of two elements:
 \itemize{
 \item \strong{incidence:} a dataframe containing 495 days of observations with dates
 in the first column, and number of local (2nd column) and imported (3rd
 column) cases of MERS,
 \item \strong{si:} a list of estimates of the mean (mean_si) and standard deviation
 (std_si) of the serial interval for MERS.
-}}
+}
+}
 \source{
 The incidence data was extracted from the EMPRES I system from FAO
 (Global Animal Disease Information System - Food and Agriculture Organization

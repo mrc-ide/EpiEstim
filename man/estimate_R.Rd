@@ -2,10 +2,7 @@
 % Please edit documentation in R/estimate_r.R
 \name{estimate_R}
 \alias{estimate_R}
-\title{Estimated Instantaneous Reproduction Number
-
-\code{estimate_R} estimates the reproduction number of an epidemic, given the
-incidence time series and the serial interval distribution.}
+\title{Estimated Instantaneous Reproduction Number}
 \usage{
 estimate_R(
   incid,
@@ -18,22 +15,20 @@ estimate_R(
 }
 \arguments{
 \item{incid}{One of the following
-\itemize{
 
-\item{A vector (or a dataframe with a single column) of non-negative integers
-containing the incidence time series}
+* A vector (or a dataframe with a single column) of non-negative integers
+containing the incidence time series
 
-\item{A dataframe of non-negative integers with either i) \code{incid$I}
+* A dataframe of non-negative integers with either i) \code{incid$I}
 containing the total incidence, or ii) two columns, so that
 \code{incid$local} contains the incidence of cases due to local transmission
 and \code{incid$imported} contains the incidence of imported cases (with
 \code{incid$local + incid$imported} the total incidence). If the dataframe
 contains a column \code{incid$dates}, this is used for plotting.
-\code{incid$dates} must contains only dates in a row.}
+\code{incid$dates} must contains only dates in a row.
 
-\item{An object of class \code{\link{incidence}}}
+* An object of class \code{incidence}
 
-}
 
 Note that the cases from the first time step are always all assumed to be
 imported cases.}
@@ -54,42 +49,38 @@ function \code{make_config}.}
 \value{
 {
 an object of class \code{estimate_R}, with components:
-\itemize{
 
-\item{R}{: a dataframe containing:
+* \code{R}: a dataframe containing:
 the times of start and end of each time window considered ;
 the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975
-quantiles of the reproduction number for each time window.}
+quantiles of the reproduction number for each time window.
 
-\item{method}{: the method used to estimate R, one of "non_parametric_si",
-"parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
+* \code{method}: the method used to estimate R, one of "non_parametric_si",
+"parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
 
-\item{si_distr}{: a vector or dataframe (depending on the method) containing
- the discrete serial interval distribution(s) used for estimation}
+* \code{si_distr}: a vector or dataframe (depending on the method) containing
+ the discrete serial interval distribution(s) used for estimation
 
-\item{SI.Moments}{: a vector or dataframe (depending on the method)
+* \code{SI.Moments}: a vector or dataframe (depending on the method)
 containing the mean and std of the discrete serial interval distribution(s)
-used for estimation}
+used for estimation
 
-\item{I}{: the time series of total incidence}
+* \code{I}: the time series of total incidence
 
-\item{I_local}{: the time series of incidence of local cases (so that
-\code{I_local + I_imported = I})}
+* \code{I_local}: the time series of incidence of local cases (so that
+\code{I_local + I_imported = I})
 
-\item{I_imported}{: the time series of incidence of imported cases (so that
-\code{I_local + I_imported = I})}
+* \code{I_imported}: the time series of incidence of imported cases (so that
+\code{I_local + I_imported = I})
 
-\item{dates}{: a vector of dates corresponding to the incidence time series}
+* \code{dates}: a vector of dates corresponding to the incidence time series
 
-\item{MCMC_converged}{ (only for method \code{si_from_data}): a boolean
+* \code{MCMC_converged} (only for method \code{si_from_data}): a boolean
 showing whether the Gelman-Rubin MCMC convergence diagnostic was successful
-(\code{TRUE}) or not (\code{FALSE})}
-}
+(\code{TRUE}) or not (\code{FALSE})
 }
 }
 \description{
-Estimated Instantaneous Reproduction Number
-
 \code{estimate_R} estimates the reproduction number of an epidemic, given the
 incidence time series and the serial interval distribution.
 }
@@ -105,26 +96,24 @@ In short there are five methods to specify the serial interval distribution
 In the first two methods, a unique serial interval distribution is
 considered, whereas in the last three, a range of serial interval
 distributions are integrated over:
-\itemize{
-\item{In method "non_parametric_si" the user specifies the discrete
-distribution of the serial interval}
-\item{In method "parametric_si" the user specifies the mean and sd of the
-serial interval}
-\item{In method "uncertain_si" the mean and sd of the serial interval are
+* In method "non_parametric_si" the user specifies the discrete
+distribution of the serial interval
+* In method "parametric_si" the user specifies the mean and sd of the
+serial interval
+* In method "uncertain_si" the mean and sd of the serial interval are
 each drawn from truncated normal distributions, with parameters specified by
-the user}
-\item{In method "si_from_data", the serial interval distribution is directly
+the user
+* In method "si_from_data", the serial interval distribution is directly
 estimated, using MCMC, from interval censored exposure data, with data
 provided by the user together with a choice of parametric distribution for
-the serial interval}
-\item{In method "si_from_sample", the user directly provides the sample of
+the serial interval
+* In method "si_from_sample", the user directly provides the sample of
 serial interval distribution to use for estimation of R. This can be a useful
  alternative to the previous method, where the MCMC estimation of the serial
  interval distribution could be run once, and the same estimated SI
  distribution then used in estimate_R in different contexts, e.g. with
  different time windows, hence avoiding to rerun the MCMC every time
- estimate_R is called.}
-}
+ estimate_R is called.
 }
 \examples{
 ## load data on pandemic flu in a school in 2009

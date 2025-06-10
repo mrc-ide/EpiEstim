@@ -4,7 +4,8 @@
 \name{Flu2009}
 \alias{Flu2009}
 \title{Data on the 2009 H1N1 influenza pandemic in a school in Pennsylvania.}
-\format{A list of three elements:
+\format{
+A list of three elements:
 \itemize{
 \item \strong{incidence:} a dataframe with 32 lines containing dates in first column,
 and daily incidence in second column (Cauchemez et al., 2011),
@@ -13,7 +14,8 @@ al, 2005),
 \item \strong{si_data:} a dataframe with 16 lines giving serial interval patient
 data collected in a household study in San Antonio, Texas throughout the
 2009 H1N1 outbreak (Morgan et al., 2010).
-}}
+}
+}
 \source{
 Cauchemez S. et al. (2011) Role of social networks in shaping
 disease transmission during a community outbreak of 2009 H1N1 pandemic

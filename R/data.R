@@ -18,7 +18,7 @@
 #'   and daily incidence in second column ,
 #' - **si_data**: a dataframe containing data on the generation time for 16
 #'   pairs of infector/infected individuals (see references and see argument
-#'   `si_data` of function [estimate_R()] for details on columns)
+#'   \code{si_data} of function \code{\link{estimate_R}} for details on columns)
 #'
 #' @source Lessler J. et al. (2009) Outbreak of 2009 pandemic influenza A (H1N1)
 #'  at a New York City school. New Eng J Med 361: 2628-2636.

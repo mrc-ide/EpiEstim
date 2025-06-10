@@ -27,12 +27,10 @@ posterior sample of serial interval distributions in x, only 1 in \code{thin}
 }
 \value{
 A list with two elements:
-\itemize{
-\item{si_sample: a matrix where each column gives one distribution of the
-serial interval to be explored, obtained from x by thinning the MCMC chain.}
-\item{si_parametric_distr: the parametric distribution used when estimating
-the serial interval stored in x. }
-}
+* si_sample: a matrix where each column gives one distribution of the
+serial interval to be explored, obtained from x by thinning the MCMC chain.
+* si_parametric_distr: the parametric distribution used when estimating
+the serial interval stored in x.
 }
 \description{
 \code{coarse2estim} Transforms outputs of

@@ -19,12 +19,10 @@
 #' posterior sample of serial interval distributions in x, only 1 in \code{thin}
 #'  will be kept, the rest will be discarded.
 #' @return A list with two elements:
-#' \itemize{
-#' \item{si_sample: a matrix where each column gives one distribution of the
-#' serial interval to be explored, obtained from x by thinning the MCMC chain.}
-#' \item{si_parametric_distr: the parametric distribution used when estimating
-#' the serial interval stored in x. }
-#' }
+#' * si_sample: a matrix where each column gives one distribution of the
+#' serial interval to be explored, obtained from x by thinning the MCMC chain.
+#' * si_parametric_distr: the parametric distribution used when estimating
+#' the serial interval stored in x. 
 #' @seealso \code{\link{estimate_R}}
 #' @author The Hackout3 Parameter Estimation team.
 #'
