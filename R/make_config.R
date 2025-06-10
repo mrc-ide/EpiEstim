@@ -96,7 +96,7 @@
 #' posterior coefficient of variation (CV, ratio of standard deviation over
 #' mean) of the reproduction number.
 #' An aimed CV can be specified in the argument \code{cv_posterior} 
-#' (default is {0.3}), and a warning will be produced if the incidence 
+#' (default is \code{0.3}), and a warning will be produced if the incidence 
 #' within one of the time windows considered is too low to get this CV.
 #'
 #' The methods vary in the way the serial interval distribution is specified.
