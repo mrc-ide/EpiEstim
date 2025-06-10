@@ -88,15 +88,15 @@
 #' @details
 #' Analytical estimates of the reproduction number for an epidemic over
 #' predefined time windows can be obtained using function \code{estimate_R},  
-#' for a given discrete distribution of the serial interval. `make_config`
+#' for a given discrete distribution of the serial interval. \code{make_config}
 #' allows to generate a configuration specifying the way the estimation will
 #' be performed. 
 #'
 #' The more incident cases are observed over a time window, the smallest the
 #' posterior coefficient of variation (CV, ratio of standard deviation over
 #' mean) of the reproduction number.
-#' An aimed CV can be specified in the argument `cv_posterior` 
-#' (default is `0.3`), and a warning will be produced if the incidence 
+#' An aimed CV can be specified in the argument \code{cv_posterior} 
+#' (default is {0.3}), and a warning will be produced if the incidence 
 #' within one of the time windows considered is too low to get this CV.
 #'
 #' The methods vary in the way the serial interval distribution is specified.
@@ -126,52 +126,52 @@
 #'  different time windows, hence avoiding to rerun the MCMC everytime
 #'  estimate_R is called.
 #'
-#' ----------------------- `method "non_parametric_si"` -------------------
+#' ----------------------- \code{method "non_parametric_si"} -------------------
 #'
 #' The discrete distribution of the serial interval is directly specified in the
-#'  argument `si_distr`.
+#'  argument \code{si_distr}.
 #'
-#' ----------------------- `method "parametric_si"` -----------------------
+#' ----------------------- \code{method "parametric_si"} -----------------------
 #'
 #' The mean and standard deviation of the continuous distribution of the serial
-#' interval are given in the arguments `mean_si` and `std_si`.
+#' interval are given in the arguments \code{mean_si} and \code{std_si}.
 #' The discrete distribution of the serial interval is derived automatically
-#' using [discr_si].
+#' using \code{\link{discr_si}}.
 #'
-#' ----------------------- `method "uncertain_si"` -----------------------
+#' ----------------------- \code{method "uncertain_si"} -----------------------
 #'
-#' `method="uncertain_si"` allows accounting for uncertainty on the serial
+#' \code{method="uncertain_si"} allows accounting for uncertainty on the serial
 #' interval distribution as described in Cori et al. AJE 2013.
 #' We allow the mean \eqn{\mu} and standard deviation \eqn{\sigma} of the serial
 #'  interval to vary according to truncated normal distributions.
-#' We sample `n1` pairs of mean and standard deviations,
+#' We sample \code{n1} pairs of mean and standard deviations,
 #' \eqn{(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_2)},\sigma^{(n_2)})}, by first
 #' sampling the mean \eqn{\mu^{(k)}}
-#' from its truncated normal distribution (with mean `mean_si`, standard
-#' deviation `std_mean_si`, minimum `min_mean_si` and maximum
-#' `max_mean_si`),
+#' from its truncated normal distribution (with mean \code{mean_si}, standard
+#' deviation \code{std_mean_si}, minimum \code{min_mean_si} and maximum
+#' \code{max_mean_si}),
 #' and then sampling the standard deviation \eqn{\sigma^{(k)}} from its
 #' truncated normal distribution
-#' (with mean `std_si`, standard deviation `std_std_si`, minimum
-#' `min_std_si` and maximum `max_std_si`), but imposing that
+#' (with mean \code{std_si}, standard deviation \code{std_std_si}, minimum
+#' \code{min_std_si} and maximum \code{max_std_si}), but imposing that
 #' \eqn{\sigma^{(k)}<\mu^{(k)}}.
 #' This constraint ensures that the Gamma probability density function of the
 #' serial interval is null at \eqn{t=0}.
 #' Warnings are produced when the truncated normal distributions are not
 #' symmetric around the mean.
 #' For each pair \eqn{(\mu^{(k)},\sigma^{(k)})}, we then draw a sample of size
-#' `n2` in the posterior distribution of the reproduction number over each
+#' \code{n2} in the posterior distribution of the reproduction number over each
 #' time window, conditionally on this serial interval distribution.
-#' After pooling, a sample of size \eqn{`n1`\times`n2`} of the joint
+#' After pooling, a sample of size \eqn{\code{n1}\times\code{n2} of the joint
 #' posterior distribution of the reproduction number over each time window is
 #' obtained.
 #' The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75,
 #' 0.95, 0.975 quantiles of the reproduction number for each time window are
 #' obtained from this sample.
 #'
-#' ----------------------- `method "si_from_data"` -----------------------
+#' ----------------------- \code{method "si_from_data"} -----------------------
 #'
-#' `method="si_from_data"` allows accounting for uncertainty on the serial
+#' \code{method="si_from_data"} allows accounting for uncertainty on the serial
 #' interval distribution.
 #' Unlike method "uncertain_si", where we arbitrarily vary the mean and std of
 #' the SI in truncated normal distributions,
@@ -179,7 +179,7 @@
 #' informed by data
 #' on the (potentially censored) dates of symptoms of pairs of infector/infected
 #'  individuals.
-#' This data, specified in argument `si_data`, should be a dataframe with 5
+#' This data, specified in argument \code{si_data}, should be a dataframe with 5
 #'  columns:
 #' * EL: the lower bound of the symptom onset date of the infector (given as
 #'  an integer)
