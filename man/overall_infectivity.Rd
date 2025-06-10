@@ -30,12 +30,12 @@ A vector which contains the overall infectivity \eqn{\lambda_t} at
 infected individuals.
 }
 \details{
-The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is
+{ The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is
 equal to the sum of the previously infected individuals (given by the
 incidence vector \eqn{I}, with \code{I = incid$local + incid$imported} if
 \eqn{I} is a matrix), weigthed by their infectivity at time \eqn{t} (given by
 the discrete serial interval distribution \eqn{w_k}). In mathematical terms: 
-\eqn{\lambda_t = \sum_{k=1}^{t-1}I_{t-k}w_k}
+\cr \eqn{\lambda_t = \sum_{k=1}^{t-1}I_{t-k}w_k} \cr }
 }
 \examples{
 ## load data on pandemic flu in a school in 2009

@@ -162,7 +162,7 @@
 #' For each pair \eqn{(\mu^{(k)},\sigma^{(k)})}, we then draw a sample of size
 #' \code{n2} in the posterior distribution of the reproduction number over each
 #' time window, conditionally on this serial interval distribution.
-#' After pooling, a sample of size \eqn{\code{n1}\times\code{n2} of the joint
+#' After pooling, a sample of size \eqn{\code{n1}\times\code{n2}} of the joint
 #' posterior distribution of the reproduction number over each time window is
 #' obtained.
 #' The posterior mean, standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75,
