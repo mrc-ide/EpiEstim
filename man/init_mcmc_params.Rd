@@ -2,7 +2,7 @@
 % Please edit documentation in R/init_mcmc_params.R
 \name{init_mcmc_params}
 \alias{init_mcmc_params}
-\title{init_mcmc_params Finds clever starting points for the MCMC to be used to 
+\title{\code{init_mcmc_params} Finds clever starting points for the MCMC to be used to 
 estimate the serial interval, e.g. when using option \code{si_from_data} in 
 \code{estimate_R}}
 \usage{
@@ -11,17 +11,21 @@ init_mcmc_params(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
 \arguments{
 \item{si_data}{the data on dates of symptoms of pairs of infector/infected
 individuals to be used to estimate the serial interval distribution. This
-should be a dataframe with 5 columns: \itemize{ \item{EL: the lower bound
-of the symptom onset date of the infector (given as an integer)} \item{ER:
+should be a dataframe with 5 columns: 
+* EL: the lower bound
+of the symptom onset date of the infector (given as an integer)
+* ER:
 the upper bound of the symptom onset date of the infector (given as an
-integer). Should be such that ER>=EL} \item{SL: the lower bound of the
-symptom onset date of the infected individual (given as an integer)} 
-\item{SR: the upper bound of the symptom onset date of the infected
-individual (given as an integer). Should be such that SR>=SL} \item{type
+integer). Should be such that ER>=EL
+* SL: the lower bound of the
+symptom onset date of the infected individual (given as an integer)
+* SR: the upper bound of the symptom onset date of the infected
+individual (given as an integer). Should be such that SR>=SL
+* type
 (optional): can have entries 0, 1, or 2, corresponding to doubly
 interval-censored, single interval-censored or exact observations, 
 respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-will be automatically computed from the dates} }}
+will be automatically computed from the dates}
 
 \item{dist}{the parametric distribution to use for the serial interval. 
 Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G"

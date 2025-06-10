@@ -20,7 +20,7 @@
 #' @return a plot (if \code{what = "incid"}, \code{"R"}, or \code{"SI"}) or a
 #'   \code{\link[grid]{grob}} object (if \code{what = "all"}).
 #'
-#' @seealso \code{\link{plot.estimate_R}} 
+#' @seealso \code{\link{plot.estimate_R}}
 #'
 #' @author Anne Cori, Zhian Kamvar
 #'

@@ -4,11 +4,13 @@
 \name{Flu1918}
 \alias{Flu1918}
 \title{Data on the 1918 H1N1 influenza pandemic in Baltimore.}
-\format{A list of two elements:
+\format{
+A list of two elements:
 \itemize{
 \item \strong{incidence}: a vector containing 92 days of observation,
 \item \strong{si_distr}: a vector containing a set of 12 probabilities.
-}}
+}
+}
 \source{
 Frost W. and E. Sydenstricker (1919) Influenza in Maryland:
 preliminary statistics of certain localities.

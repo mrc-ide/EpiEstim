@@ -233,7 +233,7 @@ check_si_distr <- function(si_distr, sumToOne = c("error", "warning"),
 
 check_dates <- function(incid) {
   dates <- incid$dates
-  if (class(dates) != "Date" & class(dates) != "numeric") {
+  if (!inherits(dates, "Date") && !is.numeric(dates)) {
     stop("incid$dates must be an object of class date or numeric.")
   } else {
     if (unique(diff(dates)) != 1) {

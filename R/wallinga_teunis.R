@@ -9,48 +9,59 @@
 #' given the incidence time series and the serial interval distribution.
 #'
 #' @param incid One of the following
-#' \itemize{
-#' \item Vector (or a dataframe with
+#'   * Vector (or a dataframe with
 #'   a column named 'incid') of non-negative integers containing an incidence
 #'   time series. If the dataframe contains a column \code{incid$dates}, this is
 #'   used for plotting. \code{incid$dates} must contains only dates in a row.
 #'
-#'   \item An object of class \code{\link[incidence]{incidence}}
-#' }
+#'   * An object of class [incidence]
+
 #'
 #' @param method the method used to estimate R, one of "non_parametric_si",
 #'   "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
 #'
-#' @param config a list with the following elements: \itemize{ \item{t_start:
+#' @param config a list with the following elements: 
+#'   * t_start:
 #'   Vector of positive integers giving the starting times of each window over
 #'   which the reproduction number will be estimated. These must be in ascending
 #'   order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}.
-#'   t_start[1] should be strictly after the first day with non null incidence.}
-#'   \item{t_end: Vector of positive integers giving the ending times of each
+#'   t_start[1] should be strictly after the first day with non null incidence.
+#'   * t_end: Vector of positive integers giving the ending times of each
 #'   window over which the reproduction number will be estimated. These must be
 #'   in ascending order, and so that for all \code{i},
-#'   \code{t_start[i]<=t_end[i]}.} \item{method: One of "non_parametric_si" or
-#'   "parametric_si" (see details).} \item{mean_si: For method "parametric_si" ;
-#'   positive real giving the mean serial interval.} \item{std_si: For method
+#'   \code{t_start[i]<=t_end[i]}.
+#'   * method: One of "non_parametric_si" or
+#'   "parametric_si" (see details).
+#'   * mean_si: For method "parametric_si" ;
+#'   positive real giving the mean serial interval.
+#'   * std_si: For method
 #'   "parametric_si" ; non negative real giving the standard deviation of the
-#'   serial interval.} \item{si_distr: For method "non_parametric_si" ; vector
+#'   serial interval.
+#'   * si_distr: For method "non_parametric_si" ; vector
 #'   of probabilities giving the discrete distribution of the serial interval,
 #'   starting with \code{si_distr[1]} (probability that the serial interval is
-#'   zero), which should be zero.} \item{n_sim: A positive integer giving the
+#'   zero), which should be zero.
+#'   * n_sim: A positive integer giving the
 #'   number of simulated epidemic trees used for computation of the confidence
-#'   intervals of the case reproduction number (see details).} }
-#' @return { a list with components: \itemize{ \item{R}{: a dataframe
+#'   intervals of the case reproduction number (see details).
+#' @return { a list with components: 
+#'   * R: a dataframe
 #'   containing: the times of start and end of each time window considered ; the
 #'   estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction
-#'   number for each time window.} \item{si_distr}{: a vector containing the
-#'   discrete serial interval distribution used for estimation}
-#'   \item{SI.Moments}{: a vector containing the mean and std of the discrete
-#'   serial interval distribution(s) used for estimation} \item{I}{: the time
-#'   series of total incidence} \item{I_local}{: the time series of incidence of
-#'   local cases (so that \code{I_local + I_imported = I})} \item{I_imported}{:
+#'   number for each time window.
+#'   * si_distr: a vector containing the
+#'   discrete serial interval distribution used for estimation
+#'   * SI.Moments: a vector containing the mean and std of the discrete
+#'   serial interval distribution(s) used for estimation
+#'   * I: the time
+#'   series of total incidence 
+#'   * I_local: the time series of incidence of
+#'   local cases (so that \code{I_local + I_imported = I})
+#'   * I_imported:
 #'   the time series of incidence of imported cases (so that \code{I_local +
-#'   I_imported = I})} \item{dates}{: a vector of dates corresponding to the
-#'   incidence time series} } }
+#'   I_imported = I}) 
+#'   * dates: a vector of dates corresponding to the
+#'   incidence time series }
 #'
 #' @details Estimates of the case reproduction number for an epidemic over
 #' predefined time windows can be obtained, for a given discrete distribution of
