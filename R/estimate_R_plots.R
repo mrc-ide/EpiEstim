@@ -1,26 +1,26 @@
 #' Wrapper for plot.estimate_R
 #'
-#' This wrapper has been created so that several \code{estimate_R} objects can 
+#' This wrapper has been created so that several [estimate_R()] objects can 
 #' be plotted at the same time. 
 #'
 #' @param ... Arguments of 
-#'   \code{\link{plot.estimate_R}}, but in addition,
-#'   parameter \code{x} can be a objects of class \code{estimate_R} (obtained as 
-#'   outputs of functions \code{\link{estimate_R}} or 
-#'   \code{\link{wallinga_teunis}}.  
-#'   If \code{x} is a list, and \code{what='R'} or \code{what='all'}, 
+#'   [plot.estimate_R()], but in addition,
+#'   parameter `x` can be a objects of class [estimate_R()] (obtained as 
+#'   outputs of functions [estimate_R()] or 
+#'   [wallinga_teunis()]).  
+#'   If `x` is a list, and `what = 'R'` or `what = 'all'`, 
 #'   all estimates of R are plotted on a
-#'   single graph. This will only work if all the \code{estimate_R} objects in 
-#'   the list were computed using the same \code{config$t_start} and 
-#'   \code{config$t_end}
+#'   single graph. This will only work if all the [estimate_R()] objects in 
+#'   the list were computed using the same `config$t_start` and 
+#'   `config$t_end`
 #'
 #' @param legend A boolean (TRUE by default) governing the presence / absence of
 #'   legends on the plots
 #'   
-#' @return a plot (if \code{what = "incid"}, \code{"R"}, or \code{"SI"}) or a
-#'   \code{\link[grid]{grob}} object (if \code{what = "all"}).
+#' @return a plot (if `what = "incid"`, `"R"`, or `"SI"`) or a
+#'   [grid::grob()] object (if `what = "all"`).
 #'
-#' @seealso \code{\link{plot.estimate_R}} 
+#' @seealso [plot.estimate_R()] 
 #'
 #' @author Anne Cori, Zhian Kamvar
 #'
@@ -76,6 +76,7 @@
 #' ## visualise R estimates on the same plot
 #' estimate_R_plots(list(R_weekly, R_biweekly), what = "R",
 #'                  options_R = list(col = c("blue", "red")), legend = TRUE)
+
 estimate_R_plots <- function(..., legend = FALSE) {
   plot.estimate_R(..., legend = legend)
 }
