@@ -222,22 +222,22 @@ compute_lambda <- function(incid, si_distr) {
 #'   the incidence for that location and that pathogen/strain/variant at all
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. It can be calculated from the incidence `incid` and
-#'   the distribution of the serial interval using function `compute_lambda`)
+#'   the distribution of the serial interval using function [compute_lambda()]
 #'
 #' @param priors a list of prior parameters (shape and scale of a gamma
 #'   distribution) for epsilon and R; can be obtained from the function
-#'   `default_priors`. The prior for R is assumed to be the same for all
+#'   [default_priors](). The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
 #' @param shape_epsilon a value or vector of values of the shape of the posterior
-#'   distribution of epsilon for each of the non reference variants, as returned
-#'   by function `get_shape_epsilon`
+#'   distribution of epsilon for each of the non-reference variants, as returned
+#'   by function [get_shape_epsilon()]
 #'
-#' @param t_min an integer >1 giving the minimum time step to consider in the
+#' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
 #'   observations at time step 1 and can therefore only start at time step 2).
 #'
-#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
 #' @param seed a numeric value used to fix the random seed
@@ -250,7 +250,6 @@ compute_lambda <- function(incid, si_distr) {
 #' @export
 #'
 #' @examples
-#'
 #' n_loc <- 4 # 4 locations
 #' n_v <- 3 # 3 strains
 #' T <- 100 # 100 time steps
@@ -266,7 +265,7 @@ compute_lambda <- function(incid, si_distr) {
 #' R <- matrix(1, nrow = T, ncol = n_loc)
 #' R[1, ] <- NA # no estimates of R on first time step
 #' draw_epsilon(R, incid$local, lambda, priors, seed = 1)
-#'
+
 draw_epsilon <- function(R, incid, lambda, priors,
                          shape_epsilon = NULL,
                          t_min = 2L, t_max = nrow(incid),
