@@ -10,21 +10,20 @@
 #'   `default_priors`. The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
-#' @param t_min an integer >1 giving the minimum time step to consider in the
+#' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
 #'   observations at time step 1 and can therefore only start at time step 2).
 #'
-#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
 #' @return a vector of the shape of the posterior distribution of R for
 #'   each time step t and each location l
-#'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector)
+#'   (stored in element `(l-1)*(t_max - t_min + 1) + t` of the vector)
 #'
 #' @export
 #'
 #' @examples
-#'
 #' n_v <- 2
 #' n_loc <- 3 # 3 locations
 #' T <- 100 # 100 time steps
@@ -32,7 +31,7 @@
 #' # constant incidence 10 per day everywhere
 #' incid <- array(10, dim = c(T, n_loc, n_v))
 #' get_shape_R_flat(incid, priors)
-#'
+
 get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
   shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape
