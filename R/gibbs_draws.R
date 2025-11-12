@@ -52,27 +52,26 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 #'   the incidence for that location and that pathogen/strain/variant at all
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. It can be calculated from the incidence `incid` and
-#'   the distribution of the serial interval using function `compute_lambda`)
+#'   the distribution of the serial interval using function [compute_lambda()]
 #'
 #' @param priors a list of prior parameters (shape and scale of a gamma
 #'   distribution) for epsilon and R; can be obtained from the function
-#'   `default_priors`. The prior for R is assumed to be the same for all
+#'   [default_priors()]. The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
-#' @param t_min an integer >1 giving the minimum time step to consider in the
+#' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
 #'   observations at time step 1 and can therefore only start at time step 2).
 #'
-#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
 #' @return a value or vector of values of the shape of the posterior
-#'   distribution of epsilon for each of the non reference variants
+#'   distribution of epsilon for each of the non-reference variants
 #'
 #' @export
 #'
 #' @examples
-#'
 #' n_loc <- 4 # 4 locations
 #' n_v <- 3 # 3 strains
 #' T <- 100 # 100 time steps
@@ -85,7 +84,7 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 #' si_distr <- cbind(w_v, w_v, w_v)
 #' lambda <- compute_lambda(incid, si_distr)
 #' get_shape_epsilon(incid$local, lambda, priors)
-#'
+
 get_shape_epsilon <- function(incid, lambda, priors,
                               t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
