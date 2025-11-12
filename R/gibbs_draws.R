@@ -95,9 +95,9 @@ get_shape_epsilon <- function(incid, lambda, priors,
 #' Set default for Gamma priors
 #'
 #' @return a list of default parameters for the priors.
-#'   Values can then be manually be edited as in the examples below.
-#'   Users could use functions `epitrix::gamma_shapescale2mucv` and
-#'   `epitrix::gamma_mucv2shapescale` to set the shape and scale corresponding
+#'   Values can then be manually edited as in the examples below.
+#'   Users could use functions [epitrix::gamma_shapescale2mucv()] and
+#'   [epitrix::gamma_mucv2shapescale()] to set the shape and scale corresponding
 #'   to the desired prior mean and coefficient of variation.
 #' @export
 #'
@@ -105,7 +105,7 @@ get_shape_epsilon <- function(incid, lambda, priors,
 #' priors <- default_priors()
 #' # change the prior for R to have a mean of 3
 #' priors$R$shape <- 3
-#'
+
 default_priors <- function() {
   ## Flatter epsilon and R with larger variance
   ## Mean epsilon 10 and SD 10
