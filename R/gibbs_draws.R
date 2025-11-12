@@ -141,9 +141,9 @@ default_mcmc_controls <- function() {
 
 #' Compute the overall infectivity
 #'
-#' @param incid a list (as obtained from function `process_I_multivariant`)
-#'   of two multidimensional arrays ("local" and "imported")
-#'   containing values of the incidence
+#' @param incid a list (as obtained from function [process_I_multivariant()])
+#'   of two multidimensional arrays (`local` and `imported`) containing values 
+#'   of the incidence
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension)
 #'
@@ -160,12 +160,11 @@ default_mcmc_controls <- function() {
 #'   the incidence for that location and that pathogen/strain/variant at all
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. Pre-calculating the overall infectivity makes the
-#'   algorithm much faster
+#'   algorithm much faster.
 #'
 #' @export
 #'
 #' @examples
-#'
 #' n_v <- 2
 #' n_loc <- 3 # 3 locations
 #' T <- 100 # 100 time steps
