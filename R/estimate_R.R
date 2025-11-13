@@ -17,7 +17,7 @@
 #'   contains a column `incid$dates`, this is used for plotting.
 #'   `incid$dates` must contains only dates in a row.
 #'
-#' - An object of class [incidence2::incidence()]
+#' - An object of class [incidence::incidence()]
 #'
 #' Note that the cases from the first time step are always all assumed to be
 #' imported cases.
