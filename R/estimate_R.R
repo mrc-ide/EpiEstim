@@ -193,9 +193,9 @@
 #' ## finishing on that day.
 #'
 #' ## to specify t_start and t_end in config, e.g. to have biweekly sliding
-#' ## windows  
-#' t_start <- seq(2, nrow(Flu2009$incidence)-13)
-#' t_end <- t_start + 13             
+#' ## windows
+#' t_start <- seq(2, nrow(Flu2009$incidence) - 13)
+#' t_end <- t_start + 13
 #' res <- estimate_R(incid = Flu2009$incidence,
 #'                   method = "non_parametric_si",
 #'                   config = make_config(list(
@@ -212,8 +212,8 @@
 #'
 #' ## create fake data
 #' library(incidence)
-#' data <- c(0,1,1,2,1,3,4,5,5,5,5,4,4,26,6,7,9)
-#' location <- sample(c("local","imported"), length(data), replace=TRUE)
+#' data <- c(0, 1, 1, 2, 1, 3, 4, 5, 5, 5, 5, 4, 4, 26, 6, 7, 9)
+#' location <- sample(c("local","imported"), length(data), replace = TRUE)
 #' location[1] <- "imported" # forcing the first case to be imported
 #'
 #' ## get incidence per group (location)
@@ -252,15 +252,18 @@
 #' ## Example with back-imputation:
 #' ## here we use the first 6 days of incidence to impute cases that preceded
 #' ## the first reported cases:
-#' 
-#' res_bi <- estimate_R(incid = Flu2009$incidence,
-#'                  method = "parametric_si",
-#'                  backimputation_window = 6,
-#'                  config = make_config(list(
-#'                       mean_si = 2.6, 
-#'                       std_si = 1,
-#'                       t_start = t_start,
-#'                       t_end = t_end)))
+#'
+#' res_bi <- estimate_R(
+#'   incid = Flu2009$incidence,
+#'   method = "parametric_si",
+#'   backimputation_window = 6,
+#'   config = make_config(list(
+#'     mean_si = 2.6,
+#'     std_si = 1,
+#'     t_start = t_start,
+#'     t_end = t_end
+#'   ))
+#' )
 #' plot(res_bi, "R")
 #' 
 #' ## We can see that early estimates of R are lower when back-imputation is 
@@ -274,21 +277,24 @@
 #' ## load data on rotavirus
 #' data("MockRotavirus")
 #'
-#'################
 #' mcmc_control <- make_mcmc_control(
 #'   burnin = 1000, # first 1000 iterations discarded as burn-in
 #'   thin = 10, # every 10th iteration will be kept, the rest discarded
-#'   seed = 1) # set the seed to make the process reproducible
+#'   seed = 1 # set the seed to make the process reproducible
+#' )
 #'
 #' R_si_from_data <- estimate_R(
 #'   incid = MockRotavirus$incidence,
 #'   method = "si_from_data",
 #'   si_data = MockRotavirus$si_data, # symptom onset data
-#'   config = make_config(si_parametric_distr = "G", # gamma dist. for SI
-#'      mcmc_control = mcmc_control,
-#'      n1 = 500, # number of posterior samples of SI dist.
-#'      n2 = 50, # number of posterior samples of Rt dist.
-#'      seed = 2)) # set seed for reproducibility
+#'   config = make_config(
+#'     si_parametric_distr = "G", # gamma dist. for SI
+#'     mcmc_control = mcmc_control,
+#'     n1 = 500, # number of posterior samples of SI dist.
+#'     n2 = 50, # number of posterior samples of Rt dist.
+#'     seed = 2
+#'   ) # set seed for reproducibility
+#' )
 #'
 #' ## compare with version with no uncertainty
 #' R_Parametric <- estimate_R(MockRotavirus$incidence,
