@@ -1,74 +1,77 @@
-#' Plot outputs of estimate_r
+#' Plot outputs of [estimate_R()]
 #'
-#' The plot method of \code{estimate_r} objects can be used to visualise three
+#' The plot method of [estimate_R()] objects can be used to visualise three
 #' types of information. The first one shows the epidemic curve. The second one
-#' shows the posterior mean and 95\% credible interval of the reproduction
+#' shows the posterior mean and 95% credible interval of the reproduction
 #' number. The estimate for a time window is plotted at the end of the time
 #' window. The third plot shows the discrete distribution(s) of the serial
 #' interval.
 #'
-#'
-#' @param x The output of function \code{\link{estimate_R}} or function
-#'   \code{\link{wallinga_teunis}}. To plot simultaneous outputs on the same
-#'   plot use \code{\link{estimate_R_plots}} function
+#' @param x The output of function [estimate_R()] or function
+#'   [wallinga_teunis()]. To plot simultaneous outputs on the same
+#'   plot use [estimate_R_plots()].
 #'
 #' @param what A string specifying what to plot, namely the incidence time
-#'   series (\code{what='incid'}), the estimated reproduction number
-#'   (\code{what='R'}), the serial interval distribution (\code{what='SI'}, or
-#'   all three (\code{what='all'})).
+#'   series (`what = 'incid'`), the estimated reproduction number
+#'   (`what = 'R'`), the serial interval distribution (`what = 'SI'`), or
+#'   all three (`what = 'all'`).
 #'
 #' @param plot_theme A string specifying whether to use the original plot theme
-#' (plot_theme = "original") or an alternative plot theme (plot_theme = "v2").
+#' (`plot_theme = "original"`) or an alternative plot theme (`plot_theme = "v2"`).
 #' The plot_theme is "v2" by default.
 #'
 #' @param add_imported_cases A boolean to specify whether, on the incidence time
 #'   series plot, to add the incidence of imported cases.
 #'
-#' @param options_I For what = "incid" or "all". A list of graphical options:
-#'   \describe{ \item{col}{A color or vector of colors used for plotting
-#'   incid. By default uses the default R colors.}  \item{transp}{A numeric
-#'   value between 0 and 1 used to monitor transparency of the bars
-#'   plotted. Defaults to 0.7.}  \item{xlim}{A parameter similar to that in
-#'   \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
-#'   parameter similar to that in \code{par}, to monitor the limits of the
-#'   vertical axis} \item{interval}{An integer or character indicating the
-#'   (fixed) size of the time interval used for plotting the incidence;
-#'   defaults to 1 day.} \item{xlab, ylab}{Labels for the axes of the
-#'   incidence plot}}
+#' @param options_I For `what = "incid"` or `"all"`. A list of graphical options:
+#' - `col`: A color or vector of colors used for plotting incid. By default uses
+#'   the default R colors.
+#' - `transp`: A numeric value between 0 and 1 used to monitor transparency of
+#'   the bars plotted. Defaults to 0.7.
+#' - `xlim`: A parameter similar to that in `par`, to monitor the limits of the
+#'   horizontal axis.
+#' - `ylim`: A parameter similar to that in `par`, to monitor the limits of the
+#'   vertical axis.
+#' - `interval`: An integer or character indicating the (fixed) size of the time
+#'   interval used for plotting the incidence; defaults to 1 day.
+#' - `xlab`, `ylab`: Labels for the axes of the incidence plot.
 #'
-#' @param options_R For what = "R" or "all". A list of graphical options:
-#'   \describe{ \item{col}{A color or vector of colors used for plotting R. By
-#'   default uses the default R colors.}  \item{transp}{A numeric value between
-#'   0 and 1 used to monitor transparency of the 95\%CrI. Defaults to 0.2.}
-#'   \item{xlim}{A parameter similar to that in \code{par}, to monitor the
-#'   limits of the horizontal axis} \item{ylim}{A parameter similar to that in
-#'   \code{par}, to monitor the limits of the vertical axis}
-#'   \item{xlab, ylab}{Labels for the axes of the R plot}}
+#' @param options_R For `what = "R"` or `what = "all"`. A list of graphical options:
+#' - `col`: A color or vector of colors used for plotting R. By default uses the
+#'   default R colors.
+#' - `transp`: A numeric value between 0 and 1 used to monitor transparency of
+#'   the 95% CrI. Defaults to 0.2.
+#' - `xlim`: A parameter similar to that in `par`, to monitor the limits of the
+#'   horizontal axis.
+#' - `ylim`: A parameter similar to that in `par`, to monitor the limits of the
+#'   vertical axis.
+#' - `xlab`, `ylab`: Labels for the axes of the R plot.
 #'
-#' @param options_SI For what = "SI" or "all". A list of graphical options:
-#'   \describe{ \item{prob_min}{A numeric value between 0 and 1. The SI
-#'   distributions explored are only shown from time 0 up to the time t so that
-#'   each distribution explored has probability < \code{prob_min} to be on any
-#'   time step after t. Defaults to 0.001.}  \item{col}{A color or vector of
-#'   colors used for plotting the SI. Defaults to black.}  \item{transp}{A
-#'   numeric value between 0 and 1 used to monitor transparency of the
-#'   lines. Defaults to 0.25} \item{xlim}{A parameter similar to that in
-#'   \code{par}, to monitor the limits of the horizontal axis} \item{ylim}{A
-#'   parameter similar to that in \code{par}, to monitor the limits of the
-#'   vertical axis} \item{xlab, ylab}{Labels for the axes of the serial interval
-#'    distribution plot}}
+#' @param options_SI For `what = "SI"` or `what = "all"`. A list of graphical options:
+#' - `prob_min`: A numeric value between 0 and 1. The SI distributions explored
+#'   are only shown from time 0 up to the time t so that each distribution
+#'   explored has probability < `prob_min` to be on any time step after t.
+#'   Defaults to 0.001.
+#' - `col`: A color or vector of colors used for plotting the SI. Defaults to
+#'   black.
+#' - `transp`: A numeric value between 0 and 1 used to monitor transparency of
+#'   the lines. Defaults to 0.25.
+#' - `xlim`: A parameter similar to that in `par`, to monitor the limits of the
+#'   horizontal axis.
+#' - `ylim`: A parameter similar to that in `par`, to monitor the limits of the
+#'   vertical axis.
+#' - `xlab`, `ylab`: Labels for the axes of the serial interval distribution
+#'   plot.
 #'
-#' @param legend A boolean (TRUE by default) governing the presence / absence of
+#' @param legend A boolean (`TRUE` by default) governing the presence / absence of
 #'   legends on the plots
 #'
 #' @param ... further arguments passed to other methods (currently unused).
 #'
-#' @return a plot (if \code{what = "incid"}, \code{"R"}, or \code{"SI"}) or a
-#'   \code{\link[grid]{grob}} object (if \code{what = "all"}).
+#' @return A plot (if `what = "incid"`, `"R"`, or `"SI"`) or a
+#'   [grid::grob()] object (if `what = "all"`).
 #'
-#' @seealso \code{\link{estimate_R}},
-#'   \code{\link{wallinga_teunis}} and
-#'   \code{\link{estimate_R_plots}}
+#' @seealso [estimate_R()], [wallinga_teunis()] and [estimate_R_plots()].
 #'
 #' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori
 #'   \email{a.cori@imperial.ac.uk}; S3 method by Thibaut Jombart; v2 theme by
@@ -91,7 +94,6 @@
 #' @importFrom incidence as.incidence
 #'
 #' @importFrom patchwork plot_layout
-#'
 #'
 #' @export
 #'
@@ -133,11 +135,12 @@
 #' p_SI <- plot(R_i, "SI") # plots the serial interval distribution
 #' p_Ri <- plot(R_i, "R",
 #'              options_R = list(ylim = c(0, 4)))
-#'         # plots the estimated instantaneous reproduction number
+#' # plots the estimated instantaneous reproduction number
 #' p_Rc <- plot(R_c, "R",
 #'              options_R = list(ylim = c(0, 4)))
-#'         # plots the estimated case reproduction number
+#' # plots the estimated case reproduction number
 #' gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
+
 plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme = "v2",
                             add_imported_cases = FALSE,
                             options_I = list(
