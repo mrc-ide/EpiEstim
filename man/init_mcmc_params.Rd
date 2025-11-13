@@ -2,50 +2,38 @@
 % Please edit documentation in R/init_mcmc_params.R
 \name{init_mcmc_params}
 \alias{init_mcmc_params}
-\title{init_mcmc_params Finds clever starting points for the MCMC to be used to 
-estimate the serial interval, e.g. when using option \code{si_from_data} in 
-\code{estimate_R}}
+\title{Find clever starting points for MCMC estimation}
 \usage{
 init_mcmc_params(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
 }
 \arguments{
-\item{si_data}{the data on dates of symptoms of pairs of infector/infected
+\item{si_data}{data on dates of symptoms of pairs of infector/infected
 individuals to be used to estimate the serial interval distribution. This
-should be a dataframe with 5 columns: 
-\itemize{ 
-\item{EL: the lower bound
-of the symptom onset date of the infector (given as an integer)} 
-\item{ER:
-the upper bound of the symptom onset date of the infector (given as an
-integer). Should be such that ER>=EL. If the dates are known exactly use
-ER = EL} 
-\item{SL: the lower bound of the
-symptom onset date of the infected individual (given as an integer)} 
-\item{SR: the upper bound of the symptom onset date of the infected
-individual (given as an integer). Should be such that SR>=SL. If the dates 
-are known exactly use SR = SL} 
-\item{type
-(optional): can have entries 0, 1, or 2, corresponding to doubly
-interval-censored, single interval-censored or exact observations, 
-respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-will be automatically computed from the dates} 
+should be a dataframe with 5 columns:
+\itemize{
+\item \code{EL}: the lower bound of the symptom onset date of the infector (given as an integer)
+\item \code{ER}: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that \code{ER >= EL}. If the dates are known exactly use \code{ER = EL}
+\item \code{SL}: the lower bound of the symptom onset date of the infected individual (given as an integer)
+\item \code{SR}: the upper bound of the symptom onset date of the infected individual (given as an integer). Should be such that \code{SR >= SL}. If the dates are known exactly use \code{SR = SL}
+\item \code{type} (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates
 }}
 
-\item{dist}{the parametric distribution to use for the serial interval. 
+\item{dist}{parametric distribution to use for the serial interval.
 Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G"
 (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
 shifted by 1).}
 }
 \value{
 A vector containing the initial values for the two parameters of the
-  distribution of the serial interval. These are the shape and scale for all
-  but the lognormal distribution, for which it is the meanlog and sdlog.
+distribution of the serial interval. These are the shape and scale for all
+but the lognormal distribution, for which it is the meanlog and sdlog.
 }
 \description{
-\code{init_mcmc_params} Finds values of the serial interval distribution 
-parameters, used to initialise the MCMC estimation of the serial interval 
-distribution. Initial values are computed based on the observed mean and 
-standard deviation of the sample from which the parameters are to be 
+Finds values of the serial interval distribution
+parameters, used to initialise the MCMC estimation of the serial interval
+distribution (e.g. when using option \code{si_from_data} in
+\code{\link[=estimate_R]{estimate_R()}}). Initial values are computed based on the observed mean and
+standard deviation of the sample from which the parameters are to be
 estimated.
 }
 \examples{
@@ -82,12 +70,10 @@ converg_diag_clever <- check_cdt_samples_convergence(SI_fit_clever@samples)
 converg_diag_naive <- check_cdt_samples_convergence(SI_fit_naive@samples)
 converg_diag_clever
 converg_diag_naive
-
 }
-
 }
 \seealso{
-\code{\link{estimate_R}}
+\code{\link[=estimate_R]{estimate_R()}}
 }
 \author{
 Anne Cori

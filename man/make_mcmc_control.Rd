@@ -2,11 +2,7 @@
 % Please edit documentation in R/make_mcmc_control.R
 \name{make_mcmc_control}
 \alias{make_mcmc_control}
-\title{make_mcmc_control Creates a list of mcmc control parameters to be used in 
-\code{config$mcmc_control}, where \code{config} is an argument of the 
-\code{estimate_R} function. This is used to configure the MCMC chain used to 
-estimate the serial interval within \code{estimate_R} (with method 
-"si_from_data").}
+\title{Create list of MCMC control parameters}
 \usage{
 make_mcmc_control(
   burnin = 3000,
@@ -20,9 +16,9 @@ make_mcmc_control(
 estimating the serial interval distribution.}
 
 \item{thin}{A positive integer corresponding to thinning parameter; the MCMC
-will be run for \code{burnin+n1*thin iterations}; 1 in \code{thin}
+will be run for \code{burnin + n1*thin} iterations; 1 in \code{thin}
 iterations will be recorded, after the burnin phase, so the posterior
-sample size is n1.}
+sample size is \code{n1}.}
 
 \item{seed}{An integer used as the seed for the random number generator at
 the start of the MCMC estimation; useful to get reproducible results.}
@@ -33,37 +29,37 @@ all but the lognormal distribution, for which it is the meanlog and
 sdlog.}
 }
 \value{
-An object of class \code{estimate_R_mcmc_control} with components 
-burnin, thin, seed, init_pars. This can be 
-used as an argument of function \code{make_config}.
+An object of class \code{estimate_R_mcmc_control} with components
+\code{burnin}, \code{thin}, \code{seed}, \code{init_pars}. This can be
+used as an argument of function \code{\link[=make_config]{make_config()}}.
 }
 \description{
-make_mcmc_control Creates a list of mcmc control parameters to be used in 
-\code{config$mcmc_control}, where \code{config} is an argument of the 
-\code{estimate_R} function. This is used to configure the MCMC chain used to 
-estimate the serial interval within \code{estimate_R} (with method 
+Creates a list of MCMC control parameters to be used in
+\code{config$mcmc_control}, where \code{config} is an argument of the
+\code{\link[=estimate_R]{estimate_R()}} function. This is used to configure the MCMC chain used to
+estimate the serial interval within \code{\link[=estimate_R]{estimate_R()}} (with method
 "si_from_data").
 }
 \details{
-The argument \code{si_data}, should be a dataframe with 5
- columns:
+The argument \code{si_data}, should be a dataframe with 5 columns:
 \itemize{
-\item{EL: the lower bound of the symptom onset date of the infector (given as
- an integer)}
-\item{ER: the upper bound of the symptom onset date of the infector (given as
- an integer). Should be such that ER>=EL}
-\item{SL: the lower bound of the symptom onset date of the infected
-individual (given as an integer)}
-\item{SR: the upper bound of the symptom onset date of the infected
-individual (given as an integer). Should be such that SR>=SL}
-\item{type (optional): can have entries 0, 1, or 2, corresponding to doubly
+\item \code{EL}: the lower bound of the symptom onset date of the infector (given as
+an integer)
+\item \code{ER}: the upper bound of the symptom onset date of the infector (given as
+an integer). Should be such that \code{ER >= EL}
+\item \code{SL}: the lower bound of the symptom onset date of the infected
+individual (given as an integer)
+\item \code{SR}: the upper bound of the symptom onset date of the infected
+individual (given as an integer). Should be such that \code{SR >= SL}
+\item \code{type} (optional): can have entries 0, 1, or 2, corresponding to doubly
 interval-censored, single interval-censored or exact observations,
 respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-will be automatically computed from the dates}
+will be automatically computed from the dates
 }
+
 Assuming a given parametric distribution for the serial interval distribution
- (specified in \code{si_parametric_distr}),
-the posterior distribution of the serial interval is estimated directly fom
+(specified in \code{si_parametric_distr}),
+the posterior distribution of the serial interval is estimated directly from
 these data using MCMC methods implemented in the package
 }
 \examples{
