@@ -428,16 +428,20 @@ compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
   as.integer(max(idx))
 }
 
-##' Get the first day of non-zero incidence across
-##' all variants and locations.
-##' @details For each variant, find the first day of
-##' non-zero incidence. The maximum of these
-##' is the smallest possible point at which
-##' estimation can begin.
-##' @inheritParams estimate_advantage
-##' @return integer
-##' @author Sangeeta Bhatia
-##' @export
+#' First day of non-zero incidence
+#' 
+#' Get the first day of non-zero incidence across all variants and locations.
+#' 
+#' For each variant, find the first day of non-zero incidence. The maximum of 
+#' these is the smallest possible point at which estimation can begin.
+#' 
+#' @inheritParams estimate_advantage
+#' 
+#' @return integer
+#' @author Sangeeta Bhatia
+#' 
+#' @export
+
 first_nonzero_incid <- function(incid) {
   t_min_incid <- apply(
     incid, c(2, 3),
