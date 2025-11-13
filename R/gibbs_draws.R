@@ -226,7 +226,7 @@ compute_lambda <- function(incid, si_distr) {
 #'
 #' @param priors a list of prior parameters (shape and scale of a gamma
 #'   distribution) for epsilon and R; can be obtained from the function
-#'   [default_priors](). The prior for R is assumed to be the same for all
+#'   [default_priors()]. The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
 #' @param shape_epsilon a value or vector of values of the shape of the posterior
@@ -242,7 +242,7 @@ compute_lambda <- function(incid, si_distr) {
 #'
 #' @param seed a numeric value used to fix the random seed
 #'
-#' @return a value or vector of values for epsilon for each non reference
+#' @return A value or vector of values for epsilon for each non reference
 #'   pathogen/strain/variant, drawn from the marginal posterior distribution
 #'
 #' @importFrom stats median rgamma
