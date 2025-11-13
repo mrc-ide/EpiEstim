@@ -314,23 +314,23 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   the incidence for that location and that pathogen/strain/variant at all
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. It can be calculated from the incidence `incid` and
-#'   the distribution of the serial interval using function `compute_lambda`)
+#'   the distribution of the serial interval using function [compute_lambda()]
 #'
 #' @param priors a list of prior parameters (shape and scale of a gamma
 #'   distribution) for epsilon and R; can be obtained from the function
-#'   `default_priors`. The prior for R is assumed to be the same for all
+#'   [default_priors()]. The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
 #' @param shape_R_flat a vector of the shape of the posterior distribution of R
 #'   for each time step t and each location l
-#'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector),
-#'   as obtained from function `get_shape_R_flat`
+#'   (stored in element `(l-1)*(t_max - t_min + 1) + t` of the vector),
+#'   as obtained from function [get_shape_R_flat()].
 #'
-#' @param t_min an integer >1 giving the minimum time step to consider in the
+#' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
 #'   observations at time step 1 and can therefore only start at time step 2).
 #'
-#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
 #' @param seed a numeric value used to fix the random seed
@@ -339,12 +339,10 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   pathogen/strain/variant for each time step (row) and each location (column)
 #'   drawn from the marginal posterior distribution
 #'
+#' @importFrom stats median rgamma
 #' @export
 #'
-#' @importFrom stats median rgamma
-#'
 #' @examples
-#'
 #' n_v <- 2
 #' n_loc <- 3 # 3 locations
 #' T <- 100 # 100 time steps
@@ -359,7 +357,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #' # Epsilon = 1 i.e. no transmission advantage
 #' epsilon <- 1
 #' draw_R(epsilon, incid$local, lambda, priors, seed = 1, t_min = 2L)
-#'
+
 draw_R <- function(epsilon, incid, lambda, priors,
                    shape_R_flat = NULL,
                    t_min = NULL, t_max = nrow(incid),
@@ -400,6 +398,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
   R[t, ] <- R_fill
   R
 }
+
 ##' Index before which at most a given probability
 ##' mass is captured
 ##'
