@@ -455,20 +455,25 @@ first_nonzero_incid <- function(incid) {
   }
   max(t_min_incid)
 }
-##' Compute the smallest index at which joint estimation
-##' should start
-##'
-##' Unless specified by the user, t_min in \code{estimate_advantage}
-##' is computed as the sum of two indices:
-##' (i) the first day of non-zero incidence across all locations,
-##' computed using \code{first_nonzero_incid}
-##' and (ii) the 95th percentile of the probability mass function of the
-##' SI distribution across all variants computed using \code{compute_si_cutoff}
-##' @inheritParams compute_si_cutoff
-##' @inheritParams estimate_advantage
-##' @return integer
-##' @author Sangeeta Bhatia
-##' @export
+
+#' Compute the smallest index at which joint estimation should start
+#'
+#' Unless specified by the user, `t_min` in [estimate_advantage()] is computed 
+#' as the sum of two indices:
+#' 
+#' - the first day of non-zero incidence across all locations, computed using 
+#'   [first_nonzero_incid()]
+#' - the 95th percentile of the probability mass function of the SI distribution 
+#'   across all variants computed using [compute_si_cutoff()]
+#'
+#' @inheritParams compute_si_cutoff
+#' @inheritParams estimate_advantage
+#' 
+#' @return integer
+#' @author Sangeeta Bhatia
+#' 
+#' @export
+
 compute_t_min <- function(incid, si_distr, miss_at_most) {
   t_min_si <- compute_si_cutoff(si_distr, 0.05)
   t_min_incid <- first_nonzero_incid(incid)
