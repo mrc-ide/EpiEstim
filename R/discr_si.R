@@ -31,6 +31,7 @@
 #' equal to \eqn{k}.
 #' 
 #' @seealso [overall_infectivity()], [estimate_R()]
+#' 
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
 #' 
 #' @references 

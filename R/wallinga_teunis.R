@@ -76,10 +76,12 @@
 #'
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
 #' 
-#' @references { Cori, A. et al. A new framework and software to estimate
-#'   time-varying reproduction numbers during epidemics (AJE 2013). Wallinga, J.
-#'   and P. Teunis. Different epidemic curves for severe acute respiratory
-#'   syndrome reveal similar impacts of control measures (AJE 2004). }
+#' @references 
+#' Cori, A. et al. A new framework and software to estimate time-varying
+#' reproduction numbers during epidemics (AJE 2013). Wallinga, J. and P. Teunis.
+#' Different epidemic curves for severe acute respiratory syndrome reveal
+#' similar impacts of control measures (AJE 2004). 
+#' 
 #' @export
 #' 
 #' @import reshape2 gridExtra

@@ -31,8 +31,11 @@
 #' @seealso [discr_si()], [estimate_R()]
 #'
 #' @author Anne Cori \email{a.cori@@imperial.ac.uk}
-#' @references Cori, A. et al. A new framework and software to estimate
-#'   time-varying reproduction numbers during epidemics (AJE 2013).
+#' 
+#' @references 
+#' Cori, A. et al. A new framework and software to estimate time-varying
+#' reproduction numbers during epidemics (AJE 2013).
+#' 
 #' @export
 #' @examples
 #' ## load data on pandemic flu in a school in 2009

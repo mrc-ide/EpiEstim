@@ -20,11 +20,11 @@
 #'   pairs of infector/infected individuals (see references and see argument
 #'   `si_data` of function [estimate_R()] for details on columns)
 #'
-#' @source Lessler J. et al. (2009) Outbreak of 2009 pandemic influenza A (H1N1)
-#'  at a New York City school. New Eng J Med 361: 2628-2636.
+#' @source 
+#' Lessler J. et al. (2009) Outbreak of 2009 pandemic influenza A (H1N1)
+#' at a New York City school. New Eng J Med 361: 2628-2636.
 #'
 #' @references
-#'
 #' Lessler J. et al. (2009) Outbreak of 2009 pandemic influenza A (H1N1) at a
 #' New York City school. New Eng J Med 361: 2628-2636.
 #'
@@ -80,11 +80,11 @@ NULL
 #'   - **incidence**: a vector containing 92 days of observation,
 #'   - **si_distr**: a vector containing a set of 12 probabilities.
 #'
-#' @source Frost W. and E. Sydenstricker (1919) Influenza in Maryland:
-#' preliminary statistics of certain localities.
-#' Public Health Rep.(34): 491-504.
+#' @source 
+#' Frost W. and E. Sydenstricker (1919) Influenza in Maryland: preliminary
+#' statistics of certain localities. Public Health Rep.(34): 491-504.
+#' 
 #' @references
-#'
 #' Cauchemez S. et al. (2011) Role of social networks in shaping disease
 #' transmission during a community outbreak of 2009 H1N1 pandemic influenza.
 #' Proc Natl Acad Sci U S A 108(7), 2825-2830.
@@ -151,16 +151,17 @@ NULL
 #'   2009 H1N1 outbreak (Morgan et al., 2010).
 #'
 #' @source
-#' Cauchemez S. et al. (2011) Role of social networks in shaping
-#' disease transmission during a community outbreak of 2009 H1N1 pandemic
-#' influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
+#' Cauchemez S. et al. (2011) Role of social networks in shaping disease
+#' transmission during a community outbreak of 2009 H1N1 pandemic influenza.
+#' Proc Natl Acad Sci U S A 108(7), 2825-2830.
 #'
 #' Morgan O.W. et al. (2010) Household transmission of pandemic (H1N1) 2009, San
 #' Antonio, Texas, USA, April-May 2009. Emerg Infect Dis 16: 631-637.
 #'
-#' @references Cauchemez S. et al. (2011) Role of social networks in shaping
-#' disease transmission during a community outbreak of 2009 H1N1 pandemic
-#' influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
+#' @references 
+#' Cauchemez S. et al. (2011) Role of social networks in shaping disease
+#' transmission during a community outbreak of 2009 H1N1 pandemic influenza.
+#' Proc Natl Acad Sci U S A 108(7), 2825-2830.
 #'
 #' Ferguson N.M. et al. (2005) Strategies for containing an emerging influenza
 #' pandemic in Southeast Asia. Nature 437(7056), 209-214.
@@ -225,12 +226,13 @@ NULL
 #'   - **incidence**: a vector containing 48 days of observation,
 #'   - **si_distr**: a vector containing a set of 38 probabilities.
 #'
-#' @source Groendyke C. et al. (2011) Bayesian Inference for Contact Networks
-#' Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
+#' @source 
+#' Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given
+#' Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 #'
-#' @references Groendyke C. et al. (2011) Bayesian Inference for Contact
-#' Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3):
-#' 600-616.
+#' @references 
+#' Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given
+#' Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 #'
 #' @examples
 #' ## load data on measles in Hallegoch in 1861
@@ -274,11 +276,12 @@ NULL
 #'   - **incidence**: a vector containing 107 days of observation,
 #'   - **si_distr**: a vector containing a set of 25 probabilities.
 #'
-#' @source Cori A. et al. (2009) Temporal variability and social heterogeneity 
-#' in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8)
-#' : e1000471.
+#' @source 
+#' Cori A. et al. (2009) Temporal variability and social heterogeneity in
+#' disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8):
+#' e1000471.
+#' 
 #' @references
-#'
 #' Cori A. et al. (2009) Temporal variability and social heterogeneity in 
 #' disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8): 
 #' e1000471.
@@ -323,10 +326,11 @@ NULL
 #'   - **incidence**: a vector containing 57 days of observation,
 #'   - **si_distr**: a vector containing a set of 46 probabilities.
 #' 
-#' @source Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World 
-#' Health Organization.
-#' @references
+#' @source 
+#' Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health
+#' Organization.
 #' 
+#' @references
 #' Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health 
 #' Organization.
 #'
@@ -334,7 +338,7 @@ NULL
 #' contemporary populations. Nature 414(6865): 748-751.
 #'
 #' Riley S. and N. M. Ferguson (2006) Smallpox transmission and control: spatial
-#'  dynamics in Great Britain. Proc Natl Acad Sci U S A 103(33): 12637-12642.
+#' dynamics in Great Britain. Proc Natl Acad Sci U S A 103(33): 12637-12642.
 #' 
 #' @examples
 #' ## load data on smallpox in Kosovo in 1972
@@ -430,24 +434,22 @@ NULL
 #'   - **si**: a list of estimates of the mean (mean_si) and standard deviation
 #'     (std_si) of the serial interval for MERS.
 #'
-#' @source The incidence data was extracted from the EMPRES I system from FAO
-#' (Global Animal Disease Information System - Food and Agriculture Organization
-#' of the United Nations, 2017). Note incidence on the first day was originally
-#' made of one local case and zero imported cases; this has been modified to
-#' zero local cases and one imported case in the dataset shown here so the
-#' reproduction number can be estimated from the start using the function
-#' [estimate_R()]. The serial interval parameters were those
-#' estimated by Cauchemez et al. (2016).
+#' @source 
+#' Incidence data was extracted from the EMPRES I system from FAO (Global Animal
+#' Disease Information System - Food and Agriculture Organization of the United
+#' Nations, 2017). Note incidence on the first day was originally made of one
+#' local case and zero imported cases; this has been modified to zero local
+#' cases and one imported case in the dataset shown here so the reproduction
+#' number can be estimated from the start using the function [estimate_R()]. The
+#' serial interval parameters were those estimated by Cauchemez et al. (2016).
 #'
 #' @references
-#'
 #' Global Animal Disease Information System - Food and Agriculture Organization
 #' of the United Nations, 2017
 #'
 #' Cauchemez S, Nouvellet P, Cori A, Jombart T, Garske T, Clapham H, Moore S,
-#' Linden Mills H, Salje H, Collins C, et al. 2016.
-#' Unraveling the drivers of MERS-CoV transmission.
-#' Proc Natl Acad Sci 113: 9081-9086.
+#' Linden Mills H, Salje H, Collins C, et al. 2016. Unraveling the drivers of
+#' MERS-CoV transmission. Proc Natl Acad Sci 113: 9081-9086.
 #'
 #' @examples
 #'
@@ -502,23 +504,23 @@ NULL
 #'   - **incidence**: a data.frame containing 672 days of observation,
 #'   - **si_distr**: a vector containing a set of 30 probabilities.
 #'
-#' @source Bi Q, Wu Y, Mei S, Ye C, Zou X, Zhang Z, et al. Epidemiology and
-#' transmission of COVID-19 in 391 cases and 1286 of their close contacts in
-#' Shenzhen, China: a retrospective cohort study. The Lancet Infectious Diseases.
-#' 2020 Aug 1;20(8):911–9.
+#' @source 
+#' Bi Q, Wu Y, Mei S, Ye C, Zou X, Zhang Z, et al. Epidemiology and transmission
+#' of COVID-19 in 391 cases and 1286 of their close contacts in Shenzhen, China:
+#' a retrospective cohort study. The Lancet Infectious Diseases. 2020 Aug
+#' 1;20(8):911–9.
 #'
 #' https://coronavirus.data.gov.uk/details/cases
 #'
 #' @references
-#'
 #' Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number
 #' from temporally aggregated incidence data: a statistical modelling approach
 #' and software tool. (medRxiv pre-print)
 #'
-#' Bi Q, Wu Y, Mei S, Ye C, Zou X, Zhang Z, et al. Epidemiology and
-#' transmission of COVID-19 in 391 cases and 1286 of their close contacts in
-#' Shenzhen, China: a retrospective cohort study. The Lancet Infectious Diseases.
-#' 2020 Aug 1;20(8):911–9.
+#' Bi Q, Wu Y, Mei S, Ye C, Zou X, Zhang Z, et al. Epidemiology and transmission
+#' of COVID-19 in 391 cases and 1286 of their close contacts in Shenzhen, China:
+#' a retrospective cohort study. The Lancet Infectious Diseases. 2020 Aug
+#' 1;20(8):911–9.
 #'
 #' @examples
 #' data("covid_deaths_2020_uk")

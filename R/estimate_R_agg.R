@@ -144,11 +144,11 @@
 #' @author Rebecca Nash \email{r.nash@imperial.ac.uk} and Anne Cori \email{a.cori@imperial.ac.uk}
 #' 
 #' @references 
-#' Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number from 
-#' temporally aggregated incidence data: a statistical modelling approach and software 
-#' tool. medRxiv pre-print. (medRxiv pre-print)
+#' Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number
+#' from temporally aggregated incidence data: a statistical modelling approach
+#' and software tool. medRxiv pre-print. (medRxiv pre-print)
 #' 
-#' Wallinga & Lipsitch. How generation intervals shape the relationship between 
+#' Wallinga & Lipsitch. How generation intervals shape the relationship between
 #' growth rates and reproductive numbers (Proc Biol Sci 2007).
 #' 
 #' @examples 
