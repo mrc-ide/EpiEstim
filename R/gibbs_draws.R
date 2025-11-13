@@ -480,9 +480,11 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
   as.integer(t_min_incid + t_min_si)
 }
 
+#' Estimate instantaneous reproduction number
+#' 
 #' Jointly estimate the instantaneous reproduction number for a reference
-#'   pathogen/strain/variant and the relative transmissibility of a
-#'   "new" pathogen/strain/variant
+#' pathogen/strain/variant and the relative transmissibility of a "new" 
+#' pathogen/strain/variant.
 #'
 #' @param incid a multidimensional array containing values of the incidence
 #'   for each time step (1st dimension), location (2nd dimension) and
@@ -491,70 +493,63 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' @param si_distr a matrix with two columns, each containing the probability mass
 #'   function for the discrete serial interval for each of the two
 #'   pathogen/strain/variants, starting with the probability mass function
-#'   for day 0 in the first row, which should be 0. each column in the matrix
-#'   should sum to 1
+#'   for day 0 in the first row, which should be 0. Each column in the matrix
+#'   should sum to 1.
 #'
 #' @param priors a list of prior parameters (shape and scale of a gamma
 #'   distribution) for epsilon and R; can be obtained from the function
-#'   `default_priors`. The prior for R is assumed to be the same for all
+#'   [default_priors()]. The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
-#' @param mcmc_control a list of default MCMC control parameters, as obtained
-#'   for example from function `default_mcmc_controls`
+#' @param mcmc_control a list of default MCMC control parameters, obtained by 
+#'   default from [default_mcmc_controls()]
 #'
 #' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation.
-#'   The NULL, t_min is calculated using the function \code{compute_si_cutoff}
+#'   If `NULL`, `t_min` is calculated using the function [compute_si_cutoff()]
 #'   which gets the maximum (across all variants) of the 95th percentile of the
 #'   SI distribution.
 #'
-#'
-#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
 #' @param seed a numeric value used to fix the random seed
 #'
 #' @param incid_imported an optional multidimensional array containing values
-#'   of the incidence of imported cases
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension). `incid - incid_imported` is
-#'   therefore the incidence of locally infected cases. If `incid_imported` is
-#'   NULL this means there are no
+#'   of the incidence of imported cases for each time step (1st dimension), 
+#'   location (2nd dimension) and pathogen/strain/variant (3rd dimension). 
+#'   `incid - incid_imported` is therefore the incidence of locally infected 
+#'   cases. If `incid_imported` is `NULL` this means there are no
 #'   known imported cases and all cases other than on those from the first
 #'   time step will be considered locally infected.
 #'
-#' @param precompute a boolean (defaulting to TRUE) deciding whether to
-#'   precompute quantities or not. Using TRUE will make the algorithm faster
+#' @param precompute a boolean (defaulting to `TRUE`) deciding whether to
+#'   precompute quantities or not. Using `TRUE` will make the algorithm faster
 #'   
-#' @param reorder_incid a boolean (defaulting to TRUE) deciding whether the
+#' @param reorder_incid a boolean (defaulting to `TRUE`) deciding whether the
 #'   incidence array can be internally reordered during the estimation of the
-#'   transmission advantage. If TRUE, the most transmissible pathogen/strain/variant
-#'   is temporarily assigned to [,,1] of the incidence array. We recommend the
-#'   default value of TRUE as we find this to stabilise inference.
+#'   transmission advantage. If `TRUE`, the most transmissible pathogen/strain/variant
+#'   is temporarily assigned to `[, , 1]` of the incidence array. We recommend the
+#'   default value of `TRUE` as we find this to stabilise inference.
 #'
-#' @return A list with the following elements.
-#' \enumerate{
-#'
-#'   \item `epsilon` is a matrix containing the MCMC chain (thinned and after
-#'   burnin) for the relative transmissibility of the "new"
-#'   pathogen/strain/variant(s) compared to the reference
-#'   pathogen/strain/variant. Each row in the matrix is a "new"
-#'   pathogen/strain/variant and each column an iteration of the MCMC.
-#'   \item `R` is an array containing the MCMC chain (thinned and after
-#'   burnin) for the reproduction number for the reference
-#'   pathogen/strain/variant. The first dimension of the array is time,
-#'   the second location, and the third iteration of the MCMC.
-#'   \item `convergence` is a logical vector based on the results of the
-#'   Gelman-Rubin convergence diagnostic. Each element in `convergence`
-#'   takes a value of TRUE
-#'   when the MCMC for the corresponding epsilon has converged within the
-#'   number of iterations specified and FALSE otherwise.
-#'   \item `diag` is a nested list of the point estimate and upper confidence limits
-#'       of the Gelman-Rubin convergence diagnostics (as implemented in coda). The length of
-#' `diag` is equal to the number of rows in `epsilon`. Each element of `diag` is a list of
-#' length 2 where the first element is called `psrf` and is a named list of the
-#' point estimate and upper confidence limits. The second elemnent is NULL and can be ignored.
-#'}
+#' @return A list with the following elements:
+#' - `epsilon`: a matrix containing the MCMC chain (thinned and after burnin)
+#'   for the relative transmissibility of the "new" pathogen/strain/variant(s)
+#'   compared to the reference. Each row corresponds to a "new"
+#'   pathogen/strain/variant and each column to an MCMC iteration.
+#' - `R`: an array containing the MCMC chain (thinned and after burnin) for the
+#'   reproduction number for the reference pathogen/strain/variant. Dimensions
+#'   of the array are time,  location, and iteration of the MCMC.
+#' - `convergence`: a logical vector based on the Gelman-Rubin convergence
+#'   diagnostic. Each element in `convergence` is `TRUE` when the MCMC for the
+#'   corresponding epsilon has converged number of iterations specified 
+#'   (otherwise `FALSE`).
+#' - `diag`: a nested list of the point estimate and upper confidence limits of
+#'   the Gelman-Rubin convergence diagnostics (as implemented in coda). The
+#'   length of `diag` is equal to the number of rows in epsilon. Each element od
+#'   `diag` is a list of length 2 where the first element is called `psrf` and
+#'   is a named list of the point estimate and upper confidence limits. The
+#'   second element is `NULL` and can be ignored.
 #'
 #' @export
 #'
@@ -562,7 +557,6 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' @importFrom abind adrop
 #'
 #' @examples
-#'
 #' n_v <- 2
 #' n_loc <- 3 # 3 locations
 #' T <- 100 # 100 time steps
@@ -592,7 +586,7 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' abline(h = 1, col = "red")
 #' plot(x$R[30, 3, ], type = "l",
 #'      xlab = "Iteration", ylab = "R time 30 location 3")
-#'
+
 estimate_advantage <- function(incid, si_distr, priors = default_priors(),
                            mcmc_control = default_mcmc_controls(),
                            t_min = NULL, t_max = nrow(incid),
