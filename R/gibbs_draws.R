@@ -399,22 +399,21 @@ draw_R <- function(epsilon, incid, lambda, priors,
   R
 }
 
-##' Index before which at most a given probability
-##' mass is captured
-##'
-##' Across a matrix of discretised probability distributions
-##' (see \code{estimate_advantage}
-##' this function returns the largest index
-##' (across all columns) such that the
-##' cumulative probability mass before index is
-##' 1 - \code{miss_at_most}.
-##'
-##'
-##' @inheritParams estimate_advantage
-##' @param miss_at_most numeric. probability mass in the tail of the SI distribution
-##' @return integer
-##' @author Sangeeta Bhatia
-##' @export
+#' Index before which at most a given probability
+#' mass is captured
+#'
+#' Across a matrix of discretised probability distributions
+#' (see [estimate_advantage()]) this function returns the largest index
+#' (across all columns) such that the cumulative probability mass before index is
+#' `1 - miss_at_most`.
+#'
+#' @inheritParams estimate_advantage
+#' @param miss_at_most numeric. Probability mass in the tail of the SI distribution
+#' 
+#' @return integer
+#' @author Sangeeta Bhatia
+#' @export
+
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
   if (any(colSums(si_distr) != 1)) {
     warning("Input SI distributions should sum to 1. Normalising now")
