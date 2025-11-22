@@ -9,9 +9,10 @@
 #' serial interval distribution.
 #' @param dist The parametric distribution used when estimating the serial
 #' interval.
-#' #' Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G"
-#' (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
-#' shifted by 1).  If not present, computed automatically from \code{x}.
+#' Should be one of "gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
+#' or "lognormal_offset_1". Note the different naming convention compared to
+#' \code{coarseDataTools::dic.fit.mcmc}.
+#' If not present, computed automatically from \code{x}.
 #' @param samples A dataframe containing the posterior samples of serial
 #' interval parameters corresponding to the parametric choice specified in
 #' \code{dist}. If not present, computed automatically from \code{x}.
@@ -42,7 +43,7 @@
 #'
 #' ## estimate the serial interval from data
 #' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-#'                      dist = "G",
+#'                      dist = "gamma",
 #'                      init.pars = init_mcmc_params(MockRotavirus$si_data, "G"),
 #'                      burnin = 1000,
 #'                      n.samples = 5000)
@@ -63,11 +64,14 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
                          thin = 10) {
   if (is.null(x)) # then check that dist and samples are what we expect
   {
-    if (!(dist %in% c("G", "W", "L", "off1G", "off1W", "off1L"))) {
-      stop("The supported distributions are 'G' (Gamma), 'W' (Weibull),
-           'L' (Lognormal), 'off1G' (Gamma shifted by 1),
-           'off1W' (Weibull shifted by 1),
-           or 'off1L' (Lognormal shifted by 1). ")
+    valid_distrs <-
+      c("gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
+        "lognormal_offset_1")
+    if (!(dist %in% valid_distrs)) {
+      stop("The supported distributions are 'gamma', 'weibull',
+           'lognormal', 'gamma_offset_1' (Gamma shifted by 1),
+           'weibull_offset_1' (Weibull shifted by 1),
+           or 'lognormal_offset_1' (Lognormal shifted by 1). ")
     }
     if (!is.data.frame(samples)) {
       stop("samples should be a dataframe, e.g. as produced in x@samples,
@@ -83,7 +87,7 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
 
   ##  Probability matrix that will be used in EpiEstim based on which
   ## distribution is specified by the user
-  if (dist == "G") {
+  if (dist == "gamma") {
     ## For each input parameter set, find the 99th percentile, and take the
     ## maximum of these as the maximum
     ## serial interval that we need to consider
@@ -93,21 +97,21 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
     prob_matrix <- apply(samples, 1, function(x) 
       pgamma(max_interval + 0.5, shape = x[1], scale = x[2]) - 
         pgamma(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "W") {
+  } else if (dist == "weibull") {
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
       ceiling(qweibull(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
     max_interval <- seq_len(maxValue)
     prob_matrix <- apply(samples, 1, function(x) 
       pweibull(max_interval + 0.5, shape = x[1], scale = x[2]) - 
         pweibull(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "L") {
+  } else if (dist == "lognormal") {
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
       ceiling(qlnorm(0.999, meanlog = samples[i, 1], sdlog = samples[i, 2]))))
     max_interval <- seq_len(maxValue)
     prob_matrix <- apply(samples, 1, function(x) 
       plnorm(max_interval + 0.5, meanlog = x[1], sdlog = x[2]) - 
         plnorm(max_interval - 0.5, meanlog = x[1], sdlog = x[2]))
-  } else if (dist == "off1G") {
+  } else if (dist == "gamma_offset_1") {
     ## offset gamma distribution with shifted min and max value of max
     ## serial interval
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
@@ -116,7 +120,7 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
     prob_matrix <- apply(samples, 1, function(x) 
       pgamma(max_interval + 0.5, shape = x[1], scale = x[2]) - 
         pgamma(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "off1W") {
+  } else if (dist == "weibull_offset_1") {
     ## offset weibull distribution with shifted min and max value of max
     ## serial interval
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
@@ -125,7 +129,7 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
     prob_matrix <- apply(samples, 1, function(x) 
       pweibull(max_interval + 0.5, shape = x[1], scale = x[2]) - 
         pweibull(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "off1L") {
+  } else if (dist == "lognormal_offset_1") {
     ## offset lognormal distribution with shifted min and max value of max
     ## serial interval
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
