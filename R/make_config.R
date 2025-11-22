@@ -64,9 +64,8 @@
 #' \item{si_parametric_distr}{For method "si_from_data" ; the parametric
 #' distribution to use when estimating the serial interval from data on dates of
 #'  symptoms of pairs of infector/infected individuals (see details).
-#' Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
-#' shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal shifted
-#' by 1).}
+#' Should be one of "gamma", "weibull", "lognormal", "gamma_offset_1",
+#' "weibull_offset_1".}
 #' 
 #' \item{mcmc_control}{An object of class \code{estimate_R_mcmc_control}, as 
 #' returned by function \code{make_mcmc_control}. }
