@@ -15,7 +15,7 @@ estimate_R(
   dt_out = 7L,
   recon_opt = "naive",
   iter = 10L,
-  tol = 1e-06,
+  tol = 0.000001,
   grid = list(precision = 0.001, min = -1, max = 1)
 )
 }

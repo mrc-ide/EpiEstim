@@ -43,7 +43,7 @@
 #'
 #' ## estimate the serial interval from data
 #' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-#'                      dist = "gamma",
+#'                      dist = "G",
 #'                      init.pars = init_mcmc_params(MockRotavirus$si_data, "G"),
 #'                      burnin = 1000,
 #'                      n.samples = 5000)
@@ -87,7 +87,7 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
 
   ##  Probability matrix that will be used in EpiEstim based on which
   ## distribution is specified by the user
-  if (dist == "gamma") {
+  if (dist == "gamma"| dist == "G") {
     ## For each input parameter set, find the 99th percentile, and take the
     ## maximum of these as the maximum
     ## serial interval that we need to consider
@@ -97,21 +97,21 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
     prob_matrix <- apply(samples, 1, function(x) 
       pgamma(max_interval + 0.5, shape = x[1], scale = x[2]) - 
         pgamma(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "weibull") {
+  } else if (dist == "weibull"| dist == "W") {
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
       ceiling(qweibull(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
     max_interval <- seq_len(maxValue)
     prob_matrix <- apply(samples, 1, function(x) 
       pweibull(max_interval + 0.5, shape = x[1], scale = x[2]) - 
         pweibull(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "lognormal") {
+  } else if (dist == "lognormal"| dist == "L") {
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
       ceiling(qlnorm(0.999, meanlog = samples[i, 1], sdlog = samples[i, 2]))))
     max_interval <- seq_len(maxValue)
     prob_matrix <- apply(samples, 1, function(x) 
       plnorm(max_interval + 0.5, meanlog = x[1], sdlog = x[2]) - 
         plnorm(max_interval - 0.5, meanlog = x[1], sdlog = x[2]))
-  } else if (dist == "gamma_offset_1") {
+  } else if (dist == "gamma_offset_1"| dist == "off1G") {
     ## offset gamma distribution with shifted min and max value of max
     ## serial interval
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
@@ -120,7 +120,7 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
     prob_matrix <- apply(samples, 1, function(x) 
       pgamma(max_interval + 0.5, shape = x[1], scale = x[2]) - 
         pgamma(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "weibull_offset_1") {
+  } else if (dist == "weibull_offset_1"| dist == "off1W") {
     ## offset weibull distribution with shifted min and max value of max
     ## serial interval
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
@@ -129,7 +129,7 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
     prob_matrix <- apply(samples, 1, function(x) 
       pweibull(max_interval + 0.5, shape = x[1], scale = x[2]) - 
         pweibull(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "lognormal_offset_1") {
+  } else if (dist == "lognormal_offset_1"| dist == "off1L") {
     ## offset lognormal distribution with shifted min and max value of max
     ## serial interval
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 

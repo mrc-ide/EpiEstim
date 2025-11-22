@@ -449,3 +449,30 @@ modify_defaults <- function(defaults, x, strict = TRUE) {
   }
   utils::modifyList(defaults, x, keep.null = TRUE) # keep.null is needed here
 }
+
+##' Convert EpiEstim distribution names to those used by coarsedatatools
+##'
+##' coarsedatatools uses abberviated names for distributions e.g. "G" for gamma etc
+##' To provide a smooth user exper experience, we convert the more descriptive names.
+##' This function performs the user-provided names to the abberviated ones.
+##' @param distr A string with the name of the distribution as provided by the user.
+##' @return A string with the converted distribution name.
+##' @author Sangeeta Bhatia
+##' @keywords internal
+convert_distr_name_for_mcmc <- function(distr) {
+  if (distr %in% c("gamma")) {
+    return("G")
+  } else if (distr %in% c("weibull")) {
+    return("W")
+  } else if (distr %in% c("lognormal")) {
+    return("L")
+  } else if (distr %in% c("gamma_offset_1")) {
+    return("off1G")
+  } else if (distr %in% c("weibull_offset_1")) {
+    return("off1W")
+  } else if (distr %in% c("lognormal_offset_1")) {
+    return("off1L")
+  } else {
+    stop("Unsupported distribution name: ", distr)
+  }
+}

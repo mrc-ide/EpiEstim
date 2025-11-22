@@ -6,7 +6,11 @@
 estimate the serial interval, e.g. when using option \code{si_from_data} in 
 \code{estimate_R}}
 \usage{
-init_mcmc_params(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
+init_mcmc_params(
+  si_data,
+  dist = c("gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
+    "lognormal_offset_1")
+)
 }
 \arguments{
 \item{si_data}{the data on dates of symptoms of pairs of infector/infected
@@ -31,10 +35,12 @@ respectively, see Reich et al. Statist. Med. 2009. If not specified, this
 will be automatically computed from the dates} 
 }}
 
-\item{dist}{the parametric distribution to use for the serial interval. 
-Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G"
-(Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
-shifted by 1).}
+\item{dist}{The parametric distribution used when estimating the serial
+interval.
+Should be one of "gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
+or "lognormal_offset_1". Note the different naming convention compared to
+\code{coarseDataTools::dic.fit.mcmc}.
+If not present, computed automatically from \code{x}.}
 }
 \value{
 A vector containing the initial values for the two parameters of the
@@ -59,7 +65,7 @@ data("MockRotavirus")
 
 ## get clever initial values for shape and scale of a Gamma distribution
 ## fitted to the the data MockRotavirus$si_data
-clever_init_param <- init_mcmc_params(MockRotavirus$si_data, "G")
+clever_init_param <- init_mcmc_params(MockRotavirus$si_data, "gamm")
 
 ## estimate the serial interval from data using a clever starting point for 
 ## the MCMC chain

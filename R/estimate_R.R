@@ -353,12 +353,12 @@ estimate_R <- function(incid,
       ## Warning if the expected set of parameters is not adequate
       si_data <- process_si_data(si_data)
       config <- process_config_si_from_data(config, si_data)
-      
+      dist <- convert_distr_name_for_mcmc(config$si_parametric_distr)
       ## estimate serial interval from serial interval data first
       if (!is.null(config$mcmc_control$seed)) {
         cdt <- dic.fit.mcmc(
           dat = si_data,
-          dist = config$si_parametric_distr,
+          dist = dist,
           burnin = config$mcmc_control$burnin,
           n.samples = config$n1 * config$mcmc_control$thin,
           init.pars = config$mcmc_control$init_pars,
@@ -367,7 +367,7 @@ estimate_R <- function(incid,
       } else {
         cdt <- dic.fit.mcmc(
           dat = si_data,
-          dist = config$si_parametric_distr,
+          dist = dist,
           burnin = config$mcmc_control$burnin,
           n.samples = config$n1 * config$mcmc_control$thin,
           init.pars = config$mcmc_control$init_pars

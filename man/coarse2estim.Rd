@@ -13,9 +13,10 @@ serial interval distribution.}
 
 \item{dist}{The parametric distribution used when estimating the serial
 interval.
-#' Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G"
-(Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
-shifted by 1).  If not present, computed automatically from \code{x}.}
+Should be one of "gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
+or "lognormal_offset_1". Note the different naming convention compared to
+\code{coarseDataTools::dic.fit.mcmc}.
+If not present, computed automatically from \code{x}.}
 
 \item{samples}{A dataframe containing the posterior samples of serial
 interval parameters corresponding to the parametric choice specified in
