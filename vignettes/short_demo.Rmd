@@ -216,7 +216,7 @@ MCMC_seed <- 1
 overall_seed <- 2
 mcmc_control <- make_mcmc_control(seed = MCMC_seed, 
                                   burnin = 1000)
-dist <- "G" # fitting a Gamma dsitribution for the SI
+dist <- "gamma" # fitting a Gamma dsitribution for the SI
 config <- make_config(list(si_parametric_distr = dist,
                            mcmc_control = mcmc_control,
                            seed = overall_seed, 
@@ -244,6 +244,7 @@ every time. You can do this as follow:
 ## first estimate the SI distribution using function dic.fit.mcmc fron 
 ## coarseDataTools package:
 n_mcmc_samples <- config$n1*mcmc_control$thin
+dist <- "G"
 SI_fit <- coarseDataTools::dic.fit.mcmc(dat = Flu2009$si_data,
                   dist = dist,
                   init.pars = init_mcmc_params(Flu2009$si_data, dist),
