@@ -270,9 +270,13 @@ process_config <- function(config) {
 }
 
 process_config_si_from_data <- function(config, si_data) {
+    valid_distrs <-
+      c(
+        "gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
+        "lognormal_offset_1"
+      )
   config$si_parametric_distr <- match.arg(
-    config$si_parametric_distr,
-    c("G", "W", "L", "off1G", "off1W", "off1L")
+    config$si_parametric_distr, valid_distrs    
   )
   if (is.null(config$n1)) {
     stop("method si_from_data requires to specify the config$n1 argument.")
@@ -290,9 +294,9 @@ process_config_si_from_data <- function(config, si_data) {
     config$mcmc_control$init_pars <-
       init_mcmc_params(si_data, config$si_parametric_distr)
   }
-  if ((config$si_parametric_distr == "off1G" ||
-    config$si_parametric_distr == "off1W" ||
-    config$si_parametric_distr == "off1L") &&
+  if ((config$si_parametric_distr == "gamma_offset_1" ||
+    config$si_parametric_distr == "weibull_offset_1" ||
+    config$si_parametric_distr == "lognormal_offset_1") &&
     any(si_data$SR - si_data$EL <= 1)) {
     stop(
       "You cannot fit a distribution with offset 1 to this SI ",
