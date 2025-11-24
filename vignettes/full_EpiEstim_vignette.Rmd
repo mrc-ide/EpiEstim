@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
   )
 
 library(kableExtra)
-library(hrbrthemes)
+
 library(gghighlight)
 library(MCMCglmm)
 library(projections)
@@ -203,7 +203,7 @@ ggplot(data.frame(x = c(x_lower_norm , x_upper_norm)), aes(x = x)) +
   xlim(c(x_lower_norm , x_upper_norm)) + 
   stat_function(fun = dgamma,
                 args = list(shape = (3 / 1) ^ 2, rate = 3 / 1 ^ 2)) +
-  theme_ipsum() +
+  theme_minimal() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
     axis.title.x = element_text(
@@ -224,7 +224,7 @@ y = c(0.000, 0.233, 0.359, 0.198, 0.103, 0.053, 0.027, 0.014, 0.007, 0.003, 0.00
 x = seq(0, 8, length = 12)
 spline_int <- as.data.frame(spline(x, y))
 ggplot(data.frame(x = x, y = y), aes(x = x, y = y)) +
-  theme_ipsum() +
+  theme_minimal() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
     axis.title.x = element_text(
@@ -250,7 +250,7 @@ df <- data.frame(x = seq(0, 6, length.out = 100)) %>%
 mean.plot <- ggplot(df, aes(x, y)) +
   geom_area(fill = "sky blue") +
   gghighlight(x > 1 & x < 4) +
-  theme_ipsum()+
+  theme_minimal()+
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
     axis.title.x = element_text(
@@ -268,7 +268,7 @@ df2 <- data.frame(x = seq(0, 3.5, length.out = 100)) %>%
 stdev.plot <- ggplot(df2, aes(x, y)) +
   geom_area(fill = "sky blue") +
   gghighlight(x > 0.5 & x < 2.5) +
-  theme_ipsum() +
+  theme_minimal() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
     axis.title.x = element_text(
@@ -294,7 +294,7 @@ ggplot(data.frame(x = c(x_lower_norm , x_upper_norm)), aes(x = x)) +
   mapply(function(mean, sd) {
     stat_function(fun = dgamma, args = list(
       shape = (mean / sd)^2, rate = mean / sd^2))}, mean = means, sd = sds) +
-  theme_ipsum() +
+  theme_minimal() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
     axis.title.x = element_text(

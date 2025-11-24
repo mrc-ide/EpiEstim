@@ -52,7 +52,6 @@ Suggests:
     knitr,
     rmarkdown,
     kableExtra,
-    hrbrthemes,
     MCMCglmm,
     projections,
     dplyr,
