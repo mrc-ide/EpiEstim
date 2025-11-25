@@ -418,7 +418,7 @@ overall_seed <- 2
 SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
                                         dist = "G",
                                         init.pars = init_mcmc_params(
-                                          MockRotavirus$si_data, "G"),
+                                          MockRotavirus$si_data, "gamma"),
                                         thin = 10,
                                         burnin = 1000,
                                         n.samples = 5000,
@@ -723,7 +723,7 @@ mcmc_control <- make_mcmc_control(burnin = 1000, # first 1000 iterations discard
 R_si_from_data <- estimate_R(incid = MockRotavirus$incidence, 
                              method = "si_from_data",
                              si_data = MockRotavirus$si_data, # symptom onset data
-                             config = make_config(si_parametric_distr = "G", # gamma dist. for SI
+                             config = make_config(si_parametric_distr = "gamma", # gamma dist. for SI
                                                   mcmc_control = mcmc_control,
                                                   n1 = 500, # number of posterior samples of SI dist.
                                                   n2 = 50, # number of posterior samples of Rt dist.
