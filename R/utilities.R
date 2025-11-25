@@ -270,11 +270,8 @@ process_config <- function(config) {
 }
 
 process_config_si_from_data <- function(config, si_data) {
-    valid_distrs <-
-      c(
-        "gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
-        "lognormal_offset_1"
-      )
+
+  valid_distrs <- si_from_data_valid_distrs()
   config$si_parametric_distr <- match.arg(
     config$si_parametric_distr, valid_distrs    
   )
@@ -452,8 +449,8 @@ modify_defaults <- function(defaults, x, strict = TRUE) {
 
 ##' Convert EpiEstim distribution names to those used by coarsedatatools
 ##'
-##' coarsedatatools uses abberviated names for distributions e.g. "G" for gamma etc
-##' To provide a smooth user exper experience, we convert the more descriptive names.
+##' coarseDataTools uses abberviated names for distributions e.g. "G" for gamma etc
+##' To provide a smooth user experience, we convert the more descriptive names.
 ##' This function performs the user-provided names to the abberviated ones.
 ##' @param distr A string with the name of the distribution as provided by the user.
 ##' @return A string with the converted distribution name.
@@ -476,3 +473,24 @@ convert_distr_name_for_mcmc <- function(distr) {
     stop("Unsupported distribution name: ", distr)
   }
 }
+
+##' Distribution names valid when using MCMC to estimate SI from data
+##'
+##' When using si_from_data method, the package will use
+##' \code{\link[coarseDataTools]{dic.fit.mcmc}} to fit the serial interval
+##' distribution. This method supports only a limited set of distributions.
+##' This function returns the valid distribution names as used by EpiEstim. The
+##' names are internally converted to those used by coarsedatatools by
+##' \code{\link{convert_distr_name_for_mcmc}} function.
+##' 
+##' 
+##' @return A character vector with the valid distribution names.
+##' @author Sangeeta Bhatia
+##' @export
+si_from_data_valid_distrs <- function() {
+  c(
+    "gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
+    "lognormal_offset_1"
+  )
+}
+

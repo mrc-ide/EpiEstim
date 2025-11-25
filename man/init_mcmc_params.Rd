@@ -6,11 +6,7 @@
 estimate the serial interval, e.g. when using option \code{si_from_data} in 
 \code{estimate_R}}
 \usage{
-init_mcmc_params(
-  si_data,
-  dist = c("gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
-    "lognormal_offset_1")
-)
+init_mcmc_params(si_data, dist = si_from_data_valid_distrs())
 }
 \arguments{
 \item{si_data}{the data on dates of symptoms of pairs of infector/infected
@@ -36,10 +32,9 @@ will be automatically computed from the dates}
 }}
 
 \item{dist}{The parametric distribution used when estimating the serial
-interval.
-Should be one of "gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
-or "lognormal_offset_1". Note the different naming convention compared to
-\code{coarseDataTools::dic.fit.mcmc}.
+interval. Should be one of "gamma", "weibull", "lognormal", "gamma_offset_1",
+ "weibull_offset_1", or "lognormal_offset_1". Note the different naming 
+convention compared to \code{\link[coarseDataTools]{dic.fit.mcmc}}.
 If not present, computed automatically from \code{x}.}
 }
 \value{

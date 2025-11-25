@@ -79,10 +79,8 @@
 #' 
 #' }
 #' 
-init_mcmc_params <- function(si_data, 
-                             dist = c("gamma", "weibull", "lognormal",
-                                      "gamma_offset_1", "weibull_offset_1",
-                                      "lognormal_offset_1")) {
+init_mcmc_params <- function(si_data, dist = si_from_data_valid_distrs()) {
+  
   dist <- match.arg(dist)
   naive_SI_obs <- (si_data$SR + si_data$SL) / 2 - (si_data$ER + si_data$EL) / 2
   mu <- mean(naive_SI_obs)

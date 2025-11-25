@@ -13,8 +13,8 @@ convert_distr_name_for_mcmc(distr)
 A string with the converted distribution name.
 }
 \description{
-coarsedatatools uses abberviated names for distributions e.g. "G" for gamma etc
-To provide a smooth user exper experience, we convert the more descriptive names.
+coarseDataTools uses abberviated names for distributions e.g. "G" for gamma etc
+To provide a smooth user experience, we convert the more descriptive names.
 This function performs the user-provided names to the abberviated ones.
 }
 \author{
