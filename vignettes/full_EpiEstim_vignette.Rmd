@@ -7,7 +7,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{Full EpiEstim vignette}
   %\VignetteEncoding{UTF-8}
-  %\VignetteDepends{gghighlight}
 ---
 
 ```{r setup, include = FALSE}
@@ -17,7 +16,7 @@ knitr::opts_chunk$set(
   )
 
 library(kableExtra)
-library(hrbrthemes)
+
 library(gghighlight)
 library(MCMCglmm)
 library(projections)
@@ -204,7 +203,7 @@ ggplot(data.frame(x = c(x_lower_norm , x_upper_norm)), aes(x = x)) +
   xlim(c(x_lower_norm , x_upper_norm)) + 
   stat_function(fun = dgamma,
                 args = list(shape = (3 / 1) ^ 2, rate = 3 / 1 ^ 2)) +
-  theme_ipsum() +
+  theme_minimal() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
     axis.title.x = element_text(
@@ -225,7 +224,7 @@ y = c(0.000, 0.233, 0.359, 0.198, 0.103, 0.053, 0.027, 0.014, 0.007, 0.003, 0.00
 x = seq(0, 8, length = 12)
 spline_int <- as.data.frame(spline(x, y))
 ggplot(data.frame(x = x, y = y), aes(x = x, y = y)) +
-  theme_ipsum() +
+  theme_minimal() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
     axis.title.x = element_text(
@@ -251,7 +250,7 @@ df <- data.frame(x = seq(0, 6, length.out = 100)) %>%
 mean.plot <- ggplot(df, aes(x, y)) +
   geom_area(fill = "sky blue") +
   gghighlight(x > 1 & x < 4) +
-  theme_ipsum()+
+  theme_minimal()+
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
     axis.title.x = element_text(
@@ -269,7 +268,7 @@ df2 <- data.frame(x = seq(0, 3.5, length.out = 100)) %>%
 stdev.plot <- ggplot(df2, aes(x, y)) +
   geom_area(fill = "sky blue") +
   gghighlight(x > 0.5 & x < 2.5) +
-  theme_ipsum() +
+  theme_minimal() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
     axis.title.x = element_text(
@@ -295,7 +294,7 @@ ggplot(data.frame(x = c(x_lower_norm , x_upper_norm)), aes(x = x)) +
   mapply(function(mean, sd) {
     stat_function(fun = dgamma, args = list(
       shape = (mean / sd)^2, rate = mean / sd^2))}, mean = means, sd = sds) +
-  theme_ipsum() +
+  theme_minimal() +
   theme(
     plot.margin = margin(t = 50, r = 20, b = 20, l = 20),
     axis.title.x = element_text(
@@ -419,7 +418,7 @@ overall_seed <- 2
 SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
                                         dist = "G",
                                         init.pars = init_mcmc_params(
-                                          MockRotavirus$si_data, "G"),
+                                          MockRotavirus$si_data, "gamma"),
                                         thin = 10,
                                         burnin = 1000,
                                         n.samples = 5000,
@@ -724,7 +723,7 @@ mcmc_control <- make_mcmc_control(burnin = 1000, # first 1000 iterations discard
 R_si_from_data <- estimate_R(incid = MockRotavirus$incidence, 
                              method = "si_from_data",
                              si_data = MockRotavirus$si_data, # symptom onset data
-                             config = make_config(si_parametric_distr = "G", # gamma dist. for SI
+                             config = make_config(si_parametric_distr = "gamma", # gamma dist. for SI
                                                   mcmc_control = mcmc_control,
                                                   n1 = 500, # number of posterior samples of SI dist.
                                                   n2 = 50, # number of posterior samples of Rt dist.
