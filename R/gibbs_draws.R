@@ -606,6 +606,13 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   if (is.null(t_min)) {
     t_min <- compute_t_min(incid, si_distr)
   }
+  ## Give useful error message if t_min is NA
+  if (anyNA(t_min)) {
+    stop("t_min could not be computed automatically. This may be because
+         some variants/locations have zero incidence at all time steps.
+         ")
+  }
+  
   if (!is.integer(t_min) || !is.integer(t_max)) {
     stop("t_min and t_max must be integers")
   }
