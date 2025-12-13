@@ -9,7 +9,7 @@ test_that("draw_epsilon produces expected results (2 variants, 4 locations)", {
 
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  incid <- process_I_multivariant(incid, NULL)
+  incid <- process_I_multivariant(incid)
 
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
@@ -38,7 +38,7 @@ test_that("draw_epsilon produces expected results (2 variants, 1 location)", {
 
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  incid <- process_I_multivariant(incid, NULL)
+  incid <- process_I_multivariant(incid)
 
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
@@ -67,7 +67,7 @@ test_that("draw_epsilon produces expected results (>2 variants, 4 locations)", {
 
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  incid <- process_I_multivariant(incid, NULL)
+  incid <- process_I_multivariant(incid)
 
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
@@ -98,7 +98,7 @@ test_that("draw_epsilon produces expected results (>2 variants, 1 location)", {
 
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  incid <- process_I_multivariant(incid, NULL)
+  incid <- process_I_multivariant(incid)
 
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
@@ -127,7 +127,7 @@ test_that("draw_R produces expected results (2 variants, 4 locations)", {
 
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  incid <- process_I_multivariant(incid, NULL)
+  incid <- process_I_multivariant(incid)
 
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
@@ -157,7 +157,7 @@ test_that("draw_R produces expected results (2 variants, 1 location)", {
 
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  incid <- process_I_multivariant(incid, NULL)
+  incid <- process_I_multivariant(incid)
 
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
@@ -187,7 +187,7 @@ test_that("draw_R produces expected results (>2 variants, 4 locations)", {
 
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  incid <- process_I_multivariant(incid, NULL)
+  incid <- process_I_multivariant(incid)
 
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
@@ -217,7 +217,7 @@ test_that("draw_R produces expected results (>2 variants, 1 location)", {
 
   # constant incidence 10 per day everywhere
   incid <- array(10, dim = c(T, n_loc, n_v))
-  incid <- process_I_multivariant(incid, NULL)
+  incid <- process_I_multivariant(incid)
 
   # arbitrary serial interval
   w_v <- c(0, 0.2, 0.5, 0.3)
@@ -384,7 +384,7 @@ test_that("process_I_multivariant works as expected", {
   expect_equal(incid_processed$imported, incid_imported)
 
   ## with the default
-  incid_processed <- process_I_multivariant(incid, NULL)
+  incid_processed <- process_I_multivariant(incid)
   expect_equal(incid_processed$local + incid_processed$imported, incid)
   expect_true(all(incid_processed$imported[-1, , ] == 0))
   expect_true(all(incid_processed$imported[1, , ] == incid[1, , ]))

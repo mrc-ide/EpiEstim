@@ -4,7 +4,7 @@
 \alias{process_I_multivariant}
 \title{Process incidence input for multivariant analyses with estimate_advantage}
 \usage{
-process_I_multivariant(incid, incid_imported)
+process_I_multivariant(incid, incid_imported = NULL)
 }
 \arguments{
 \item{incid}{a multidimensional array containing values of the incidence
@@ -40,6 +40,6 @@ n_loc <- 1 # 1 location
 T <- 100 # 100 time steps
 # constant incidence 10 per day everywhere
 incid <- array(10, dim = c(T, n_loc, n_v))
-process_I_multivariant(incid, NULL)
+process_I_multivariant(incid)
 
 }
