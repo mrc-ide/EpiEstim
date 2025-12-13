@@ -80,7 +80,7 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 #' priors <- default_priors()
 #' # constant incidence 10 per day everywhere
 #' incid <- array(10, dim = c(T, n_loc, n_v))
-#' incid <- process_I_multivariant(incid)
+#' incid <- process_I_multivariant(incid, NULL)
 #' # arbitrary serial interval, same for both variants
 #' w_v <- c(0, 0.2, 0.5, 0.3)
 #' si_distr <- cbind(w_v, w_v, w_v)
@@ -179,7 +179,7 @@ default_mcmc_controls <- function() {
 #' priors <- default_priors()
 #' # constant incidence 10 per day everywhere
 #' incid <- array(10, dim = c(T, n_loc, n_v))
-#' incid <- process_I_multivariant(incid)
+#' incid <- process_I_multivariant(incid, NULL)
 #' # arbitrary serial interval, same for both variants
 #' w_v <- c(0, 0.2, 0.5, 0.3)
 #' si_distr <- cbind(w_v, w_v)
@@ -265,7 +265,7 @@ compute_lambda <- function(incid, si_distr) {
 #' priors <- default_priors()
 #' # constant incidence 10 per day everywhere
 #' incid <- array(10, dim = c(T, n_loc, n_v))
-#' incid <- process_I_multivariant(incid)
+#' incid <- process_I_multivariant(incid, NULL)
 #' # arbitrary serial interval, same for both variants
 #' w_v <- c(0, 0.2, 0.5, 0.3)
 #' si_distr <- cbind(w_v, w_v, w_v)
@@ -360,7 +360,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #' priors <- default_priors()
 #' # constant incidence 10 per day everywhere
 #' incid <- array(10, dim = c(T, n_loc, n_v))
-#' incid <- process_I_multivariant(incid)
+#' incid <- process_I_multivariant(incid, NULL)
 #' # arbitrary serial interval, same for both variants
 #' w_v <- c(0, 0.2, 0.5, 0.3)
 #' si_distr <- cbind(w_v, w_v)
@@ -787,18 +787,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 
 #' Process incidence input for multivariant analyses with estimate_advantage
 #'
-#' @param incid a multidimensional array containing values of the incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
-#'
-#' @param incid_imported an optional multidimensional array containing values
-#'   of the incidence of imported cases
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension). `incid - incid_imported` is
-#'   therefore the incidence of locally infected cases. If `incid_imported` is
-#'   NULL this means there are no
-#'   known imported cases and all cases other than on those from the first
-#'   time step will be considered locally infected.
+#' @inheritParams estimate_advantage
 #'
 #' @return a list with two elements.
 #'   1) `local` a multidimensional array containing values of the incidence
@@ -818,9 +807,9 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 #' T <- 100 # 100 time steps
 #' # constant incidence 10 per day everywhere
 #' incid <- array(10, dim = c(T, n_loc, n_v))
-#' process_I_multivariant(incid)
+#' process_I_multivariant(incid, NULL)
 #'
-process_I_multivariant <- function(incid, incid_imported = NULL) {
+process_I_multivariant <- function(incid, incid_imported) {
   if (is.null(incid_imported)) {
     incid_imported <- incid
     ## only cases at first time step are imported

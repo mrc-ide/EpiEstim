@@ -9,7 +9,7 @@ n_v <- 2 # 2 variants
 n_loc <- 3 # 3 locations
 T <- 100 # 100 time steps
 incid <- array(10, dim = c(T, n_loc, n_v)) # constant incidence 10 per day everywhere
-incid_processed <- process_I_multivariant(incid)
+incid_processed <- process_I_multivariant(incid, NULL)
 
   # si distr tests
 
@@ -85,7 +85,7 @@ test_that("seed is specified correctly",{
 
 epsilon <- 1
 incid <- array(10, dim = c(T, n_loc, n_v))
-incid_processed <- process_I_multivariant(incid)
+incid_processed <- process_I_multivariant(incid, NULL)
 w_v <- c(0, 0.2, 0.5, 0.3)
 si_distr <- cbind(w_v, w_v)
 lambda <- compute_lambda(incid_processed, si_distr)
@@ -142,7 +142,7 @@ test_that("epsilon is specified correctly",{
 ################################
 
 incid <- array(10, dim = c(T, n_loc, n_v))
-incid_processed <- process_I_multivariant(incid)
+incid_processed <- process_I_multivariant(incid, NULL)
 w_v <- c(0, 0.2, 0.5, 0.3)
 si_distr <- cbind(w_v, w_v)
 priors <- default_priors()
