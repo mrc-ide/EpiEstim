@@ -603,6 +603,13 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
                            precompute = TRUE,
                            reorder_incid = TRUE) {
 
+  ## Check that the number of variants is not 1
+  if (dim(incid)[3] < 2) {
+    stop("The incidence array must contain at least 2 variants to estimate the
+          transmission advantage.")
+  }
+  
+  
   if (is.null(t_min)) {
     t_min <- compute_t_min(incid, si_distr)
   }
