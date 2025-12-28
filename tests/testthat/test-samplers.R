@@ -610,6 +610,20 @@ test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 
   expect_equal(mean(x$R[,1,], na.rm = TRUE), 1.1, tolerance = 0.5)
   expect_equal(mean(x$R[,2,], na.rm = TRUE), 1.5, tolerance = 0.5)
 
+
+  ## Now test that this works with non-default priors
+  priors$epsilon$scale <- 5
+  priors$episilon$shape <- 2
+  x <- estimate_advantage(
+    incid, si_distr, priors,
+    seed = 1, t_min = 2L
+  )
+
+  ## R should be approx 1.1 for loc1 and 1.5 for loc2
+  expect_equal(mean(x$R[, 1, ], na.rm = TRUE), 1.1, tolerance = 0.5)
+  expect_equal(mean(x$R[, 2, ], na.rm = TRUE), 1.5, tolerance = 0.5)
+
+
 })
 
 test_that("estimate_advantage faster with precompute (2 variants 3 locations)", {

@@ -645,7 +645,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
     stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
   }
 
-  # Commenting out to reproduce Issue #137
+  # Commenting out to test Issue 137
   #if (!identical(priors, default_priors())) {
   #  warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
   #}
@@ -734,6 +734,8 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   keep <- seq(mcmc_control$burnin, mcmc_control$n_iter, mcmc_control$thin)
   epsilon_out <- epsilon_out[, keep, drop = FALSE]
   R_out <- R_out[, , keep, drop = FALSE]
+
+  browser()
   
   ## IF we have not re-ordered, we don't need to
   ## divide. Caution: this will only work for
