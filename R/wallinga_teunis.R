@@ -39,18 +39,25 @@
 #'   zero), which should be zero.} \item{n_sim: A positive integer giving the
 #'   number of simulated epidemic trees used for computation of the confidence
 #'   intervals of the case reproduction number (see details).} }
-#' @return { a list with components: \itemize{ \item{R}{: a dataframe
+#' @return  a list with components:
+#' \itemize{
+#'   \item R : a dataframe
 #'   containing: the times of start and end of each time window considered ; the
 #'   estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction
-#'   number for each time window.} \item{si_distr}{: a vector containing the
-#'   discrete serial interval distribution used for estimation}
-#'   \item{SI.Moments}{: a vector containing the mean and std of the discrete
-#'   serial interval distribution(s) used for estimation} \item{I}{: the time
-#'   series of total incidence} \item{I_local}{: the time series of incidence of
-#'   local cases (so that \code{I_local + I_imported = I})} \item{I_imported}{:
+#'   number for each time window.
+#'  \item si_distr: a vector containing the
+#'   discrete serial interval distribution used for estimation
+#'  \item SI.Moments: a vector containing the mean and std of the discrete
+#'   serial interval distribution(s) used for estimation
+#' \item I: the time series of total incidence
+#' \item I_local: the time series of incidence of
+#'   local cases (so that \code{I_local + I_imported = I})
+#' \item I_imported:
 #'   the time series of incidence of imported cases (so that \code{I_local +
-#'   I_imported = I})} \item{dates}{: a vector of dates corresponding to the
-#'   incidence time series} } }
+#'   I_imported = I})
+#' \item dates: a vector of dates corresponding to the
+#'   incidence time series
+#' } 
 #'
 #' @details Estimates of the case reproduction number for an epidemic over
 #' predefined time windows can be obtained, for a given discrete distribution of

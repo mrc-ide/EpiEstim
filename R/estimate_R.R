@@ -18,7 +18,7 @@
 #' contains a column \code{incid$dates}, this is used for plotting.
 #' \code{incid$dates} must contains only dates in a row.}
 #'
-#' \item{An object of class \code{\link{incidence}}}
+#' \item{An object of class \code{\link[incidence]{incidence}}}
 #'
 #' }
 #'
@@ -89,42 +89,42 @@
 #'    incidence is imputed for the first \code{backimputation_window} time 
 #'    units.
 #'
-#' @return {
+#' @return 
 #' an object of class \code{estimate_R}, with components:
 #' \itemize{
 #'
-#' \item{R}{: a dataframe containing:
+#' \item R: a dataframe containing:
 #' the times of start and end of each time window considered ;
 #' the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975
-#' quantiles of the reproduction number for each time window.}
+#' quantiles of the reproduction number for each time window.
 #'
-#' \item{method}{: the method used to estimate R, one of "non_parametric_si",
-#' "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
+#' \item method: the method used to estimate R, one of "non_parametric_si",
+#' "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
 #'
-#' \item{si_distr}{: a vector or dataframe (depending on the method) containing
-#'  the discrete serial interval distribution(s) used for estimation}
+#' \item si_distr: a vector or dataframe (depending on the method) containing
+#'  the discrete serial interval distribution(s) used for estimation
 #'
-#' \item{SI.Moments}{: a vector or dataframe (depending on the method)
+#' \item SI.Moments: a vector or dataframe (depending on the method)
 #' containing the mean and std of the discrete serial interval distribution(s)
-#' used for estimation}
+#' used for estimation
 #'
-#' \item{I}{: the time series of total incidence}
+#' \item I: the time series of total incidence
 #'
-#' \item{I_local}{: the time series of incidence of local cases (so that
-#' \code{I_local + I_imported = I})}
+#' \item I_local: the time series of incidence of local cases (so that
+#' \code{I_local + I_imported = I})
 #'
-#' \item{I_imported}{: the time series of incidence of imported cases (so that
-#' \code{I_local + I_imported = I})}
+#' \item I_imported: the time series of incidence of imported cases (so that
+#' \code{I_local + I_imported = I})
 #'
-#' \item{I_imputed}{: the time series of incidence of imputed cases}
+#' \item I_imputed: the time series of incidence of imputed cases
 
-#' \item{dates}{: a vector of dates corresponding to the incidence time series}
+#' \item dates: a vector of dates corresponding to the incidence time series
 #'
-#' \item{MCMC_converged}{ (only for method \code{si_from_data}): a boolean
+#' \item MCMC_converged (only for method \code{si_from_data}): a boolean
 #' showing whether the Gelman-Rubin MCMC convergence diagnostic was successful
-#' (\code{TRUE}) or not (\code{FALSE})}
+#' (\code{TRUE}) or not (\code{FALSE})
 #' }
-#' }
+#' 
 #'
 #' @details
 #' Analytical estimates of the reproduction number for an epidemic over
@@ -172,11 +172,11 @@
 #' for examples).
 #'
 #' @seealso \itemize{
-#'  \item{\code{\link{make_config}}}{ for general settings of the estimation}
-#'  \item{\code{\link{discr_si}}}{ to build serial interval distributions}
-#'  \item{\code{\link{sample_posterior_R}}}{ to draw samples of R values from
-#' the posterior distribution from the output of \code{estimate_R()}
-#' }}
+#'   \item \code{\link{make_config}} for general settings of the estimation
+#'   \item \code{\link{discr_si}} to build serial interval distributions
+#'   \item \code{\link{sample_posterior_R}} to draw samples of R values from
+#'     the posterior distribution from the output of \code{estimate_R()}
+#' }
 #'
 #'
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}

@@ -28,41 +28,40 @@
 #' define a grid of growth rate parameters that are used inside the EM algorithm 
 #' (see details). We recommend using the default values. 
 #'
-#' @return {
-#' an object of class \code{estimate_R}, with components:
+#' @return an object of class \code{estimate_R}, with components:
 #' \itemize{
 #'
-#' \item{R}{: a dataframe containing:
+#' \item R: a dataframe containing:
 #' the times of start and end of each time window considered ;
 #' the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975
-#' quantiles of the reproduction number for each time window.}
+#' quantiles of the reproduction number for each time window.
 #'
-#' \item{method}{: the method used to estimate R, one of "non_parametric_si",
-#' "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
+#' \item method: the method used to estimate R, one of "non_parametric_si",
+#' "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
 #'
-#' \item{si_distr}{: a vector or dataframe (depending on the method) containing
-#'  the discrete serial interval distribution(s) used for estimation}
+#' \item si_distr: a vector or dataframe (depending on the method) containing
+#'  the discrete serial interval distribution(s) used for estimation
 #'
-#' \item{SI.Moments}{: a vector or dataframe (depending on the method)
+#' \item SI.Moments: a vector or dataframe (depending on the method)
 #' containing the mean and std of the discrete serial interval distribution(s)
-#' used for estimation}
+#' used for estimation
 #'
-#' \item{I}{: the time series of daily incidence reconstructed by the EM algorithm.
+#' \item I: the time series of daily incidence reconstructed by the EM algorithm.
 #' For the initial incidence that cannot be reconstructed (e.g. the first aggregation
 #' window and aggregation windows where incidence is too low to estimate Rt - see 
 #' details) then the incidence returned will be the naive disaggregation of the 
-#' incidence data used to initialise the EM algorithm. }
+#' incidence data used to initialise the EM algorithm. 
 #'
-#' \item{I_local}{: the time series of incidence of local cases (so that
-#' \code{I_local + I_imported = I})}
+#' \item I_local: the time series of incidence of local cases (so that
+#' \code{I_local + I_imported = I})
 #'
-#' \item{I_imported}{: the time series of incidence of imported cases (so that
-#' \code{I_local + I_imported = I})}
+#' \item I_imported: the time series of incidence of imported cases (so that
+#' \code{I_local + I_imported = I})
 #'
-#' \item{dates}{: a vector of dates corresponding to the incidence time series}
+#' \item dates: a vector of dates corresponding to the incidence time series
 
 #' }
-#' }
+#' 
 #' @importFrom epitrix gamma_mucv2shapescale r2R0
 #' @importFrom distcrete distcrete
 #' @export
@@ -138,9 +137,8 @@
 #' \code{estimate_R} function, with sliding weekly time windows used as the default.
 #' 
 #' 
-#' @seealso \itemize{
-#'  \item{\code{\link{estimate_R}}}{ for details of the core function}
-#'  }
+#' @seealso \code{\link{estimate_R}} for details of the core function
+#'  
 #'  
 #' @author Rebecca Nash \email{r.nash@imperial.ac.uk} and Anne Cori \email{a.cori@imperial.ac.uk}
 #' @references {
