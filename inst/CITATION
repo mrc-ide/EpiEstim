@@ -1,0 +1,34 @@
+citHeader("To cite EpiEstim in publications use:")
+
+bibentry(
+  bibtype = "Article",
+  title = "A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics",
+  author = c(
+    person("Anne", "Cori"),
+    person("Neil M.", "Ferguson"),
+    person("Christophe", "Fraser"),
+    person("Simon", "Cauchemez")
+  ),
+  journal = "American Journal of Epidemiology",
+  year = "2013",
+  volume = "178",
+  number = "9",
+  pages = "1505--1512",
+  doi = "10.1093/aje/kwt133"
+)
+
+citFooter("Contributors who have contributed code to this package (ordered by amount of code contributed):")
+citFooter("  - Anne Cori (25,094 lines)")
+citFooter("  - Rebecca Nash (4,873 lines)")
+citFooter("  - Thibaut Jombart (3,528 lines)")
+citFooter("  - Zhian N. Kamvar (3,212 lines)")
+citFooter("  - Jake Stockwin (2,757 lines)")
+citFooter("  - Sangeeta Bhatia (2,021 lines)")
+citFooter("  - Andrea Brizzi (1,908 lines)")
+citFooter("  - Elisabeth Dahlqwist (1,255 lines)")
+citFooter("  - Rich FitzJohn (463 lines)")
+citFooter("  - Hugo Gruson (429 lines)")
+citFooter("  - Jack Wardle (320 lines)")
+citFooter("  - Tim Pollington (31 lines)")
+citFooter("  - Pietro Monticone (11 lines)")
+citFooter("  - Ewout ter Hoeven (4 lines)")
