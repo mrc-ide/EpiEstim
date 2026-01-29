@@ -18,17 +18,10 @@ FAQs and details about how EpiEstim can be used alongside some other R packages
 in an outbreak analysis workflow.
 
 ### Cite our papers
-Anne Cori, Neil M. Ferguson, Christophe Fraser, Simon Cauchemez, [A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics](https://doi.org/10.1093/aje/kwt133), American Journal of Epidemiology, Volume 178, Issue 9, 1 November 2013, Pages 1505–1512. 
 
-```console
- @article{Cori2013,
- author={Cori, A and Ferguson, NM and Fraser, C and Cauchemez, S},  
- year={2013},  
- title={{A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics}},  
- journal={Am. J. Epidemiol.},  
- doi={10.1093/aje/kwt133},  
-}
-```
+The methodology underlying EpiEstim is detailed in the following papers:
+
+Anne Cori, Neil M. Ferguson, Christophe Fraser, Simon Cauchemez, [A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics](https://doi.org/10.1093/aje/kwt133), American Journal of Epidemiology, Volume 178, Issue 9, 1 November 2013, Pages 1505–1512. 
 
 Thompson RN, Stockwin JE, van Gaalen RD, Polonsky JA, Kamvar ZN, Demarsh PA, et al. [Improved inference of time-varying reproduction numbers during infectious disease outbreaks](https://doi.org/10.1016/j.epidem.2019.100356), Epidemics, Volume 29, 1 December 2019, 100356.
 
@@ -40,17 +33,25 @@ Nash RK, Cori A, Nouvellet P. [Estimating the epidemic reproduction number from 
 
 Brizzi A, O'Driscoll M, Dorigatti I., [Refining Reproduction Number Estimates to Account for Unobserved Generations of Infection in Emerging Epidemics](https://doi.org/10.1093/cid/ciac138), Clinical Infectious Diseases, Volume 75, Issue 1, 1 July 2022, Pages e114–e121.
 
+You can download a formatted bibtex file containing all our papers here [Download `epiestimpapers.bib`](inst/epiestimpapers.bib)
 
 ### Citing this code resource
+
 We kindly request that you cite this codebase as follows (BibTeX format):
 
 ```console
-@misc{Cori2022,
- author={Cori, A and Kamvar, ZN and Stockwin, J and Jombart, T and Dahlqwist, E and FitzJohn, R and Thompson, R and Nash, RK and Wardle, J and Bhatia, S},  
- year={2022},  
- title={{EpiEstim v2.2-4: A tool to estimate time varying instantaneous reproduction number during epidemics}},  
- publisher={GitHub},
- journal={GitHub repository},  
- howpublished = {\url{https://github.com/mrc-ide/EpiEstim}},  
-}
+  @Manual{,
+    title = {EpiEstim: Estimate Time Varying Reproduction Numbers from Epidemic Curves},
+    author = {Anne Cori and Rebecca Nash and Thibaut Jombart and Zhian N. Kamvar and Jake Stockwin and Robin Thompson and Sangeeta Bhatia and Andrea Brizzi and Elisabeth Dahlqwist and Rich FitzJohn and Hugo Gruson and Jack Wardle and Rolina {van Gaalen} and Tim Pollington and Pietro Monticone and Ewout {ter Hoeven} and Jonathan A. Polonsky and Shikun Li and Justin Lessler and P. Alex Demarsh and Neil M. Ferguson and Christophe Fraser and Simon Cauchemez},
+    year = {2026},
+    note = {R package version 2.4},
+    url = {https://github.com/mrc-ide/EpiEstim},
+  }
+
+```
+
+You can also retrieve the above entry using 
+
+```
+cite("EpiEstim")
 ```
