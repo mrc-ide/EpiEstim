@@ -17,18 +17,28 @@ bibentry(
   doi = "10.1093/aje/kwt133"
 )
 
-citFooter("Contributors who have contributed code to this package (ordered by amount of code contributed):")
-citFooter("  - Anne Cori (25,094 lines)")
-citFooter("  - Rebecca Nash (4,873 lines)")
-citFooter("  - Thibaut Jombart (3,528 lines)")
-citFooter("  - Zhian N. Kamvar (3,212 lines)")
-citFooter("  - Jake Stockwin (2,757 lines)")
-citFooter("  - Sangeeta Bhatia (2,021 lines)")
-citFooter("  - Andrea Brizzi (1,908 lines)")
-citFooter("  - Elisabeth Dahlqwist (1,255 lines)")
-citFooter("  - Rich FitzJohn (463 lines)")
-citFooter("  - Hugo Gruson (429 lines)")
-citFooter("  - Jack Wardle (320 lines)")
-citFooter("  - Tim Pollington (31 lines)")
-citFooter("  - Pietro Monticone (11 lines)")
-citFooter("  - Ewout ter Hoeven (4 lines)")
+bibentry(
+  bibtype = "Manual",
+  title = "EpiEstim: Estimate Time Varying Reproduction Numbers from Epidemic Curves",
+  author = c(
+    person("Anne", "Cori"),
+    person("Rebecca", "Nash"),
+    person("Thibaut", "Jombart"),
+    person("Zhian N.", "Kamvar"),
+    person("Jake", "Stockwin"),
+    person("Sangeeta", "Bhatia"),
+    person("Andrea", "Brizzi"),
+    person("Elisabeth", "Dahlqwist"),
+    person("Rich", "FitzJohn"),
+    person("Hugo", "Gruson"),
+    person("Jack", "Wardle"),
+    person("Tim", "Pollington"),
+    person("Pietro", "Monticone"),
+    person("Ewout", "ter Hoeven")
+  ),
+  year = format(Sys.Date(), "%Y"),
+  note = "R package version 2.4",
+  url = "https://github.com/mrc-ide/EpiEstim"
+)
+
+citFooter("Code contributors are listed in the software citation above in order of contribution amount (lines of code contributed to the repository).")
