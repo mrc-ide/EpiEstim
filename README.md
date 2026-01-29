@@ -33,7 +33,7 @@ Nash RK, Cori A, Nouvellet P. [Estimating the epidemic reproduction number from 
 
 Brizzi A, O'Driscoll M, Dorigatti I., [Refining Reproduction Number Estimates to Account for Unobserved Generations of Infection in Emerging Epidemics](https://doi.org/10.1093/cid/ciac138), Clinical Infectious Diseases, Volume 75, Issue 1, 1 July 2022, Pages e114–e121.
 
-You can download a formatted bibtex file containing all our papers here [Download `epiestimpapers.bib`](inst/epiestimpapers.bib)
+You can download a formatted bibtex file containing all our papers [here](inst/epiestimpapers.bib).
 
 ### Citing this code resource
 
