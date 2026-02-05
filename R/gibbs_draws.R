@@ -482,6 +482,18 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
   as.integer(t_min_incid + t_min_si)
 }
 
+
+recycle_vector <- function(vec, n) {
+  
+  if (length(vec) == 1) {
+    rep.int(vec, n)
+  } else if (length(vec) == n) {
+    vec
+  } else {
+    stop("vec must be of length 1 or n")
+  }
+}
+
 #' Jointly estimate the instantaneous reproduction number for a reference
 #'   pathogen/strain/variant and the relative transmissibility of a
 #'   "new" pathogen/strain/variant
@@ -603,51 +615,51 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
                            precompute = TRUE,
                            reorder_incid = TRUE) {
 
-  if (is.null(t_min)) {
-    t_min <- compute_t_min(incid, si_distr)
-  }
-  if (!is.integer(t_min) || !is.integer(t_max)) {
-    stop("t_min and t_max must be integers")
-  }
-  if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
-  }
-  if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
-  }
-  if (any(si_distr[1,] != 0)){
-    stop("Values in the first row of si_distr must be 0")
-  }
-  if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
-    stop("The sum of each column in si_distr should be equal to 1")
-  }
-  if (any(si_distr < 0)){
-    stop("si_distr must be >=0")
-  }
-  if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)){
-    stop("n_iter in mcmc_control must be a positive integer")
-  }
-  if (mcmc_control$burnin < 0 || !is.integer(mcmc_control$burnin)){
-    stop("burnin in mcmc_control must be a positive integer")
-  }
-  if (mcmc_control$thin < 0 || !is.integer(mcmc_control$thin)){
-    stop("thin in mcmc_control must be a positive integer")
-  }
-  if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
-    stop("In mcmc_control, n_iter must be greater than burnin + thin")
-  }
-  if (!is.null(seed) && !is.numeric(seed)){
-    stop("seed must be numeric")
-  }
-  if (!is.null(seed)) set.seed(seed)
+  ## if (is.null(t_min)) {
+  ##   t_min <- compute_t_min(incid, si_distr)
+  ## }
+  ## if (!is.integer(t_min) || !is.integer(t_max)) {
+  ##   stop("t_min and t_max must be integers")
+  ## }
+  ## if (t_min < 2 || t_max < 2){
+  ##   stop("t_min and t_max must be >=2")
+  ## }
+  ## if(t_min > nrow(incid) || t_max > nrow(incid)){
+  ##   stop("t_min and t_max must be <= nrow(incid)")
+  ## }
+  ## if (any(si_distr[1,] != 0)){
+  ##   stop("Values in the first row of si_distr must be 0")
+  ## }
+  ## if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
+  ##   stop("The sum of each column in si_distr should be equal to 1")
+  ## }
+  ## if (any(si_distr < 0)){
+  ##   stop("si_distr must be >=0")
+  ## }
+  ## if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)){
+  ##   stop("n_iter in mcmc_control must be a positive integer")
+  ## }
+  ## if (mcmc_control$burnin < 0 || !is.integer(mcmc_control$burnin)){
+  ##   stop("burnin in mcmc_control must be a positive integer")
+  ## }
+  ## if (mcmc_control$thin < 0 || !is.integer(mcmc_control$thin)){
+  ##   stop("thin in mcmc_control must be a positive integer")
+  ## }
+  ## if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
+  ##   stop("In mcmc_control, n_iter must be greater than burnin + thin")
+  ## }
+  ## if (!is.null(seed) && !is.numeric(seed)){
+  ##   stop("seed must be numeric")
+  ## }
+  ## if (!is.null(seed)) set.seed(seed)
 
-  if (t_min > t_max) {
-    stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
-  }
+  ## if (t_min > t_max) {
+  ##   stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
+  ## }
   
-  if (!identical(priors, default_priors())) {
-    warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
-  }
+  ## if (!identical(priors, default_priors())) {
+  ##   warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
+  ## }
 
   T <- nrow(incid)
   n_loc <- ncol(incid)
@@ -658,21 +670,30 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 
   ## find clever initial values, based on ratio of reproduction numbers
   ## over the whole time period, across all locations together
+  time <- dim(incid$local)[3]
+  t_min <- recycle_vector(t_min, time)
+  t_max <- recycle_vector(t_max, time)
+   
+  R_init <- vapply(seq_len(time), function(i) {
+    tmp_df <- data.frame(
+      local = apply(incid$local[, , i, drop = FALSE], c(1, 3), sum)[, 1],
+      imported = apply(incid$imported[, , i, drop = FALSE], c(1, 3), sum)[, 1]
+    )
 
-  R_init <- sapply(seq_len(dim(incid$local)[3]), function(i) {
-    tmp_df <- data.frame(local = apply(incid$local[, , i, drop = FALSE],
-                                       c(1, 3), sum)[,1],
-                         imported = apply(incid$imported[, , i, drop = FALSE],
-                                          c(1, 3), sum)[,1])
     suppressWarnings(
-      EpiEstim::estimate_R(tmp_df,
-                           method = "non_parametric_si",
-                           config = EpiEstim::make_config(
-                             si_distr = si_distr[, i],
-                             t_start = t_min,
-                             t_end = t_max)))$R$'Mean(R)'
-  })
+      EpiEstim::estimate_R(
+        tmp_df,
+        method = "non_parametric_si",
+        config = EpiEstim::make_config(
+          si_distr = si_distr[, i],
+          t_start = t_min[i],
+          t_end = t_max[i]
+        )
+      )
+    )$R[["Mean(R)"]]
+  }, numeric(1))
 
+  
   if (reorder_incid) {
     max_transmiss <- which.max(R_init)
     # reorder variants so most transmissible is first
