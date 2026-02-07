@@ -295,7 +295,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
-  t <- lapply(seq_along(t_min), function(k) {
+  windows <- lapply(seq_along(t_min), function(k) {
     seq.int(t_min[k], t_max[k], by = 1L)
   })
 
@@ -306,15 +306,16 @@ draw_epsilon <- function(R, incid, lambda, priors,
   }
 
   rate <- vnapply(seq(2, dim(lambda)[3]), function(e) {
-    per_location_rate <- lapply(seq_along(t), function(k) {
-      R[t[[k]], ] * lambda[t[[k]], , e]
+    per_location_rate <- lapply(seq_along(windows), function(window) {
+      R[windows[[window]], ] * lambda[windows[[window]], , e]
     })
+    browser()
     sum(per_location_rate) + 1 / priors$epsilon$scale
   })
 
-  scale <- 1 / rate
+  scale_epsilon <- 1 / rate
 
-  rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale)
+  rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale_epsilon)
 }
 
 #' Draw R from marginal posterior distribution
