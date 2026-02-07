@@ -295,13 +295,20 @@ draw_epsilon <- function(R, incid, lambda, priors,
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
-  t <- seq(t_min, t_max, 1)
+  t <- lapply(seq_along(t_min), function(k) {
+    seq.int(t_min[k], t_max[k], by = 1L)
+  })
+
   if (is.null(shape_epsilon)) {
-    shape_epsilon <- get_shape_epsilon(incid, lambda, priors, t_min, t_max)
+    shape_epsilon <- lapply(seq_along(t_min), function(k) {
+      get_shape_epsilon(incid, lambda, priors, t_min[k], t_max[k])
+    })
   }
   rate <- vnapply(seq(2, dim(lambda)[3]), function(e)
     sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
+
   scale <- 1 / rate
+
   rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale)
 }
 
@@ -389,9 +396,15 @@ draw_R <- function(epsilon, incid, lambda, priors,
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
-  t <- seq(t_min, t_max, 1)
+
+  t <- lapply(seq_along(t_min), function(k) {
+    seq.int(t_min[k], t_max[k], by = 1L)
+  })
+
   if (is.null(shape_R_flat)) {
-    shape_R_flat <- get_shape_R_flat(incid, priors, t_min, t_max)
+    shape_R_flat <- lapply(seq_along(t_min), function(k) {
+      get_shape_R_flat(incid, priors, t_min[k], t_max[k])
+    })
   }
   ## overall infectivity
   temp <- lambda[t, , 1]
@@ -410,7 +423,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
   R
 }
 ##' Index before which at most a given probability
-##' mass is captured
+##' mass is capturedx
 ##'
 ##' Across a matrix of discretised probability distributions
 ##' (see \code{estimate_advantage}
@@ -718,8 +731,15 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 
   ## Precalculate quantities of interest
   if (precompute) {
-    shape_R_flat <- get_shape_R_flat(incid$local, priors, t_min, t_max)
-    shape_epsilon <- get_shape_epsilon(incid$local, lambda, priors, t_min, t_max)
+    shape_R_flat <- vapply(seq_len(time), function(i) {
+      get_shape_R_flat(incid$local[, , i, drop = FALSE], priors, t_min[i], t_max[i])
+    }, numeric(1))
+    shape_epsilon <- vapply(seq_len(time), function(i) {
+      get_shape_epsilon(
+        incid$local[, , i, drop = FALSE], lambda[, , i, drop = FALSE],
+        priors, t_min[i], t_max[i]
+      )
+    }, numeric(1))
   } else {
     shape_R_flat <- NULL
     shape_epsilon <- NULL
