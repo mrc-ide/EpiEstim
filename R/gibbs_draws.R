@@ -304,8 +304,13 @@ draw_epsilon <- function(R, incid, lambda, priors,
       get_shape_epsilon(incid, lambda, priors, t_min[k], t_max[k])
     })
   }
-  rate <- vnapply(seq(2, dim(lambda)[3]), function(e)
-    sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
+
+  rate <- vnapply(seq(2, dim(lambda)[3]), function(e) {
+    per_location_rate <- lapply(seq_along(t), function(k) {
+      R[t[[k]], ] * lambda[t[[k]], , e]
+    })
+    sum(per_location_rate) + 1 / priors$epsilon$scale
+  })
 
   scale <- 1 / rate
 
