@@ -304,13 +304,17 @@ draw_epsilon <- function(R, incid, lambda, priors,
       get_shape_epsilon(incid, lambda, priors, t_min[k], t_max[k])
     })
   }
-
+  ## the marginal posterior distribution of epsilon is a gamma distribution with
+  ## shape = prior_shape +  sum of the incidence of the reference across all
+  ## locations and time.
+  ## rate is prior + sum of the overall infectivity of the reference across all
+  ## locations and time.
   rate <- vnapply(seq(2, dim(lambda)[3]), function(e) {
-    per_location_rate <- lapply(seq_along(windows), function(window) {
+    per_location_infv <- lapply(seq_along(windows), function(window) {
       R[windows[[window]], ] * lambda[windows[[window]], , e]
     })
     browser()
-    sum(per_location_rate) + 1 / priors$epsilon$scale
+    sum(per_location_infv) + 1 / priors$epsilon$scale
   })
 
   scale_epsilon <- 1 / rate
