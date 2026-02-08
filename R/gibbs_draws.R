@@ -309,7 +309,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
   ## locations and time.
   ## rate is prior + sum of the overall infectivity of the reference across all
   ## locations and time.
-  rate <- vnapply(seq(2, dim(lambda)[3]), function(e) {
+  per_variant_rate <- vnapply(seq(2, dim(lambda)[3]), function(e) {
     per_location_infv <- lapply(seq_along(windows), function(window) {
       R[windows[[window]], ] * lambda[windows[[window]], , e]
     })
@@ -317,7 +317,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
     sum(per_location_infv) + 1 / priors$epsilon$scale
   })
 
-  scale_epsilon <- 1 / rate
+  scale_epsilon <- 1 / per_variant_rate
 
   rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale_epsilon)
 }
@@ -691,12 +691,14 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 
   lambda <- compute_lambda(incid, si_distr)
 
+  ## Allow use to specify a different t_min and t_max for each variant, but
+  ## recycle if only one value is given
+  n_variants <- dim(incid$local)[3]
+  t_min <- recycle_vector(t_min, n_variants)
+  t_max <- recycle_vector(t_max, n_variants)
+
   ## find clever initial values, based on ratio of reproduction numbers
   ## over the whole time period, across all locations together
-  time <- dim(incid$local)[3]
-  t_min <- recycle_vector(t_min, time)
-  t_max <- recycle_vector(t_max, time)
-   
   R_init <- vapply(seq_len(time), function(i) {
     tmp_df <- data.frame(
       local = apply(incid$local[, , i, drop = FALSE], c(1, 3), sum)[, 1],
