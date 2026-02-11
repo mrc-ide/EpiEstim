@@ -407,7 +407,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
   }
   if (!is.null(seed)) set.seed(seed)
 
-  t <- lapply(seq_along(t_min), function(k) {
+  windows <- lapply(seq_along(t_min), function(k) {
     seq.int(t_min[k], t_max[k], by = 1L)
   })
 
@@ -417,16 +417,18 @@ draw_R <- function(epsilon, incid, lambda, priors,
     })
   }
   ## overall infectivity
-  temp <- lambda[t, , 1]
-  idx <- seq(2, dim(incid)[3], 1)
+  temp <- lambda[windows[[1]], , 1]
+  n_variants <- dim(incid)[3]
+  idx <- seq(2, n_variants, 1)
   for(var in idx){
     ## We want lambda_1 + e_v lambda_v for all t
-    temp <- temp + epsilon[var - 1] * lambda[t, , var]
+    temp <- temp + epsilon[var - 1] * lambda[windows[[var]], , var]
   }
-  rate <- temp + 1 / priors$R$scale
-  scale <- 1 / rate
-  scale_flat <- as.numeric(scale)
+  r_rate <- temp + 1 / priors$R$scale
+  r_scale <- 1 / r_rate
+  scale_flat <- as.numeric(r_scale)
   R_flat <- rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
+  ## START HERE
   R_fill <- matrix(R_flat, nrow = length(t), ncol = ncol(incid))
   R <- matrix(NA, nrow(incid), ncol(incid))
   R[t, ] <- R_fill
@@ -684,7 +686,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   ##   warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
   ## }
 
-  T <- nrow(incid)
+  time <- nrow(incid)
   n_loc <- ncol(incid)
 
   incid <- process_I_multivariant(incid, incid_imported)
@@ -699,7 +701,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 
   ## find clever initial values, based on ratio of reproduction numbers
   ## over the whole time period, across all locations together
-  R_init <- vapply(seq_len(time), function(i) {
+  R_init <- vapply(seq_len(n_variants), function(i) {
     tmp_df <- data.frame(
       local = apply(incid$local[, , i, drop = FALSE], c(1, 3), sum)[, 1],
       imported = apply(incid$imported[, , i, drop = FALSE], c(1, 3), sum)[, 1]
@@ -743,10 +745,10 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 
   ## Precalculate quantities of interest
   if (precompute) {
-    shape_R_flat <- vapply(seq_len(time), function(i) {
+    shape_R_flat <- vapply(seq_len(n_variants), function(i) {
       get_shape_R_flat(incid$local[, , i, drop = FALSE], priors, t_min[i], t_max[i])
     }, numeric(1))
-    shape_epsilon <- vapply(seq_len(time), function(i) {
+    shape_epsilon <- vapply(seq_len(n_variants), function(i) {
       get_shape_epsilon(
         incid$local[, , i, drop = FALSE], lambda[, , i, drop = FALSE],
         priors, t_min[i], t_max[i]
