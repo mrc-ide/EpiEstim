@@ -307,8 +307,8 @@ draw_epsilon <- function(R, incid, lambda, priors,
   })
   
   if (is.null(shape_epsilon)) {
-    shape_epsilon <- lapply(seq_along(t_min), function(k) {
-      get_shape_epsilon(incid, lambda, priors, t_min[k], t_max[k])
+    shape_epsilon <- vnapply(seq(2, n_variants), function(e) {
+      get_shape_epsilon(incid, lambda, priors, t_min[e], t_max[e])
     })
   }
   ## the marginal posterior distribution of epsilon is a gamma distribution with
@@ -316,14 +316,13 @@ draw_epsilon <- function(R, incid, lambda, priors,
   ## locations and time.
   ## rate is prior + sum of the overall infectivity of the reference across all
   ## locations and time.
-  per_variant_rate <- vnapply(seq(2, dim(lambda)[3]), function(e) {
-    browser()
+  per_variant_rate <- vnapply(seq(2, n_variants), function(e) {
     sum(R[windows[[e]], ] * lambda[windows[[e]], , e]) + 1 / priors$epsilon$scale
   })
 
   scale_epsilon <- 1 / per_variant_rate
 
-  rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale_epsilon)
+  rgamma(n_variants - 1, shape = shape_epsilon, scale = scale_epsilon)
 }
 
 #' Draw R from marginal posterior distribution
