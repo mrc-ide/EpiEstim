@@ -390,19 +390,19 @@ draw_R <- function(epsilon, incid, lambda, priors,
                    shape_R_flat = NULL,
                    t_min = NULL, t_max = nrow(incid),
                    seed = NULL) {
-  if (!is.integer(t_min) || !is.integer(t_max)){
+  if (!is.integer(t_min) || !is.integer(t_max)) {
     stop("t_min and t_max must be integers")
   }
-  if (t_min < 2 || t_max < 2){
+  if (t_min < 2 || t_max < 2) {
     stop("t_min and t_max must be >=2")
   }
-  if(t_min > nrow(incid) || t_max > nrow(incid)){
+  if (t_min > nrow(incid) || t_max > nrow(incid)) {
     stop("t_min and t_max must be <= nrow(incid)")
   }
-  if (any(epsilon < 0)){
+  if (any(epsilon < 0)) {
     stop("epsilon must be > 0")
   }
-  if (!is.null(seed) && !is.numeric(seed)){
+  if (!is.null(seed) && !is.numeric(seed)) {
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
@@ -420,7 +420,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
   temp <- lambda[windows[[1]], , 1]
   n_variants <- dim(incid)[3]
   idx <- seq(2, n_variants, 1)
-  for(var in idx){
+  for (var in idx) {
     ## We want lambda_1 + e_v lambda_v for all t
     temp <- temp + epsilon[var - 1] * lambda[windows[[var]], , var]
   }
@@ -428,12 +428,13 @@ draw_R <- function(epsilon, incid, lambda, priors,
   r_scale <- 1 / r_rate
   scale_flat <- as.numeric(r_scale)
   R_flat <- rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
-  ## START HERE
-  R_fill <- matrix(R_flat, nrow = length(t), ncol = ncol(incid))
-  R <- matrix(NA, nrow(incid), ncol(incid))
-  R[t, ] <- R_fill
-  R
+
+  R_fill <- matrix(R_flat, nrow = length(windows[[1]]), ncol = ncol(incid))
+  R_ref <- matrix(NA, nrow(incid), ncol(incid))
+  R_ref[windows[[1]], ] <- R_fill
+  R_ref
 }
+
 ##' Index before which at most a given probability
 ##' mass is capturedx
 ##'
@@ -686,7 +687,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   ##   warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
   ## }
 
-  time <- nrow(incid)
+  n_steps <- nrow(incid)
   n_loc <- ncol(incid)
 
   incid <- process_I_multivariant(incid, incid_imported)
@@ -770,7 +771,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
     priors = priors, shape_R_flat = shape_R_flat, t_min = t_min, t_max = t_max
   )
   
-  R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
+  R_out <- array(NA, dim= c(n_steps, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
   for (i in seq_len(mcmc_control$n_iter)) {
     R_out[, , i + 1] <- draw_R(epsilon_out[, i], incid$local, lambda, priors,
@@ -824,14 +825,14 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   conv_check <- lapply(diag, function(x) {
   # Are any of the scale reduction factors >1.1?
    if (any(x$psrf[, "Upper C.I."] > 1.1)) {
-     message("The Gelman-Rubin algorithm suggests the MCMC may not have converged
+       message("The Gelman-Rubin algorithm suggests the MCMC may not have converged
                   within the number of iterations specified.")
-     convergence <- FALSE
-   } else {
-     convergence <- TRUE
+       convergence <- FALSE
+    }  else {
+       convergence <- TRUE
+    }
+      convergence
    }
-    convergence
-  }
   )
   conv_check <- unlist(conv_check)
 
