@@ -34,7 +34,28 @@
 #' get_shape_R_flat(incid, priors)
 #'
 get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
-  t <- seq(t_min, t_max, 1)
+  
+  ## Allow use to specify a different t_min and t_max for each variant, but
+  ## recycle if only one value is given
+  n_variants <- dim(incid)[3]
+  t_min <- recycle_vector(t_min, n_variants)
+  t_max <- recycle_vector(t_max, n_variants)
+
+  windows <- lapply(seq_along(t_min), function(k) {
+    seq.int(t_min[k], t_max[k], by = 1L)
+  })
+  ## At time t, For location l, shape is sum of incidence across all variants plus the
+  ## prior shape.
+  n_steps <- dim(incid)[1]
+  n_locations <- dim(incid)[2]
+  shape <- rep(NA, length(windows[[1]]) * n_locations)
+  for (loc in n_locations) {
+    for (step in n_steps) {
+      ## Use incidence only if step is in the window for this variant
+      ### <-- start here
+      
+    }
+  }
   shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape
   as.numeric(shape)
 }
