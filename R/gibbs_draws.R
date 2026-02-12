@@ -295,10 +295,17 @@ draw_epsilon <- function(R, incid, lambda, priors,
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
+
+  ## Allow use to specify a different t_min and t_max for each variant, but
+  ## recycle if only one value is given
+  n_variants <- dim(incid)[3]
+  t_min <- recycle_vector(t_min, n_variants)
+  t_max <- recycle_vector(t_max, n_variants)
+
   windows <- lapply(seq_along(t_min), function(k) {
     seq.int(t_min[k], t_max[k], by = 1L)
   })
-
+  
   if (is.null(shape_epsilon)) {
     shape_epsilon <- lapply(seq_along(t_min), function(k) {
       get_shape_epsilon(incid, lambda, priors, t_min[k], t_max[k])
@@ -310,11 +317,8 @@ draw_epsilon <- function(R, incid, lambda, priors,
   ## rate is prior + sum of the overall infectivity of the reference across all
   ## locations and time.
   per_variant_rate <- vnapply(seq(2, dim(lambda)[3]), function(e) {
-    per_location_infv <- lapply(seq_along(windows), function(window) {
-      R[windows[[window]], ] * lambda[windows[[window]], , e]
-    })
     browser()
-    sum(per_location_infv) + 1 / priors$epsilon$scale
+    sum(R[windows[[e]], ] * lambda[windows[[e]], , e]) + 1 / priors$epsilon$scale
   })
 
   scale_epsilon <- 1 / per_variant_rate
@@ -406,6 +410,13 @@ draw_R <- function(epsilon, incid, lambda, priors,
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
+
+  ## Allow use to specify a different t_min and t_max for each variant, but
+  ## recycle if only one value is given
+  n_variants <- dim(incid)[3]
+  t_min <- recycle_vector(t_min, n_variants)
+  t_max <- recycle_vector(t_max, n_variants)
+  
 
   windows <- lapply(seq_along(t_min), function(k) {
     seq.int(t_min[k], t_max[k], by = 1L)
