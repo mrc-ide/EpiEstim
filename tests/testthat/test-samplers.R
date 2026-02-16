@@ -138,7 +138,9 @@ test_that("draw_R produces expected results (2 variants, 4 locations)", {
   epsilon <- 1
 
   set.seed(1)
-  x <- lapply(1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors, t_min = 2L))
+  x <- lapply(
+    1:1000, function(e) draw_R(epsilon, incid$local, lambda, priors, t_min = 2L)
+  )
   x_mean <- Reduce("+", x) / length(x)
 
   ## R should be approximately 1

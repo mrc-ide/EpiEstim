@@ -38,7 +38,6 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   ## Allow use to specify a different t_min and t_max for each variant, but
   ## recycle if only one value is given
   steps <- dim(incid)[1]
-  n_locations <- dim(incid)[2]
   n_variants <- dim(incid)[3]
   t_min <- recycle_vector(t_min, n_variants)
   t_max <- recycle_vector(t_max, n_variants)
@@ -58,6 +57,7 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   ## At time t, For location l, shape is sum of incidence across all variants plus the
   ## prior shape.
   shape <- apply(incid * mask, c(1, 2), sum) + priors$R$shape
+  ## START HERE; flattening of shape is incorrect
   as.numeric(shape)
 }
 
@@ -444,9 +444,8 @@ draw_R <- function(epsilon, incid, lambda, priors,
   })
 
   if (is.null(shape_R_flat)) {
-    shape_R_flat <- lapply(seq_along(t_min), function(k) {
-      get_shape_R_flat(incid, priors, t_min[k], t_max[k])
-    })
+    shape_R_flat <- get_shape_R_flat(incid, priors, t_min, t_max)
+    
   }
   ## overall infectivity
   temp <- lambda[windows[[1]], , 1]
