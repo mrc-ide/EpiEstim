@@ -37,26 +37,27 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   
   ## Allow use to specify a different t_min and t_max for each variant, but
   ## recycle if only one value is given
+  steps <- dim(incid)[1]
+  n_locations <- dim(incid)[2]
   n_variants <- dim(incid)[3]
   t_min <- recycle_vector(t_min, n_variants)
   t_max <- recycle_vector(t_max, n_variants)
 
-  windows <- lapply(seq_along(t_min), function(k) {
-    seq.int(t_min[k], t_max[k], by = 1L)
-  })
+
+  ## We want to sum the incidence across all variants
+  ## for each time step, but only if that time step is in the window for that
+  ## variant. We can do this by creating a mask where for each variant, we
+  ## mask the values we don't want.
+  mask13 <- outer(
+    steps,
+    n_variants,
+    function(i, k) i >= t_min[k] & i <= t_max[k]
+  )
+  ## Repeat the mask across the location dimension
+  mask <- array(mask13, dim = dim(incid))
   ## At time t, For location l, shape is sum of incidence across all variants plus the
   ## prior shape.
-  n_steps <- dim(incid)[1]
-  n_locations <- dim(incid)[2]
-  shape <- rep(NA, length(windows[[1]]) * n_locations)
-  for (loc in n_locations) {
-    for (step in n_steps) {
-      ## Use incidence only if step is in the window for this variant
-      ### <-- start here
-      
-    }
-  }
-  shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape
+  shape <- apply(incid * mask, c(1, 2), sum) + priors$R$shape
   as.numeric(shape)
 }
 
