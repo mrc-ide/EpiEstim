@@ -57,7 +57,7 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   ## At time t, For location l, shape is sum of incidence across all variants plus the
   ## prior shape.
   shape <- apply(incid * mask, c(1, 2), sum) + priors$R$shape
-  ## START HERE; flattening of shape is incorrect
+  
   as.numeric(shape)
 }
 
@@ -434,7 +434,10 @@ draw_R <- function(epsilon, incid, lambda, priors,
 
   ## Allow use to specify a different t_min and t_max for each variant, but
   ## recycle if only one value is given
+  steps <- dim(incid)[1]
   n_variants <- dim(incid)[3]
+
+  
   t_min <- recycle_vector(t_min, n_variants)
   t_max <- recycle_vector(t_max, n_variants)
   
@@ -448,22 +451,29 @@ draw_R <- function(epsilon, incid, lambda, priors,
     
   }
   ## overall infectivity
-  temp <- lambda[windows[[1]], , 1]
-  n_variants <- dim(incid)[3]
+  mask13 <- outer(
+    steps,
+    n_variants,
+    function(i, k) i >= t_min[k] & i <= t_max[k]
+  )
+  ## Repeat the mask across the location dimension
+  mask <- array(mask13, dim = dim(incid))
+  
+  temp <- (lambda * mask)[, , 1]
   idx <- seq(2, n_variants, 1)
   for (var in idx) {
     ## We want lambda_1 + e_v lambda_v for all t
-    temp <- temp + epsilon[var - 1] * lambda[windows[[var]], , var]
+    temp <- temp + epsilon[var - 1] * (lambda * mask)[, , var]
   }
-  r_rate <- temp + 1 / priors$R$scale
-  r_scale <- 1 / r_rate
-  scale_flat <- as.numeric(r_scale)
+  rate <- temp + 1 / priors$R$scale
+  scale <- 1 / rate
+  scale_flat <- as.numeric(scale)
   R_flat <- rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
-
-  R_fill <- matrix(R_flat, nrow = length(windows[[1]]), ncol = ncol(incid))
-  R_ref <- matrix(NA, nrow(incid), ncol(incid))
-  R_ref[windows[[1]], ] <- R_fill
-  R_ref
+  ## start here; 
+  R_fill <- matrix(R_flat, nrow = length(t), ncol = ncol(incid))
+  R <- matrix(NA, nrow(incid), ncol(incid))
+  R[t, ] <- R_fill
+  R
 }
 
 ##' Index before which at most a given probability
