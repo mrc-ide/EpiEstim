@@ -466,14 +466,11 @@ draw_R <- function(epsilon, incid, lambda, priors,
     temp <- temp + epsilon[var - 1] * (lambda * mask)[, , var]
   }
   rate <- temp + 1 / priors$R$scale
-  scale <- 1 / rate
-  scale_flat <- as.numeric(scale)
+  r_scale <- 1 / rate
+  scale_flat <- as.numeric(r_scale)
   R_flat <- rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
-  ## start here; 
-  R_fill <- matrix(R_flat, nrow = length(t), ncol = ncol(incid))
-  R <- matrix(NA, nrow(incid), ncol(incid))
-  R[t, ] <- R_fill
-  R
+  matrix(R_flat, nrow(incid), ncol(incid))
+
 }
 
 ##' Index before which at most a given probability
