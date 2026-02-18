@@ -111,9 +111,24 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 #'
 get_shape_epsilon <- function(incid, lambda, priors,
                               t_min = 2L, t_max = nrow(incid)) {
-  t <- seq(t_min, t_max, 1)
-  vnapply(seq(2, dim(lambda)[3]), function(e)
-    sum(incid[t, , e])) + priors$epsilon$shape
+
+  ## For each variant, sum the incidence across all locations and time steps in
+  ## the window for that variant, and add the prior shape.
+  steps <- dim(incid)[1]
+  n_variants <- dim(incid)[3]
+  t_min <- recycle_vector(t_min, n_variants)
+  t_max <- recycle_vector(t_max, n_variants)
+
+  mask13 <- outer(
+    steps,
+    n_variants,
+    function(i, k) i >= t_min[k] & i <= t_max[k]
+  )
+  ## Repeat the mask across the location dimension
+  mask <- array(mask13, dim = dim(incid))
+  incid_masked <- incid * mask
+  vnapply(seq(2, n_variants), function(e)
+    sum(incid_masked[, , e])) + priors$epsilon$shape
 }
 
 #' Set default for Gamma priors
@@ -301,22 +316,22 @@ draw_epsilon <- function(R, incid, lambda, priors,
                          shape_epsilon = NULL,
                          t_min = 2L, t_max = nrow(incid),
                          seed = NULL) {
-  if (!is.integer(t_min) || !is.integer(t_max)){
-    stop("t_min and t_max must be integers")
-  }
-  if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
-  }
-  if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
-  }
-  if(any(R[!is.na(R)] < 0)) {
-    stop("R must be >= 0")
-  }
-  if (!is.null(seed) && !is.numeric(seed)){
-    stop("seed must be numeric")
-  }
-  if (!is.null(seed)) set.seed(seed)
+  ## if (!is.integer(t_min) || !is.integer(t_max)){
+  ##   stop("t_min and t_max must be integers")
+  ## }
+  ## if (t_min < 2 || t_max < 2){
+  ##   stop("t_min and t_max must be >=2")
+  ## }
+  ## if(t_min > nrow(incid) || t_max > nrow(incid)){
+  ##   stop("t_min and t_max must be <= nrow(incid)")
+  ## }
+  ## if(any(R[!is.na(R)] < 0)) {
+  ##   stop("R must be >= 0")
+  ## }
+  ## if (!is.null(seed) && !is.numeric(seed)){
+  ##   stop("seed must be numeric")
+  ## }
+  ## if (!is.null(seed)) set.seed(seed)
 
   ## Allow use to specify a different t_min and t_max for each variant, but
   ## recycle if only one value is given
@@ -415,22 +430,23 @@ draw_R <- function(epsilon, incid, lambda, priors,
                    shape_R_flat = NULL,
                    t_min = NULL, t_max = nrow(incid),
                    seed = NULL) {
-  if (!is.integer(t_min) || !is.integer(t_max)) {
-    stop("t_min and t_max must be integers")
-  }
-  if (t_min < 2 || t_max < 2) {
-    stop("t_min and t_max must be >=2")
-  }
-  if (t_min > nrow(incid) || t_max > nrow(incid)) {
-    stop("t_min and t_max must be <= nrow(incid)")
-  }
-  if (any(epsilon < 0)) {
-    stop("epsilon must be > 0")
-  }
-  if (!is.null(seed) && !is.numeric(seed)) {
-    stop("seed must be numeric")
-  }
-  if (!is.null(seed)) set.seed(seed)
+  ## if (!is.integer(t_min) || !is.integer(t_max)) {
+  ##   stop("t_min and t_max must be integers")
+  ## }
+  
+  ## if (t_min < 2 || t_max < 2) {
+  ##   stop("t_min and t_max must be >=2")
+  ## }
+  ## if (t_min > nrow(incid) || t_max > nrow(incid)) {
+  ##   stop("t_min and t_max must be <= nrow(incid)")
+  ## }
+  ## if (any(epsilon < 0)) {
+  ##   stop("epsilon must be > 0")
+  ## }
+  ## if (!is.null(seed) && !is.numeric(seed)) {
+  ##   stop("seed must be numeric")
+  ## }
+  ## if (!is.null(seed)) set.seed(seed)
 
   ## Allow use to specify a different t_min and t_max for each variant, but
   ## recycle if only one value is given
@@ -441,10 +457,6 @@ draw_R <- function(epsilon, incid, lambda, priors,
   t_min <- recycle_vector(t_min, n_variants)
   t_max <- recycle_vector(t_max, n_variants)
   
-
-  windows <- lapply(seq_along(t_min), function(k) {
-    seq.int(t_min[k], t_max[k], by = 1L)
-  })
 
   if (is.null(shape_R_flat)) {
     shape_R_flat <- get_shape_R_flat(incid, priors, t_min, t_max)
@@ -679,64 +691,64 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
                            precompute = TRUE,
                            reorder_incid = TRUE) {
 
-  ## if (is.null(t_min)) {
-  ##   t_min <- compute_t_min(incid, si_distr)
-  ## }
-  ## if (!is.integer(t_min) || !is.integer(t_max)) {
-  ##   stop("t_min and t_max must be integers")
-  ## }
-  ## if (t_min < 2 || t_max < 2){
-  ##   stop("t_min and t_max must be >=2")
-  ## }
-  ## if(t_min > nrow(incid) || t_max > nrow(incid)){
-  ##   stop("t_min and t_max must be <= nrow(incid)")
-  ## }
-  ## if (any(si_distr[1,] != 0)){
-  ##   stop("Values in the first row of si_distr must be 0")
-  ## }
-  ## if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
-  ##   stop("The sum of each column in si_distr should be equal to 1")
-  ## }
-  ## if (any(si_distr < 0)){
-  ##   stop("si_distr must be >=0")
-  ## }
-  ## if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)){
-  ##   stop("n_iter in mcmc_control must be a positive integer")
-  ## }
-  ## if (mcmc_control$burnin < 0 || !is.integer(mcmc_control$burnin)){
-  ##   stop("burnin in mcmc_control must be a positive integer")
-  ## }
-  ## if (mcmc_control$thin < 0 || !is.integer(mcmc_control$thin)){
-  ##   stop("thin in mcmc_control must be a positive integer")
-  ## }
-  ## if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
-  ##   stop("In mcmc_control, n_iter must be greater than burnin + thin")
-  ## }
-  ## if (!is.null(seed) && !is.numeric(seed)){
-  ##   stop("seed must be numeric")
-  ## }
-  ## if (!is.null(seed)) set.seed(seed)
+  if (is.null(t_min)) {
+    t_min <- compute_t_min(incid, si_distr)
+  }
+  if (!is.integer(t_min) || !is.integer(t_max)) {
+    stop("t_min and t_max must be integers")
+  }
+  if (t_min < 2 || t_max < 2){
+    stop("t_min and t_max must be >=2")
+  }
+  if(t_min > nrow(incid) || t_max > nrow(incid)){
+    stop("t_min and t_max must be <= nrow(incid)")
+  }
+  if (any(si_distr[1,] != 0)){
+    stop("Values in the first row of si_distr must be 0")
+  }
+  if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
+    stop("The sum of each column in si_distr should be equal to 1")
+  }
+  if (any(si_distr < 0)){
+    stop("si_distr must be >=0")
+  }
+  if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)){
+    stop("n_iter in mcmc_control must be a positive integer")
+  }
+  if (mcmc_control$burnin < 0 || !is.integer(mcmc_control$burnin)){
+    stop("burnin in mcmc_control must be a positive integer")
+  }
+  if (mcmc_control$thin < 0 || !is.integer(mcmc_control$thin)){
+    stop("thin in mcmc_control must be a positive integer")
+  }
+  if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
+    stop("In mcmc_control, n_iter must be greater than burnin + thin")
+  }
+  if (!is.null(seed) && !is.numeric(seed)){
+    stop("seed must be numeric")
+  }
+  if (!is.null(seed)) set.seed(seed)
 
-  ## if (t_min > t_max) {
-  ##   stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
-  ## }
+  if (t_min > t_max) {
+    stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
+  }
   
   ## if (!identical(priors, default_priors())) {
   ##   warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
   ## }
 
-  n_steps <- nrow(incid)
-  n_loc <- ncol(incid)
+  n_steps <- dim(incid)[1]
+  n_loc <- dim(incid)[2]
+  ## Allow use to specify a different t_min and t_max for each variant, but
+  ## recycle if only one value is given
+  n_variants <- dim(incid)[3]
+  t_min <- recycle_vector(t_min, n_variants)
+  t_max <- recycle_vector(t_max, n_variants)
 
   incid <- process_I_multivariant(incid, incid_imported)
 
   lambda <- compute_lambda(incid, si_distr)
 
-  ## Allow use to specify a different t_min and t_max for each variant, but
-  ## recycle if only one value is given
-  n_variants <- dim(incid$local)[3]
-  t_min <- recycle_vector(t_min, n_variants)
-  t_max <- recycle_vector(t_max, n_variants)
 
   ## find clever initial values, based on ratio of reproduction numbers
   ## over the whole time period, across all locations together
@@ -784,15 +796,8 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 
   ## Precalculate quantities of interest
   if (precompute) {
-    shape_R_flat <- vapply(seq_len(n_variants), function(i) {
-      get_shape_R_flat(incid$local[, , i, drop = FALSE], priors, t_min[i], t_max[i])
-    }, numeric(1))
-    shape_epsilon <- vapply(seq_len(n_variants), function(i) {
-      get_shape_epsilon(
-        incid$local[, , i, drop = FALSE], lambda[, , i, drop = FALSE],
-        priors, t_min[i], t_max[i]
-      )
-    }, numeric(1))
+    shape_R_flat <- get_shape_R_flat(incid$local, priors, t_min, t_max)
+    shape_epsilon <- get_shape_epsilon(incid$local, lambda, priors, t_min, t_max)
   } else {
     shape_R_flat <- NULL
     shape_epsilon <- NULL
