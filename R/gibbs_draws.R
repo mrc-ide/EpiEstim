@@ -344,9 +344,8 @@ draw_epsilon <- function(R, incid, lambda, priors,
   })
   
   if (is.null(shape_epsilon)) {
-    shape_epsilon <- vnapply(seq(2, n_variants), function(e) {
-      get_shape_epsilon(incid, lambda, priors, t_min[e], t_max[e])
-    })
+    shape_epsilon <- get_shape_epsilon(incid, lambda, priors, t_min, t_max)
+    
   }
   ## the marginal posterior distribution of epsilon is a gamma distribution with
   ## shape = prior_shape +  sum of the incidence of the reference across all
@@ -464,9 +463,9 @@ draw_R <- function(epsilon, incid, lambda, priors,
   }
   ## overall infectivity
   mask13 <- outer(
-    steps,
-    n_variants,
-    function(i, k) i >= t_min[k] & i <= t_max[k]
+    1:steps,
+    2:n_variants,
+    function(i, k) i > t_min[k] & i <= t_max[k]
   )
   ## Repeat the mask across the location dimension
   mask <- array(mask13, dim = dim(incid))
@@ -480,7 +479,10 @@ draw_R <- function(epsilon, incid, lambda, priors,
   rate <- temp + 1 / priors$R$scale
   r_scale <- 1 / rate
   scale_flat <- as.numeric(r_scale)
+  browser()
   R_flat <- rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
+  R_flat[is.nan(R_flat)] <- NA_real_
+  R <- matrix(NA, nrow(incid), ncol(incid))
   matrix(R_flat, nrow(incid), ncol(incid))
 
 }
@@ -744,6 +746,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   n_variants <- dim(incid)[3]
   t_min <- recycle_vector(t_min, n_variants)
   t_max <- recycle_vector(t_max, n_variants)
+  
 
   incid <- process_I_multivariant(incid, incid_imported)
 
