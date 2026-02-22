@@ -48,17 +48,18 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   ## variant. We can do this by creating a mask where for each variant, we
   ## mask the values we don't want.
   mask13 <- outer(
-    steps,
-    n_variants,
-    function(i, k) i >= t_min[k] & i <= t_max[k]
+    1:steps,
+    1:n_variants,
+    function(i, k) i > t_min[k] & i <= t_max[k]
   )
   ## Repeat the mask across the location dimension
   mask <- array(mask13, dim = dim(incid))
+  mask12 <- apply(mask, c(1, 2), any)
   ## At time t, For location l, shape is sum of incidence across all variants plus the
   ## prior shape.
-  shape <- apply(incid * mask, c(1, 2), sum) + priors$R$shape
-  
-  as.numeric(shape)
+  shape <- apply(incid * mask, c(1, 2), sum) + priors$R$shape * mask12
+
+  shape
 }
 
 #' Precompute shape of posterior distribution for epsilon
@@ -432,7 +433,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
   ## if (!is.integer(t_min) || !is.integer(t_max)) {
   ##   stop("t_min and t_max must be integers")
   ## }
-  
+
   ## if (t_min < 2 || t_max < 2) {
   ##   stop("t_min and t_max must be >=2")
   ## }
@@ -450,41 +451,37 @@ draw_R <- function(epsilon, incid, lambda, priors,
   ## Allow use to specify a different t_min and t_max for each variant, but
   ## recycle if only one value is given
   steps <- dim(incid)[1]
+  n_locations <- dim(incid)[2]
   n_variants <- dim(incid)[3]
 
-  
+
   t_min <- recycle_vector(t_min, n_variants)
   t_max <- recycle_vector(t_max, n_variants)
-  
+
 
   if (is.null(shape_R_flat)) {
     shape_R_flat <- get_shape_R_flat(incid, priors, t_min, t_max)
-    
   }
-  ## overall infectivity
-  mask13 <- outer(
-    1:steps,
-    2:n_variants,
-    function(i, k) i > t_min[k] & i <= t_max[k]
-  )
-  ## Repeat the mask across the location dimension
-  mask <- array(mask13, dim = dim(incid))
-  
-  temp <- (lambda * mask)[, , 1]
-  idx <- seq(2, n_variants, 1)
-  for (var in idx) {
-    ## We want lambda_1 + e_v lambda_v for all t
-    temp <- temp + epsilon[var - 1] * (lambda * mask)[, , var]
-  }
-  rate <- temp + 1 / priors$R$scale
-  r_scale <- 1 / rate
-  scale_flat <- as.numeric(r_scale)
-  browser()
-  R_flat <- rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
-  R_flat[is.nan(R_flat)] <- NA_real_
-  R <- matrix(NA, nrow(incid), ncol(incid))
-  matrix(R_flat, nrow(incid), ncol(incid))
+  rmat <- matrix(NA_real_, steps, n_locations)
 
+  for (step in seq_len(steps)) {
+    for (loc in seq_len(n_locations)) {
+      rate <- 0
+      for (var in seq_len(n_variants)) {
+        ## Check if step is in the window for that variant
+        if (step >= t_min[var] && step <= t_max[var]) {
+          ## If it is, add the contribution of that variant to the rate
+          rate <- 1 / priors$R$scale +
+            lambda[step, loc, var] * ifelse(var == 1, 1, epsilon[var - 1])
+        }
+      }
+      r_scale <- 1 / rate
+      rsample <-
+        rgamma(1, shape = shape_R_flat[step, loc], scale = r_scale)
+      rmat[step, loc] <- ifelse(is.nan(rsample), NA_real_, rsample)
+    }
+  }
+  rmat
 }
 
 ##' Index before which at most a given probability
@@ -939,6 +936,6 @@ process_I_multivariant <- function(incid, incid_imported = NULL) {
   res
 }
 
-## TODO: check dimensions of objects is correct everywhere
-## TODO: fix number of variants to be 2
+  ## TODO: check dimensions of objects is correct everywhere
+  ## TODO: fix number of variants to be 2
 
