@@ -466,19 +466,28 @@ draw_R <- function(epsilon, incid, lambda, priors,
 
   for (step in seq_len(steps)) {
     for (loc in seq_len(n_locations)) {
-      rate <- 0
+      step_in_any_window <- FALSE
       for (var in seq_len(n_variants)) {
         ## Check if step is in the window for that variant
         if (step >= t_min[var] && step <= t_max[var]) {
           ## If it is, add the contribution of that variant to the rate
           rate <- 1 / priors$R$scale +
             lambda[step, loc, var] * ifelse(var == 1, 1, epsilon[var - 1])
+
+          step_in_any_window <- TRUE
         }
       }
-      r_scale <- 1 / rate
-      rsample <-
-        rgamma(1, shape = shape_R_flat[step, loc], scale = r_scale)
-      rmat[step, loc] <- ifelse(is.nan(rsample), NA_real_, rsample)
+      ## If this time step is not in the window for any variant,
+      ## rate would not have been populated. Set R to NA_real_
+      if (step_in_any_window) {
+        r_scale <- 1 / rate
+        rsample <-
+          rgamma(1, shape = shape_R_flat[step, loc], scale = r_scale)
+        rmat[step, loc] <- ifelse(is.nan(rsample), NA_real_, rsample)
+      } else {
+        rmat[step, loc] <- NA_real_
+      }
+
     }
   }
   rmat
