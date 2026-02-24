@@ -121,9 +121,9 @@ get_shape_epsilon <- function(incid, lambda, priors,
   t_max <- recycle_vector(t_max, n_variants)
 
   mask13 <- outer(
-    steps,
-    n_variants,
-    function(i, k) i >= t_min[k] & i <= t_max[k]
+    1:steps,
+    1:n_variants,
+    function(i, k) i > t_min[k] & i <= t_max[k]
   )
   ## Repeat the mask across the location dimension
   mask <- array(mask13, dim = dim(incid))
@@ -467,11 +467,12 @@ draw_R <- function(epsilon, incid, lambda, priors,
   for (step in seq_len(steps)) {
     for (loc in seq_len(n_locations)) {
       step_in_any_window <- FALSE
+      rate <- 0
       for (var in seq_len(n_variants)) {
         ## Check if step is in the window for that variant
         if (step > t_min[var] && step <= t_max[var]) {
           ## If it is, add the contribution of that variant to the rate
-          rate <- 1 / priors$R$scale +
+          rate <- rate +
             lambda[step, loc, var] * ifelse(var == 1, 1, epsilon[var - 1])
 
           step_in_any_window <- TRUE
@@ -480,6 +481,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
       ## If this time step is not in the window for any variant,
       ## rate would not have been populated. Set R to NA_real_
       if (step_in_any_window) {
+        rate <- rate + 1 / priors$R$scale
         r_scale <- 1 / rate
         rsample <-
           rgamma(1, shape = shape_R_flat[step, loc], scale = r_scale)
