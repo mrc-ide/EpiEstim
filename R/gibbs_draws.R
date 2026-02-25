@@ -128,6 +128,7 @@ get_shape_epsilon <- function(incid, lambda, priors,
   ## Repeat the mask across the location dimension
   mask <- array(mask13, dim = dim(incid))
   incid_masked <- incid * mask
+  
   vnapply(seq(2, n_variants), function(e)
     sum(incid_masked[, , e])) + priors$epsilon$shape
 }
@@ -341,12 +342,11 @@ draw_epsilon <- function(R, incid, lambda, priors,
   t_max <- recycle_vector(t_max, n_variants)
 
   windows <- lapply(seq_along(t_min), function(k) {
-    seq.int(t_min[k], t_max[k], by = 1L)
+    seq.int(t_min[k] + 1, t_max[k], by = 1L)
   })
   
   if (is.null(shape_epsilon)) {
     shape_epsilon <- get_shape_epsilon(incid, lambda, priors, t_min, t_max)
-    
   }
   ## the marginal posterior distribution of epsilon is a gamma distribution with
   ## shape = prior_shape +  sum of the incidence of the reference across all
@@ -812,7 +812,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
     shape_R_flat <- NULL
     shape_epsilon <- NULL
   }
-
+  
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
     median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
@@ -875,6 +875,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 
     }
   )
+
   conv_check <- lapply(diag, function(x) {
   # Are any of the scale reduction factors >1.1?
    if (any(x$psrf[, "Upper C.I."] > 1.1)) {
