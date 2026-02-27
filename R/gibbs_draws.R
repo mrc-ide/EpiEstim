@@ -1,3 +1,30 @@
+##' Mask the time steps not used for joint estimatiom
+##' 
+##' This function returns a logical array of the same dimensions as the
+##' incidence array, where the values are TRUE for the time steps that used for
+##' joint estimation for that variant and FALSE otherwise. That is, if joint
+##' estimation for variant k is performed between time steps t_min[k] and t_max[k],
+##' then the values in the first dimension of the array will be TRUE for time
+##' steps between t_min[k] and t_max[k] and FALSE otherwise, for all locations
+##' and for variant k.  
+##' @return a logical array of the same dimensions as the incidence array
+##' @author Sangeeta Bhatia
+get_time_mask <- function(incid, t_min, t_max) {
+  steps <- dim(incid)[1]
+  n_variants <- dim(incid)[3]
+  t_min <- recycle_vector(t_min, n_variants)
+  t_max <- recycle_vector(t_max, n_variants)
+
+  mask13 <- outer(
+    1:steps,
+    1:n_variants,
+    function(i, k) i >= t_min[k] & i <= t_max[k]
+  )
+  ## Repeat the mask across the location dimension
+  array(mask13, dim = dim(incid))
+}
+
+
 #' Precompute shape of posterior distribution for R
 #'
 #' @param incid a multidimensional array containing values of the (local)
@@ -35,28 +62,10 @@
 #'
 get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   
-  ## Allow use to specify a different t_min and t_max for each variant, but
-  ## recycle if only one value is given
-  steps <- dim(incid)[1]
-  n_variants <- dim(incid)[3]
-  t_min <- recycle_vector(t_min, n_variants)
-  t_max <- recycle_vector(t_max, n_variants)
-
-
-  ## We want to sum the incidence across all variants
-  ## for each time step, but only if that time step is in the window for that
-  ## variant. We can do this by creating a mask where for each variant, we
-  ## mask the values we don't want.
-  mask13 <- outer(
-    1:steps,
-    1:n_variants,
-    function(i, k) i > t_min[k] & i <= t_max[k]
-  )
-  ## Repeat the mask across the location dimension
-  mask <- array(mask13, dim = dim(incid))
+  mask <- get_time_mask(incid, t_min, t_max)
   mask12 <- apply(mask, c(1, 2), any)
-  ## At time t, For location l, shape is sum of incidence across all variants plus the
-  ## prior shape.
+  ## At time t, for location l, shape is sum of incidence across all variants plus 
+  ## the prior shape.
   shape <- apply(incid * mask, c(1, 2), sum) + priors$R$shape * mask12
 
   shape
@@ -568,16 +577,6 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 }
 
 
-recycle_vector <- function(vec, n) {
-  
-  if (length(vec) == 1) {
-    rep.int(vec, n)
-  } else if (length(vec) == n) {
-    vec
-  } else {
-    stop("vec must be of length 1 or n")
-  }
-}
 
 #' Jointly estimate the instantaneous reproduction number for a reference
 #'   pathogen/strain/variant and the relative transmissibility of a

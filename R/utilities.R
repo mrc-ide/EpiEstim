@@ -445,3 +445,20 @@ modify_defaults <- function(defaults, x, strict = TRUE) {
   }
   utils::modifyList(defaults, x, keep.null = TRUE) # keep.null is needed here
 }
+
+
+## If a single number i is provided, this function recycles it to a vector of
+## length n. If a vector of length n is provided, it is returned as is.
+## Otherwise, an error is thrown.
+recycle_vector <- function(vec, n) {
+  if (length(vec) == 1) {
+    rep.int(vec, n)
+  } else if (length(vec) == n) {
+    vec
+  } else {
+    stop("vec must be of length 1 or n")
+  }
+}
+
+
+
