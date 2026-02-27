@@ -122,20 +122,8 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 get_shape_epsilon <- function(incid, lambda, priors,
                               t_min = 2L, t_max = nrow(incid)) {
 
-  ## For each variant, sum the incidence across all locations and time steps in
-  ## the window for that variant, and add the prior shape.
-  steps <- dim(incid)[1]
-  n_variants <- dim(incid)[3]
-  t_min <- recycle_vector(t_min, n_variants)
-  t_max <- recycle_vector(t_max, n_variants)
-
-  mask13 <- outer(
-    1:steps,
-    1:n_variants,
-    function(i, k) i > t_min[k] & i <= t_max[k]
-  )
-  ## Repeat the mask across the location dimension
-  mask <- array(mask13, dim = dim(incid))
+ 
+  mask <- get_time_mask(incid, t_min, t_max)
   incid_masked <- incid * mask
   
   vnapply(seq(2, n_variants), function(e)
