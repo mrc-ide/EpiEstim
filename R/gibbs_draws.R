@@ -462,7 +462,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
       rate <- 0
       for (var in seq_len(n_variants)) {
         ## Check if step is in the window for that variant
-        if (step > t_min[var] && step <= t_max[var]) {
+        if (step >= t_min[var] && step <= t_max[var]) {
           ## If it is, add the contribution of that variant to the rate
           rate <- rate +
             lambda[step, loc, var] * ifelse(var == 1, 1, epsilon[var - 1])
