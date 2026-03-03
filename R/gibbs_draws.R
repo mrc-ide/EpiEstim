@@ -467,7 +467,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
       rate <- 0
       for (var in seq_len(n_variants)) {
         ## Check if step is in the window for that variant
-        if (step > t_min[var] && step <= t_max[var]) {
+        if (step >= t_min[var] && step <= t_max[var]) {
           ## If it is, add the contribution of that variant to the rate
           rate <- rate +
             lambda[step, loc, var] * ifelse(var == 1, 1, epsilon[var - 1])
@@ -729,9 +729,9 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
     stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
   }
   
-  ## if (!identical(priors, default_priors())) {
-  ##   warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
-  ## }
+  if (!identical(priors, default_priors())) {
+    warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
+  }
 
   n_steps <- dim(incid)[1]
   n_loc <- dim(incid)[2]
