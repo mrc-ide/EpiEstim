@@ -125,7 +125,7 @@ get_shape_epsilon <- function(incid, lambda, priors,
  
   mask <- get_time_mask(incid, t_min, t_max)
   incid_masked <- incid * mask
-  
+  n_variants <- dim(incid)[3]
   vnapply(seq(2, n_variants), function(e)
     sum(incid_masked[, , e])) + priors$epsilon$shape
 }
@@ -331,22 +331,27 @@ draw_epsilon <- function(R, incid, lambda, priors,
   ##   stop("seed must be numeric")
   ## }
   ## if (!is.null(seed)) set.seed(seed)
+
+  ## Allow use to specify a different t_min and t_max for each variant, but
+  ## recycle if only one value is given
   n_variants <- dim(incid)[3]
-  mask <- get_time_mask(incid, t_min, t_max)
-  mask12 <- apply(mask, c(1, 2), any)
-  r_masked <- R * mask12
-  lambda_masked <- lambda * mask
+  t_min <- recycle_vector(t_min, n_variants)
+  t_max <- recycle_vector(t_max, n_variants)
+
+  windows <- lapply(seq_along(t_min), function(k) {
+    seq.int(t_min[k] + 1, t_max[k], by = 1L)
+  })
   
   if (is.null(shape_epsilon)) {
     shape_epsilon <- get_shape_epsilon(incid, lambda, priors, t_min, t_max)
   }
   ## the marginal posterior distribution of epsilon is a gamma distribution with
-  ## shape = prior_shape + sum of the incidence of the reference across all
+  ## shape = prior_shape +  sum of the incidence of the reference across all
   ## locations and time.
   ## rate is prior + sum of the overall infectivity of the reference across all
   ## locations and time.
   per_variant_rate <- vnapply(seq(2, n_variants), function(e) {
-    sum(r_masked[e, ] * lambda_masked[, , e]) + 1 / priors$epsilon$scale
+    sum(R[windows[[e]], ] * lambda[windows[[e]], , e]) + 1 / priors$epsilon$scale
   })
 
   scale_epsilon <- 1 / per_variant_rate
@@ -462,7 +467,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
       rate <- 0
       for (var in seq_len(n_variants)) {
         ## Check if step is in the window for that variant
-        if (step >= t_min[var] && step <= t_max[var]) {
+        if (step > t_min[var] && step <= t_max[var]) {
           ## If it is, add the contribution of that variant to the rate
           rate <- rate +
             lambda[step, loc, var] * ifelse(var == 1, 1, epsilon[var - 1])
