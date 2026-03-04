@@ -339,7 +339,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
   t_max <- recycle_vector(t_max, n_variants)
 
   windows <- lapply(seq_along(t_min), function(k) {
-    seq.int(t_min[k] + 1, t_max[k], by = 1L)
+    seq.int(t_min[k], t_max[k], by = 1L)
   })
   
   if (is.null(shape_epsilon)) {
@@ -350,6 +350,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
   ## locations and time.
   ## rate is prior + sum of the overall infectivity of the reference across all
   ## locations and time.
+  ## mask <- get_time_mask(incid, t_min, t_max)
   per_variant_rate <- vnapply(seq(2, n_variants), function(e) {
     sum(R[windows[[e]], ] * lambda[windows[[e]], , e]) + 1 / priors$epsilon$scale
   })
