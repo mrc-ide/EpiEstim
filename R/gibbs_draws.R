@@ -335,12 +335,6 @@ draw_epsilon <- function(R, incid, lambda, priors,
   ## Allow use to specify a different t_min and t_max for each variant, but
   ## recycle if only one value is given
   n_variants <- dim(incid)[3]
-  t_min <- recycle_vector(t_min, n_variants)
-  t_max <- recycle_vector(t_max, n_variants)
-
-  windows <- lapply(seq_along(t_min), function(k) {
-    seq.int(t_min[k], t_max[k], by = 1L)
-  })
   
   if (is.null(shape_epsilon)) {
     shape_epsilon <- get_shape_epsilon(incid, lambda, priors, t_min, t_max)
