@@ -350,9 +350,14 @@ draw_epsilon <- function(R, incid, lambda, priors,
   ## locations and time.
   ## rate is prior + sum of the overall infectivity of the reference across all
   ## locations and time.
-  ## mask <- get_time_mask(incid, t_min, t_max)
+  
+  mask <- get_time_mask(incid, t_min, t_max)
+  mask12 <- apply(mask, c(1, 2), any)
+  r_masked <- R * mask12
+  lambda_masked <- lambda * mask
   per_variant_rate <- vnapply(seq(2, n_variants), function(e) {
-    sum(R[windows[[e]], ] * lambda[windows[[e]], , e]) + 1 / priors$epsilon$scale
+    sum(r_masked * lambda_masked[, , e], na.rm = TRUE) +
+      1 / priors$epsilon$scale
   })
 
   scale_epsilon <- 1 / per_variant_rate
