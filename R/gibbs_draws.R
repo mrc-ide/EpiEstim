@@ -450,20 +450,14 @@ draw_R <- function(epsilon, incid, lambda, priors,
   steps <- dim(incid)[1]
   n_locations <- dim(incid)[2]
   n_variants <- dim(incid)[3]
-
-
-  t_min <- recycle_vector(t_min, n_variants)
-  t_max <- recycle_vector(t_max, n_variants)
-
+  mask <- get_time_mask(incid, t_min, t_max)
+  mask12 <- apply(mask, c(1, 2), any)
 
   if (is.null(shape_R_flat)) {
     shape_R_flat <- get_shape_R_flat(incid, priors, t_min, t_max)
   }
   rmat <- matrix(NA_real_, steps, n_locations)
-  rate <- matrix(0, nrow = steps, ncol = n_locations)
-  mask <- get_time_mask(incid, t_min, t_max)
-  mask12 <- apply(mask, c(1, 2), any)
-  
+
   lambda_masked <- lambda * mask
   for (var in seq(2, n_variants)) {
     lambda_masked[ , , var] <- lambda_masked[, , var] * epsilon[var - 1]
