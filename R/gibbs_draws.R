@@ -460,34 +460,23 @@ draw_R <- function(epsilon, incid, lambda, priors,
     shape_R_flat <- get_shape_R_flat(incid, priors, t_min, t_max)
   }
   rmat <- matrix(NA_real_, steps, n_locations)
-
-  for (step in seq_len(steps)) {
-    for (loc in seq_len(n_locations)) {
-      step_in_any_window <- FALSE
-      rate <- 0
-      for (var in seq_len(n_variants)) {
-        ## Check if step is in the window for that variant
-        if (step >= t_min[var] && step <= t_max[var]) {
-          ## If it is, add the contribution of that variant to the rate
-          rate <- rate +
-            lambda[step, loc, var] * ifelse(var == 1, 1, epsilon[var - 1])
-
-          step_in_any_window <- TRUE
-        }
-      }
-      ## If this time step is not in the window for any variant,
-      ## rate would not have been populated. Set R to NA_real_
-      if (step_in_any_window) {
-        rate <- rate + 1 / priors$R$scale
-        r_scale <- 1 / rate
-        rsample <-
-          rgamma(1, shape = shape_R_flat[step, loc], scale = r_scale)
-        rmat[step, loc] <- ifelse(is.nan(rsample), NA_real_, rsample)
-      } else {
-        rmat[step, loc] <- NA_real_
-      }
-    }
+  rate <- matrix(0, nrow = steps, ncol = n_locations)
+  mask <- get_time_mask(incid, t_min, t_max)
+  mask12 <- apply(mask, c(1, 2), any)
+  
+  lambda_masked <- lambda * mask
+  for (var in seq(2, n_variants)) {
+    lambda_masked[ , , var] <- lambda_masked[, , var] * epsilon[var - 1]
   }
+
+  rate_tmp <-
+    apply(lambda_masked, c(1, 2), sum, na.rm = TRUE) +
+    1 / priors$R$scale * mask12
+  rmat <-
+    rgamma(steps * n_locations, shape = shape_R_flat, scale = 1 / rate_tmp)
+  rmat <- matrix(rmat, nrow = steps, ncol = n_locations)
+  rmat[!mask12] <- NA_real_
+
   rmat
 }
 
