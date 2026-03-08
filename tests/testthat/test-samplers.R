@@ -858,6 +858,43 @@ test_that("estimate_advantage uses the correct t_min", {
 })
 
 
+test_that("estimate_advantage uses the correct t_min for each variant", {
+  n_v <- 3
+  n_loc <- 3 # 3 locations
+  T <- 100 # 100 time steps
+
+  priors <- default_priors()
+
+  # constant incidence 10 per day everywhere
+  incid <- array(10, dim = c(T, n_loc, n_v))
+
+  t_min_ref <- 2L
+  t_min_v1 <- 5L
+  t_min_v2 <- 10L
+  
+  ## Make the incidence before t_min very large so that if the t_min is not
+  ## correctly used, the R estimates will be very large and the test will fail.
+  incid[seq_len(t_min_ref - 1), , 1] <- 1000
+  incid[seq_len(t_min_v1 - 1), , 2] <- 1000
+  incid[seq_len(t_min_v2 - 1), , 3] <- 1000
+
+  # arbitrary serial interval
+  w_v <- c(0, 0.2, 0.5, 0.3)
+  si_distr <- cbind(w_v, w_v, w_v)
+
+  t_min <- c(t_min_ref, t_min_v1, t_min_v2)
+
+  x <- estimate_advantage(incid, si_distr, priors, t_min = t_min, seed = 1)
+  ## If t_min is 2, the first row if x$R will be NA
+  expect_true(all(is.na(x$R[1, , ])))
+  ## and not after that.
+  expect_false(anyNA(x$R[seq(2, dim(x$R)[1]), , ]))
+  ## And R should be approximately 1
+  mean_R <- rowMeans(x$R, dims = 2)
+  expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+})
+
 
 test_that("estimate_advantage convergence checks work with >2 variants", {
   n_v <- 3 # 3 variants

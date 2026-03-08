@@ -24,6 +24,60 @@ get_time_mask <- function(incid, t_min, t_max) {
   array(mask13, dim = dim(incid))
 }
 
+## Normalise and validate time bounds for scalar or per-variant inputs.
+normalise_time_bounds <- function(incid, t_min, t_max, si_distr = NULL) {
+  n_variants <- dim(incid)[3]
+  n_steps <- nrow(incid)
+
+  to_list <- function(x) {
+    if (is.null(x)) {
+      list(NULL)
+    } else if (is.list(x)) {
+      x
+    } else {
+      as.list(x)
+    }
+  }
+
+  t_min <- to_list(t_min)
+  t_max <- to_list(t_max)
+
+  is_null_t_min <- vlapply(t_min, is.null)
+  if (any(is_null_t_min)) {
+    t_min_default <- compute_t_min(incid, si_distr, miss_at_most = 0.05)
+    t_min[is_null_t_min] <- t_min_default
+  }
+
+  is_null_t_max <- vlapply(t_max, is.null)
+  if (any(is_null_t_max)) {
+    t_max[is_null_t_max] <- n_steps
+  }
+
+  t_min <- unlist(t_min, use.names = FALSE)
+  t_max <- unlist(t_max, use.names = FALSE)
+
+  t_min <- recycle_vector(t_min, n_variants)
+  t_max <- recycle_vector(t_max, n_variants)
+
+  if (!is.integer(t_min) || !is.integer(t_max)) {
+    stop("t_min and t_max must be integers")
+  }
+  if (anyNA(t_min) || anyNA(t_max)) {
+    stop("t_min and t_max must not contain NA")
+  }
+  if (any(t_min < 2) || any(t_max < 2)) {
+    stop("t_min and t_max must be >=2")
+  }
+  if (any(t_min > n_steps) || any(t_max > n_steps)) {
+    stop("t_min and t_max must be <= nrow(incid)")
+  }
+  if (any(t_min > t_max)) {
+    stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
+  }
+
+  list(t_min = t_min, t_max = t_max)
+}
+
 
 #' Precompute shape of posterior distribution for R
 #'
@@ -315,15 +369,10 @@ draw_epsilon <- function(R, incid, lambda, priors,
                          shape_epsilon = NULL,
                          t_min = 2L, t_max = nrow(incid),
                          seed = NULL) {
-  ## if (!is.integer(t_min) || !is.integer(t_max)){
-  ##   stop("t_min and t_max must be integers")
-  ## }
-  ## if (t_min < 2 || t_max < 2){
-  ##   stop("t_min and t_max must be >=2")
-  ## }
-  ## if(t_min > nrow(incid) || t_max > nrow(incid)){
-  ##   stop("t_min and t_max must be <= nrow(incid)")
-  ## }
+  bounds <- normalise_time_bounds(incid, t_min, t_max)
+  t_min <- bounds$t_min
+  t_max <- bounds$t_max
+
   ## if(any(R[!is.na(R)] < 0)) {
   ##   stop("R must be >= 0")
   ## }
@@ -427,16 +476,10 @@ draw_R <- function(epsilon, incid, lambda, priors,
                    shape_R_flat = NULL,
                    t_min = NULL, t_max = nrow(incid),
                    seed = NULL) {
-  ## if (!is.integer(t_min) || !is.integer(t_max)) {
-  ##   stop("t_min and t_max must be integers")
-  ## }
+  bounds <- normalise_time_bounds(incid, t_min, t_max)
+  t_min <- bounds$t_min
+  t_max <- bounds$t_max
 
-  ## if (t_min < 2 || t_max < 2) {
-  ##   stop("t_min and t_max must be >=2")
-  ## }
-  ## if (t_min > nrow(incid) || t_max > nrow(incid)) {
-  ##   stop("t_min and t_max must be <= nrow(incid)")
-  ## }
   ## if (any(epsilon < 0)) {
   ##   stop("epsilon must be > 0")
   ## }
@@ -670,18 +713,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
                            precompute = TRUE,
                            reorder_incid = TRUE) {
 
-  if (is.null(t_min)) {
-    t_min <- compute_t_min(incid, si_distr)
-  }
-  if (!is.integer(t_min) || !is.integer(t_max)) {
-    stop("t_min and t_max must be integers")
-  }
-  if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
-  }
-  if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
-  }
+
   if (any(si_distr[1,] != 0)){
     stop("Values in the first row of si_distr must be 0")
   }
@@ -707,22 +739,18 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
-
-  if (t_min > t_max) {
-    stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
-  }
   
   if (!identical(priors, default_priors())) {
     warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
   }
 
+  bounds <- normalise_time_bounds(incid, t_min, t_max, si_distr = si_distr)
+  t_min <- bounds$t_min
+  t_max <- bounds$t_max
+
   n_steps <- dim(incid)[1]
   n_loc <- dim(incid)[2]
-  ## Allow use to specify a different t_min and t_max for each variant, but
-  ## recycle if only one value is given
   n_variants <- dim(incid)[3]
-  t_min <- recycle_vector(t_min, n_variants)
-  t_max <- recycle_vector(t_max, n_variants)
   
 
   incid <- process_I_multivariant(incid, incid_imported)
@@ -919,4 +947,3 @@ process_I_multivariant <- function(incid, incid_imported = NULL) {
 
   ## TODO: check dimensions of objects is correct everywhere
   ## TODO: fix number of variants to be 2
-
