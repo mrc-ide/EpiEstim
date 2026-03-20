@@ -15,13 +15,16 @@ get_time_mask <- function(incid, t_min, t_max) {
   t_min <- recycle_vector(t_min, n_variants)
   t_max <- recycle_vector(t_max, n_variants)
 
-  mask13 <- outer(
-    1:steps,
-    1:n_variants,
-    function(i, k) i >= t_min[k] & i <= t_max[k]
-  )
-  ## Repeat the mask across the location dimension
-  array(mask13, dim = dim(incid))
+  mask <- array(FALSE, dim = dim(incid))
+  for (step in seq_len(steps)) {
+    for (loc in seq_len(dim(incid)[2])) {
+      for (var in seq_len(n_variants)) {
+        mask[step, loc, var] <-
+          step >= t_min[var] && step <= t_max[var]
+      }
+    }
+  }
+  mask
 }
 
 ## Normalise and validate time bounds for scalar or per-variant inputs.
@@ -494,7 +497,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
   n_locations <- dim(incid)[2]
   n_variants <- dim(incid)[3]
   mask <- get_time_mask(incid, t_min, t_max)
-  mask12 <- apply(mask, c(1, 2), any)
+  
 
   if (is.null(shape_R_flat)) {
     shape_R_flat <- get_shape_R_flat(incid, priors, t_min, t_max)
@@ -508,11 +511,11 @@ draw_R <- function(epsilon, incid, lambda, priors,
 
   rate_tmp <-
     apply(lambda_masked, c(1, 2), sum, na.rm = TRUE) +
-    1 / priors$R$scale * mask12
+    1 / priors$R$scale 
   rmat <-
     rgamma(steps * n_locations, shape = shape_R_flat, scale = 1 / rate_tmp)
   rmat <- matrix(rmat, nrow = steps, ncol = n_locations)
-  rmat[!mask12] <- NA_real_
+  rmat[!mask[, , 1]] <- NA_real_
 
   rmat
 }
