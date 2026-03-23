@@ -95,7 +95,7 @@
       <h1 data-toc-skip>EpiEstim: a demonstration</h1>
                         <h4 data-toc-skip class="author">Anne Cori</h4>
             
-            <h4 data-toc-skip class="date">2025-05-21</h4>
+            <h4 data-toc-skip class="date">2026-03-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/main/vignettes/short_demo.Rmd" class="external-link"><code>vignettes/short_demo.Rmd</code></a></small>
       <div class="hidden name"><code>short_demo.Rmd</code></div>
@@ -161,15 +161,15 @@ H1N1 influenza in San Antonio, Texas, USA (from Morgan et al., EID
 daily incidence data:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/conversions.html" class="external-link">as.incidence</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">I</span>, dates <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">dates</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: The `guide` argument in `scale_*()` cannot be `FALSE`. This was deprecated in</span></span>
-<span><span class="co">#&gt; ggplot2 3.3.4.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use "none" instead.</span></span>
+<span><span class="co">#&gt; Warning: `aes_string()` was deprecated in ggplot2 3.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use tidy evaluation idioms with `aes()`.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See also `vignette("ggplot2-in-packages")` for more information.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">incidence</span> package.</span></span>
 <span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/reconhub/incidence/issues&gt;</span>.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
-<p><img src="figs-demo/incidence-1.png" width="576"></p>
+<p><img src="figs-demo/incidence-1.png" class="r-plt" alt="" width="576"></p>
 <p>We can run <code>estimate_R</code> on the incidence data to estimate
 the reproduction number R. For this, we need to specify i) the time
 window(s) over which to estimate R and ii) information on the
@@ -229,8 +229,15 @@ containing details on the estimated reproduction number. Each line
 corresponds to one time window.</p>
 <p>The output can be plotted as follows:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_parametric_si</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs-demo/plot_r_parametric_si-1.png" width="576"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_parametric_si</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use the `linewidth` argument instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">EpiEstim</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/mrc-ide/EpiEstim/issues&gt;</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
+<p><img src="figs-demo/plot_r_parametric_si-1.png" class="r-plt" alt="" width="576"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># use `type = "R"`, `type = "incid"` or `type = "SI"` </span></span>
 <span><span class="co"># to generate only one of the 3 plots</span></span></code></pre></div>
@@ -256,7 +263,7 @@ not only a mean and standard deviation, this can be fed into
 <span><span class="co"># si_distr gives the probability mass function of the serial interval for </span></span>
 <span><span class="co"># time intervals 0, 1, 2, etc.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_non_parametric_si</span>, <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs-demo/estimate_r_non_parametric_si-1.png" width="576"></p>
+<p><img src="figs-demo/estimate_r_non_parametric_si-1.png" class="r-plt" alt="" width="576"></p>
 <p>Note that you can obtain such a full distribution of the serial
 interval using <code>discr_si</code> function (this is how
 <code>Flu2009$si_distr</code> was obtained, with additional
@@ -293,7 +300,7 @@ the user, as in the example below:</p>
 <span><span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span></span>
 <span><span class="co">#&gt;     To change this change the t_start and t_end arguments.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_uncertain_si</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="figs-demo/estimate_r_uncertain_si-1.png" width="576"></p>
+<p><img src="figs-demo/estimate_r_uncertain_si-1.png" class="r-plt" alt="" width="576"></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## the third plot now shows all the SI distributions considered</span></span></code></pre></div>
 <p>Note that the results above are obtained numerically and thus can be
@@ -391,7 +398,7 @@ posterior distribution:</p>
 <span><span class="co">#&gt;  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_si_from_data</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs-demo/estimate_r_si_from_data-1.png" width="576"></p>
+<p><img src="figs-demo/estimate_r_si_from_data-1.png" class="r-plt" alt="" width="576"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## the third plot now shows the posterior sample of SI distributions </span></span>
 <span><span class="co">## that were integrated over</span></span></code></pre></div>
@@ -469,7 +476,7 @@ specifying:</p>
 <span>                           std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_weekly</span>, <span class="st">"R"</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="figs-demo/estimate_r_weekly-1.png" width="576"></p>
+<p><img src="figs-demo/estimate_r_weekly-1.png" class="r-plt" alt="" width="576"></p>
 <p>For biweekly estimates:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t_start</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="cn">T</span><span class="op">-</span><span class="fl">13</span><span class="op">)</span> <span class="co"># starting at 2 as conditional on the past observations</span></span>
@@ -483,7 +490,7 @@ specifying:</p>
 <span>                             std_si <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_biweekly</span>, <span class="st">"R"</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="figs-demo/estimate_r_biweekly-1.png" width="576"></p>
+<p><img src="figs-demo/estimate_r_biweekly-1.png" class="r-plt" alt="" width="576"></p>
 <p>So far we have used estimates on sliding windows. Sometimes it may be
 useful to consider consecutive non overlapping windows as well. For
 instance, in the flu outbreak we are considering, the school closed from
@@ -504,7 +511,7 @@ an impact on transmissibility.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_before_during_after_closure</span>, <span class="st">"R"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs-demo/estimate_r_before_during_after_closure-1.png" width="576"></p>
+<p><img src="figs-demo/estimate_r_before_during_after_closure-1.png" class="r-plt" alt="" width="576"></p>
 <p>The results above suggest that the school closure was effective in
 terms of reducing transmissibility, as the estimated reproduction number
 during the school closure was significantly lower than that before
@@ -533,7 +540,7 @@ for backimputation.</p>
 <span><span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span></span>
 <span><span class="co">#&gt;     To change this change the t_start and t_end arguments.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_backimputation</span>, <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs-demo/estimate_r_backimputation-1.png" width="576"></p>
+<p><img src="figs-demo/estimate_r_backimputation-1.png" class="r-plt" alt="" width="576"></p>
 <p>Here, the first
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mi>t</mi></msub><annotation encoding="application/x-tex">R_t</annotation></semantics></math>
 estimates obtained with back-imputation (1.6862334) closely match those
@@ -574,7 +581,7 @@ producing plots:</p>
 <span><span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span></span>
 <span><span class="co">#&gt;     To change this change the t_start and t_end arguments.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_incid_table</span>, <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs-demo/incid_table-1.png" width="576"></p>
+<p><img src="figs-demo/incid_table-1.png" class="r-plt" alt="" width="576"></p>
 <p>It can just be a vector (but then the x-axis in your plots is
 measured in time steps since start of the outbreak)</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
@@ -584,7 +591,7 @@ measured in time steps since start of the outbreak)</p>
 <span><span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span></span>
 <span><span class="co">#&gt;     To change this change the t_start and t_end arguments.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_incid_vector</span>, <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs-demo/incid_vector-1.png" width="576"></p>
+<p><img src="figs-demo/incid_vector-1.png" class="r-plt" alt="" width="576"></p>
 <p>Finally, <code>incid</code> can be an object of the class
 <code>incidence</code>, as created for instance by the function
 <code>incidence</code> of the <code>incidence</code> package.</p>
@@ -603,7 +610,7 @@ that we feed to <code>estimate_R</code>:</p>
 <span><span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span></span>
 <span><span class="co">#&gt;     To change this change the t_start and t_end arguments.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_incid_class</span>, <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs-demo/incid_class-1.png" width="576"></p>
+<p><img src="figs-demo/incid_class-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="specifying-imported-cases">Specifying imported cases<a class="anchor" aria-label="anchor" href="#specifying-imported-cases"></a>
@@ -623,7 +630,7 @@ illustrated in the example below:</p>
 <span><span class="va">incid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/incidence.html" class="external-link">incidence</a></span><span class="op">(</span><span class="va">dates_onset</span>, groups <span class="op">=</span> <span class="va">location</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">incid</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figs-demo/imports-1.png" width="576"></p>
+<p><img src="figs-demo/imports-1.png" class="r-plt" alt="" width="576"></p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">## Estimate R with assumptions on serial interval</span></span>
@@ -635,7 +642,7 @@ illustrated in the example below:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_with_imports</span>, add_imported_cases<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; The number of colors (1) did not match the number of groups (2).</span></span>
 <span><span class="co">#&gt; Using `col_pal` instead.</span></span></code></pre></div>
-<p><img src="figs-demo/imports-2.png" width="576"></p>
+<p><img src="figs-demo/imports-2.png" class="r-plt" alt="" width="576"></p>
 <p>Note that in the above the estimated reproduction number is, as
 expected, much lower than estimated before when assuming that all cases
 were linked by local transmission.</p>
@@ -666,7 +673,7 @@ Please note the app is still in development!</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

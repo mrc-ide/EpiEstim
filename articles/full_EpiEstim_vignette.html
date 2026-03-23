@@ -97,7 +97,7 @@
                         <h4 data-toc-skip class="author">Rebecca
 Nash</h4>
             
-            <h4 data-toc-skip class="date">2025-05-21</h4>
+            <h4 data-toc-skip class="date">2026-03-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/main/vignettes/full_EpiEstim_vignette.Rmd" class="external-link"><code>vignettes/full_EpiEstim_vignette.Rmd</code></a></small>
       <div class="hidden name"><code>full_EpiEstim_vignette.Rmd</code></div>
@@ -117,7 +117,7 @@ see the ‘Examples’ and ‘FAQs’ sections.</p>
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 </div>
-<p><img src="figs/Illustration_of_process.png" width="90%"></p>
+<p><img src="figs/Illustration_of_process.png" class="r-plt" alt="" width="90%"></p>
 <div class="section level3">
 <h3 id="input-data">Input data<a class="anchor" aria-label="anchor" href="#input-data"></a>
 </h3>
@@ -222,7 +222,7 @@ estimate the serial interval distribution directly from your own data
 and account for its uncertainty.</p>
 <div style="margin-top:20px;">
 <div style="margin-bottom:20px;">
-<p><img src="figs/Serial_interval_with_uncertainty.png" width="90%"></p>
+<p><img src="figs/Serial_interval_with_uncertainty.png" class="r-plt" alt="" width="90%"></p>
 </div>
 </div>
 <p>For example, if “Case ID” represents the person who has been exposed
@@ -273,7 +273,7 @@ for the symptom onset time in infector/infected cases (Thompson et al
 2019).</p>
 <div style="margin-bottom:20px;">
 <div style="margin-top:20px;">
-<p><img src="figs/interval_censored_example.png" width="40%" style="display: block; margin: auto;"></p>
+<p><img src="figs/interval_censored_example.png" class="r-plt" alt="" width="40%" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <p>This type of data may look like this:</p>
@@ -393,7 +393,7 @@ individuals with a symptom onset on a particular date. We can plot this
 using <code>incidence</code> as follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://www.repidemicsconsortium.org/incidence/reference/conversions.html" class="external-link">as.incidence</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">I</span>, dates <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span><span class="op">$</span><span class="va">dates</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-8-1.png" width="480" style="display: block; margin: auto;"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="480" style="display: block; margin: auto;"></p>
 <p><code>incidence</code> can convert the dates of symptom onset from
 linelists with various formats into an incidence object that can be
 easily understood by <code>EpiEstim</code>.</p>
@@ -514,7 +514,7 @@ the renewal equation (a form of branching process model) to estimate
 R<sub>t</sub>. R<sub>t</sub> is the average number of secondary cases
 that an infected individual would infect if the conditions remained as
 they were at time t (Cori et al 2013).</p>
-<p><img src="figs/Renewal_equation.png" width="100%"></p>
+<p><img src="figs/Renewal_equation.png" class="r-plt" alt="" width="100%"></p>
 <p>Here I<sub>t</sub> represents the incidence of symptom onset at time
 t, which is approximated by a Poisson process using the renewal
 equation. R<sub>t</sub> is what we want to estimate, I<sub>t-s</sub> is
@@ -542,12 +542,12 @@ the following methods:</p>
 mean and standard deviation. Ex. The user can supply
 <code>mean_si = 3</code> and <code>std_si = 1</code>, which generates an
 offset gamma distribution as the default:</p>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-12-1.png" width="30%" style="display: block; margin: auto;"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="30%" style="display: block; margin: auto;"></p>
 <p><strong>Non-parametric</strong> - <code>"non_parametric_si"</code>
 uses the discrete distribution of the SI. Ex. The user can supply
 <code>si_distr = c(0.000, 0.233, 0.359, 0.198, 0.103, 0.053, 0.027, 0.014, 0.007, 0.003, 0.002, 0.001)</code>,
 which generates:</p>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-13-1.png" width="30%" style="display: block; margin: auto;"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="30%" style="display: block; margin: auto;"></p>
 <p><strong>Uncertain</strong> - If we are particularly uncertain about
 the parameters of the SI distribution, then we can use
 <code>"uncertain_si"</code> to draw the mean and standard deviation from
@@ -559,7 +559,7 @@ SI will be drawn from a normal distribution with a mean of 1.5 and SD of
 0.5, truncated at 0.5 and 2.5 (centre). The drawn values will
 parameterise multiple SI distributions to be considered, but for
 clarity, the example below only displays 5 (right).</p>
-<p><img src="full_EpiEstim_vignette_files/figure-html/figures-side-1.png" width="30%"><img src="full_EpiEstim_vignette_files/figure-html/figures-side-2.png" width="30%"><img src="full_EpiEstim_vignette_files/figure-html/figures-side-3.png" width="30%"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/figures-side-1.png" class="r-plt" alt="" width="30%"><img src="full_EpiEstim_vignette_files/figure-html/figures-side-2.png" class="r-plt" alt="" width="30%"><img src="full_EpiEstim_vignette_files/figure-html/figures-side-3.png" class="r-plt" alt="" width="30%"></p>
 <p>This would be written within the <code>config</code> argument in
 <code><a href="../reference/estimate_R.html">estimate_R()</a></code> as:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -627,7 +627,7 @@ exact day of symptom onset for the infector-infected pairs.</p>
 <div style="margin-top:20px;">
 <div style="margin-bottom:20px;">
 <p align="center">
-<img src="figs/Infector_infected_exact.png" width="40%"></p>
+<img src="figs/Infector_infected_exact.png" class="r-plt" alt="" width="40%"></p>
 </div>
 </div>
 <p>This can be supplied as <code>data$si_data</code> where EL and ER are
@@ -644,7 +644,7 @@ symptom onset dates.</p>
 <div style="margin-top:20px;">
 <div style="margin-bottom:20px;">
 <p align="center">
-<img src="figs/Infector_infected_intervals.png" width="40%"></p>
+<img src="figs/Infector_infected_intervals.png" class="r-plt" alt="" width="40%"></p>
 </div>
 </div>
 <p>In which case, each column in <code>data$si_data</code> corresponds
@@ -692,7 +692,7 @@ look something like this:</p>
 <div style="margin-top:20px;">
 <div style="margin-bottom:20px;">
 <p align="center">
-<img src="figs/Weekly_sliding_windows.png" width="40%"></p>
+<img src="figs/Weekly_sliding_windows.png" class="r-plt" alt="" width="40%"></p>
 </div>
 </div>
 <p>By default R<sub>t</sub> is estimated over weekly sliding windows,
@@ -746,8 +746,15 @@ This means that it appears as if you’re starting your estimation later
 than you are because the plot for R<sub>t</sub> does not start until the
 end of the first window.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, legend <span class="op">=</span> <span class="cn">FALSE</span>, <span class="st">"R"</span><span class="op">)</span> <span class="co"># specifying "R", "SI" or "incid" allows you to plot just the single panel</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-26-1.png" width="576"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, legend <span class="op">=</span> <span class="cn">FALSE</span>, <span class="st">"R"</span><span class="op">)</span> <span class="co"># specifying "R", "SI" or "incid" allows you to plot just the single panel</span></span>
+<span><span class="co">#&gt; Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use the `linewidth` argument instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">EpiEstim</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/mrc-ide/EpiEstim/issues&gt;</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once per session.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span></code></pre></div>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-26-1.png" class="r-plt" alt="" width="576"></p>
 <p>When choosing the length of the time window, there is essentially a
 trade-off. A longer window may give you less uncertainty in your
 estimate, but could disguise important temporal changes, whereas a
@@ -784,7 +791,7 @@ implemented and then after.</p>
 <span>                    t_end <span class="op">=</span> <span class="va">t_end</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res2</span>, legend <span class="op">=</span> <span class="cn">FALSE</span>, <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-27-1.png" width="576"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-27-1.png" class="r-plt" alt="" width="576"></p>
 <p>Note that if using incidence by date of symptom onset and depending
 on the disease you may need to have a buffer that accounts for the
 incubation period (average time between infection and symptom onset) of
@@ -922,7 +929,7 @@ known date of symptom onset (date_of_onset) using the
 <span></span>
 <span><span class="co"># Plot the incidence:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evd_incid</span>, xlab <span class="op">=</span> <span class="st">"Date"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-34-1.png" width="576"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-34-1.png" class="r-plt" alt="" width="576"></p>
 <p><strong>Estimate R<sub>t</sub> using parametric SI
 distribution</strong></p>
 <p>Now that we have an incidence object we need to supply
@@ -940,7 +947,7 @@ panel plot:</p>
 <span>                             config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span>mean_si <span class="op">=</span> <span class="fl">14.2</span>, std_si <span class="op">=</span> <span class="fl">9.6</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_si_parametric</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-35-1.png" width="480"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-35-1.png" class="r-plt" alt="" width="480"></p>
 <p>The top panel shows the epidemic curve with the incidence of reported
 cases over time. The middle panel is the estimated value of R over
 weekly sliding windows and how it varies over time (R<sub>t</sub>), the
@@ -988,7 +995,7 @@ serial interval starts on day 1, not on day 0 as in EpiEstim.</p>
 <span><span class="co"># Add the projections over all incidence data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evd_incid</span>, xlab <span class="op">=</span> <span class="st">"Date of Symptom Onset"</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">add_projections</span><span class="op">(</span><span class="va">proj</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-36-1.png" width="576"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-36-1.png" class="r-plt" alt="" width="576"></p>
 <p>Here, we have plotted the original untruncated incidence object to
 illustrate that the projections have started over the uncertain week of
 data.</p>
@@ -1013,7 +1020,7 @@ and standard deviation, this can be done using method
 <span>                   config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span>si_distr <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_distr</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_np</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-37-1.png" width="480"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-37-1.png" class="r-plt" alt="" width="480"></p>
 </div>
 <div class="section level3">
 <h3 id="example-c-estimating-rt-using-infector-infected-cases">Example C: Estimating R<sub>t</sub> using infector-infected
@@ -1059,7 +1066,7 @@ is not supplied it will automatically be computed from the dates.</p>
 <span>                                                  seed <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="co"># set seed for reproducibility</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_si_from_data</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-39-1.png" width="480"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-39-1.png" class="r-plt" alt="" width="480"></p>
 <p>In this example, <code><a href="../reference/estimate_R.html">estimate_R()</a></code> should take less than 20
 seconds to run on a 2GHz 4 core computer (macOS Big Sur).</p>
 <p>Note in the “Explored SI distributions” panel of the output that
@@ -1087,7 +1094,7 @@ and use the method <code>si_from_sample</code> instead.</p>
 <span>                     si_sample <span class="op">=</span> <span class="va">si_sample</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_samp</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-40-1.png" width="480"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-40-1.png" class="r-plt" alt="" width="480"></p>
 <p>Here, <code><a href="../reference/estimate_R.html">estimate_R()</a></code> using <code>"si_from_sample"</code>
 takes less than 4 seconds to run on a 2GHz 4 core computer (macOS Big
 Sur).</p>
@@ -1118,7 +1125,7 @@ deviation.</p>
 <span>                               min_std_si <span class="op">=</span> <span class="fl">0.5</span>, max_std_si <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span><span class="op">)</span> <span class="co"># 0.5 and 2.5</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_si_uncertain</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-41-1.png" width="480"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-41-1.png" class="r-plt" alt="" width="480"></p>
 <p>If you don’t want to draw the mean and standard deviation of the SI
 from truncated normal distributions, you can perform the draws yourself
 from alternative distributions and then supply the estimated SI
@@ -1140,7 +1147,7 @@ it can have on the initial estimate for R.</p>
 <span>                                                mean_prior <span class="op">=</span> <span class="fl">2</span>, std_prior <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_diff_prior</span>, <span class="st">"R"</span>, legend <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-42-1.png" width="576"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-42-1.png" class="r-plt" alt="" width="576"></p>
 <p>Below, both the estimate with the default prior from example A and
 the modified prior from this example are plotted together. After
 changing the prior to a mean of 2 and standard deviation of 1 the
@@ -1149,7 +1156,7 @@ using the default prior. Once there is more data (mid-May) the R
 estimates converge regardless of the prior. It is important to be aware
 of the weight the prior can have on your estimate when incidence is
 low.</p>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-43-1.png" width="672"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-43-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level3">
 <h3 id="example-g-changing-the-time-window-to-estimate-rt">Example G: Changing the time window to estimate R<sub>t</sub><a class="anchor" aria-label="anchor" href="#example-g-changing-the-time-window-to-estimate-rt"></a>
@@ -1173,13 +1180,13 @@ as the default.</p>
 <span>                                                  t_end <span class="op">=</span> <span class="va">t_end</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">R_window</span>, legend <span class="op">=</span> <span class="cn">FALSE</span>, <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-44-1.png" width="576"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-44-1.png" class="r-plt" alt="" width="576"></p>
 <p>Below, the R estimates from example A (with the default weekly time
 windows) are plotted against the estimates made using three-week
 windows. Notice that because R has been estimated over longer time
 windows, the estimates for R<sub>t</sub> are smoother than the estimates
 made in example A.</p>
-<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-45-1.png" width="672"></p>
+<p><img src="full_EpiEstim_vignette_files/figure-html/unnamed-chunk-45-1.png" class="r-plt" alt="" width="672"></p>
 <p>Remember that R<sub>t</sub> is plotted on the last day of each time
 window, so although the estimation starts at the same time, the
 estimation for the three-week window appears to start later.</p>
@@ -1204,7 +1211,7 @@ projections.</p>
 </li>
 </ul>
 <div class="figure">
-<img src="figs/Delays_in_reporting.png" alt="Figure courtesy of Anne Cori" width="50%"><p class="caption">
+<img src="figs/Delays_in_reporting.png" class="r-plt" alt="Figure courtesy of Anne Cori" width="50%"><p class="caption">
 Figure courtesy of Anne Cori
 </p>
 </div>
@@ -1229,7 +1236,7 @@ will be biased (right).</p>
 </li>
 </ul>
 </div>
-<p><img src="figs/Time_varying_reporting.png" width="100%"></p>
+<p><img src="figs/Time_varying_reporting.png" class="r-plt" alt="" width="100%"></p>
 <ul>
 <li>
 <p><strong>Why are the estimates of R from <code><a href="../reference/estimate_R.html">estimate_R()</a></code>
@@ -1326,7 +1333,7 @@ Medicine. 2015 Feb 5;372(6):584–7.</p></li>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>
