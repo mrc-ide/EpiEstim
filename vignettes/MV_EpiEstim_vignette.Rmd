@@ -14,7 +14,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 library(kableExtra)
-library(hrbrthemes)
 library(MCMCglmm)
 library(projections)
 library(EpiEstim) 
