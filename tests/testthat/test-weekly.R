@@ -741,7 +741,7 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
                                         method = method))
   
   # incidence object
-  inc_obj <- as.incidence(weekly_inc)
+  inc_obj <- as.incidence(weekly_inc, interval = 7L)
   res_inc_obj <- suppressWarnings(estimate_R(incid = inc_obj,
                                              dt = 7L,
                                              dt_out = 7L,
@@ -749,10 +749,23 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
                                              config = config,
                                              method = method))
   
+  # grouped incidence object
+  location <- sample(c("local","imported"), length(weekly_inc), replace = TRUE)
+  location[1] <- "imported" # forcing the first case to be imported
+  ## get incidence per group (location)
+  inc_obj_group <- as.incidence(weekly_inc, interval = 7L, groups = location)
+  res_grouped_obj <- suppressWarnings(estimate_R(incid = inc_obj_group,
+                                                 dt = 7L,
+                                                 dt_out = 7L,
+                                                 iter = 10L,
+                                                 config = config,
+                                                 method = method))
+  
   # all formats should produce identical R estimates
   expect_equal(res_int$R, res_numeric$R)
   expect_equal(res_int$R, res_df$R)
   expect_equal(res_int$R, res_inc_obj$R)
+  expect_equal(res_int$R, res_grouped_obj$R)
   
 })
 
