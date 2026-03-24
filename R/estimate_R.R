@@ -402,6 +402,16 @@ estimate_R <- function(incid,
         init.pars = config$mcmc_control$init_pars
       )
     }
+    
+    ## add a warning about real-time estimation potentially being biased
+    wrn <- paste(
+      "Our serial interval estimation method does not correct for right",
+      "censoring. It may yield biased results when applied to right-censored",
+      "infector/infected pairs, such as those observed during an ongoing",
+      "outbreak. See Charniga et al. (PLoS Comp Biol, 2024) and consider using",
+      "the R package primarycensored for real-time serial interval estimation."
+    )
+    warning(wrn)
 
     ## check convergence of the MCMC and print warning if not converged
     MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
