@@ -1,27 +1,37 @@
 #' Function to ensure compatibility with EpiEstim versions <2.0
 #'
 #' Please only use for compatibility;
-#' Prefer the new estimate_R function instead
+#' Prefer the new [estimate_R()] function instead.
 #'
-#' @param I see \code{incid} in \code{estimate_R}
-#' @param T.Start see \code{config$t_start} in \code{estimate_R}
-#' @param T.End see \code{config$t_end} in \code{estimate_R}
-#' @param method see method in \code{estimate_R} (but EstimateR uses CamelCase 
-#' where estimate_R uses snake_case for the method names)
-#' @param n1 see \code{n1} in \code{estimate_R}
-#' @param n2 see \code{n2} in \code{estimate_R}
-#' @param Mean.SI see \code{config$mean_si} in \code{estimate_R}
-#' @param Std.SI see \code{config$std_si} in \code{estimate_R}
-#' @param Std.Mean.SI see \code{config$std_mean_si} in \code{estimate_R}
-#' @param Min.Mean.SI see \code{config$min_mean_si} in \code{estimate_R}
-#' @param Max.Mean.SI see \code{config$max_mean_si} in \code{estimate_R}
-#' @param Std.Std.SI see \code{config$std_std_si} in \code{estimate_R}
-#' @param Min.Std.SI see \code{config$min_std_si} in \code{estimate_R}
-#' @param Max.Std.SI see \code{config$max_std_si} in \code{estimate_R}
-#' @param SI.Distr see \code{config$si_distr} in \code{estimate_R}
-#' @param Mean.Prior see \code{config$mean_prior} in \code{estimate_R}
-#' @param Std.Prior see \code{config$std_prior} in \code{estimate_R}
-#' @param CV.Posterior see \code{config$cv_posterior} in \code{estimate_R}
+#' @param I see `incid` in [estimate_R()]
+#' @param T.Start see `config$t_start` from [make_config()] used in [estimate_R()]
+#' @param T.End see `config$t_end` from [make_config()] used in [estimate_R()]
+#' @param method see `method` in [estimate_R()] (but [EstimateR()] uses CamelCase 
+#' where [estimate_R()] uses snake_case for the method names)
+#' @param n1 see `n1` in [estimate_R()]
+#' @param n2 see `n2` in [estimate_R()]
+#' @param Mean.SI see `config$mean_si` from [make_config()] used in [estimate_R()]
+#' @param Std.SI see `config$std_si` from [make_config()] used in [estimate_R()]
+#' @param Std.Mean.SI see `config$std_mean_si` from [make_config()] used in 
+#'   [estimate_R()]
+#' @param Min.Mean.SI see `config$min_mean_si` from [make_config()] used in 
+#'   [estimate_R()]
+#' @param Max.Mean.SI see `config$max_mean_si` from [make_config()] used in 
+#'   [estimate_R()]
+#' @param Std.Std.SI see `config$std_std_si` from [make_config()] used in 
+#'   [estimate_R()]
+#' @param Min.Std.SI see `config$min_std_si` from [make_config()] used in 
+#'   [estimate_R()]
+#' @param Max.Std.SI see `config$max_std_si` from [make_config()] used in 
+#'   [estimate_R()]
+#' @param SI.Distr see `config$si_distr` from [make_config()] used in 
+#'   [estimate_R()]
+#' @param Mean.Prior see `config$mean_prior` from [make_config()] used in 
+#'   [estimate_R()]
+#' @param Std.Prior see `config$std_prior` from [make_config()] used in 
+#'   [estimate_R()]
+#' @param CV.Posterior see `config$cv_posterior` from [make_config()] used in 
+#'   [estimate_R()]
 #' @param plot Not used anymore, only there for compatibility
 #' @param leg.pos Not used anymore, only there for compatibility
 #'
@@ -77,11 +87,9 @@ EstimateR <- function(I, T.Start, T.End,
 #' Function to ensure compatibility with EpiEstim versions <2.0
 #'
 #' Please only use for compatibility;
-#' Prefer the new discr_si function instead
-#'
-#' @param k see \code{k} in \code{discr_si}
-#' @param mu see \code{mu} in \code{discr_si}
-#' @param sigma see \code{sigma} in \code{discr_si}
+#' Prefer the new [discr_si()] function instead
+#' 
+#' @inheritParams discr_si
 #'
 #' @export
 #'
@@ -95,10 +103,10 @@ DiscrSI <- function(k, mu, sigma) {
 #' Function to ensure compatibility with EpiEstim versions <2.0
 #'
 #' Please only use for compatibility;
-#' Prefer the new overall_infectivity function instead
+#' Prefer the new [overall_infectivity()] function instead
 #'
-#' @param I see \code{incid} in \code{overall_infectivity}
-#' @param SI.Distr see \code{si_distr} in \code{overall_infectivity}
+#' @param I see `incid` in [overall_infectivity()]
+#' @param SI.Distr see `si_distr` in [overall_infectivity()]
 
 #' @export
 OverallInfectivity <- function(I, SI.Distr) {
@@ -116,17 +124,17 @@ OverallInfectivity <- function(I, SI.Distr) {
 #' Function to ensure compatibility with EpiEstim versions <2.0
 #'
 #' Please only use for compatibility;
-#' Prefer the new wallinga_teunis function instead
+#' Prefer the new [wallinga_teunis()] function instead
 #'
-#' @param I see \code{incid} in \code{wallinga_teunis}
-#' @param T.Start see \code{config$t_start} in \code{wallinga_teunis}
-#' @param T.End see \code{config$t_end} in \code{wallinga_teunis}
-#' @param method see method in \code{wallinga_teunis} (but WT uses CamelCase 
+#' @param I see `incid` in [wallinga_teunis()]
+#' @param T.Start see `config$t_start` in [wallinga_teunis()]
+#' @param T.End see `config$t_end` in [wallinga_teunis()]
+#' @param method see `method` in [wallinga_teunis()] (but WT uses CamelCase 
 #' where wallinga_teunis uses snake_case for the method names)
-#' @param Mean.SI see \code{config$mean_si} in \code{wallinga_teunis}
-#' @param Std.SI see \code{config$std_si} in \code{wallinga_teunis}
-#' @param SI.Distr see \code{config$si_distr} in \code{wallinga_teunis}
-#' @param nSim see \code{config$n_sim} in \code{wallinga_teunis}
+#' @param Mean.SI see `config$mean_si` in [wallinga_teunis()]
+#' @param Std.SI see `config$std_si` in [wallinga_teunis()]
+#' @param SI.Distr see `config$si_distr` in [wallinga_teunis()]
+#' @param nSim see `config$n_sim` in [wallinga_teunis()]
 #' @param plot Not used anymore, only there for compatibility
 #' @param leg.pos Not used anymore, only there for compatibility
 #'

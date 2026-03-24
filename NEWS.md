@@ -1,3 +1,16 @@
+# EpiEstim 2.5
+
+* Implemented back-imputation procedure described in (Brizzi, O'Driscoll and 
+  Dorigatti)[https://doi.org/10.1093/cid/ciac138]. This is implemented through 
+  the new functions `backimpute_I()`, which takes a vector representing incidence 
+  and estimates the number of unobserved infections prior to the first reported 
+  case.
+* `estimate_R` now accepts the `backimputation_window` parameter, which determines
+  the number of observations used to backimpute unobserved cases. If this is set
+  to 0 no backimputation will be performed. 0 is the default value guaranteeing
+  compatibility with previous versions of the package. 
+* added vignette `vignettes/EpiEstim_backimputation.Rmd` and `tests/testthat/test-backimpute.R`.
+
 # EpiEstim 2.4
 
 * estimate_R can now be applied to coarsely (non-daily) aggregated incidence data
@@ -5,7 +18,6 @@
 ## MISC
 
 * lintr is now part of EpiEstim continuous integration toolkit, alongside R CMD check. This should detect and eliminate suboptimal code pattern and potential bugs before they even make it to `master` (#159, @Bisaloo).
-
 # EpiEstim 2.3
 
 * new function estimate_joint to estimate the transmission advantage of a strain or variant

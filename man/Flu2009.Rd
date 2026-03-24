@@ -7,19 +7,19 @@
 \format{
 A list of three elements:
 \itemize{
-\item \strong{incidence:} a dataframe with 32 lines containing dates in first column,
+\item \strong{incidence}: a dataframe with 32 lines containing dates in first column,
 and daily incidence in second column (Cauchemez et al., 2011),
-\item \strong{si_distr:} a vector containing a set of 12 probabilities (Ferguson et
+\item \strong{si_distr}: a vector containing a set of 12 probabilities (Ferguson et
 al, 2005),
-\item \strong{si_data:} a dataframe with 16 lines giving serial interval patient
+\item \strong{si_data}: a dataframe with 16 lines giving serial interval patient
 data collected in a household study in San Antonio, Texas throughout the
 2009 H1N1 outbreak (Morgan et al., 2010).
 }
 }
 \source{
-Cauchemez S. et al. (2011) Role of social networks in shaping
-disease transmission during a community outbreak of 2009 H1N1 pandemic
-influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
+Cauchemez S. et al. (2011) Role of social networks in shaping disease
+transmission during a community outbreak of 2009 H1N1 pandemic influenza.
+Proc Natl Acad Sci U S A 108(7), 2825-2830.
 
 Morgan O.W. et al. (2010) Household transmission of pandemic (H1N1) 2009, San
 Antonio, Texas, USA, April-May 2009. Emerg Infect Dis 16: 631-637.
@@ -44,7 +44,8 @@ data("Flu2009")
 
 ## estimate the reproduction number (method "non_parametric_si")
 res <- estimate_R(Flu2009$incidence, method="non_parametric_si",
-          config = make_config(list(si_distr = Flu2009$si_distr)))
+                  config = make_config(list(si_distr = Flu2009$si_distr)))
+
 plot(res)
 ## the second plot produced shows, at each each day,
 ## the estimate of the reproduction number
@@ -56,13 +57,18 @@ plot(res)
 ## so they may take a few minutes to run
 
 ## estimate the reproduction number (method "si_from_data")
-res <- estimate_R(Flu2009$incidence, method="si_from_data",
-          si_data = Flu2009$si_data,
-          config = make_config(list(mcmc_control = make_mcmc_control(list(
-                                 burnin = 1000,
-                                 thin = 10, seed = 1)),
-                      n1 = 1000, n2 = 50,
-                      si_parametric_distr = "G")))
+res <- estimate_R(
+  Flu2009$incidence,
+  method = "si_from_data",
+  si_data = Flu2009$si_data,
+  config = make_config(list(
+    mcmc_control = make_mcmc_control(list(burnin = 1000, thin = 10, seed = 1)),
+    n1 = 1000,
+    n2 = 50,
+    si_parametric_distr = "G"
+  ))
+)
+
 plot(res)
 ## the second plot produced shows, at each each day,
 ## the estimate of the reproduction number
@@ -72,9 +78,9 @@ plot(res)
 
 }
 \references{
-Cauchemez S. et al. (2011) Role of social networks in shaping
-disease transmission during a community outbreak of 2009 H1N1 pandemic
-influenza. Proc Natl Acad Sci U S A 108(7), 2825-2830.
+Cauchemez S. et al. (2011) Role of social networks in shaping disease
+transmission during a community outbreak of 2009 H1N1 pandemic influenza.
+Proc Natl Acad Sci U S A 108(7), 2825-2830.
 
 Ferguson N.M. et al. (2005) Strategies for containing an emerging influenza
 pandemic in Southeast Asia. Nature 437(7056), 209-214.

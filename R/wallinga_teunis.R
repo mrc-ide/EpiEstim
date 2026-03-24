@@ -1,97 +1,100 @@
-##########################################################################
-## wallinga_teunis function to estimate Rc the case reproduction number ##
-##########################################################################
-
-#' Estimation of the case reproduction number using the Wallinga and Teunis
-#' method
+#' Estimate case reproduction number using the Wallinga and Teunis method
 #'
-#' \code{wallinga_teunis} estimates the case reproduction number of an epidemic,
+#' Estimate the case reproduction number of an epidemic,
 #' given the incidence time series and the serial interval distribution.
 #'
-#' @param incid One of the following
-#' \itemize{
-#' \item Vector (or a dataframe with
-#'   a column named 'incid') of non-negative integers containing an incidence
-#'   time series. If the dataframe contains a column \code{incid$dates}, this is
-#'   used for plotting. \code{incid$dates} must contains only dates in a row.
-#'
-#'   \item An object of class \code{\link[incidence]{incidence}}
-#' }
+#' @param incid One of the following:
+#' - Vector (or a dataframe with a column named `incid`) of non-negative
+#'   integers containing an incidence time series. If the dataframe contains a
+#'   column `dates`, this is used for plotting. `incid$dates` must contains only
+#'   dates in a row.
+#' - An object of class [incidence::incidence()]
 #'
 #' @param method the method used to estimate R, one of "non_parametric_si",
 #'   "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
 #'
-#' @param config a list with the following elements: \itemize{ \item{t_start:
-#'   Vector of positive integers giving the starting times of each window over
-#'   which the reproduction number will be estimated. These must be in ascending
-#'   order, and so that for all \code{i}, \code{t_start[i]<=t_end[i]}.
-#'   t_start[1] should be strictly after the first day with non null incidence.}
-#'   \item{t_end: Vector of positive integers giving the ending times of each
+#' @param config a list with the following elements:
+#' - `t_start`: Vector of positive integers giving the starting times of each
 #'   window over which the reproduction number will be estimated. These must be
-#'   in ascending order, and so that for all \code{i},
-#'   \code{t_start[i]<=t_end[i]}.} \item{method: One of "non_parametric_si" or
-#'   "parametric_si" (see details).} \item{mean_si: For method "parametric_si" ;
-#'   positive real giving the mean serial interval.} \item{std_si: For method
-#'   "parametric_si" ; non negative real giving the standard deviation of the
-#'   serial interval.} \item{si_distr: For method "non_parametric_si" ; vector
-#'   of probabilities giving the discrete distribution of the serial interval,
-#'   starting with \code{si_distr[1]} (probability that the serial interval is
-#'   zero), which should be zero.} \item{n_sim: A positive integer giving the
-#'   number of simulated epidemic trees used for computation of the confidence
-#'   intervals of the case reproduction number (see details).} }
-#' @return { a list with components: \itemize{ \item{R}{: a dataframe
-#'   containing: the times of start and end of each time window considered ; the
-#'   estimated mean, std, and 0.025 and 0.975 quantiles of the reproduction
-#'   number for each time window.} \item{si_distr}{: a vector containing the
-#'   discrete serial interval distribution used for estimation}
-#'   \item{SI.Moments}{: a vector containing the mean and std of the discrete
-#'   serial interval distribution(s) used for estimation} \item{I}{: the time
-#'   series of total incidence} \item{I_local}{: the time series of incidence of
-#'   local cases (so that \code{I_local + I_imported = I})} \item{I_imported}{:
-#'   the time series of incidence of imported cases (so that \code{I_local +
-#'   I_imported = I})} \item{dates}{: a vector of dates corresponding to the
-#'   incidence time series} } }
+#'   in ascending order, and so that for all `i`, `t_start[i] <= t_end[i]`.
+#'   `t_start[1]` should be strictly after the first day with non null
+#'   incidence.
+#' - `t_end`: Vector of positive integers giving the ending times of each window
+#'   over which the reproduction number will be estimated. These must be in
+#'   ascending order, and so that for all `i`, `t_start[i] <= t_end[i]`.
+#' - `method`: One of "non_parametric_si" or "parametric_si" (see details).
+#' - `mean_si`: For method "parametric_si"; positive real giving the mean serial
+#'   interval.
+#' - `std_si`: For method "parametric_si"; non negative real giving the standard
+#'   deviation of the serial interval.
+#' - `si_distr`: For method "non_parametric_si"; vector of probabilities giving
+#'   the discrete distribution of the serial interval, starting with
+#'   `si_distr[1]` (probability that the serial interval is zero), which should
+#'   be zero.
+#' - `n_sim`: A positive integer giving the number of simulated epidemic trees
+#'   used for computation of the confidence intervals of the case reproduction
+#'   number (see details).
+#'
+#' @return a list with components:
+#' - `R`: a dataframe containing: the times of start and end of each time window
+#'   considered; the estimated mean, std, and 0.025 and 0.975 quantiles of the
+#'   reproduction number for each time window.
+#' - `si_distr`: a vector containing the discrete serial interval distribution
+#'   used for estimation
+#' - `SI.Moments`: a vector containing the mean and std of the discrete serial
+#'   interval distribution(s) used for estimation
+#' - `I`: the time series of total incidence
+#' - `I_local`: the time series of incidence of local cases (so that `I_local +
+#'   I_imported = I`)
+#' - `I_imported`: the time series of incidence of imported cases (so that
+#'   `I_local + I_imported = I`)
+#' - `dates`: a vector of dates corresponding to the incidence time series
 #'
 #' @details Estimates of the case reproduction number for an epidemic over
 #' predefined time windows can be obtained, for a given discrete distribution of
 #' the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
-#' Confidence intervals are obtained by simulating a number (config$n_sim) of
-#' possible transmission trees (only done if config$n_sim > 0).
+#' Confidence intervals are obtained by simulating a number (`config$n_sim`) of
+#' possible transmission trees (only done if `config$n_sim > 0`).
 #'
+#' ## Methods
+#' 
 #' The methods vary in the way the serial interval distribution is specified.
 #'
-#' ----------------------- \code{method "non_parametric_si"}
-#' -----------------------
+#' ### `method = "non_parametric_si"`
 #'
 #' The discrete distribution of the serial interval is directly specified in the
-#' argument \code{config$si_distr}.
+#' argument `config$si_distr`.
 #'
-#'
-#' ----------------------- \code{method "parametric_si"} -----------------------
+#' ### `method = "parametric_si"`
 #'
 #' The mean and standard deviation of the continuous distribution of the serial
-#' interval are given in the arguments \code{config$mean_si} and
-#' \code{config$std_si}. The discrete distribution of the serial interval is
-#' derived automatically using \code{\link{discr_si}}.
+#' interval are given in the arguments `config$mean_si` and
+#' `config$std_si`. The discrete distribution of the serial interval is
+#' derived automatically using [discr_si()].
 #'
+#' @seealso [discr_si()], [estimate_R()]
 #'
-#' @seealso \code{\link{discr_si}}, \code{\link{estimate_R}}
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}
-#' @references { Cori, A. et al. A new framework and software to estimate
-#'   time-varying reproduction numbers during epidemics (AJE 2013). Wallinga, J.
-#'   and P. Teunis. Different epidemic curves for severe acute respiratory
-#'   syndrome reveal similar impacts of control measures (AJE 2004). }
+#' 
+#' @references 
+#' Cori, A. et al. A new framework and software to estimate time-varying
+#' reproduction numbers during epidemics (AJE 2013). Wallinga, J. and P. Teunis.
+#' Different epidemic curves for severe acute respiratory syndrome reveal
+#' similar impacts of control measures (AJE 2004). 
+#' 
 #' @export
+#' 
 #' @import reshape2 gridExtra
 #' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon
 #'   geom_line xlab ylab xlim geom_hline ylim geom_histogram
+#' 
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
 #' data("Flu2009")
 #'
 #' ## estimate the case reproduction number (method "non_parametric_si")
 #' res <- wallinga_teunis(Flu2009$incidence,
-#'    method="non_parametric_si",
+#'    method = "non_parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  si_distr = Flu2009$si_distr,
 #'                  n_sim = 100))
@@ -101,7 +104,7 @@
 #' ## finishing on that day.
 #'
 #' ## estimate the case reproduction number (method "parametric_si")
-#' res <- wallinga_teunis(Flu2009$incidence, method="parametric_si",
+#' res <- wallinga_teunis(Flu2009$incidence, method = "parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  mean_si = 2.6, std_si = 1.5,
 #'                  n_sim = 100))
@@ -109,6 +112,7 @@
 #' ## the second plot produced shows, at each each day,
 #' ## the estimate of the case reproduction number over the 7-day window
 #' ## finishing on that day.
+
 wallinga_teunis <- function(incid,
                             method = c("non_parametric_si", "parametric_si"),
                             config) {
@@ -168,7 +172,7 @@ wallinga_teunis <- function(incid,
     i <- i + 1
   }
   temp <- which(config$t_start < i)
-  if (length(temp > 0)) {
+  if (length(temp) > 0) {
     config$t_start <- config$t_start[-temp]
     config$t_end <- config$t_end[-temp]
   }
@@ -248,7 +252,6 @@ wallinga_teunis <- function(incid,
   for (t in seq_len(T)) {
     Onset <- c(Onset, rep(t, incid[t]))
   }
-  NbCases <- length(Onset)
   
   delay <- outer(seq_len(T), seq_len(T), "-")
   si_delay <- apply(delay, 2, function(x) 
