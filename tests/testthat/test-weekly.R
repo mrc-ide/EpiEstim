@@ -606,32 +606,6 @@ test_that("grid in estimate_R_agg is in the correct format", {
 })
 
 
-test_that("you can't run estimate_R_agg unless incidence is supplied as a vector", {
-  method <- "parametric_si"
-  config <- make_config(list(mean_si = mean_si,
-                             std_si = std_si))
-  
-inc_obj <- as.incidence(weekly_inc)
-expect_error(suppressWarnings(estimate_R_agg(incid = inc_obj, 
-                                             dt = 7L, 
-                                             dt_out = 7L, 
-                                             iter = 10L,
-                                             config = config,
-                                             method = method,
-                                             grid = list(precision = 0.001, min = -1, max = 1))))
-
-inc_df <- data.frame(weekly_inc)
-expect_error(suppressWarnings(estimate_R_agg(incid = inc_df, 
-                                             dt = 7L, 
-                                             dt_out = 7L, 
-                                             iter = 10L,
-                                             config = config,
-                                             method = method,
-                                             grid = list(precision = 0.001, min = -1, max = 1))))
-
-})
-
-
 test_that("you can't run estimate_R_agg unless using parametric/non-parametric SI methods", {
   method <- "uncertain_si"
   config <- make_config(list(mean_si = 2.6, std_mean_si = 1,
@@ -733,6 +707,52 @@ test_that("method works with different single integers of dt", {
   ## lot of variation early on so excluding first part
   expect_true(all(relative_error_three[-(1:20)] < 0.4)) # 0.4 arbitrarily small
   expect_true(all(relative_error_ten[-(1:20)] < 0.5)) 
+  
+})
+
+test_that("estimate_R_agg handles different incid input formats consistently", {
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si))
+  
+  # integer vector
+  res_int <- suppressWarnings(estimate_R(incid = weekly_inc,
+                                         dt = 7L,
+                                         dt_out = 7L,
+                                         iter = 10L,
+                                         config = config,
+                                         method = method))
+  
+  # numeric vector
+  res_numeric <- suppressWarnings(estimate_R(incid = as.numeric(weekly_inc),
+                                             dt = 7L,
+                                             dt_out = 7L,
+                                             iter = 10L,
+                                             config = config,
+                                             method = method))
+  
+  # dataframe with I column
+  weekly_inc_df <- data.frame(I = weekly_inc)
+  res_df <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+                                        dt = 7L,
+                                        dt_out = 7L,
+                                        iter = 10L,
+                                        config = config,
+                                        method = method))
+  
+  # incidence object
+  inc_obj <- as.incidence(weekly_inc)
+  res_inc_obj <- suppressWarnings(estimate_R(incid = inc_obj,
+                                             dt = 7L,
+                                             dt_out = 7L,
+                                             iter = 10L,
+                                             config = config,
+                                             method = method))
+  
+  # all formats should produce identical R estimates
+  expect_equal(res_int$R, res_numeric$R)
+  expect_equal(res_int$R, res_df$R)
+  expect_equal(res_int$R, res_inc_obj$R)
   
 })
 
