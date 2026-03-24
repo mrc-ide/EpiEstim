@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
       </span>
     </div>
 
@@ -370,6 +370,20 @@ posterior distribution:</p>
 <span>                               config <span class="op">=</span> <span class="va">config</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span></span>
 <span><span class="co">#&gt;     To change this change the t_start and t_end arguments.</span></span>
+<span><span class="co">#&gt; Warning in si_from_data_valid_distrs(config$si_parametric_distr): The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names gamma instead.The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names weibull instead.The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names lognormal instead.The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names gamma_offset_1 instead.The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names weibull_offset_1 instead.The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names lognormal_offset_1 instead.</span></span>
+<span><span class="co">#&gt; Warning in si_from_data_valid_distrs(dist): The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names gamma instead.The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names weibull instead.The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names lognormal instead.The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names gamma_offset_1 instead.The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names weibull_offset_1 instead.The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and</span></span>
+<span><span class="co">#&gt;             'off1L' are deprecated. Please use the more descriptive names lognormal_offset_1 instead.</span></span>
 <span><span class="co">#&gt; Running 1500 MCMC iterations </span></span>
 <span><span class="co">#&gt; MCMCmetrop1R iteration 1 of 1500 </span></span>
 <span><span class="co">#&gt; function value =  -27.68336</span></span>
@@ -414,9 +428,11 @@ this as follow:</p>
 <span><span class="co">## first estimate the SI distribution using function dic.fit.mcmc fron </span></span>
 <span><span class="co">## coarseDataTools package:</span></span>
 <span><span class="va">n_mcmc_samples</span> <span class="op">&lt;-</span> <span class="va">config</span><span class="op">$</span><span class="va">n1</span><span class="op">*</span><span class="va">mcmc_control</span><span class="op">$</span><span class="va">thin</span></span>
+<span><span class="va">dist</span> <span class="op">&lt;-</span> <span class="st">"G"</span></span>
+<span><span class="va">dist_nice_name</span> <span class="op">&lt;-</span> <span class="st">"gamma"</span></span>
 <span><span class="va">SI_fit</span> <span class="op">&lt;-</span> <span class="fu">coarseDataTools</span><span class="fu">::</span><span class="fu"><a href="http://nickreich.github.io/coarseDataTools/reference/dic.fit.mcmc.html" class="external-link">dic.fit.mcmc</a></span><span class="op">(</span>dat <span class="op">=</span> <span class="va">Flu2009</span><span class="op">$</span><span class="va">si_data</span>,</span>
 <span>                  dist <span class="op">=</span> <span class="va">dist</span>,</span>
-<span>                  init.pars <span class="op">=</span> <span class="fu"><a href="../reference/init_mcmc_params.html">init_mcmc_params</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">si_data</span>, <span class="va">dist</span><span class="op">)</span>,</span>
+<span>                  init.pars <span class="op">=</span> <span class="fu"><a href="../reference/init_mcmc_params.html">init_mcmc_params</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">si_data</span>, <span class="va">dist_nice_name</span><span class="op">)</span>,</span>
 <span>                  burnin <span class="op">=</span> <span class="va">mcmc_control</span><span class="op">$</span><span class="va">burnin</span>,</span>
 <span>                  n.samples <span class="op">=</span> <span class="va">n_mcmc_samples</span>,</span>
 <span>                  seed <span class="op">=</span> <span class="va">mcmc_control</span><span class="op">$</span><span class="va">seed</span><span class="op">)</span></span>

@@ -28,6 +28,7 @@
 <url><loc>https://mrc-ide.github.io/EpiEstim/reference/compute_lambda.html</loc></url>
 <url><loc>https://mrc-ide.github.io/EpiEstim/reference/compute_si_cutoff.html</loc></url>
 <url><loc>https://mrc-ide.github.io/EpiEstim/reference/compute_t_min.html</loc></url>
+<url><loc>https://mrc-ide.github.io/EpiEstim/reference/convert_distr_name_for_mcmc.html</loc></url>
 <url><loc>https://mrc-ide.github.io/EpiEstim/reference/covid_deaths_2020_uk.html</loc></url>
 <url><loc>https://mrc-ide.github.io/EpiEstim/reference/default_mcmc_controls.html</loc></url>
 <url><loc>https://mrc-ide.github.io/EpiEstim/reference/default_priors.html</loc></url>
@@ -51,6 +52,7 @@
 <url><loc>https://mrc-ide.github.io/EpiEstim/reference/plot.estimate_R.html</loc></url>
 <url><loc>https://mrc-ide.github.io/EpiEstim/reference/process_I_multivariant.html</loc></url>
 <url><loc>https://mrc-ide.github.io/EpiEstim/reference/sample_posterior_R.html</loc></url>
+<url><loc>https://mrc-ide.github.io/EpiEstim/reference/si_from_data_valid_distrs.html</loc></url>
 <url><loc>https://mrc-ide.github.io/EpiEstim/reference/wallinga_teunis.html</loc></url>
 </urlset>
 

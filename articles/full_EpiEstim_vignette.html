@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
       </span>
     </div>
 
@@ -1059,7 +1059,7 @@ is not supplied it will automatically be computed from the dates.</p>
 <span><span class="va">R_si_from_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span>incid <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">incidence</span>, </span>
 <span>                             method <span class="op">=</span> <span class="st">"si_from_data"</span>,</span>
 <span>                             si_data <span class="op">=</span> <span class="va">MockRotavirus</span><span class="op">$</span><span class="va">si_data</span>, <span class="co"># symptom onset data</span></span>
-<span>                             config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span>si_parametric_distr <span class="op">=</span> <span class="st">"G"</span>, <span class="co"># gamma dist. for SI</span></span>
+<span>                             config <span class="op">=</span> <span class="fu"><a href="../reference/make_config.html">make_config</a></span><span class="op">(</span>si_parametric_distr <span class="op">=</span> <span class="st">"gamma"</span>, <span class="co"># gamma dist. for SI</span></span>
 <span>                                                  mcmc_control <span class="op">=</span> <span class="va">mcmc_control</span>,</span>
 <span>                                                  n1 <span class="op">=</span> <span class="fl">500</span>, <span class="co"># number of posterior samples of SI dist.</span></span>
 <span>                                                  n2 <span class="op">=</span> <span class="fl">50</span>, <span class="co"># number of posterior samples of Rt dist.</span></span>

@@ -19,7 +19,7 @@ settings."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EpiEstim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.1</span>
       </span>
     </div>
 
@@ -141,11 +141,8 @@ of symptoms of pairs of infector/infected individuals (see details). Should
 be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
 shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
 shifted by 1).</p></li>
-<li><p><code>mcmc_control</code>: An object of class <code>estimate_R_mcmc_control</code>, as returned
-by function <code><a href="make_mcmc_control.html">make_mcmc_control()</a></code>.</p></li>
-<li><p><code>seed</code>: An optional integer used as the seed for the random number
-generator at the start of the function (then potentially reset within the
-MCMC for method <code>si_from_data</code>); useful to get reproducible results.</p></li>
+<li><p><code>mcmc_control</code>: An object of class <code>estimate_R_mcmc_control</code>, as
+returned by function <code>make_mcmc_control</code>.</p></li>
 <li><p><code>mean_prior</code>: A positive number giving the mean of the common prior
 distribution for all reproduction numbers (see details).</p></li>
 <li><p><code>std_prior</code>: A positive number giving the standard deviation of the
