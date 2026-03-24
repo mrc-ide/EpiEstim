@@ -168,7 +168,7 @@ wallinga_teunis <- function(incid,
     i <- i + 1
   }
   temp <- which(config$t_start < i)
-  if (length(temp > 0)) {
+  if (length(temp) > 0) {
     config$t_start <- config$t_start[-temp]
     config$t_end <- config$t_end[-temp]
   }
@@ -248,7 +248,6 @@ wallinga_teunis <- function(incid,
   for (t in seq_len(T)) {
     Onset <- c(Onset, rep(t, incid[t]))
   }
-  NbCases <- length(Onset)
   
   delay <- outer(seq_len(T), seq_len(T), "-")
   si_delay <- apply(delay, 2, function(x) 
