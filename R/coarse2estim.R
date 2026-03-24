@@ -10,7 +10,11 @@
 #' @param dist The parametric distribution used when estimating the serial
 #' interval. Should be one of "gamma", "weibull", "lognormal", "gamma_offset_1",
 #'  "weibull_offset_1", or "lognormal_offset_1". Note the different naming 
-#' convention compared to \code{\link[coarseDataTools]{dic.fit.mcmc}}.
+#' convention compared to \code{\link[coarseDataTools]{dic.fit.mcmc}}. The
+#' distribution may also be specified using the abbreviated forms "G", "W", "L",
+#' "off1G", "off1W", and "off1L" as used in \code{\link[coarseDataTools]{dic.fit.mcmc}}.
+#' However, we recommend using the full names to avoid confusion, and a warning
+#' will be issued if the abbreviated forms are used.
 #' If not present, computed automatically from \code{x}.
 #' @param samples A dataframe containing the posterior samples of serial
 #' interval parameters corresponding to the parametric choice specified in
@@ -63,9 +67,9 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
                          thin = 10) {
   if (is.null(x)) # then check that dist and samples are what we expect
   {
-    valid_distrs <- si_from_data_valid_distrs()
+    rtn <- si_from_data_valid_distrs(dist)
 
-    if (!(dist %in% valid_distrs)) {
+    if (!rtn$is_dist_valid) {
       stop("The supported distributions are 'gamma', 'weibull',
            'lognormal', 'gamma_offset_1' (Gamma shifted by 1),
            'weibull_offset_1' (Weibull shifted by 1),
@@ -136,9 +140,8 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
     prob_matrix <- apply(samples, 1, function(x) 
       plnorm(max_interval + 0.5, meanlog = x[1], sdlog = x[2]) - 
         plnorm(max_interval - 0.5, meanlog = x[1], sdlog = x[2]))
-  } else {
-    stop(sprintf("Distribution (%s) not supported", dist))
   }
+  
   # adding initial 0 for P(SI=0)
   prob_matrix <- rbind(rep(0, n_samples), prob_matrix)
   # renormalising

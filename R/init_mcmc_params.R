@@ -79,13 +79,19 @@
 #' 
 #' }
 #' 
-init_mcmc_params <- function(si_data, dist = si_from_data_valid_distrs()) {
+init_mcmc_params <- function(si_data, dist) {
   
-  dist <- match.arg(dist)
+  rtn <- si_from_data_valid_distrs(dist)
+  if (!rtn$is_dist_valid) {
+    stop("The supported distributions are 'gamma', 'weibull',
+           'lognormal', 'gamma_offset_1' (Gamma shifted by 1),
+           'weibull_offset_1' (Weibull shifted by 1),
+           or 'lognormal_offset_1' (Lognormal shifted by 1). ")
+  }
   naive_SI_obs <- (si_data$SR + si_data$SL) / 2 - (si_data$ER + si_data$EL) / 2
   mu <- mean(naive_SI_obs)
   sigma <- sd(naive_SI_obs)
-  if (dist == "gamma") {
+  if (dist == "gamma"| dist == "G") {
     shape <- (mu / sigma)^2
     scale <- sigma^2 / mu
     # check this is what we want
@@ -93,7 +99,7 @@ init_mcmc_params <- function(si_data, dist = si_from_data_valid_distrs()) {
     # mean(tmp)
     # sd(tmp)
     param <- c(shape, scale)
-  } else if (dist == "weibull") {
+  } else if (dist == "weibull"| dist == "W") {
     fit.w <- fitdist(naive_SI_obs + 0.1, "weibull") 
     ## using +0.1 to avoid issues with zero
     shape <- fit.w$estimate["shape"]
@@ -103,7 +109,7 @@ init_mcmc_params <- function(si_data, dist = si_from_data_valid_distrs()) {
     # mean(tmp)
     # sd(tmp)
     param <- c(shape, scale)
-  } else if (dist == "lognormal") {
+  } else if (dist == "lognormal"| dist == "L") {
     sdlog <- sqrt(log(sigma^2 / (mu^2) + 1))
     meanlog <- log(mu) - sdlog^2 / 2
     # check this is what we want
@@ -111,7 +117,7 @@ init_mcmc_params <- function(si_data, dist = si_from_data_valid_distrs()) {
     # mean(tmp)
     # sd(tmp)
     param <- c(meanlog, sdlog)
-  } else if (dist == "gamma_offset_1") {
+  } else if (dist == "gamma_offset_1"| dist == "off1G") {
     shape <- ((mu - 1) / sigma)^2
     if (shape <= 0) shape <- 0.001 
     ## this is to avoid issues when the mean SI is <1
@@ -121,7 +127,7 @@ init_mcmc_params <- function(si_data, dist = si_from_data_valid_distrs()) {
     # mean(tmp)
     # sd(tmp)
     param <- c(shape, scale)
-  } else if (dist == "weibull_offset_1") {
+  } else if (dist == "weibull_offset_1"| dist == "off1W") {
     fit.w <- fitdist(naive_SI_obs - 1 + 0.1, "weibull") 
     ## using +0.1 to avoid issues with zero
     shape <- fit.w$estimate["shape"]
@@ -131,7 +137,7 @@ init_mcmc_params <- function(si_data, dist = si_from_data_valid_distrs()) {
     # mean(tmp)
     # sd(tmp)
     param <- c(shape, scale)
-  } else if (dist == "lognormal_offset_1") {
+  } else if (dist == "lognormal_offset_1"| dist == "off1L") {
     sdlog <- sqrt(log(sigma^2 / ((mu - 1)^2) + 1))
     meanlog <- log(mu - 1) - sdlog^2 / 2
     # check this is what we want
@@ -139,9 +145,8 @@ init_mcmc_params <- function(si_data, dist = si_from_data_valid_distrs()) {
     # mean(tmp)
     # sd(tmp)
     param <- c(meanlog, sdlog)
-  } else {
-    stop(sprintf("Distribtion (%s) not supported", dist))
   }
+  
   if (anyNA(param)) {
     stop("NA result. Check that si_data is in the right format. ")
   }

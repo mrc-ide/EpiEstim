@@ -216,7 +216,7 @@ MCMC_seed <- 1
 overall_seed <- 2
 mcmc_control <- make_mcmc_control(seed = MCMC_seed, 
                                   burnin = 1000)
-dist <- "gamma" # fitting a Gamma dsitribution for the SI
+dist <- "G" # fitting a Gamma dsitribution for the SI
 config <- make_config(list(si_parametric_distr = dist,
                            mcmc_control = mcmc_control,
                            seed = overall_seed, 
