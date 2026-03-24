@@ -86,9 +86,9 @@
 
 
 <dl><dt id="arg-incid">incid<a class="anchor" aria-label="anchor" href="#arg-incid"></a></dt>
-<dd><p>a list (as obtained from function `process_I_multivariant`)
-of two multidimensional arrays ("local" and "imported")
-containing values of the incidence
+<dd><p>a list (as obtained from function <code><a href="process_I_multivariant.html">process_I_multivariant()</a></code>)
+of two multidimensional arrays (<code>local</code> and <code>imported</code>) containing values
+of the incidence
 for each time step (1st dimension), location (2nd dimension) and
 pathogen/strain/variant (3rd dimension)</p></dd>
 
@@ -104,19 +104,18 @@ should sum to 1</p></dd>
     <div id="value">
     <h2>Value</h2>
     <p>a multidimensional array containing values of the overall
-  infectivity for each time step (1st dimension), location (2nd dimension)
-  and pathogen/strain/variant (3rd dimension). The overall infectivity for
-  a given location and pathogen/strain/variant represents the sum of
-  the incidence for that location and that pathogen/strain/variant at all
-  previous time steps, weighted by the current infectivity of those
-  past incident cases. Pre-calculating the overall infectivity makes the
-  algorithm much faster</p>
+infectivity for each time step (1st dimension), location (2nd dimension)
+and pathogen/strain/variant (3rd dimension). The overall infectivity for
+a given location and pathogen/strain/variant represents the sum of
+the incidence for that location and that pathogen/strain/variant at all
+previous time steps, weighted by the current infectivity of those
+past incident cases. Pre-calculating the overall infectivity makes the
+algorithm much faster.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">n_v</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">n_v</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="va">n_loc</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="co"># 3 locations</span></span></span>
 <span class="r-in"><span><span class="cn">T</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># 100 time steps</span></span></span>
 <span class="r-in"><span><span class="va">priors</span> <span class="op">&lt;-</span> <span class="fu"><a href="default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span></span></span>

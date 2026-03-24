@@ -114,33 +114,33 @@ and pathogen/strain/variant (3rd dimension). The overall infectivity for
 a given location and pathogen/strain/variant represents the sum of
 the incidence for that location and that pathogen/strain/variant at all
 previous time steps, weighted by the current infectivity of those
-past incident cases. It can be calculated from the incidence `incid` and
-the distribution of the serial interval using function `compute_lambda`)</p></dd>
+past incident cases. It can be calculated from the incidence <code>incid</code> and
+the distribution of the serial interval using function <code><a href="compute_lambda.html">compute_lambda()</a></code></p></dd>
 
 
 <dt id="arg-priors">priors<a class="anchor" aria-label="anchor" href="#arg-priors"></a></dt>
 <dd><p>a list of prior parameters (shape and scale of a gamma
 distribution) for epsilon and R; can be obtained from the function
-`default_priors`. The prior for R is assumed to be the same for all
+<code><a href="default_priors.html">default_priors()</a></code>. The prior for R is assumed to be the same for all
 time steps and all locations</p></dd>
 
 
 <dt id="arg-shape-r-flat">shape_R_flat<a class="anchor" aria-label="anchor" href="#arg-shape-r-flat"></a></dt>
 <dd><p>a vector of the shape of the posterior distribution of R
 for each time step t and each location l
-(stored in element (l-1)*(t_max - t_min + 1) + t of the vector),
-as obtained from function `get_shape_R_flat`</p></dd>
+(stored in element <code>(l-1)*(t_max - t_min + 1) + t</code> of the vector),
+as obtained from function <code><a href="get_shape_R_flat.html">get_shape_R_flat()</a></code>.</p></dd>
 
 
 <dt id="arg-t-min">t_min<a class="anchor" aria-label="anchor" href="#arg-t-min"></a></dt>
-<dd><p>an integer &gt;1 giving the minimum time step to consider in the
+<dd><p>an integer &gt; 1 giving the minimum time step to consider in the
 estimation. Default value is 2 (as the estimation is conditional on
 observations at time step 1 and can therefore only start at time step 2).</p></dd>
 
 
 <dt id="arg-t-max">t_max<a class="anchor" aria-label="anchor" href="#arg-t-max"></a></dt>
-<dd><p>an integer &gt;`t_min` and &lt;=`nrow(incid)` giving the maximum time
-step to consider in the estimation. Default value is `nrow(incid)`.</p></dd>
+<dd><p>an integer &gt; <code>t_min</code> and &lt;= <code>nrow(incid)</code> giving the maximum time
+step to consider in the estimation. Default value is <code>nrow(incid)</code>.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
@@ -150,14 +150,13 @@ step to consider in the estimation. Default value is `nrow(incid)`.</p></dd>
     <div id="value">
     <h2>Value</h2>
     <p>a matrix of the instantaneous reproduction number R for the reference
-  pathogen/strain/variant for each time step (row) and each location (column)
-  drawn from the marginal posterior distribution</p>
+pathogen/strain/variant for each time step (row) and each location (column)
+drawn from the marginal posterior distribution</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">n_v</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">n_v</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="va">n_loc</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="co"># 3 locations</span></span></span>
 <span class="r-in"><span><span class="cn">T</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># 100 time steps</span></span></span>
 <span class="r-in"><span><span class="va">priors</span> <span class="op">&lt;-</span> <span class="fu"><a href="default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -272,7 +271,6 @@ step to consider in the estimation. Default value is `nrow(incid)`.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [98,] 1.0872457 0.9527889 0.8528483</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [99,] 1.0057392 1.2131339 0.6324443</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [100,] 0.9490229 1.0053291 1.0373155</span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

@@ -119,16 +119,20 @@ New York City school. New Eng J Med 361: 2628-2636.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"flu_2009_NYC_school"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## estimate the reproduction number (method "si_from_data")</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">flu_2009_NYC_school</span><span class="op">$</span><span class="va">incidence</span>, method<span class="op">=</span><span class="st">"si_from_data"</span>,</span></span>
-<span class="r-in"><span>         si_data <span class="op">=</span> <span class="va">flu_2009_NYC_school</span><span class="op">$</span><span class="va">si_data</span>,</span></span>
-<span class="r-in"><span>          config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>                      t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">8</span><span class="op">)</span>, </span></span>
-<span class="r-in"><span>                      t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">14</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                      si_parametric_distr <span class="op">=</span> <span class="st">"G"</span>,</span></span>
-<span class="r-in"><span>                      mcmc_control <span class="op">=</span> <span class="fu"><a href="make_mcmc_control.html">make_mcmc_control</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">1000</span>,</span></span>
-<span class="r-in"><span>                                 thin <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                      n1 <span class="op">=</span> <span class="fl">1000</span>, n2 <span class="op">=</span> <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>          <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">flu_2009_NYC_school</span><span class="op">$</span><span class="va">incidence</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"si_from_data"</span>,</span></span>
+<span class="r-in"><span>  si_data <span class="op">=</span> <span class="va">flu_2009_NYC_school</span><span class="op">$</span><span class="va">si_data</span>,</span></span>
+<span class="r-in"><span>  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    t_start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">8</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    t_end <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">14</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    si_parametric_distr <span class="op">=</span> <span class="st">"G"</span>,</span></span>
+<span class="r-in"><span>    mcmc_control <span class="op">=</span> <span class="fu"><a href="make_mcmc_control.html">make_mcmc_control</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>burnin <span class="op">=</span> <span class="fl">1000</span>, thin <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    n1 <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>    n2 <span class="op">=</span> <span class="fl">50</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## the second plot produced shows, at each each day,</span></span></span>
 <span class="r-in"><span><span class="co">## the estimate of the reproduction number</span></span></span>

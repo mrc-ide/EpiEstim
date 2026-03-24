@@ -96,9 +96,8 @@ deviation 1.5 days and shift 1 day (see references).</p></li>
 </ul></div>
     <div id="source">
     <h2>Source</h2>
-    <p>Frost W. and E. Sydenstricker (1919) Influenza in Maryland:
-preliminary statistics of certain localities.
-Public Health Rep.(34): 491-504.</p>
+    <p>Frost W. and E. Sydenstricker (1919) Influenza in Maryland: preliminary
+statistics of certain localities. Public Health Rep.(34): 491-504.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -123,11 +122,14 @@ the 1918 pandemic. PLoS One 3(1): e1498.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Flu1918"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## estimate the reproduction number (method "non_parametric_si")</span></span></span>
-<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu1918</span><span class="op">$</span><span class="va">incidence</span>,</span></span>
-<span class="r-in"><span>          method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span></span>
-<span class="r-in"><span>          config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>si_distr <span class="op">=</span> <span class="va">Flu1918</span><span class="op">$</span><span class="va">si_distr</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_R.html">estimate_R</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">Flu1918</span><span class="op">$</span><span class="va">incidence</span>,</span></span>
+<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"non_parametric_si"</span>,</span></span>
+<span class="r-in"><span>  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>si_distr <span class="op">=</span> <span class="va">Flu1918</span><span class="op">$</span><span class="va">si_distr</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Default config will estimate R on weekly sliding windows.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     To change this change the t_start and t_end arguments. </span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`aes_string()` was deprecated in ggplot2 3.0.0.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use tidy evaluation idioms with `aes()`.</span>

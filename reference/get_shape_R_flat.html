@@ -95,32 +95,31 @@ pathogen/strain/variant (3rd dimension)</p></dd>
 <dt id="arg-priors">priors<a class="anchor" aria-label="anchor" href="#arg-priors"></a></dt>
 <dd><p>a list of prior parameters (shape and scale of a gamma
 distribution) for epsilon and R; can be obtained from the function
-`default_priors`. The prior for R is assumed to be the same for all
+<code>default_priors</code>. The prior for R is assumed to be the same for all
 time steps and all locations</p></dd>
 
 
 <dt id="arg-t-min">t_min<a class="anchor" aria-label="anchor" href="#arg-t-min"></a></dt>
-<dd><p>an integer &gt;1 giving the minimum time step to consider in the
+<dd><p>an integer &gt; 1 giving the minimum time step to consider in the
 estimation. Default value is 2 (as the estimation is conditional on
 observations at time step 1 and can therefore only start at time step 2).</p></dd>
 
 
 <dt id="arg-t-max">t_max<a class="anchor" aria-label="anchor" href="#arg-t-max"></a></dt>
-<dd><p>an integer &gt;`t_min` and &lt;=`nrow(incid)` giving the maximum time
-step to consider in the estimation. Default value is `nrow(incid)`.</p></dd>
+<dd><p>an integer &gt; <code>t_min</code> and &lt;= <code>nrow(incid)</code> giving the maximum time
+step to consider in the estimation. Default value is <code>nrow(incid)</code>.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>a vector of the shape of the posterior distribution of R for
-  each time step t and each location l
-  (stored in element (l-1)*(t_max - t_min + 1) + t of the vector)</p>
+each time step t and each location l
+(stored in element <code>(l-1)*(t_max - t_min + 1) + t</code> of the vector)</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">n_v</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">n_v</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="va">n_loc</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="co"># 3 locations</span></span></span>
 <span class="r-in"><span><span class="cn">T</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="co"># 100 time steps</span></span></span>
 <span class="r-in"><span><span class="va">priors</span> <span class="op">&lt;-</span> <span class="fu"><a href="default_priors.html">default_priors</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -152,7 +151,6 @@ step to consider in the estimation. Default value is `nrow(incid)`.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [265] 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [277] 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [289] 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04 20.04</span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

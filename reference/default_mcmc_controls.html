@@ -83,21 +83,19 @@
 
     <div id="value">
     <h2>Value</h2>
-    <p>a list of default MCMC control parameters, containing:</p>
-<p>- n_iter: the number if iterations of the MCMC to perform</p>
-<p>- burnin: the burnin to use; MCMC iterations will only be recorded after
-  the burnin</p>
-<p>- thin: MCMC iterations will only be recorded after
-  the burnin and every `thin` iteration</p>
-<p>Values can then be manually be edited as in the examples below.</p>
+    <p>a list of default MCMC control parameters, containing:</p><ul><li><p><code>n_iter</code>: the number of iterations for the MCMC to perform</p></li>
+<li><p><code>burnin</code>: the burnin to use; MCMC iterations will only be recorded after
+the burnin</p></li>
+<li><p><code>thin</code>: MCMC iterations will only be recorded after the burnin and every
+<code>thin</code> iteration</p></li>
+</ul><p>Values can then be manually edited as in the examples below.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">mcmc_control</span><span class="op">&lt;-</span> <span class="fu">default_mcmc_controls</span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">mcmc_control</span> <span class="op">&lt;-</span> <span class="fu">default_mcmc_controls</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># change to run for 10 times longer</span></span></span>
 <span class="r-in"><span><span class="va">mcmc_control</span><span class="op">$</span><span class="va">n_iter</span> <span class="op">&lt;-</span> <span class="va">mcmc_control</span><span class="op">$</span><span class="va">n_iter</span> <span class="op">*</span> <span class="fl">10</span></span></span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

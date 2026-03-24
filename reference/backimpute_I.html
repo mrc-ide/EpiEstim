@@ -80,10 +80,10 @@ Currently, no cases are assumed to be imported."><!-- mathjax --><script src="ht
 
     <div class="ref-description">
     <p>This function imputes incidence prior the first date of reported cases to
-address early bias in R_t estimates.
+address early bias in <code>R_t</code> estimates.
 A simple linear model is fitted on shifted, logged-incidence cases, based on
 an initial observation window.
-Log-incidence is computed as log(local + 0.5) to avoid -infinite logs.
+Log-incidence is computed as <code>log(local + 0.5)</code> to avoid -infinite logs.
 Currently, no cases are assumed to be imported.</p>
     </div>
 
@@ -106,16 +106,16 @@ growth model for back-imputation</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>an incidence data.frame, combining back-imputed cases for a maximum
+    <p>an incidence <code>data.frame</code>, combining back-imputed cases for a maximum
 of 100 time points (with rows indexed by a negative integer rowname) and
-cases (with rows #' indexed by a non-negative integer)</p>
+cases (with rows indexed by a non-negative integer)</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">incid_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">.3</span> <span class="op">*</span> <span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">incid_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fl">0.3</span> <span class="op">*</span> <span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">incid_trunc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">incid_all</span>, <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">backimpute_I</span><span class="op">(</span>incid<span class="op">=</span><span class="va">incid_trunc</span>, window_b<span class="op">=</span><span class="fl">6</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">backimpute_I</span><span class="op">(</span>incid <span class="op">=</span> <span class="va">incid_trunc</span>, window_b <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="op">-</span><span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="va">x</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span><span class="op">$</span><span class="va">local</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1]   1.005090   1.517613   2.204664   3.125674   4.360311   6.015376</span>
