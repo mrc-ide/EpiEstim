@@ -341,7 +341,8 @@ estimate_R <- function(incid,
   # switch between the standard estimate_R version and that which disaggregates
   # coarsely aggregated incidence data
   if(any(dt >= 2)) {
-    out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
+    incid_vec <- process_I_vector(incid)
+    out <- estimate_R_agg(incid_vec, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
                           iter = iter, tol = tol, config = config, method = method, grid = grid)
   } else {
     
