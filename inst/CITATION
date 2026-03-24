@@ -1,0 +1,38 @@
+citHeader("To cite {EpiEstim} in publications use:")
+
+bibentry(
+  bibtype = "Manual",
+  title = "EpiEstim: Estimate Time Varying Reproduction Numbers from Epidemic Curves",
+  author = c(
+    person("Anne", "Cori", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-8443-9162")),
+    person("Rebecca", "Nash", email = "r.nash@imperial.ac.uk", role = "aut",
+           comment = c(ORCID = "0000-0002-5213-4364")),
+    person("Thibaut", "Jombart", role = "ctb", comment = c(ORCID = "0000-0003-2226-8692")),
+    person("Zhian N.", "Kamvar", role = "ctb", comment = c(ORCID = "0000-0003-1458-7108")),
+    person("Jake", "Stockwin",  role = "ctb"),
+    person("Robin", "Thompson", role = "ctb", comment = c(ORCID = "0000-0001-8545-5212")),
+    person("Sangeeta", "Bhatia", email = "s.bhatia@imperial.ac.uk", role ="ctb",
+           comment = c(ORCID = "0000-0001-6525-101X")),
+    person("Andrea", "Brizzi", role = "ctb", comment = c(ORCID = "0000-0002-5639-8260")),
+    person("Elisabeth", "Dahlqwist", role = "ctb", comment = c(ORCID = "0000-0001-5797-6803")),
+    person("Rich", "FitzJohn",role = "ctb"),
+    person("Hugo", "Gruson",  role = "ctb"),
+    person("Jack", "Wardle", role = "ctb", comment = c(ORCID = "0000-0002-5363-1653")),
+    person("Rolina", "van Gaalen", role = "ctb"),
+    person("Tim", "Pollington",  role = "ctb"),
+    person("Pietro", "Monticone",  role = "ctb"),
+    person("Ewout", "ter Hoeven",  role = "ctb"),
+    person("Jonathan A.", "Polonsky", role = "ctb", comment = c(ORCID = "0000-0002-8634-4255")),
+    person("Shikun", "Li", role = "ctb"),
+    person("Justin", "Lessler", role = "ctb", comment = c(ORCID = "0000-0002-9741-8109")),
+    person("P. Alex", "Demarsh", role = "ctb"),
+    person("Neil M.", "Ferguson", role = "ctb", comment = c(ORCID = "0000-0002-1154-8093")),
+    person("Christophe", "Fraser", role = "ctb", comment = c(ORCID = "0000-0003-2399-9657")),
+    person("Simon", "Cauchemez", role = "ctb")
+  ),
+  year = format(Sys.Date(), "%Y"),
+  note = "R package version 2.4",
+  url = "https://github.com/mrc-ide/EpiEstim"
+)
+
+citFooter("Please also consider citing our papers listed in the README of our GitHub repository.")
