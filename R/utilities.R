@@ -120,6 +120,16 @@ process_I <- function(incid) {
 }
 
 process_I_vector <- function(incid) {
+  if (inherits(incid, "incidence2")) {
+    if ("group" %in% names(incid) && "local" %in% incid$group) {
+      incid <- incid$I[incid$group == "local"]
+    } else {
+      # no grouping or no local/imported distinction then sum all counts
+      dates <- unique(incid[[incidence2::get_date_index_names(incid)]])
+      incid <- tapply(incid$I, incid[[incidence2::get_date_index_names(incid)]], sum)[as.character(dates)]
+    }
+    return(as.vector(incid))
+  }
   # here, the incident counts are being forced into a vector.
   if (inherits(incid, "incidence")) {
     incid <- rowSums(incidence::get_counts(incid))
