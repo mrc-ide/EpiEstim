@@ -8,13 +8,11 @@ default_mcmc_controls()
 }
 \value{
 a list of default MCMC control parameters, containing:
-\itemize{
-\item \code{n_iter}: the number of iterations for the MCMC to perform
-\item \code{burnin}: the burnin to use; MCMC iterations will only be recorded after
-the burnin
-\item \code{thin}: MCMC iterations will only be recorded after the burnin and every
-\code{thin} iteration
-}
+- `n_iter`: the number of iterations for the MCMC to perform
+- `burnin`: the burnin to use; MCMC iterations will only be recorded after
+  the burnin
+- `thin`: MCMC iterations will only be recorded after the burnin and every 
+  `thin` iteration
 
 Values can then be manually edited as in the examples below.
 }

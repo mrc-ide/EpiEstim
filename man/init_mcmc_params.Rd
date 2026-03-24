@@ -8,32 +8,30 @@ init_mcmc_params(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
 }
 \arguments{
 \item{si_data}{data on dates of symptoms of pairs of infector/infected
-individuals to be used to estimate the serial interval distribution. This
-should be a dataframe with 5 columns:
-\itemize{
-\item \code{EL}: the lower bound of the symptom onset date of the infector (given as an integer)
-\item \code{ER}: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that \code{ER >= EL}. If the dates are known exactly use \code{ER = EL}
-\item \code{SL}: the lower bound of the symptom onset date of the infected individual (given as an integer)
-\item \code{SR}: the upper bound of the symptom onset date of the infected individual (given as an integer). Should be such that \code{SR >= SL}. If the dates are known exactly use \code{SR = SL}
-\item \code{type} (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates
-}}
+  individuals to be used to estimate the serial interval distribution. This
+  should be a dataframe with 5 columns: 
+- `EL`: the lower bound of the symptom onset date of the infector (given as an integer)
+- `ER`: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that `ER >= EL`. If the dates are known exactly use `ER = EL`
+- `SL`: the lower bound of the symptom onset date of the infected individual (given as an integer)
+- `SR`: the upper bound of the symptom onset date of the infected individual (given as an integer). Should be such that `SR >= SL`. If the dates are known exactly use `SR = SL`
+- `type` (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates}
 
-\item{dist}{parametric distribution to use for the serial interval.
+\item{dist}{parametric distribution to use for the serial interval. 
 Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G"
 (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
 shifted by 1).}
 }
 \value{
 A vector containing the initial values for the two parameters of the
-distribution of the serial interval. These are the shape and scale for all
-but the lognormal distribution, for which it is the meanlog and sdlog.
+  distribution of the serial interval. These are the shape and scale for all
+  but the lognormal distribution, for which it is the meanlog and sdlog.
 }
 \description{
-Finds values of the serial interval distribution
-parameters, used to initialise the MCMC estimation of the serial interval
-distribution (e.g. when using option \code{si_from_data} in
-\code{\link[=estimate_R]{estimate_R()}}). Initial values are computed based on the observed mean and
-standard deviation of the sample from which the parameters are to be
+Finds values of the serial interval distribution 
+parameters, used to initialise the MCMC estimation of the serial interval 
+distribution (e.g. when using option `si_from_data` in 
+[estimate_R()]). Initial values are computed based on the observed mean and 
+standard deviation of the sample from which the parameters are to be 
 estimated.
 }
 \examples{
@@ -73,7 +71,7 @@ converg_diag_naive
 }
 }
 \seealso{
-\code{\link[=estimate_R]{estimate_R()}}
+[estimate_R()]
 }
 \author{
 Anne Cori

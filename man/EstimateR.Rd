@@ -28,52 +28,52 @@ EstimateR(
 )
 }
 \arguments{
-\item{I}{see \code{incid} in \code{\link[=estimate_R]{estimate_R()}}}
+\item{I}{see `incid` in [estimate_R()]}
 
-\item{T.Start}{see \code{config$t_start} from \code{\link[=make_config]{make_config()}} used in \code{\link[=estimate_R]{estimate_R()}}}
+\item{T.Start}{see `config$t_start` from [make_config()] used in [estimate_R()]}
 
-\item{T.End}{see \code{config$t_end} from \code{\link[=make_config]{make_config()}} used in \code{\link[=estimate_R]{estimate_R()}}}
+\item{T.End}{see `config$t_end` from [make_config()] used in [estimate_R()]}
 
-\item{method}{see \code{method} in \code{\link[=estimate_R]{estimate_R()}} (but \code{\link[=EstimateR]{EstimateR()}} uses CamelCase
-where \code{\link[=estimate_R]{estimate_R()}} uses snake_case for the method names)}
+\item{method}{see `method` in [estimate_R()] (but [EstimateR()] uses CamelCase 
+where [estimate_R()] uses snake_case for the method names)}
 
-\item{n1}{see \code{n1} in \code{\link[=estimate_R]{estimate_R()}}}
+\item{n1}{see `n1` in [estimate_R()]}
 
-\item{n2}{see \code{n2} in \code{\link[=estimate_R]{estimate_R()}}}
+\item{n2}{see `n2` in [estimate_R()]}
 
-\item{Mean.SI}{see \code{config$mean_si} from \code{\link[=make_config]{make_config()}} used in \code{\link[=estimate_R]{estimate_R()}}}
+\item{Mean.SI}{see `config$mean_si` from [make_config()] used in [estimate_R()]}
 
-\item{Std.SI}{see \code{config$std_si} from \code{\link[=make_config]{make_config()}} used in \code{\link[=estimate_R]{estimate_R()}}}
+\item{Std.SI}{see `config$std_si` from [make_config()] used in [estimate_R()]}
 
-\item{Std.Mean.SI}{see \code{config$std_mean_si} from \code{\link[=make_config]{make_config()}} used in
-\code{\link[=estimate_R]{estimate_R()}}}
+\item{Std.Mean.SI}{see `config$std_mean_si` from [make_config()] used in 
+[estimate_R()]}
 
-\item{Min.Mean.SI}{see \code{config$min_mean_si} from \code{\link[=make_config]{make_config()}} used in
-\code{\link[=estimate_R]{estimate_R()}}}
+\item{Min.Mean.SI}{see `config$min_mean_si` from [make_config()] used in 
+[estimate_R()]}
 
-\item{Max.Mean.SI}{see \code{config$max_mean_si} from \code{\link[=make_config]{make_config()}} used in
-\code{\link[=estimate_R]{estimate_R()}}}
+\item{Max.Mean.SI}{see `config$max_mean_si` from [make_config()] used in 
+[estimate_R()]}
 
-\item{Std.Std.SI}{see \code{config$std_std_si} from \code{\link[=make_config]{make_config()}} used in
-\code{\link[=estimate_R]{estimate_R()}}}
+\item{Std.Std.SI}{see `config$std_std_si` from [make_config()] used in 
+[estimate_R()]}
 
-\item{Min.Std.SI}{see \code{config$min_std_si} from \code{\link[=make_config]{make_config()}} used in
-\code{\link[=estimate_R]{estimate_R()}}}
+\item{Min.Std.SI}{see `config$min_std_si` from [make_config()] used in 
+[estimate_R()]}
 
-\item{Max.Std.SI}{see \code{config$max_std_si} from \code{\link[=make_config]{make_config()}} used in
-\code{\link[=estimate_R]{estimate_R()}}}
+\item{Max.Std.SI}{see `config$max_std_si` from [make_config()] used in 
+[estimate_R()]}
 
-\item{SI.Distr}{see \code{config$si_distr} from \code{\link[=make_config]{make_config()}} used in
-\code{\link[=estimate_R]{estimate_R()}}}
+\item{SI.Distr}{see `config$si_distr` from [make_config()] used in 
+[estimate_R()]}
 
-\item{Mean.Prior}{see \code{config$mean_prior} from \code{\link[=make_config]{make_config()}} used in
-\code{\link[=estimate_R]{estimate_R()}}}
+\item{Mean.Prior}{see `config$mean_prior` from [make_config()] used in 
+[estimate_R()]}
 
-\item{Std.Prior}{see \code{config$std_prior} from \code{\link[=make_config]{make_config()}} used in
-\code{\link[=estimate_R]{estimate_R()}}}
+\item{Std.Prior}{see `config$std_prior` from [make_config()] used in 
+[estimate_R()]}
 
-\item{CV.Posterior}{see \code{config$cv_posterior} from \code{\link[=make_config]{make_config()}} used in
-\code{\link[=estimate_R]{estimate_R()}}}
+\item{CV.Posterior}{see `config$cv_posterior` from [make_config()] used in 
+[estimate_R()]}
 
 \item{plot}{Not used anymore, only there for compatibility}
 
@@ -81,5 +81,5 @@ where \code{\link[=estimate_R]{estimate_R()}} uses snake_case for the method nam
 }
 \description{
 Please only use for compatibility;
-Prefer the new \code{\link[=estimate_R]{estimate_R()}} function instead.
+Prefer the new [estimate_R()] function instead.
 }

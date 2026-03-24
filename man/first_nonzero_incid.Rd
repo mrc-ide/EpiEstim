@@ -18,7 +18,7 @@ integer
 Get the first day of non-zero incidence across all variants and locations.
 }
 \details{
-For each variant, find the first day of non-zero incidence. The maximum of
+For each variant, find the first day of non-zero incidence. The maximum of 
 these is the smallest possible point at which estimation can begin.
 }
 \author{

@@ -7,15 +7,15 @@
 check_cdt_samples_convergence(cdt_samples)
 }
 \arguments{
-\item{cdt_samples}{the \verb{@sample} slot of a \code{cd.fit.mcmc} S4 object
-(see package \code{coarseDataTools})}
+\item{cdt_samples}{the `@sample` slot of a `cd.fit.mcmc` S4 object 
+(see package `coarseDataTools`)}
 }
 \value{
-TRUE if the Gelman Rubin test for convergence was successful, FALSE
+TRUE if the Gelman Rubin test for convergence was successful, FALSE 
 otherwise
 }
 \description{
-This function splits an MCMC chain in two halves and uses the Gelman-Rubin
+This function splits an MCMC chain in two halves and uses the Gelman-Rubin 
 algorithm to assess convergence of the chain by comparing its two halves.
 }
 \examples{
@@ -41,7 +41,7 @@ converg_diag
 }
 }
 \seealso{
-\code{estimate_R()}
+`estimate_R()`
 }
 \author{
 Anne Cori

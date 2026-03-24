@@ -12,57 +12,52 @@ wallinga_teunis(
 }
 \arguments{
 \item{incid}{One of the following:
-\itemize{
-\item Vector (or a dataframe with a column named \code{incid}) of non-negative
-integers containing an incidence time series. If the dataframe contains a
-column \code{dates}, this is used for plotting. \code{incid$dates} must contains only
-dates in a row.
-\item An object of class \code{\link[incidence:incidence]{incidence::incidence()}}
-}}
+- Vector (or a dataframe with a column named `incid`) of non-negative
+  integers containing an incidence time series. If the dataframe contains a
+  column `dates`, this is used for plotting. `incid$dates` must contains only
+  dates in a row.
+- An object of class [incidence::incidence()]}
 
 \item{method}{the method used to estimate R, one of "non_parametric_si",
 "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
 
 \item{config}{a list with the following elements:
-\itemize{
-\item \code{t_start}: Vector of positive integers giving the starting times of each
-window over which the reproduction number will be estimated. These must be
-in ascending order, and so that for all \code{i}, \code{t_start[i] <= t_end[i]}.
-\code{t_start[1]} should be strictly after the first day with non null
-incidence.
-\item \code{t_end}: Vector of positive integers giving the ending times of each window
-over which the reproduction number will be estimated. These must be in
-ascending order, and so that for all \code{i}, \code{t_start[i] <= t_end[i]}.
-\item \code{method}: One of "non_parametric_si" or "parametric_si" (see details).
-\item \code{mean_si}: For method "parametric_si"; positive real giving the mean serial
-interval.
-\item \code{std_si}: For method "parametric_si"; non negative real giving the standard
-deviation of the serial interval.
-\item \code{si_distr}: For method "non_parametric_si"; vector of probabilities giving
-the discrete distribution of the serial interval, starting with
-\code{si_distr[1]} (probability that the serial interval is zero), which should
-be zero.
-\item \code{n_sim}: A positive integer giving the number of simulated epidemic trees
-used for computation of the confidence intervals of the case reproduction
-number (see details).
-}}
+- `t_start`: Vector of positive integers giving the starting times of each
+  window over which the reproduction number will be estimated. These must be
+  in ascending order, and so that for all `i`, `t_start[i] <= t_end[i]`.
+  `t_start[1]` should be strictly after the first day with non null
+  incidence.
+- `t_end`: Vector of positive integers giving the ending times of each window
+  over which the reproduction number will be estimated. These must be in
+  ascending order, and so that for all `i`, `t_start[i] <= t_end[i]`.
+- `method`: One of "non_parametric_si" or "parametric_si" (see details).
+- `mean_si`: For method "parametric_si"; positive real giving the mean serial
+  interval.
+- `std_si`: For method "parametric_si"; non negative real giving the standard
+  deviation of the serial interval.
+- `si_distr`: For method "non_parametric_si"; vector of probabilities giving
+  the discrete distribution of the serial interval, starting with
+  `si_distr[1]` (probability that the serial interval is zero), which should
+  be zero.
+- `n_sim`: A positive integer giving the number of simulated epidemic trees
+  used for computation of the confidence intervals of the case reproduction
+  number (see details).}
 }
 \value{
 a list with components:
-\itemize{
-\item \code{R}: a dataframe containing: the times of start and end of each time window
-considered; the estimated mean, std, and 0.025 and 0.975 quantiles of the
-reproduction number for each time window.
-\item \code{si_distr}: a vector containing the discrete serial interval distribution
-used for estimation
-\item \code{SI.Moments}: a vector containing the mean and std of the discrete serial
-interval distribution(s) used for estimation
-\item \code{I}: the time series of total incidence
-\item \code{I_local}: the time series of incidence of local cases (so that \code{I_local + I_imported = I})
-\item \code{I_imported}: the time series of incidence of imported cases (so that
-\code{I_local + I_imported = I})
-\item \code{dates}: a vector of dates corresponding to the incidence time series
-}
+- `R`: a dataframe containing: the times of start and end of each time window
+  considered; the estimated mean, std, and 0.025 and 0.975 quantiles of the
+  reproduction number for each time window.
+- `si_distr`: a vector containing the discrete serial interval distribution
+  used for estimation
+- `SI.Moments`: a vector containing the mean and std of the discrete serial
+  interval distribution(s) used for estimation
+- `I`: the time series of total incidence
+- `I_local`: the time series of incidence of local cases (so that `I_local +
+  I_imported = I`)
+- `I_imported`: the time series of incidence of imported cases (so that
+  `I_local + I_imported = I`)
+- `dates`: a vector of dates corresponding to the incidence time series
 }
 \description{
 Estimate the case reproduction number of an epidemic,
@@ -72,26 +67,24 @@ given the incidence time series and the serial interval distribution.
 Estimates of the case reproduction number for an epidemic over
 predefined time windows can be obtained, for a given discrete distribution of
 the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
-Confidence intervals are obtained by simulating a number (\code{config$n_sim}) of
-possible transmission trees (only done if \code{config$n_sim > 0}).
-\subsection{Methods}{
+Confidence intervals are obtained by simulating a number (`config$n_sim`) of
+possible transmission trees (only done if `config$n_sim > 0`).
+
+## Methods
 
 The methods vary in the way the serial interval distribution is specified.
-\subsection{\code{method = "non_parametric_si"}}{
+
+### `method = "non_parametric_si"`
 
 The discrete distribution of the serial interval is directly specified in the
-argument \code{config$si_distr}.
-}
+argument `config$si_distr`.
 
-\subsection{\code{method = "parametric_si"}}{
+### `method = "parametric_si"`
 
 The mean and standard deviation of the continuous distribution of the serial
-interval are given in the arguments \code{config$mean_si} and
-\code{config$std_si}. The discrete distribution of the serial interval is
-derived automatically using \code{\link[=discr_si]{discr_si()}}.
-}
-
-}
+interval are given in the arguments `config$mean_si` and
+`config$std_si`. The discrete distribution of the serial interval is
+derived automatically using [discr_si()].
 }
 \examples{
 ## load data on pandemic flu in a school in 2009
@@ -125,7 +118,7 @@ Different epidemic curves for severe acute respiratory syndrome reveal
 similar impacts of control measures (AJE 2004).
 }
 \seealso{
-\code{\link[=discr_si]{discr_si()}}, \code{\link[=estimate_R]{estimate_R()}}
+[discr_si()], [estimate_R()]
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}

@@ -7,11 +7,11 @@
 OverallInfectivity(I, SI.Distr)
 }
 \arguments{
-\item{I}{see \code{incid} in \code{\link[=overall_infectivity]{overall_infectivity()}}}
+\item{I}{see `incid` in [overall_infectivity()]}
 
-\item{SI.Distr}{see \code{si_distr} in \code{\link[=overall_infectivity]{overall_infectivity()}}}
+\item{SI.Distr}{see `si_distr` in [overall_infectivity()]}
 }
 \description{
 Please only use for compatibility;
-Prefer the new \code{\link[=overall_infectivity]{overall_infectivity()}} function instead
+Prefer the new [overall_infectivity()] function instead
 }

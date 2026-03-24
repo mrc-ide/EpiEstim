@@ -14,22 +14,20 @@ pathogen/strain/variant (3rd dimension)}
 \item{incid_imported}{an optional multidimensional array containing values
 of the incidence of imported cases
 for each time step (1st dimension), location (2nd dimension) and
-pathogen/strain/variant (3rd dimension). \code{incid - incid_imported} is
-therefore the incidence of locally infected cases. If \code{incid_imported} is
-\code{NULL} this means there are no
+pathogen/strain/variant (3rd dimension). `incid - incid_imported` is
+therefore the incidence of locally infected cases. If `incid_imported` is
+`NULL` this means there are no
 known imported cases and all cases other than on those from the first
 time step will be considered locally infected.}
 }
 \value{
 a list with two multidimensional elements each with three dimensions:
-timestep, location and pathogen/strain/variant:
-\itemize{
-\item \code{local}: an array of the incidence of locally infected cases
-\item \code{imported}: an array of the incidence of imported cases
-}
+ timestep, location and pathogen/strain/variant:
+- `local`: an array of the incidence of locally infected cases
+- `imported`: an array of the incidence of imported cases
 }
 \description{
-Process incidence input for multivariant analyses with \code{\link[=estimate_advantage]{estimate_advantage()}}
+Process incidence input for multivariant analyses with [estimate_advantage()]
 }
 \examples{
 n_v <- 3 # 3 variants

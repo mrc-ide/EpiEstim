@@ -6,10 +6,9 @@
 \title{Data on the 1861 measles epidemic in Hagelloch, Germany.}
 \format{
 A list of two elements:
-\itemize{
-\item \strong{incidence}: a vector containing 48 days of observation,
-\item \strong{si_distr}: a vector containing a set of 38 probabilities.
-}
+
+  - **incidence**: a vector containing 48 days of observation,
+  - **si_distr**: a vector containing a set of 38 probabilities.
 }
 \source{
 Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given
@@ -17,13 +16,12 @@ Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 }
 \description{
 This data set gives:
-\enumerate{
-\item the daily incidence of onset of symptoms in Hallegoch (Germany) during
-the 1861 measles epidemic (see source and references),
-\item the discrete daily distribution of the serial interval for measles,
-assuming a shifted Gamma distribution with mean 14.9 days, standard
-deviation 3.9 days and shift 1 day (see references).
-}
+
+1. the daily incidence of onset of symptoms in Hallegoch (Germany) during
+   the 1861 measles epidemic (see source and references),
+2. the discrete daily distribution of the serial interval for measles,
+   assuming a shifted Gamma distribution with mean 14.9 days, standard
+   deviation 3.9 days and shift 1 day (see references).
 }
 \examples{
 ## load data on measles in Hallegoch in 1861

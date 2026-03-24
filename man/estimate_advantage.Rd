@@ -30,65 +30,63 @@ should sum to 1.}
 
 \item{priors}{a list of prior parameters (shape and scale of a gamma
 distribution) for epsilon and R; can be obtained from the function
-\code{\link[=default_priors]{default_priors()}}. The prior for R is assumed to be the same for all
+[default_priors()]. The prior for R is assumed to be the same for all
 time steps and all locations}
 
-\item{mcmc_control}{a list of default MCMC control parameters, obtained by
-default from \code{\link[=default_mcmc_controls]{default_mcmc_controls()}}}
+\item{mcmc_control}{a list of default MCMC control parameters, obtained by 
+default from [default_mcmc_controls()]}
 
 \item{t_min}{an integer > 1 giving the minimum time step to consider in the
 estimation.
-If \code{NULL}, \code{t_min} is calculated using the function \code{\link[=compute_si_cutoff]{compute_si_cutoff()}}
+If `NULL`, `t_min` is calculated using the function [compute_si_cutoff()]
 which gets the maximum (across all variants) of the 95th percentile of the
 SI distribution.}
 
-\item{t_max}{an integer > \code{t_min} and <= \code{nrow(incid)} giving the maximum time
-step to consider in the estimation. Default value is \code{nrow(incid)}.}
+\item{t_max}{an integer > `t_min` and <= `nrow(incid)` giving the maximum time
+step to consider in the estimation. Default value is `nrow(incid)`.}
 
 \item{seed}{a numeric value used to fix the random seed}
 
 \item{incid_imported}{an optional multidimensional array containing values
-of the incidence of imported cases for each time step (1st dimension),
-location (2nd dimension) and pathogen/strain/variant (3rd dimension).
-\code{incid - incid_imported} is therefore the incidence of locally infected
-cases. If \code{incid_imported} is \code{NULL} this means there are no
+of the incidence of imported cases for each time step (1st dimension), 
+location (2nd dimension) and pathogen/strain/variant (3rd dimension). 
+`incid - incid_imported` is therefore the incidence of locally infected 
+cases. If `incid_imported` is `NULL` this means there are no
 known imported cases and all cases other than on those from the first
 time step will be considered locally infected.}
 
-\item{precompute}{a boolean (defaulting to \code{TRUE}) deciding whether to
-precompute quantities or not. Using \code{TRUE} will make the algorithm faster}
+\item{precompute}{a boolean (defaulting to `TRUE`) deciding whether to
+precompute quantities or not. Using `TRUE` will make the algorithm faster}
 
-\item{reorder_incid}{a boolean (defaulting to \code{TRUE}) deciding whether the
+\item{reorder_incid}{a boolean (defaulting to `TRUE`) deciding whether the
 incidence array can be internally reordered during the estimation of the
-transmission advantage. If \code{TRUE}, the most transmissible pathogen/strain/variant
-is temporarily assigned to \verb{[, , 1]} of the incidence array. We recommend the
-default value of \code{TRUE} as we find this to stabilise inference.}
+transmission advantage. If `TRUE`, the most transmissible pathogen/strain/variant
+is temporarily assigned to `[, , 1]` of the incidence array. We recommend the
+default value of `TRUE` as we find this to stabilise inference.}
 }
 \value{
 A list with the following elements:
-\itemize{
-\item \code{epsilon}: a matrix containing the MCMC chain (thinned and after burnin)
-for the relative transmissibility of the "new" pathogen/strain/variant(s)
-compared to the reference. Each row corresponds to a "new"
-pathogen/strain/variant and each column to an MCMC iteration.
-\item \code{R}: an array containing the MCMC chain (thinned and after burnin) for the
-reproduction number for the reference pathogen/strain/variant. Dimensions
-of the array are time,  location, and iteration of the MCMC.
-\item \code{convergence}: a logical vector based on the Gelman-Rubin convergence
-diagnostic. Each element in \code{convergence} is \code{TRUE} when the MCMC for the
-corresponding epsilon has converged number of iterations specified
-(otherwise \code{FALSE}).
-\item \code{diag}: a nested list of the point estimate and upper confidence limits of
-the Gelman-Rubin convergence diagnostics (as implemented in coda). The
-length of \code{diag} is equal to the number of rows in epsilon. Each element od
-\code{diag} is a list of length 2 where the first element is called \code{psrf} and
-is a named list of the point estimate and upper confidence limits. The
-second element is \code{NULL} and can be ignored.
-}
+- `epsilon`: a matrix containing the MCMC chain (thinned and after burnin)
+  for the relative transmissibility of the "new" pathogen/strain/variant(s)
+  compared to the reference. Each row corresponds to a "new"
+  pathogen/strain/variant and each column to an MCMC iteration.
+- `R`: an array containing the MCMC chain (thinned and after burnin) for the
+  reproduction number for the reference pathogen/strain/variant. Dimensions
+  of the array are time,  location, and iteration of the MCMC.
+- `convergence`: a logical vector based on the Gelman-Rubin convergence
+  diagnostic. Each element in `convergence` is `TRUE` when the MCMC for the
+  corresponding epsilon has converged number of iterations specified 
+  (otherwise `FALSE`).
+- `diag`: a nested list of the point estimate and upper confidence limits of
+  the Gelman-Rubin convergence diagnostics (as implemented in coda). The
+  length of `diag` is equal to the number of rows in epsilon. Each element od
+  `diag` is a list of length 2 where the first element is called `psrf` and
+  is a named list of the point estimate and upper confidence limits. The
+  second element is `NULL` and can be ignored.
 }
 \description{
 Jointly estimate the instantaneous reproduction number for a reference
-pathogen/strain/variant and the relative transmissibility of a "new"
+pathogen/strain/variant and the relative transmissibility of a "new" 
 pathogen/strain/variant.
 }
 \examples{

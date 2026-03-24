@@ -6,10 +6,9 @@
 \title{Data on the 1972 smallpox epidemic in Kosovo}
 \format{
 A list of two elements:
-\itemize{
-\item \strong{incidence}: a vector containing 57 days of observation,
-\item \strong{si_distr}: a vector containing a set of 46 probabilities.
-}
+
+  - **incidence**: a vector containing 57 days of observation,
+  - **si_distr**: a vector containing a set of 46 probabilities.
 }
 \source{
 Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health
@@ -17,13 +16,12 @@ Organization.
 }
 \description{
 This data set gives:
-\enumerate{
-\item the daily incidence of onset of symptoms in Kosovo during the 1972
-smallpox epidemic (see source and references),
-\item the discrete daily distribution of the serial interval for smallpox,
-assuming a shifted Gamma distribution with mean 22.4 days, standard
-deviation 6.1 days and shift 1 day (see references).
-}
+
+1. the daily incidence of onset of symptoms in Kosovo during the 1972
+   smallpox epidemic (see source and references), 
+2. the discrete daily distribution of the serial interval for smallpox,
+   assuming a shifted Gamma distribution with mean 22.4 days, standard
+   deviation 6.1 days and shift 1 day (see references).
 }
 \examples{
 ## load data on smallpox in Kosovo in 1972
@@ -42,10 +40,10 @@ plot(res)
 ## over the 7-day window finishing on that day.
 }
 \references{
-Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health
+Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health 
 Organization.
 
-Gani R. and S. Leach (2001) Transmission potential of smallpox in
+Gani R. and S. Leach (2001) Transmission potential of smallpox in 
 contemporary populations. Nature 414(6865): 748-751.
 
 Riley S. and N. M. Ferguson (2006) Smallpox transmission and control: spatial

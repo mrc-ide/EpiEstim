@@ -21,9 +21,9 @@ integer
 }
 \description{
 Across a matrix of discretised probability distributions
-(see \code{\link[=estimate_advantage]{estimate_advantage()}}) this function returns the largest index
+(see [estimate_advantage()]) this function returns the largest index
 (across all columns) such that the cumulative probability mass before index is
-\code{1 - miss_at_most}.
+`1 - miss_at_most`.
 }
 \author{
 Sangeeta Bhatia
