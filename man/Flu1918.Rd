@@ -12,9 +12,8 @@ A list of two elements:
 }
 }
 \source{
-Frost W. and E. Sydenstricker (1919) Influenza in Maryland:
-preliminary statistics of certain localities.
-Public Health Rep.(34): 491-504.
+Frost W. and E. Sydenstricker (1919) Influenza in Maryland: preliminary
+statistics of certain localities. Public Health Rep.(34): 491-504.
 }
 \description{
 This data set gives:
@@ -31,9 +30,12 @@ deviation 1.5 days and shift 1 day (see references).
 data("Flu1918")
 
 ## estimate the reproduction number (method "non_parametric_si")
-res <- estimate_R(Flu1918$incidence,
-          method = "non_parametric_si",
-          config = make_config(list(si_distr = Flu1918$si_distr)))
+res <- estimate_R(
+  Flu1918$incidence,
+  method = "non_parametric_si",
+  config = make_config(list(si_distr = Flu1918$si_distr))
+)
+
 plot(res)
 ## the second plot produced shows, at each each day,
 ## the estimate of the reproduction number

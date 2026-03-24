@@ -7,13 +7,13 @@
 \format{
 A list of two elements:
 \itemize{
-\item \strong{incidence:} a vector containing 48 days of observation,
-\item \strong{si_distr:} a vector containing a set of 38 probabilities.
+\item \strong{incidence}: a vector containing 48 days of observation,
+\item \strong{si_distr}: a vector containing a set of 38 probabilities.
 }
 }
 \source{
-Groendyke C. et al. (2011) Bayesian Inference for Contact Networks
-Given Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
+Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given
+Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 }
 \description{
 This data set gives:
@@ -30,18 +30,22 @@ deviation 3.9 days and shift 1 day (see references).
 data("Measles1861")
 
 ## estimate the reproduction number (method "non_parametric_si")
-res <- estimate_R(Measles1861$incidence, method="non_parametric_si",
-          config = make_config(list(
-                t_start = seq(17, 42), 
-                t_end = seq(23, 48),
-                si_distr = Measles1861$si_distr)))
+res <- estimate_R(
+  Measles1861$incidence,
+  method = "non_parametric_si",
+  config = make_config(list(
+    t_start = seq(17, 42),
+    t_end = seq(23, 48),
+    si_distr = Measles1861$si_distr
+  ))
+)
+
 plot(res)
 ## the second plot produced shows, at each each day,
 ## the estimate of the reproduction number
 ## over the 7-day window finishing on that day.
 }
 \references{
-Groendyke C. et al. (2011) Bayesian Inference for Contact
-Networks Given Epidemic Data. Scandinavian Journal of Statistics 38(3):
-600-616.
+Groendyke C. et al. (2011) Bayesian Inference for Contact Networks Given
+Epidemic Data. Scandinavian Journal of Statistics 38(3): 600-616.
 }

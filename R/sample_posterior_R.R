@@ -1,7 +1,6 @@
-#' sample from the posterior R distribution
+#' Sample from the posterior R distribution
 #'
-#' @param R an \code{estimate_R} object from the estimate_r function
-#'   function.
+#' @param R an `estimate_R` object from the [estimate_R()] function.
 #' 
 #' @param n an integer specifying the number of samples to be taken from the
 #'   gamma distribution.
@@ -15,10 +14,8 @@
 #'
 #' @author Anne Cori
 #' @export
-#'
+#' 
 #' @examples
-#'
-#'
 #' ## load data on pandemic flu in a school in 2009
 #' data("Flu2009")
 #'
@@ -39,6 +36,7 @@
 #' hist(R_sample, col = "grey", main = "R sampled from the first weekly window")
 #' abline(v = R_median, col = "red")       # show the median estimated R
 #' abline(v = R_CrI, col = "red", lty = 2) # show the 95%CrI of R
+
 sample_posterior_R <- function(R, n = 1000, window = 1L) {
 
   if (!inherits(R, "estimate_R")) {

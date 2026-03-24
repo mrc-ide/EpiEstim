@@ -7,22 +7,21 @@
 \format{
 A list of two elements:
 \itemize{
-\item \strong{incidence:} a dataframe containing 495 days of observations with dates
+\item \strong{incidence}: a dataframe containing 495 days of observations with dates
 in the first column, and number of local (2nd column) and imported (3rd
 column) cases of MERS,
-\item \strong{si:} a list of estimates of the mean (mean_si) and standard deviation
+\item \strong{si}: a list of estimates of the mean (mean_si) and standard deviation
 (std_si) of the serial interval for MERS.
 }
 }
 \source{
-The incidence data was extracted from the EMPRES I system from FAO
-(Global Animal Disease Information System - Food and Agriculture Organization
-of the United Nations, 2017). Note incidence on the first day was originally
-made of one local case and zero imported cases; this has been modified to
-zero local cases and one imported case in the dataset shown here so the
-reproduction number can be estimated from the start using the function
-\code{\link[=estimate_R]{estimate_R()}}. The serial interval parameters were those
-estimated by Cauchemez et al. (2016).
+Incidence data was extracted from the EMPRES I system from FAO (Global Animal
+Disease Information System - Food and Agriculture Organization of the United
+Nations, 2017). Note incidence on the first day was originally made of one
+local case and zero imported cases; this has been modified to zero local
+cases and one imported case in the dataset shown here so the reproduction
+number can be estimated from the start using the function \code{\link[=estimate_R]{estimate_R()}}. The
+serial interval parameters were those estimated by Cauchemez et al. (2016).
 }
 \description{
 This data set gives:
@@ -40,20 +39,28 @@ MERS.
 data("mers_2014_15")
 
 ## estimate the reproduction number (method "parametric_si")
-bimonthly_R <- estimate_R(mers_2014_15$incidence[,c("local", "imported")],
-                          method = "parametric_si",
-                          config = make_config(
-                          mean_si = mers_2014_15$si$mean_si,
-                          std_si = mers_2014_15$si$std_si,
-                          t_start = 2:(nrow(mers_2014_15$incidence)-8*7),
-                          t_end = (2:(nrow(mers_2014_15$incidence)-8*7)) + 8*7))
+bimonthly_R <- estimate_R(
+  mers_2014_15$incidence[, c("local", "imported")],
+  method = "parametric_si",
+  config = make_config(
+    mean_si = mers_2014_15$si$mean_si,
+    std_si = mers_2014_15$si$std_si,
+    t_start = 2:(nrow(mers_2014_15$incidence) - 8 * 7),
+    t_end = (2:(nrow(mers_2014_15$incidence) - 8 * 7)) + 8 * 7
+  )
+)
 
-plot(bimonthly_R, legend = FALSE, add_imported_cases = TRUE,
-                          options_I = list(col = c("local" = "black", 
-                             "imported" = "red"),
-                             interval = 7, # show weekly incidence
-                             ylab = "Weekly incidence"),
-                          options_R = list(ylab = "Bimonthly R")) 
+plot(
+  bimonthly_R,
+  legend = FALSE,
+  add_imported_cases = TRUE,
+  options_I = list(
+    col = c("local" = "black", "imported" = "red"),
+    interval = 7, # show weekly incidence
+    ylab = "Weekly incidence"
+  ),
+  options_R = list(ylab = "Bimonthly R")
+) 
 # The first plot shows the weekly incidence, 
 # with imported cases shown in red and local cases in black
 
@@ -63,7 +70,6 @@ Global Animal Disease Information System - Food and Agriculture Organization
 of the United Nations, 2017
 
 Cauchemez S, Nouvellet P, Cori A, Jombart T, Garske T, Clapham H, Moore S,
-Linden Mills H, Salje H, Collins C, et al. 2016.
-Unraveling the drivers of MERS-CoV transmission.
-Proc Natl Acad Sci 113: 9081-9086.
+Linden Mills H, Salje H, Collins C, et al. 2016. Unraveling the drivers of
+MERS-CoV transmission. Proc Natl Acad Sci 113: 9081-9086.
 }

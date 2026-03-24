@@ -60,5 +60,6 @@ Suggests:
 License: GPL (>=2)
 LazyLoad: yes
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 VignetteBuilder: knitr

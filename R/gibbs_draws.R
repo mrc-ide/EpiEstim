@@ -10,21 +10,20 @@
 #'   `default_priors`. The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
-#' @param t_min an integer >1 giving the minimum time step to consider in the
+#' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
 #'   observations at time step 1 and can therefore only start at time step 2).
 #'
-#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
 #' @return a vector of the shape of the posterior distribution of R for
 #'   each time step t and each location l
-#'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector)
+#'   (stored in element `(l-1)*(t_max - t_min + 1) + t` of the vector)
 #'
 #' @export
 #'
 #' @examples
-#'
 #' n_v <- 2
 #' n_loc <- 3 # 3 locations
 #' T <- 100 # 100 time steps
@@ -32,7 +31,7 @@
 #' # constant incidence 10 per day everywhere
 #' incid <- array(10, dim = c(T, n_loc, n_v))
 #' get_shape_R_flat(incid, priors)
-#'
+
 get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
   shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape
@@ -53,27 +52,26 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 #'   the incidence for that location and that pathogen/strain/variant at all
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. It can be calculated from the incidence `incid` and
-#'   the distribution of the serial interval using function `compute_lambda`)
+#'   the distribution of the serial interval using function [compute_lambda()]
 #'
 #' @param priors a list of prior parameters (shape and scale of a gamma
 #'   distribution) for epsilon and R; can be obtained from the function
-#'   `default_priors`. The prior for R is assumed to be the same for all
+#'   [default_priors()]. The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
-#' @param t_min an integer >1 giving the minimum time step to consider in the
+#' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
 #'   observations at time step 1 and can therefore only start at time step 2).
 #'
-#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
 #' @return a value or vector of values of the shape of the posterior
-#'   distribution of epsilon for each of the non reference variants
+#'   distribution of epsilon for each of the non-reference variants
 #'
 #' @export
 #'
 #' @examples
-#'
 #' n_loc <- 4 # 4 locations
 #' n_v <- 3 # 3 strains
 #' T <- 100 # 100 time steps
@@ -86,7 +84,7 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 #' si_distr <- cbind(w_v, w_v, w_v)
 #' lambda <- compute_lambda(incid, si_distr)
 #' get_shape_epsilon(incid$local, lambda, priors)
-#'
+
 get_shape_epsilon <- function(incid, lambda, priors,
                               t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
@@ -97,9 +95,9 @@ get_shape_epsilon <- function(incid, lambda, priors,
 #' Set default for Gamma priors
 #'
 #' @return a list of default parameters for the priors.
-#'   Values can then be manually be edited as in the examples below.
-#'   Users could use functions `epitrix::gamma_shapescale2mucv` and
-#'   `epitrix::gamma_mucv2shapescale` to set the shape and scale corresponding
+#'   Values can then be manually edited as in the examples below.
+#'   Users could use functions [epitrix::gamma_shapescale2mucv()] and
+#'   [epitrix::gamma_mucv2shapescale()] to set the shape and scale corresponding
 #'   to the desired prior mean and coefficient of variation.
 #' @export
 #'
@@ -107,7 +105,7 @@ get_shape_epsilon <- function(incid, lambda, priors,
 #' priors <- default_priors()
 #' # change the prior for R to have a mean of 3
 #' priors$R$shape <- 3
-#'
+
 default_priors <- function() {
   ## Flatter epsilon and R with larger variance
   ## Mean epsilon 10 and SD 10
@@ -116,28 +114,23 @@ default_priors <- function() {
        R = list(shape = 0.04, scale = 25))
 }
 
-
 #' Set default for MCMC control
 #'
 #' @return a list of default MCMC control parameters, containing:
-#'
-#' - n_iter: the number if iterations of the MCMC to perform
-#'
-#' - burnin: the burnin to use; MCMC iterations will only be recorded after
+#' - `n_iter`: the number of iterations for the MCMC to perform
+#' - `burnin`: the burnin to use; MCMC iterations will only be recorded after
 #'   the burnin
+#' - `thin`: MCMC iterations will only be recorded after the burnin and every 
+#'   `thin` iteration
 #'
-#' - thin: MCMC iterations will only be recorded after
-#'   the burnin and every `thin` iteration
-#'
-#'   Values can then be manually be edited as in the examples below.
+#' Values can then be manually edited as in the examples below.
 #'
 #' @export
 #'
 #' @examples
-#' mcmc_control<- default_mcmc_controls()
+#' mcmc_control <- default_mcmc_controls()
 #' # change to run for 10 times longer
 #' mcmc_control$n_iter <- mcmc_control$n_iter * 10
-#'
 
 default_mcmc_controls <- function() {
   list(n_iter = 1100L,
@@ -148,9 +141,9 @@ default_mcmc_controls <- function() {
 
 #' Compute the overall infectivity
 #'
-#' @param incid a list (as obtained from function `process_I_multivariant`)
-#'   of two multidimensional arrays ("local" and "imported")
-#'   containing values of the incidence
+#' @param incid a list (as obtained from function [process_I_multivariant()])
+#'   of two multidimensional arrays (`local` and `imported`) containing values 
+#'   of the incidence
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension)
 #'
@@ -167,12 +160,11 @@ default_mcmc_controls <- function() {
 #'   the incidence for that location and that pathogen/strain/variant at all
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. Pre-calculating the overall infectivity makes the
-#'   algorithm much faster
+#'   algorithm much faster.
 #'
 #' @export
 #'
 #' @examples
-#'
 #' n_v <- 2
 #' n_loc <- 3 # 3 locations
 #' T <- 100 # 100 time steps
@@ -230,27 +222,27 @@ compute_lambda <- function(incid, si_distr) {
 #'   the incidence for that location and that pathogen/strain/variant at all
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. It can be calculated from the incidence `incid` and
-#'   the distribution of the serial interval using function `compute_lambda`)
+#'   the distribution of the serial interval using function [compute_lambda()]
 #'
 #' @param priors a list of prior parameters (shape and scale of a gamma
 #'   distribution) for epsilon and R; can be obtained from the function
-#'   `default_priors`. The prior for R is assumed to be the same for all
+#'   [default_priors()]. The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
 #' @param shape_epsilon a value or vector of values of the shape of the posterior
-#'   distribution of epsilon for each of the non reference variants, as returned
-#'   by function `get_shape_epsilon`
+#'   distribution of epsilon for each of the non-reference variants, as returned
+#'   by function [get_shape_epsilon()]
 #'
-#' @param t_min an integer >1 giving the minimum time step to consider in the
+#' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
 #'   observations at time step 1 and can therefore only start at time step 2).
 #'
-#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
 #' @param seed a numeric value used to fix the random seed
 #'
-#' @return a value or vector of values for epsilon for each non reference
+#' @return A value or vector of values for epsilon for each non reference
 #'   pathogen/strain/variant, drawn from the marginal posterior distribution
 #'
 #' @importFrom stats median rgamma
@@ -258,7 +250,6 @@ compute_lambda <- function(incid, si_distr) {
 #' @export
 #'
 #' @examples
-#'
 #' n_loc <- 4 # 4 locations
 #' n_v <- 3 # 3 strains
 #' T <- 100 # 100 time steps
@@ -274,7 +265,7 @@ compute_lambda <- function(incid, si_distr) {
 #' R <- matrix(1, nrow = T, ncol = n_loc)
 #' R[1, ] <- NA # no estimates of R on first time step
 #' draw_epsilon(R, incid$local, lambda, priors, seed = 1)
-#'
+
 draw_epsilon <- function(R, incid, lambda, priors,
                          shape_epsilon = NULL,
                          t_min = 2L, t_max = nrow(incid),
@@ -323,23 +314,23 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   the incidence for that location and that pathogen/strain/variant at all
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. It can be calculated from the incidence `incid` and
-#'   the distribution of the serial interval using function `compute_lambda`)
+#'   the distribution of the serial interval using function [compute_lambda()]
 #'
 #' @param priors a list of prior parameters (shape and scale of a gamma
 #'   distribution) for epsilon and R; can be obtained from the function
-#'   `default_priors`. The prior for R is assumed to be the same for all
+#'   [default_priors()]. The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
 #' @param shape_R_flat a vector of the shape of the posterior distribution of R
 #'   for each time step t and each location l
-#'   (stored in element (l-1)*(t_max - t_min + 1) + t of the vector),
-#'   as obtained from function `get_shape_R_flat`
+#'   (stored in element `(l-1)*(t_max - t_min + 1) + t` of the vector),
+#'   as obtained from function [get_shape_R_flat()].
 #'
-#' @param t_min an integer >1 giving the minimum time step to consider in the
+#' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
 #'   observations at time step 1 and can therefore only start at time step 2).
 #'
-#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
 #' @param seed a numeric value used to fix the random seed
@@ -348,12 +339,10 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   pathogen/strain/variant for each time step (row) and each location (column)
 #'   drawn from the marginal posterior distribution
 #'
+#' @importFrom stats median rgamma
 #' @export
 #'
-#' @importFrom stats median rgamma
-#'
 #' @examples
-#'
 #' n_v <- 2
 #' n_loc <- 3 # 3 locations
 #' T <- 100 # 100 time steps
@@ -368,7 +357,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #' # Epsilon = 1 i.e. no transmission advantage
 #' epsilon <- 1
 #' draw_R(epsilon, incid$local, lambda, priors, seed = 1, t_min = 2L)
-#'
+
 draw_R <- function(epsilon, incid, lambda, priors,
                    shape_R_flat = NULL,
                    t_min = NULL, t_max = nrow(incid),
@@ -409,22 +398,22 @@ draw_R <- function(epsilon, incid, lambda, priors,
   R[t, ] <- R_fill
   R
 }
-##' Index before which at most a given probability
-##' mass is captured
-##'
-##' Across a matrix of discretised probability distributions
-##' (see \code{estimate_advantage}
-##' this function returns the largest index
-##' (across all columns) such that the
-##' cumulative probability mass before index is
-##' 1 - \code{miss_at_most}.
-##'
-##'
-##' @inheritParams estimate_advantage
-##' @param miss_at_most numeric. probability mass in the tail of the SI distribution
-##' @return integer
-##' @author Sangeeta Bhatia
-##' @export
+
+#' Index before which at most a given probability
+#' mass is captured
+#'
+#' Across a matrix of discretised probability distributions
+#' (see [estimate_advantage()]) this function returns the largest index
+#' (across all columns) such that the cumulative probability mass before index is
+#' `1 - miss_at_most`.
+#'
+#' @inheritParams estimate_advantage
+#' @param miss_at_most numeric. Probability mass in the tail of the SI distribution
+#' 
+#' @return integer
+#' @author Sangeeta Bhatia
+#' @export
+
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
   if (any(colSums(si_distr) != 1)) {
     warning("Input SI distributions should sum to 1. Normalising now")
@@ -439,16 +428,20 @@ compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
   as.integer(max(idx))
 }
 
-##' Get the first day of non-zero incidence across
-##' all variants and locations.
-##' @details For each variant, find the first day of
-##' non-zero incidence. The maximum of these
-##' is the smallest possible point at which
-##' estimation can begin.
-##' @inheritParams estimate_advantage
-##' @return integer
-##' @author Sangeeta Bhatia
-##' @export
+#' First day of non-zero incidence
+#' 
+#' Get the first day of non-zero incidence across all variants and locations.
+#' 
+#' For each variant, find the first day of non-zero incidence. The maximum of 
+#' these is the smallest possible point at which estimation can begin.
+#' 
+#' @inheritParams estimate_advantage
+#' 
+#' @return integer
+#' @author Sangeeta Bhatia
+#' 
+#' @export
+
 first_nonzero_incid <- function(incid) {
   t_min_incid <- apply(
     incid, c(2, 3),
@@ -462,29 +455,36 @@ first_nonzero_incid <- function(incid) {
   }
   max(t_min_incid)
 }
-##' Compute the smallest index at which joint estimation
-##' should start
-##'
-##' Unless specified by the user, t_min in \code{estimate_advantage}
-##' is computed as the sum of two indices:
-##' (i) the first day of non-zero incidence across all locations,
-##' computed using \code{first_nonzero_incid}
-##' and (ii) the 95th percentile of the probability mass function of the
-##' SI distribution across all variants computed using \code{compute_si_cutoff}
-##' @inheritParams compute_si_cutoff
-##' @inheritParams estimate_advantage
-##' @return integer
-##' @author Sangeeta Bhatia
-##' @export
+
+#' Compute the smallest index at which joint estimation should start
+#'
+#' Unless specified by the user, `t_min` in [estimate_advantage()] is computed 
+#' as the sum of two indices:
+#' 
+#' - the first day of non-zero incidence across all locations, computed using 
+#'   [first_nonzero_incid()]
+#' - the 95th percentile of the probability mass function of the SI distribution 
+#'   across all variants computed using [compute_si_cutoff()]
+#'
+#' @inheritParams compute_si_cutoff
+#' @inheritParams estimate_advantage
+#' 
+#' @return integer
+#' @author Sangeeta Bhatia
+#' 
+#' @export
+
 compute_t_min <- function(incid, si_distr, miss_at_most) {
   t_min_si <- compute_si_cutoff(si_distr, 0.05)
   t_min_incid <- first_nonzero_incid(incid)
   as.integer(t_min_incid + t_min_si)
 }
 
+#' Estimate instantaneous reproduction number
+#' 
 #' Jointly estimate the instantaneous reproduction number for a reference
-#'   pathogen/strain/variant and the relative transmissibility of a
-#'   "new" pathogen/strain/variant
+#' pathogen/strain/variant and the relative transmissibility of a "new" 
+#' pathogen/strain/variant.
 #'
 #' @param incid a multidimensional array containing values of the incidence
 #'   for each time step (1st dimension), location (2nd dimension) and
@@ -493,70 +493,63 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' @param si_distr a matrix with two columns, each containing the probability mass
 #'   function for the discrete serial interval for each of the two
 #'   pathogen/strain/variants, starting with the probability mass function
-#'   for day 0 in the first row, which should be 0. each column in the matrix
-#'   should sum to 1
+#'   for day 0 in the first row, which should be 0. Each column in the matrix
+#'   should sum to 1.
 #'
 #' @param priors a list of prior parameters (shape and scale of a gamma
 #'   distribution) for epsilon and R; can be obtained from the function
-#'   `default_priors`. The prior for R is assumed to be the same for all
+#'   [default_priors()]. The prior for R is assumed to be the same for all
 #'   time steps and all locations
 #'
-#' @param mcmc_control a list of default MCMC control parameters, as obtained
-#'   for example from function `default_mcmc_controls`
+#' @param mcmc_control a list of default MCMC control parameters, obtained by 
+#'   default from [default_mcmc_controls()]
 #'
 #' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation.
-#'   The NULL, t_min is calculated using the function \code{compute_si_cutoff}
+#'   If `NULL`, `t_min` is calculated using the function [compute_si_cutoff()]
 #'   which gets the maximum (across all variants) of the 95th percentile of the
 #'   SI distribution.
 #'
-#'
-#' @param t_max an integer >`t_min` and <=`nrow(incid)` giving the maximum time
+#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
 #'   step to consider in the estimation. Default value is `nrow(incid)`.
 #'
 #' @param seed a numeric value used to fix the random seed
 #'
 #' @param incid_imported an optional multidimensional array containing values
-#'   of the incidence of imported cases
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension). `incid - incid_imported` is
-#'   therefore the incidence of locally infected cases. If `incid_imported` is
-#'   NULL this means there are no
+#'   of the incidence of imported cases for each time step (1st dimension), 
+#'   location (2nd dimension) and pathogen/strain/variant (3rd dimension). 
+#'   `incid - incid_imported` is therefore the incidence of locally infected 
+#'   cases. If `incid_imported` is `NULL` this means there are no
 #'   known imported cases and all cases other than on those from the first
 #'   time step will be considered locally infected.
 #'
-#' @param precompute a boolean (defaulting to TRUE) deciding whether to
-#'   precompute quantities or not. Using TRUE will make the algorithm faster
+#' @param precompute a boolean (defaulting to `TRUE`) deciding whether to
+#'   precompute quantities or not. Using `TRUE` will make the algorithm faster
 #'   
-#' @param reorder_incid a boolean (defaulting to TRUE) deciding whether the
+#' @param reorder_incid a boolean (defaulting to `TRUE`) deciding whether the
 #'   incidence array can be internally reordered during the estimation of the
-#'   transmission advantage. If TRUE, the most transmissible pathogen/strain/variant
-#'   is temporarily assigned to [,,1] of the incidence array. We recommend the
-#'   default value of TRUE as we find this to stabilise inference.
+#'   transmission advantage. If `TRUE`, the most transmissible pathogen/strain/variant
+#'   is temporarily assigned to `[, , 1]` of the incidence array. We recommend the
+#'   default value of `TRUE` as we find this to stabilise inference.
 #'
-#' @return A list with the following elements.
-#' \enumerate{
-#'
-#'   \item `epsilon` is a matrix containing the MCMC chain (thinned and after
-#'   burnin) for the relative transmissibility of the "new"
-#'   pathogen/strain/variant(s) compared to the reference
-#'   pathogen/strain/variant. Each row in the matrix is a "new"
-#'   pathogen/strain/variant and each column an iteration of the MCMC.
-#'   \item `R` is an array containing the MCMC chain (thinned and after
-#'   burnin) for the reproduction number for the reference
-#'   pathogen/strain/variant. The first dimension of the array is time,
-#'   the second location, and the third iteration of the MCMC.
-#'   \item `convergence` is a logical vector based on the results of the
-#'   Gelman-Rubin convergence diagnostic. Each element in `convergence`
-#'   takes a value of TRUE
-#'   when the MCMC for the corresponding epsilon has converged within the
-#'   number of iterations specified and FALSE otherwise.
-#'   \item `diag` is a nested list of the point estimate and upper confidence limits
-#'       of the Gelman-Rubin convergence diagnostics (as implemented in coda). The length of
-#' `diag` is equal to the number of rows in `epsilon`. Each element of `diag` is a list of
-#' length 2 where the first element is called `psrf` and is a named list of the
-#' point estimate and upper confidence limits. The second elemnent is NULL and can be ignored.
-#'}
+#' @return A list with the following elements:
+#' - `epsilon`: a matrix containing the MCMC chain (thinned and after burnin)
+#'   for the relative transmissibility of the "new" pathogen/strain/variant(s)
+#'   compared to the reference. Each row corresponds to a "new"
+#'   pathogen/strain/variant and each column to an MCMC iteration.
+#' - `R`: an array containing the MCMC chain (thinned and after burnin) for the
+#'   reproduction number for the reference pathogen/strain/variant. Dimensions
+#'   of the array are time,  location, and iteration of the MCMC.
+#' - `convergence`: a logical vector based on the Gelman-Rubin convergence
+#'   diagnostic. Each element in `convergence` is `TRUE` when the MCMC for the
+#'   corresponding epsilon has converged number of iterations specified 
+#'   (otherwise `FALSE`).
+#' - `diag`: a nested list of the point estimate and upper confidence limits of
+#'   the Gelman-Rubin convergence diagnostics (as implemented in coda). The
+#'   length of `diag` is equal to the number of rows in epsilon. Each element od
+#'   `diag` is a list of length 2 where the first element is called `psrf` and
+#'   is a named list of the point estimate and upper confidence limits. The
+#'   second element is `NULL` and can be ignored.
 #'
 #' @export
 #'
@@ -564,7 +557,6 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' @importFrom abind adrop
 #'
 #' @examples
-#'
 #' n_v <- 2
 #' n_loc <- 3 # 3 locations
 #' T <- 100 # 100 time steps
@@ -594,7 +586,7 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' abline(h = 1, col = "red")
 #' plot(x$R[30, 3, ], type = "l",
 #'      xlab = "Iteration", ylab = "R time 30 location 3")
-#'
+
 estimate_advantage <- function(incid, si_distr, priors = default_priors(),
                            mcmc_control = default_mcmc_controls(),
                            t_min = NULL, t_max = nrow(incid),
@@ -785,7 +777,9 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   
 }
 
-#' Process incidence input for multivariant analyses with estimate_advantage
+#' Process incidence input for multivariant analyses
+#' 
+#' Process incidence input for multivariant analyses with [estimate_advantage()]
 #'
 #' @param incid a multidimensional array containing values of the incidence
 #'   for each time step (1st dimension), location (2nd dimension) and
@@ -796,19 +790,14 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension). `incid - incid_imported` is
 #'   therefore the incidence of locally infected cases. If `incid_imported` is
-#'   NULL this means there are no
+#'   `NULL` this means there are no
 #'   known imported cases and all cases other than on those from the first
 #'   time step will be considered locally infected.
 #'
-#' @return a list with two elements.
-#'   1) `local` a multidimensional array containing values of the incidence
-#'   of locally infected cases
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
-#'   2) `imported` a multidimensional array containing values of the incidence
-#'   of imported cases
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
+#' @return a list with two multidimensional elements each with three dimensions:
+#'  timestep, location and pathogen/strain/variant:
+#' - `local`: an array of the incidence of locally infected cases
+#' - `imported`: an array of the incidence of imported cases
 #'
 #' @export
 #'
@@ -819,7 +808,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 #' # constant incidence 10 per day everywhere
 #' incid <- array(10, dim = c(T, n_loc, n_v))
 #' process_I_multivariant(incid)
-#'
+
 process_I_multivariant <- function(incid, incid_imported = NULL) {
   if (is.null(incid_imported)) {
     incid_imported <- incid

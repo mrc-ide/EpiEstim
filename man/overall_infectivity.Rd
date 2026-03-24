@@ -7,12 +7,16 @@
 overall_infectivity(incid, si_distr)
 }
 \arguments{
-\item{incid}{One of the following \itemize{ \item{A vector (or a dataframe
-with a single column) of non-negative integers containing an incidence time
-series} \item{A dataframe of non-negative integers with two columns, so
-that \code{incid$local} contains the incidence of cases due to local
-transmission and \code{incid$imported} contains the incidence of imported
-cases (with \code{incid$local + incid$imported} the total incidence).} } 
+\item{incid}{One of the following:
+\itemize{
+\item A vector (or a dataframe with a single column) of non-negative integers
+containing an incidence time series
+\item A dataframe of non-negative integers with two columns, so that
+\code{incid$local} contains the incidence of cases due to local transmission and
+\code{incid$imported} contains the incidence of imported cases (with
+\code{incid$local + incid$imported} the total incidence).
+}
+
 Note that the cases from the first time step are always all assumed to be
 imported cases.}
 
@@ -21,19 +25,20 @@ the serial interval.}
 }
 \value{
 A vector which contains the overall infectivity \eqn{\lambda_t} at
-  each time step
+each time step
 }
 \description{
-\code{overall_infectivity} computes the overall infectivity due to previously
-infected individuals.
+Computes the overall infectivity due to previously infected individuals.
 }
 \details{
-{ The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is
+The overall infectivity \eqn{\lambda_t} at time step \eqn{t} is
 equal to the sum of the previously infected individuals (given by the
 incidence vector \eqn{I}, with \code{I = incid$local + incid$imported} if
-\eqn{I} is a matrix), weigthed by their infectivity at time \eqn{t} (given by
-the discrete serial interval distribution \eqn{w_k}). In mathematical terms: 
-\cr \eqn{\lambda_t = \sum_{k=1}^{t-1}I_{t-k}w_k} \cr }
+\eqn{I} is a matrix), weighted by their infectivity at time \eqn{t} (given by
+the discrete serial interval distribution \eqn{w_k}).
+
+In mathematical terms:
+\cr \eqn{\lambda_t = \sum_{k=1}^{t-1}I_{t-k}w_k} \cr
 }
 \examples{
 ## load data on pandemic flu in a school in 2009
@@ -48,11 +53,11 @@ plot(lambda, type = "s", xlab = "time (days)", ylab = "Infectivity")
 title(main = "Overall infectivity")
 }
 \references{
-Cori, A. et al. A new framework and software to estimate
-  time-varying reproduction numbers during epidemics (AJE 2013).
+Cori, A. et al. A new framework and software to estimate time-varying
+reproduction numbers during epidemics (AJE 2013).
 }
 \seealso{
-\code{\link{discr_si}}, \code{\link{estimate_R}}
+\code{\link[=discr_si]{discr_si()}}, \code{\link[=estimate_R]{estimate_R()}}
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}
