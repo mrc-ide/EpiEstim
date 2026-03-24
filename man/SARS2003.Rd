@@ -7,14 +7,14 @@
 \format{
 A list of two elements:
 \itemize{
-\item \strong{incidence:} a vector containing 107 days of observation,
-\item \strong{si_distr:} a vector containing a set of 25 probabilities.
+\item \strong{incidence}: a vector containing 107 days of observation,
+\item \strong{si_distr}: a vector containing a set of 25 probabilities.
 }
 }
 \source{
-Cori A. et al. (2009) Temporal variability and social heterogeneity
-in disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8)
-: e1000471.
+Cori A. et al. (2009) Temporal variability and social heterogeneity in
+disease transmission: the case of SARS in Hong Kong. PLoS Comput Biol 5(8):
+e1000471.
 }
 \description{
 This data set gives:
@@ -37,6 +37,7 @@ res <- estimate_R(SARS2003$incidence, method="non_parametric_si",
                       t_start = seq(14, 101), 
                       t_end = seq(20, 107),
                       si_distr = SARS2003$si_distr)))
+
 plot(res)
 ## the second plot produced shows, at each each day,
 ## the estimate of the reproduction number

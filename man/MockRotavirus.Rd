@@ -7,8 +7,8 @@
 \format{
 A list of two elements:
 \itemize{
-\item \strong{incidence:} a vector containing 53 days of observation,
-\item \strong{si_distr:} a dataframe containing a set of 19 observations; each
+\item \strong{incidence}: a vector containing 53 days of observation,
+\item \strong{si_distr}: a dataframe containing a set of 19 observations; each
 observation corresponds to a pair of infector/infected individuals. EL
 and ER columns contain the lower an upper bounds of the dates of
 symptoms onset in the infectors. SL and SR columns contain the lower an
@@ -36,13 +36,18 @@ infector/infected individuals.
 data("MockRotavirus")
 
 ## estimate the reproduction number (method "si_from_data")
-res <- estimate_R(MockRotavirus$incidence,
-          method = "si_from_data",
-          si_data = MockRotavirus$si_data,
-          config = make_config(list(
-            si_parametric_distr = "G",
-            mcmc_control = make_mcmc_control(list(burnin = 3000, thin = 10)),
-            n1 = 500, n2 = 50)))
+res <- estimate_R(
+  MockRotavirus$incidence,
+  method = "si_from_data",
+  si_data = MockRotavirus$si_data,
+  config = make_config(list(
+    si_parametric_distr = "G",
+    mcmc_control = make_mcmc_control(list(burnin = 3000, thin = 10)),
+    n1 = 500,
+    n2 = 50
+  ))
+)
+
 plot(res)
 ## the second plot produced shows, at each each day,
 ## the estimate of the reproduction number

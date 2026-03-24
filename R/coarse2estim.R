@@ -18,18 +18,18 @@
 #' If not present, computed automatically from \code{x}.
 #' @param samples A dataframe containing the posterior samples of serial
 #' interval parameters corresponding to the parametric choice specified in
-#' \code{dist}. If not present, computed automatically from \code{x}.
+#' `dist`. If not present, computed automatically from `x`.
 #' @param thin A positive integer corresponding to thinning parameter; of the
-#' posterior sample of serial interval distributions in x, only 1 in \code{thin}
+#' posterior sample of serial interval distributions in x, only 1 in `thin`
 #'  will be kept, the rest will be discarded.
+#'
 #' @return A list with two elements:
-#' \itemize{
-#' \item{si_sample: a matrix where each column gives one distribution of the
-#' serial interval to be explored, obtained from x by thinning the MCMC chain.}
-#' \item{si_parametric_distr: the parametric distribution used when estimating
-#' the serial interval stored in x. }
-#' }
-#' @seealso \code{\link{estimate_R}}
+#'   - `si_sample`: a matrix where each column gives one distribution of the
+#'      serial interval to be explored, obtained from x by thinning the MCMC chain.
+#'   - `si_parametric_distr`: the parametric distribution used when estimating
+#' the serial interval stored in x.
+#'
+#' @seealso [estimate_R()]
 #' @author The Hackout3 Parameter Estimation team.
 #'
 #' @importFrom stats pgamma plnorm pweibull qlnorm qweibull rgamma rmultinom
@@ -45,21 +45,26 @@
 #' data("MockRotavirus")
 #'
 #' ## estimate the serial interval from data
-#' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-#'                      dist = "G",
-#'                      init.pars = init_mcmc_params(MockRotavirus$si_data, "G"),
-#'                      burnin = 1000,
-#'                      n.samples = 5000)
+#' SI.fit <- coarseDataTools::dic.fit.mcmc(
+#'   dat = MockRotavirus$si_data,
+#'   dist = "G",
+#'   init.pars = init_mcmc_params(MockRotavirus$si_data, "G"),
+#'   burnin = 1000,
+#'   n.samples = 5000
+#' )
 #'
 #' ## use coarse2estim to turn this in the right format for estimate_R
 #' si_sample <- coarse2estim(SI.fit, thin = 10)$si_sample
 #'
 #' ## use estimate_R to estimate the reproduction number
 #' ## based on these estimates of the serial interval
-#' R_si_from_sample <- estimate_R(MockRotavirus$incidence,
-#'                             method="si_from_sample",
-#'                             si_sample=si_sample,
-#'                             config = make_config(list(n2 = 50)))
+#' R_si_from_sample <- estimate_R(
+#'   MockRotavirus$incidence,
+#'   method = "si_from_sample",
+#'   si_sample = si_sample,
+#'   config = make_config(list(n2 = 50))
+#' )
+#' 
 #' plot(R_si_from_sample)
 #' }
 #'

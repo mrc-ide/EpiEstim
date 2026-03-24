@@ -2,27 +2,21 @@
 % Please edit documentation in R/check_cdt_samples_convergence.R
 \name{check_cdt_samples_convergence}
 \alias{check_cdt_samples_convergence}
-\title{Checking convergence of an MCMC chain by using the Gelman-Rubin algorithm}
+\title{Check MCMC chain convergence using the Gelman-Rubin algorithm}
 \usage{
 check_cdt_samples_convergence(cdt_samples)
 }
 \arguments{
-\item{cdt_samples}{the \code{@sample} slot of a \code{cd.fit.mcmc} S4 object 
+\item{cdt_samples}{the \verb{@sample} slot of a \code{cd.fit.mcmc} S4 object
 (see package \code{coarseDataTools})}
 }
 \value{
-TRUE if the Gelman Rubin test for convergence was successful, FALSE 
+TRUE if the Gelman Rubin test for convergence was successful, FALSE
 otherwise
 }
 \description{
-\code{check_cdt_samples_convergence} Checking convergence of an MCMC chain by
- using the Gelman-Rubin algorithm
-}
-\details{
-{
-This function splits an MCMC chain in two halves and uses the Gelman-Rubin 
+This function splits an MCMC chain in two halves and uses the Gelman-Rubin
 algorithm to assess convergence of the chain by comparing its two halves.
-}
 }
 \examples{
 \dontrun{
@@ -35,8 +29,8 @@ data("MockRotavirus")
 
 ## estimate the serial interval from data
 SI_fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-                     dist="G",
-                     init_pars=init_mcmc_params(MockRotavirus$si_data, "G"),
+                     dist = "G",
+                     init_pars = init_mcmc_params(MockRotavirus$si_data, "G"),
                      burnin = 1000,
                      n.samples = 5000)
 
@@ -45,10 +39,9 @@ converg_diag <- check_cdt_samples_convergence(SI_fit@samples)
 converg_diag
 
 }
-
 }
 \seealso{
-\code{\link{estimate_R}}
+\code{estimate_R()}
 }
 \author{
 Anne Cori

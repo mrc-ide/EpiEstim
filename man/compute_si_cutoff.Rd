@@ -11,21 +11,19 @@ compute_si_cutoff(si_distr, miss_at_most = 0.05)
 \item{si_distr}{a matrix with two columns, each containing the probability mass
 function for the discrete serial interval for each of the two
 pathogen/strain/variants, starting with the probability mass function
-for day 0 in the first row, which should be 0. each column in the matrix
-should sum to 1}
+for day 0 in the first row, which should be 0. Each column in the matrix
+should sum to 1.}
 
-\item{miss_at_most}{numeric. probability mass in the tail of the SI distribution}
+\item{miss_at_most}{numeric. Probability mass in the tail of the SI distribution}
 }
 \value{
 integer
 }
 \description{
 Across a matrix of discretised probability distributions
-(see \code{estimate_advantage}
-this function returns the largest index
-(across all columns) such that the
-cumulative probability mass before index is
-1 - \code{miss_at_most}.
+(see \code{\link[=estimate_advantage]{estimate_advantage()}}) this function returns the largest index
+(across all columns) such that the cumulative probability mass before index is
+\code{1 - miss_at_most}.
 }
 \author{
 Sangeeta Bhatia

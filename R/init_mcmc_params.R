@@ -1,19 +1,13 @@
-################################################################################
-# init_mcmc_params finds clever starting points for the MCMC to be used to
-# estimate the serial interval, when using option si_from_data in estimate_R # 
-################################################################################
-
-#' init_mcmc_params Finds clever starting points for the MCMC to be used to 
-#' estimate the serial interval, e.g. when using option \code{si_from_data} in 
-#' \code{estimate_R}
+#' Find clever starting points for MCMC estimation
 #' 
-#' \code{init_mcmc_params} Finds values of the serial interval distribution 
+#' Finds values of the serial interval distribution 
 #' parameters, used to initialise the MCMC estimation of the serial interval 
-#' distribution. Initial values are computed based on the observed mean and 
+#' distribution (e.g. when using option `si_from_data` in 
+#' [estimate_R()]). Initial values are computed based on the observed mean and 
 #' standard deviation of the sample from which the parameters are to be 
 #' estimated.
 #' 
-#' @param si_data the data on dates of symptoms of pairs of infector/infected
+#' @param si_data data on dates of symptoms of pairs of infector/infected
 #'   individuals to be used to estimate the serial interval distribution. This
 #'   should be a dataframe with 5 columns: 
 #'   \itemize{ 
@@ -38,7 +32,9 @@
 #' @return A vector containing the initial values for the two parameters of the
 #'   distribution of the serial interval. These are the shape and scale for all
 #'   but the lognormal distribution, for which it is the meanlog and sdlog.
-#' @seealso  \code{\link{estimate_R}}
+#'
+#' @seealso [estimate_R()]
+#'
 #' @author Anne Cori
 #' @importFrom fitdistrplus fitdist
 #' @export
@@ -76,9 +72,7 @@
 #' converg_diag_naive <- check_cdt_samples_convergence(SI_fit_naive@samples)
 #' converg_diag_clever
 #' converg_diag_naive
-#' 
 #' }
-#' 
 init_mcmc_params <- function(si_data, dist) {
   
   rtn <- si_from_data_valid_distrs(dist)

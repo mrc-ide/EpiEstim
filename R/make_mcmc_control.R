@@ -1,15 +1,17 @@
-#' make_mcmc_control Creates a list of mcmc control parameters to be used in 
-#' \code{config$mcmc_control}, where \code{config} is an argument of the 
-#' \code{estimate_R} function. This is used to configure the MCMC chain used to 
-#' estimate the serial interval within \code{estimate_R} (with method 
+#' Create list of MCMC control parameters
+#' 
+#' Creates a list of MCMC control parameters to be used in 
+#' `config$mcmc_control`, where `config` is an argument of the 
+#' [estimate_R()] function. This is used to configure the MCMC chain used to 
+#' estimate the serial interval within [estimate_R()] (with method 
 #' "si_from_data").
 #'
 #' @param burnin A positive integer giving the burnin used in the MCMC when
 #'   estimating the serial interval distribution.
 #' @param thin A positive integer corresponding to thinning parameter; the MCMC
-#'   will be run for \code{burnin+n1*thin iterations}; 1 in \code{thin}
+#'   will be run for `burnin + n1*thin` iterations; 1 in `thin`
 #'   iterations will be recorded, after the burnin phase, so the posterior
-#'   sample size is n1.
+#'   sample size is `n1`.
 #' @param seed An integer used as the seed for the random number generator at
 #'   the start of the MCMC estimation; useful to get reproducible results.
 #' @param init_pars vector of size 2 corresponding to the initial values of
@@ -18,30 +20,29 @@
 #'   sdlog. 
 #'
 #' @details
-#' The argument \code{si_data}, should be a dataframe with 5
-#'  columns:
-#' \itemize{
-#' \item{EL: the lower bound of the symptom onset date of the infector (given as
-#'  an integer)}
-#' \item{ER: the upper bound of the symptom onset date of the infector (given as
-#'  an integer). Should be such that ER>=EL}
-#' \item{SL: the lower bound of the symptom onset date of the infected
-#' individual (given as an integer)}
-#' \item{SR: the upper bound of the symptom onset date of the infected
-#' individual (given as an integer). Should be such that SR>=SL}
-#' \item{type (optional): can have entries 0, 1, or 2, corresponding to doubly
-#' interval-censored, single interval-censored or exact observations,
-#' respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-#' will be automatically computed from the dates}
-#' }
+#' The argument `si_data`, should be a dataframe with 5 columns:
+#' - `EL`: the lower bound of the symptom onset date of the infector (given as
+#'   an integer)
+#' - `ER`: the upper bound of the symptom onset date of the infector (given as
+#'   an integer). Should be such that `ER >= EL`
+#' - `SL`: the lower bound of the symptom onset date of the infected
+#'   individual (given as an integer)
+#' - `SR`: the upper bound of the symptom onset date of the infected
+#'   individual (given as an integer). Should be such that `SR >= SL`
+#' - `type` (optional): can have entries 0, 1, or 2, corresponding to doubly
+#'   interval-censored, single interval-censored or exact observations,
+#'   respectively, see Reich et al. Statist. Med. 2009. If not specified, this
+#'   will be automatically computed from the dates
+#'
 #' Assuming a given parametric distribution for the serial interval distribution
-#'  (specified in \code{si_parametric_distr}),
-#' the posterior distribution of the serial interval is estimated directly fom
+#' (specified in `si_parametric_distr`),
+#' the posterior distribution of the serial interval is estimated directly from
 #' these data using MCMC methods implemented in the package
 #' 
-#' @return An object of class \code{estimate_R_mcmc_control} with components 
-#' burnin, thin, seed, init_pars. This can be 
-#' used as an argument of function \code{make_config}.  
+#' @return An object of class `estimate_R_mcmc_control` with components 
+#' `burnin`, `thin`, `seed`, `init_pars`. This can be 
+#' used as an argument of function [make_config()].
+#'
 #' @export
 #'
 #' @examples
@@ -76,6 +77,7 @@
 #'                             si_data = MockRotavirus$si_data,
 #'                             config = config)
 #' }
+
 make_mcmc_control <- function(burnin = 3000, thin = 10, 
                               seed = as.integer(Sys.time()), 
                               init_pars = NULL){
