@@ -23,6 +23,7 @@ jobs:
             any::gh
             any::lintr
             any::purrr
+            any::cyclocomp
           needs: check
 
       - name: Add lintr options
