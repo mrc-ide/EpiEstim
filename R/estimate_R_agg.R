@@ -1,7 +1,27 @@
 
 #' @title Estimated Instantaneous Reproduction Number from coarsely aggregated data
 #'
-#' @param incid aggregated incidence data, supplied as a vector
+#' @param incid Aggregated incidence data, supplied as one of the following
+#' \itemize{
+#'
+#' \item{A vector (or a dataframe with a single column) of non-negative integers
+#' containing the incidence time series; these can be aggregated at any time
+#' unit as specified by argument \code{dt}}
+#'
+#' \item{A dataframe of non-negative integers with either i) \code{incid$I}
+#' containing the total incidence, or ii) two columns, so that
+#' \code{incid$local} contains the incidence of cases due to local transmission
+#' and \code{incid$imported} contains the incidence of imported cases (with
+#' \code{incid$local + incid$imported} the total incidence). If the dataframe
+#' contains a column \code{incid$dates}, this is used for plotting.
+#' \code{incid$dates} must contains only dates in a row.}
+#'
+#' \item{An object of class \code{\link{incidence}}}
+#'
+#' }
+#'
+#' Note that the cases from the first time step are always all assumed to be
+#' imported cases.
 #' 
 #' @param dt length of temporal aggregations of the incidence data. This should 
 #' be an integer or vector of integers. If a vector, this will be recycled. For 
