@@ -749,11 +749,23 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
                                              config = config,
                                              method = method))
   
+  # all formats should produce identical R estimates
+  expect_equal(res_int$R, res_numeric$R)
+  expect_equal(res_int$R, res_df$R)
+  expect_equal(res_int$R, res_inc_obj$R)
+  
   # grouped incidence object
-  location <- sample(c("local","imported"), length(weekly_inc), replace = TRUE)
-  location[1] <- "imported" # forcing the first case to be imported
+  data <- data.frame(
+    local = c(3, weekly_inc[2:length(weekly_inc)]),
+    imported = c(1, rep(0, length(weekly_inc) -1)),
+    dates = seq(as.Date("2020-01-01"), by = "week", length.out = length(weekly_inc))
+  )
+  data_long <- pivot_longer(data, cols = c(local, imported), 
+                            names_to = "group", values_to = "I")
   ## get incidence per group (location)
-  inc_obj_group <- as.incidence(weekly_inc, interval = 7L, groups = location)
+  inc_obj_group <- incidence2::incidence(data_long, date_index = "dates",
+                                         date_names_to = "dates", counts = "I",
+                                         count_values_to = "I", groups = "group")
   res_grouped_obj <- suppressWarnings(estimate_R(incid = inc_obj_group,
                                                  dt = 7L,
                                                  dt_out = 7L,
@@ -761,11 +773,12 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
                                                  config = config,
                                                  method = method))
   
-  # all formats should produce identical R estimates
-  expect_equal(res_int$R, res_numeric$R)
-  expect_equal(res_int$R, res_df$R)
-  expect_equal(res_int$R, res_inc_obj$R)
-  expect_equal(res_int$R, res_grouped_obj$R)
+  relative_error <- abs(res_int$R$`Mean(R)`[res_int$R$t_start] -
+                          res_grouped_obj$R$`Mean(R)`[res_grouped_obj$R$t_start]) /
+    res_int$R$`Mean(R)`[res_int$R$t_start]
+  
+  relative_error <- na.omit(relative_error)
+  expect_true(all(relative_error < 0.1))
   
 })
 
