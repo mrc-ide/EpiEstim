@@ -66,12 +66,8 @@
 #'   shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
 #'   shifted by 1).
 #'
-#' - `mcmc_control`: An object of class `estimate_R_mcmc_control`, as returned
-#'   by function [make_mcmc_control()].
-#'
-#' - `seed`: An optional integer used as the seed for the random number
-#'   generator at the start of the function (then potentially reset within the
-#'   MCMC for method `si_from_data`); useful to get reproducible results.
+#' - `mcmc_control`: An object of class \code{estimate_R_mcmc_control}, as 
+#' returned by function \code{make_mcmc_control}. 
 #'
 #' - `mean_prior`: A positive number giving the mean of the common prior
 #'   distribution for all reproduction numbers (see details).

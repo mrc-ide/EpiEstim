@@ -4,24 +4,40 @@
 \alias{init_mcmc_params}
 \title{Find clever starting points for MCMC estimation}
 \usage{
-init_mcmc_params(si_data, dist = c("G", "W", "L", "off1G", "off1W", "off1L"))
+init_mcmc_params(si_data, dist)
 }
 \arguments{
 \item{si_data}{data on dates of symptoms of pairs of infector/infected
 individuals to be used to estimate the serial interval distribution. This
 should be a dataframe with 5 columns:
 \itemize{
-\item \code{EL}: the lower bound of the symptom onset date of the infector (given as an integer)
-\item \code{ER}: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that \code{ER >= EL}. If the dates are known exactly use \code{ER = EL}
-\item \code{SL}: the lower bound of the symptom onset date of the infected individual (given as an integer)
-\item \code{SR}: the upper bound of the symptom onset date of the infected individual (given as an integer). Should be such that \code{SR >= SL}. If the dates are known exactly use \code{SR = SL}
-\item \code{type} (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates
+\item{EL: the lower bound
+of the symptom onset date of the infector (given as an integer)}
+\item{ER:
+the upper bound of the symptom onset date of the infector (given as an
+integer). Should be such that ER>=EL. If the dates are known exactly use
+ER = EL}
+\item{SL: the lower bound of the
+symptom onset date of the infected individual (given as an integer)}
+\item{SR: the upper bound of the symptom onset date of the infected
+individual (given as an integer). Should be such that SR>=SL. If the dates
+are known exactly use SR = SL}
+\item{type
+(optional): can have entries 0, 1, or 2, corresponding to doubly
+interval-censored, single interval-censored or exact observations,
+respectively, see Reich et al. Statist. Med. 2009. If not specified, this
+will be automatically computed from the dates}
 }}
 
-\item{dist}{parametric distribution to use for the serial interval.
-Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G"
-(Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
-shifted by 1).}
+\item{dist}{The parametric distribution used when estimating the serial
+interval. Should be one of "gamma", "weibull", "lognormal", "gamma_offset_1",
+"weibull_offset_1", or "lognormal_offset_1". Note the different naming
+convention compared to \code{\link[coarseDataTools]{dic.fit.mcmc}}. The
+distribution may also be specified using the abbreviated forms "G", "W", "L",
+"off1G", "off1W", and "off1L" as used in \code{\link[coarseDataTools]{dic.fit.mcmc}}.
+However, we recommend using the full names to avoid confusion, and a warning
+will be issued if the abbreviated forms are used.
+If not present, computed automatically from \code{x}.}
 }
 \value{
 A vector containing the initial values for the two parameters of the
@@ -47,7 +63,7 @@ data("MockRotavirus")
 
 ## get clever initial values for shape and scale of a Gamma distribution
 ## fitted to the the data MockRotavirus$si_data
-clever_init_param <- init_mcmc_params(MockRotavirus$si_data, "G")
+clever_init_param <- init_mcmc_params(MockRotavirus$si_data, "gamma")
 
 ## estimate the serial interval from data using a clever starting point for 
 ## the MCMC chain

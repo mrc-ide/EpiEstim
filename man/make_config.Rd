@@ -60,11 +60,8 @@ of symptoms of pairs of infector/infected individuals (see details). Should
 be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
 shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
 shifted by 1).
-\item \code{mcmc_control}: An object of class \code{estimate_R_mcmc_control}, as returned
-by function \code{\link[=make_mcmc_control]{make_mcmc_control()}}.
-\item \code{seed}: An optional integer used as the seed for the random number
-generator at the start of the function (then potentially reset within the
-MCMC for method \code{si_from_data}); useful to get reproducible results.
+\item \code{mcmc_control}: An object of class \code{estimate_R_mcmc_control}, as
+returned by function \code{make_mcmc_control}.
 \item \code{mean_prior}: A positive number giving the mean of the common prior
 distribution for all reproduction numbers (see details).
 \item \code{std_prior}: A positive number giving the standard deviation of the
