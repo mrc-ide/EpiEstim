@@ -358,16 +358,14 @@ estimate_R <- function(incid,
   # switch between the standard estimate_R version and that which disaggregates
   # coarsely aggregated incidence data
   if(any(dt >= 2)) {
-    incid_vec <- process_I_vector(incid)
-    out <- estimate_R_agg(incid_vec, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
-                          iter = iter, tol = tol, config = config, method = method, grid = grid)
-  } else {
     
     msg <- "backimputation_window is currently not supported when dt > 1"
     if(backimputation_window > 0) stop(msg)
     
-    out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, iter = iter,
-                          config = config, method = method, grid = grid)
+    incid_vec <- process_I_vector(incid)
+    out <- estimate_R_agg(incid_vec, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
+                          iter = iter, tol = tol, config = config, method = method, grid = grid)
+
     return(out)
   }
 
