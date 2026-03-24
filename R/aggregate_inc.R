@@ -3,7 +3,7 @@
 #' @param incid a vector of daily incidence values
 #' @param dt a positive integer, or vector thereof, indicating the length(s) of 
 #' the desired aggregation window(s). If a vector, this will be recycled. For 
-#' example, \code{dt = c(3L, 4L)} would correspond to alternating aggregation 
+#' example, `dt = c(3L, 4L)` would correspond to alternating aggregation 
 #' windows of 3 and 4 days
 #'
 #' @return a vector of incidence values, aggregated to dt
@@ -17,11 +17,11 @@
 #' aggregate_inc(incid, dt)
 #' 
 #' ## Non-constant aggregation e.g. reporting 3x week
-#' #' data("SARS2003")
+#' data("SARS2003")
 #' incid <- SARS2003$incidence
 #' dt <- c(2L,2L,3L)
 #' aggregate_inc(incid, dt)
-#' 
+
 aggregate_inc <- function(incid, dt = 7L)
 {
   if(all(dt < 2)) {stop("at least one value of dt should be an integer >=2")}

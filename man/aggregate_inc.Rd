@@ -9,9 +9,9 @@ aggregate_inc(incid, dt = 7L)
 \arguments{
 \item{incid}{a vector of daily incidence values}
 
-\item{dt}{a positive integer, or vector thereof, indicating the length(s) of 
-the desired aggregation window(s). If a vector, this will be recycled. For 
-example, \code{dt = c(3L, 4L)} would correspond to alternating aggregation 
+\item{dt}{a positive integer, or vector thereof, indicating the length(s) of
+the desired aggregation window(s). If a vector, this will be recycled. For
+example, \code{dt = c(3L, 4L)} would correspond to alternating aggregation
 windows of 3 and 4 days}
 }
 \value{
@@ -28,9 +28,8 @@ dt <- 7L
 aggregate_inc(incid, dt)
 
 ## Non-constant aggregation e.g. reporting 3x week
-#' data("SARS2003")
+data("SARS2003")
 incid <- SARS2003$incidence
 dt <- c(2L,2L,3L)
 aggregate_inc(incid, dt)
-
 }

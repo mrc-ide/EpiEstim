@@ -7,9 +7,9 @@
 compute_lambda(incid, si_distr)
 }
 \arguments{
-\item{incid}{a list (as obtained from function `process_I_multivariant`)
-of two multidimensional arrays ("local" and "imported")
-containing values of the incidence
+\item{incid}{a list (as obtained from function \code{\link[=process_I_multivariant]{process_I_multivariant()}})
+of two multidimensional arrays (\code{local} and \code{imported}) containing values
+of the incidence
 for each time step (1st dimension), location (2nd dimension) and
 pathogen/strain/variant (3rd dimension)}
 
@@ -21,19 +21,18 @@ should sum to 1}
 }
 \value{
 a multidimensional array containing values of the overall
-  infectivity for each time step (1st dimension), location (2nd dimension)
-  and pathogen/strain/variant (3rd dimension). The overall infectivity for
-  a given location and pathogen/strain/variant represents the sum of
-  the incidence for that location and that pathogen/strain/variant at all
-  previous time steps, weighted by the current infectivity of those
-  past incident cases. Pre-calculating the overall infectivity makes the
-  algorithm much faster
+infectivity for each time step (1st dimension), location (2nd dimension)
+and pathogen/strain/variant (3rd dimension). The overall infectivity for
+a given location and pathogen/strain/variant represents the sum of
+the incidence for that location and that pathogen/strain/variant at all
+previous time steps, weighted by the current infectivity of those
+past incident cases. Pre-calculating the overall infectivity makes the
+algorithm much faster.
 }
 \description{
 Compute the overall infectivity
 }
 \examples{
-
 n_v <- 2
 n_loc <- 3 # 3 locations
 T <- 100 # 100 time steps

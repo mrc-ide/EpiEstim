@@ -7,13 +7,15 @@
 DiscrSI(k, mu, sigma)
 }
 \arguments{
-\item{k}{see \code{k} in \code{discr_si}}
+\item{k}{Positive integer, or vector of positive integers for which the
+discrete distribution is desired.}
 
-\item{mu}{see \code{mu} in \code{discr_si}}
+\item{mu}{A positive real giving the mean of the Gamma distribution.}
 
-\item{sigma}{see \code{sigma} in \code{discr_si}}
+\item{sigma}{A non-negative real giving the standard deviation of the Gamma
+distribution.}
 }
 \description{
 Please only use for compatibility;
-Prefer the new discr_si function instead
+Prefer the new \code{\link[=discr_si]{discr_si()}} function instead
 }

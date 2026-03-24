@@ -244,9 +244,11 @@ every time. You can do this as follow:
 ## first estimate the SI distribution using function dic.fit.mcmc fron 
 ## coarseDataTools package:
 n_mcmc_samples <- config$n1*mcmc_control$thin
+dist <- "G"
+dist_nice_name <- "gamma"
 SI_fit <- coarseDataTools::dic.fit.mcmc(dat = Flu2009$si_data,
                   dist = dist,
-                  init.pars = init_mcmc_params(Flu2009$si_data, dist),
+                  init.pars = init_mcmc_params(Flu2009$si_data, dist_nice_name),
                   burnin = mcmc_control$burnin,
                   n.samples = n_mcmc_samples,
                   seed = mcmc_control$seed)

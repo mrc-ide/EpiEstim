@@ -31,38 +31,37 @@ and pathogen/strain/variant (3rd dimension). The overall infectivity for
 a given location and pathogen/strain/variant represents the sum of
 the incidence for that location and that pathogen/strain/variant at all
 previous time steps, weighted by the current infectivity of those
-past incident cases. It can be calculated from the incidence `incid` and
-the distribution of the serial interval using function `compute_lambda`)}
+past incident cases. It can be calculated from the incidence \code{incid} and
+the distribution of the serial interval using function \code{\link[=compute_lambda]{compute_lambda()}}}
 
 \item{priors}{a list of prior parameters (shape and scale of a gamma
 distribution) for epsilon and R; can be obtained from the function
-`default_priors`. The prior for R is assumed to be the same for all
+\code{\link[=default_priors]{default_priors()}}. The prior for R is assumed to be the same for all
 time steps and all locations}
 
 \item{shape_R_flat}{a vector of the shape of the posterior distribution of R
 for each time step t and each location l
-(stored in element (l-1)*(t_max - t_min + 1) + t of the vector),
-as obtained from function `get_shape_R_flat`}
+(stored in element \code{(l-1)*(t_max - t_min + 1) + t} of the vector),
+as obtained from function \code{\link[=get_shape_R_flat]{get_shape_R_flat()}}.}
 
-\item{t_min}{an integer >1 giving the minimum time step to consider in the
+\item{t_min}{an integer > 1 giving the minimum time step to consider in the
 estimation. Default value is 2 (as the estimation is conditional on
 observations at time step 1 and can therefore only start at time step 2).}
 
-\item{t_max}{an integer >`t_min` and <=`nrow(incid)` giving the maximum time
-step to consider in the estimation. Default value is `nrow(incid)`.}
+\item{t_max}{an integer > \code{t_min} and <= \code{nrow(incid)} giving the maximum time
+step to consider in the estimation. Default value is \code{nrow(incid)}.}
 
 \item{seed}{a numeric value used to fix the random seed}
 }
 \value{
 a matrix of the instantaneous reproduction number R for the reference
-  pathogen/strain/variant for each time step (row) and each location (column)
-  drawn from the marginal posterior distribution
+pathogen/strain/variant for each time step (row) and each location (column)
+drawn from the marginal posterior distribution
 }
 \description{
 Draw R from marginal posterior distribution
 }
 \examples{
-
 n_v <- 2
 n_loc <- 3 # 3 locations
 T <- 100 # 100 time steps
@@ -77,5 +76,4 @@ lambda <- compute_lambda(incid, si_distr)
 # Epsilon = 1 i.e. no transmission advantage
 epsilon <- 1
 draw_R(epsilon, incid$local, lambda, priors, seed = 1, t_min = 2L)
-
 }
