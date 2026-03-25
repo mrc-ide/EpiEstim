@@ -9,7 +9,7 @@ estimate_R_agg(
   dt = 7L,
   dt_out = 7L,
   iter = 10L,
-  tol = 0.000001,
+  tol = 1e-06,
   recon_opt = "naive",
   config = make_config(),
   method = c("non_parametric_si", "parametric_si"),
