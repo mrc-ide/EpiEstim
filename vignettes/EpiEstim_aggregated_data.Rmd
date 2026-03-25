@@ -1,7 +1,6 @@
 ---
 title: "EpiEstim for aggregated incidence data"
 author: "Rebecca Nash"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
