@@ -7,14 +7,14 @@
 sample_posterior_R(R, n = 1000, window = 1L)
 }
 \arguments{
-\item{R}{an `estimate_R` object from the [estimate_R()] function.}
+\item{R}{an \code{estimate_R} object from the \code{\link[=estimate_R]{estimate_R()}} function.}
 
 \item{n}{an integer specifying the number of samples to be taken from the
 gamma distribution.}
 
-\item{window}{an integer (or sequence of integers) specifying the window(s) 
+\item{window}{an integer (or sequence of integers) specifying the window(s)
 from which to estimate R. Defaults to the first window. If multiple windows
-are specified, the resulting samples will be drawn from several 
+are specified, the resulting samples will be drawn from several
 distributions.}
 }
 \value{

@@ -6,14 +6,15 @@
 \title{Data on the 2009 H1N1 influenza pandemic in a school in Pennsylvania.}
 \format{
 A list of three elements:
-
-- **incidence**: a dataframe with 32 lines containing dates in first column,
-  and daily incidence in second column (Cauchemez et al., 2011),
-- **si_distr**: a vector containing a set of 12 probabilities (Ferguson et
-  al, 2005),
-- **si_data**: a dataframe with 16 lines giving serial interval patient
-  data collected in a household study in San Antonio, Texas throughout the
-  2009 H1N1 outbreak (Morgan et al., 2010).
+\itemize{
+\item \strong{incidence}: a dataframe with 32 lines containing dates in first column,
+and daily incidence in second column (Cauchemez et al., 2011),
+\item \strong{si_distr}: a vector containing a set of 12 probabilities (Ferguson et
+al, 2005),
+\item \strong{si_data}: a dataframe with 16 lines giving serial interval patient
+data collected in a household study in San Antonio, Texas throughout the
+2009 H1N1 outbreak (Morgan et al., 2010).
+}
 }
 \source{
 Cauchemez S. et al. (2011) Role of social networks in shaping disease
@@ -25,16 +26,17 @@ Antonio, Texas, USA, April-May 2009. Emerg Infect Dis 16: 631-637.
 }
 \description{
 This data set gives:
-
-1. the daily incidence of onset of acute respiratory illness
-   (ARI, defined as at least two symptoms among fever, cough, sore throat,
-   and runny nose) among children in a school in Pennsylvania during the
-   2009 H1N1 influenza pandemic (see source and references),
-2. the discrete daily distribution of the serial interval for influenza,
-   assuming a shifted Gamma distribution with mean 2.6 days, standard
-   deviation 1.5 days and shift 1 day (see references).
-3. interval-censored serial interval data from the 2009 outbreak of H1N1
-   influenza in San Antonio, Texas, USA (see references).
+\enumerate{
+\item the daily incidence of onset of acute respiratory illness
+(ARI, defined as at least two symptoms among fever, cough, sore throat,
+and runny nose) among children in a school in Pennsylvania during the
+2009 H1N1 influenza pandemic (see source and references),
+\item the discrete daily distribution of the serial interval for influenza,
+assuming a shifted Gamma distribution with mean 2.6 days, standard
+deviation 1.5 days and shift 1 day (see references).
+\item interval-censored serial interval data from the 2009 outbreak of H1N1
+influenza in San Antonio, Texas, USA (see references).
+}
 }
 \examples{
 ## load data on pandemic flu in a school in 2009

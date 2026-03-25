@@ -8,10 +8,10 @@ default_priors()
 }
 \value{
 a list of default parameters for the priors.
-  Values can then be manually edited as in the examples below.
-  Users could use functions [epitrix::gamma_shapescale2mucv()] and
-  [epitrix::gamma_mucv2shapescale()] to set the shape and scale corresponding
-  to the desired prior mean and coefficient of variation.
+Values can then be manually edited as in the examples below.
+Users could use functions \code{\link[epitrix:gamma_tools]{epitrix::gamma_shapescale2mucv()}} and
+\code{\link[epitrix:gamma_tools]{epitrix::gamma_mucv2shapescale()}} to set the shape and scale corresponding
+to the desired prior mean and coefficient of variation.
 }
 \description{
 Set default for Gamma priors

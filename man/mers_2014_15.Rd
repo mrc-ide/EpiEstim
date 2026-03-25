@@ -6,12 +6,13 @@
 \title{Data on Middle East Respiratory Syndrome (MERS) in Saudi Arabia.}
 \format{
 A list of two elements:
-
-  - **incidence**: a dataframe containing 495 days of observations with dates
-    in the first column, and number of local (2nd column) and imported (3rd
-    column) cases of MERS,
-  - **si**: a list of estimates of the mean (mean_si) and standard deviation
-    (std_si) of the serial interval for MERS.
+\itemize{
+\item \strong{incidence}: a dataframe containing 495 days of observations with dates
+in the first column, and number of local (2nd column) and imported (3rd
+column) cases of MERS,
+\item \strong{si}: a list of estimates of the mean (mean_si) and standard deviation
+(std_si) of the serial interval for MERS.
+}
 }
 \source{
 Incidence data was extracted from the EMPRES I system from FAO (Global Animal
@@ -19,17 +20,18 @@ Disease Information System - Food and Agriculture Organization of the United
 Nations, 2017). Note incidence on the first day was originally made of one
 local case and zero imported cases; this has been modified to zero local
 cases and one imported case in the dataset shown here so the reproduction
-number can be estimated from the start using the function [estimate_R()]. The
+number can be estimated from the start using the function \code{\link[=estimate_R]{estimate_R()}}. The
 serial interval parameters were those estimated by Cauchemez et al. (2016).
 }
 \description{
 This data set gives:
-
-1. the daily incidence of onset of symptoms of laboratory confirmed human
-   infections with MERS-CoV in Saudi Arabia between the beginning of July
-   2014 and the end of December 2015, and
-2. estimates of the mean and standard deviation of the serial interval for
-   MERS.
+\enumerate{
+\item the daily incidence of onset of symptoms of laboratory confirmed human
+infections with MERS-CoV in Saudi Arabia between the beginning of July
+2014 and the end of December 2015, and
+\item estimates of the mean and standard deviation of the serial interval for
+MERS.
+}
 }
 \examples{
 

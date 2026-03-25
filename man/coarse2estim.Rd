@@ -13,7 +13,7 @@ serial interval distribution.}
 
 \item{dist}{The parametric distribution used when estimating the serial
 interval. Should be one of "gamma", "weibull", "lognormal", "gamma_offset_1",
- "weibull_offset_1", or "lognormal_offset_1". Note the different naming 
+"weibull_offset_1", or "lognormal_offset_1". Note the different naming
 convention compared to \code{\link[coarseDataTools]{dic.fit.mcmc}}. The
 distribution may also be specified using the abbreviated forms "G", "W", "L",
 "off1G", "off1W", and "off1L" as used in \code{\link[coarseDataTools]{dic.fit.mcmc}}.
@@ -23,18 +23,20 @@ If not present, computed automatically from \code{x}.}
 
 \item{samples}{A dataframe containing the posterior samples of serial
 interval parameters corresponding to the parametric choice specified in
-`dist`. If not present, computed automatically from `x`.}
+\code{dist}. If not present, computed automatically from \code{x}.}
 
 \item{thin}{A positive integer corresponding to thinning parameter; of the
-posterior sample of serial interval distributions in x, only 1 in `thin`
- will be kept, the rest will be discarded.}
+posterior sample of serial interval distributions in x, only 1 in \code{thin}
+will be kept, the rest will be discarded.}
 }
 \value{
 A list with two elements:
-  - `si_sample`: a matrix where each column gives one distribution of the
-     serial interval to be explored, obtained from x by thinning the MCMC chain.
-  - `si_parametric_distr`: the parametric distribution used when estimating
+\itemize{
+\item \code{si_sample}: a matrix where each column gives one distribution of the
+serial interval to be explored, obtained from x by thinning the MCMC chain.
+\item \code{si_parametric_distr}: the parametric distribution used when estimating
 the serial interval stored in x.
+}
 }
 \description{
 \code{\link{coarse2estim}} Transforms outputs of
@@ -76,7 +78,7 @@ plot(R_si_from_sample)
 
 }
 \seealso{
-[estimate_R()]
+\code{\link[=estimate_R]{estimate_R()}}
 }
 \author{
 The Hackout3 Parameter Estimation team.

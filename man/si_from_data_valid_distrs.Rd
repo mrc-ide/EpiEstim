@@ -9,7 +9,7 @@ si_from_data_valid_distrs(dist)
 \arguments{
 \item{dist}{The parametric distribution used when estimating the serial
 interval. Should be one of "gamma", "weibull", "lognormal", "gamma_offset_1",
- "weibull_offset_1", or "lognormal_offset_1". Note the different naming 
+"weibull_offset_1", or "lognormal_offset_1". Note the different naming
 convention compared to \code{\link[coarseDataTools]{dic.fit.mcmc}}. The
 distribution may also be specified using the abbreviated forms "G", "W", "L",
 "off1G", "off1W", and "off1L" as used in \code{\link[coarseDataTools]{dic.fit.mcmc}}.
@@ -18,9 +18,9 @@ will be issued if the abbreviated forms are used.
 If not present, computed automatically from \code{x}.}
 }
 \value{
-A two element list - the first element is a flag `is_dist_valid`
+A two element list - the first element is a flag \code{is_dist_valid}
 indicating whether the passed distribution is valid. Te second element
-`all_valid_distrs` is a character vector with the valid distribution names.
+\code{all_valid_distrs} is a character vector with the valid distribution names.
 }
 \description{
 When using si_from_data method, the package will use

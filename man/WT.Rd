@@ -18,22 +18,22 @@ WT(
 )
 }
 \arguments{
-\item{I}{see `incid` in [wallinga_teunis()]}
+\item{I}{see \code{incid} in \code{\link[=wallinga_teunis]{wallinga_teunis()}}}
 
-\item{T.Start}{see `config$t_start` in [wallinga_teunis()]}
+\item{T.Start}{see \code{config$t_start} in \code{\link[=wallinga_teunis]{wallinga_teunis()}}}
 
-\item{T.End}{see `config$t_end` in [wallinga_teunis()]}
+\item{T.End}{see \code{config$t_end} in \code{\link[=wallinga_teunis]{wallinga_teunis()}}}
 
-\item{method}{see `method` in [wallinga_teunis()] (but WT uses CamelCase 
+\item{method}{see \code{method} in \code{\link[=wallinga_teunis]{wallinga_teunis()}} (but WT uses CamelCase
 where wallinga_teunis uses snake_case for the method names)}
 
-\item{Mean.SI}{see `config$mean_si` in [wallinga_teunis()]}
+\item{Mean.SI}{see \code{config$mean_si} in \code{\link[=wallinga_teunis]{wallinga_teunis()}}}
 
-\item{Std.SI}{see `config$std_si` in [wallinga_teunis()]}
+\item{Std.SI}{see \code{config$std_si} in \code{\link[=wallinga_teunis]{wallinga_teunis()}}}
 
-\item{SI.Distr}{see `config$si_distr` in [wallinga_teunis()]}
+\item{SI.Distr}{see \code{config$si_distr} in \code{\link[=wallinga_teunis]{wallinga_teunis()}}}
 
-\item{nSim}{see `config$n_sim` in [wallinga_teunis()]}
+\item{nSim}{see \code{config$n_sim} in \code{\link[=wallinga_teunis]{wallinga_teunis()}}}
 
 \item{plot}{Not used anymore, only there for compatibility}
 
@@ -41,5 +41,5 @@ where wallinga_teunis uses snake_case for the method names)}
 }
 \description{
 Please only use for compatibility;
-Prefer the new [wallinga_teunis()] function instead
+Prefer the new \code{\link[=wallinga_teunis]{wallinga_teunis()}} function instead
 }

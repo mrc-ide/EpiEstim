@@ -14,20 +14,20 @@ pathogen/strain/variant (3rd dimension)}
 
 \item{priors}{a list of prior parameters (shape and scale of a gamma
 distribution) for epsilon and R; can be obtained from the function
-`default_priors`. The prior for R is assumed to be the same for all
+\code{default_priors}. The prior for R is assumed to be the same for all
 time steps and all locations}
 
 \item{t_min}{an integer > 1 giving the minimum time step to consider in the
 estimation. Default value is 2 (as the estimation is conditional on
 observations at time step 1 and can therefore only start at time step 2).}
 
-\item{t_max}{an integer > `t_min` and <= `nrow(incid)` giving the maximum time
-step to consider in the estimation. Default value is `nrow(incid)`.}
+\item{t_max}{an integer > \code{t_min} and <= \code{nrow(incid)} giving the maximum time
+step to consider in the estimation. Default value is \code{nrow(incid)}.}
 }
 \value{
 a vector of the shape of the posterior distribution of R for
-  each time step t and each location l
-  (stored in element `(l-1)*(t_max - t_min + 1) + t` of the vector)
+each time step t and each location l
+(stored in element \code{(l-1)*(t_max - t_min + 1) + t} of the vector)
 }
 \description{
 Precompute shape of posterior distribution for R

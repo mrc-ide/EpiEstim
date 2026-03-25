@@ -31,30 +31,30 @@ and pathogen/strain/variant (3rd dimension). The overall infectivity for
 a given location and pathogen/strain/variant represents the sum of
 the incidence for that location and that pathogen/strain/variant at all
 previous time steps, weighted by the current infectivity of those
-past incident cases. It can be calculated from the incidence `incid` and
-the distribution of the serial interval using function [compute_lambda()]}
+past incident cases. It can be calculated from the incidence \code{incid} and
+the distribution of the serial interval using function \code{\link[=compute_lambda]{compute_lambda()}}}
 
 \item{priors}{a list of prior parameters (shape and scale of a gamma
 distribution) for epsilon and R; can be obtained from the function
-[default_priors()]. The prior for R is assumed to be the same for all
+\code{\link[=default_priors]{default_priors()}}. The prior for R is assumed to be the same for all
 time steps and all locations}
 
 \item{shape_epsilon}{a value or vector of values of the shape of the posterior
 distribution of epsilon for each of the non-reference variants, as returned
-by function [get_shape_epsilon()]}
+by function \code{\link[=get_shape_epsilon]{get_shape_epsilon()}}}
 
 \item{t_min}{an integer > 1 giving the minimum time step to consider in the
 estimation. Default value is 2 (as the estimation is conditional on
 observations at time step 1 and can therefore only start at time step 2).}
 
-\item{t_max}{an integer > `t_min` and <= `nrow(incid)` giving the maximum time
-step to consider in the estimation. Default value is `nrow(incid)`.}
+\item{t_max}{an integer > \code{t_min} and <= \code{nrow(incid)} giving the maximum time
+step to consider in the estimation. Default value is \code{nrow(incid)}.}
 
 \item{seed}{a numeric value used to fix the random seed}
 }
 \value{
 A value or vector of values for epsilon for each non reference
-  pathogen/strain/variant, drawn from the marginal posterior distribution
+pathogen/strain/variant, drawn from the marginal posterior distribution
 }
 \description{
 Draw epsilon from marginal posterior distribution

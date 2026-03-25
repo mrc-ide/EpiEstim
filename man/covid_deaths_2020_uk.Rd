@@ -6,9 +6,10 @@
 \title{Data on the 2020-2022 SARS-CoV-2 epidemic in the UK.}
 \format{
 A list of two elements:
-
-  - **incidence**: a data.frame containing 672 days of observation,
-  - **si_distr**: a vector containing a set of 30 probabilities.
+\itemize{
+\item \strong{incidence}: a data.frame containing 672 days of observation,
+\item \strong{si_distr}: a vector containing a set of 30 probabilities.
+}
 }
 \source{
 Bi Q, Wu Y, Mei S, Ye C, Zou X, Zhang Z, et al. Epidemiology and transmission
@@ -20,12 +21,13 @@ https://coronavirus.data.gov.uk/details/cases
 }
 \description{
 This data set gives:
-
-1. the UK daily incidence of deaths within 28 days of a positive COVID test
-   (see source and references),
-2. the discrete daily distribution of the serial interval for SARS-CoV-2,
-   assuming a shifted Gamma distribution with mean 6.1 days,
-   standard deviation 4.2 days and shift 1 day (see references).
+\enumerate{
+\item the UK daily incidence of deaths within 28 days of a positive COVID test
+(see source and references),
+\item the discrete daily distribution of the serial interval for SARS-CoV-2,
+assuming a shifted Gamma distribution with mean 6.1 days,
+standard deviation 4.2 days and shift 1 day (see references).
+}
 }
 \examples{
 data("covid_deaths_2020_uk")

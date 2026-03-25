@@ -23,14 +23,16 @@ should sum to 1.}
 integer
 }
 \description{
-Unless specified by the user, `t_min` in [estimate_advantage()] is computed 
+Unless specified by the user, \code{t_min} in \code{\link[=estimate_advantage]{estimate_advantage()}} is computed
 as the sum of two indices:
 }
 \details{
-- the first day of non-zero incidence across all locations, computed using 
-  [first_nonzero_incid()]
-- the 95th percentile of the probability mass function of the SI distribution 
-  across all variants computed using [compute_si_cutoff()]
+\itemize{
+\item the first day of non-zero incidence across all locations, computed using
+\code{\link[=first_nonzero_incid]{first_nonzero_incid()}}
+\item the 95th percentile of the probability mass function of the SI distribution
+across all variants computed using \code{\link[=compute_si_cutoff]{compute_si_cutoff()}}
+}
 }
 \author{
 Sangeeta Bhatia

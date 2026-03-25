@@ -7,27 +7,27 @@
 discr_si(k, mu, sigma)
 }
 \arguments{
-\item{k}{Positive integer, or vector of positive integers for which the 
+\item{k}{Positive integer, or vector of positive integers for which the
 discrete distribution is desired.}
 
 \item{mu}{A positive real giving the mean of the Gamma distribution.}
 
-\item{sigma}{A non-negative real giving the standard deviation of the Gamma 
+\item{sigma}{A non-negative real giving the standard deviation of the Gamma
 distribution.}
 }
 \value{
-Gives the discrete probability \eqn{w_k} that the serial interval is 
+Gives the discrete probability \eqn{w_k} that the serial interval is
 equal to \eqn{k}.
 }
 \description{
-Compute the discrete distribution of the serial interval, 
-assuming that the serial interval is a shifted Gamma distributed, 
+Compute the discrete distribution of the serial interval,
+assuming that the serial interval is a shifted Gamma distributed,
 with shift 1.
 }
 \details{
-Assuming that the serial interval is a shifted Gamma distributed with mean 
+Assuming that the serial interval is a shifted Gamma distributed with mean
 \eqn{\mu}, standard deviation \eqn{\sigma} and shift \eqn{1},
-the discrete probability \eqn{w_k} that the serial interval is equal to 
+the discrete probability \eqn{w_k} that the serial interval is equal to
 \eqn{k} is:
 
 \deqn{w_k = kF_{\{\mu-1,\sigma\}}(k)+(k-2)F_{\{\mu-1,\sigma\}}
@@ -39,7 +39,7 @@ F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
 F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
 \sigma\sqrt{1+\frac{\sigma^2}{\mu-1}}\}}(k))}
 
-where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma 
+where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma
 distribution with mean \eqn{\mu} and standard deviation \eqn{\sigma}.
 }
 \examples{
@@ -52,11 +52,11 @@ plot(seq(0, 20), dicrete_si_distr, type = "h",
 title(main = "Discrete distribution of the serial interval of influenza")
 }
 \references{
-Cori, A. et al. A new framework and software to estimate time-varying 
+Cori, A. et al. A new framework and software to estimate time-varying
 reproduction numbers during epidemics (AJE 2013).
 }
 \seealso{
-[overall_infectivity()], [estimate_R()]
+\code{\link[=overall_infectivity]{overall_infectivity()}}, \code{\link[=estimate_R]{estimate_R()}}
 }
 \author{
 Anne Cori \email{a.cori@imperial.ac.uk}
