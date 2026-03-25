@@ -12,63 +12,79 @@ make_config(
 )
 }
 \arguments{
-\item{...}{Acceptable arguments for \code{...} are:
-\itemize{
-\item \code{t_start}: Vector of positive integers giving the starting times of each
-window over which the reproduction number will be estimated. These must be
-in ascending order, and so that for all \code{i}, \code{t_start[i] <= t_end[i]}.
-\code{t_start[1]} should be strictly after the first day with non null
-incidence.
-\item \code{t_end}: Vector of positive integers giving the ending times of each window
-over which the reproduction number will be estimated. These must be in
-ascending order, and so that for all \code{i}, \code{t_start[i] <= t_end[i]}.
-\item \code{n1}: For method "uncertain_si" and "si_from_data"; positive integer giving
-the size of the sample of SI distributions to be drawn (see details).
-\item \code{n2}: For methods "uncertain_si", "si_from_data" and "si_from_sample";
-positive integer giving the size of the sample drawn from the posterior
-distribution of R for each serial interval distribution considered (see
-details).
-\item \code{mean_si}: For method "parametric_si" and "uncertain_si"; positive real
-giving the mean serial interval (method "parametric_si") or the average
-mean serial interval (method "uncertain_si", see details).
-\item \code{std_si}: For method "parametric_si" and "uncertain_si"; non negative real
-giving the standard deviation of the serial interval (method
-"parametric_si") or the average standard deviation of the serial interval
-(method "uncertain_si", see details).
-\item \code{std_mean_si}: For method "uncertain_si"; standard deviation of the
-distribution from which mean serial intervals are drawn (see details).
-\item \code{min_mean_si}: For method "uncertain_si"; lower bound of the distribution
-from which mean serial intervals are drawn (see details).
-\item \code{max_mean_si}: For method "uncertain_si"; upper bound of the distribution
-from which mean serial intervals are drawn (see details).
-\item \code{std_std_si}: For method "uncertain_si"; standard deviation of the
-distribution from which standard deviations of the serial interval are
-drawn (see details).
-\item \code{min_std_si}: For method "uncertain_si"; lower bound of the distribution
-from which standard deviations of the serial interval are drawn (see
-details).
-\item \code{max_std_si}: For method "uncertain_si"; upper bound of the distribution
-from which standard deviations of the serial interval are drawn (see
-details).
-\item \code{si_distr}: For method "non_parametric_si"; vector of probabilities giving
-the discrete distribution of the serial interval, starting with
-\code{si_distr[1]} (probability that the serial interval is zero), which should
-be zero.
-\item \code{si_parametric_distr}: For method "si_from_data"; the parametric
-distribution to use when estimating the serial interval from data on dates
-of symptoms of pairs of infector/infected individuals (see details). Should
-be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
-shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
-shifted by 1).
-\item \code{mcmc_control}: An object of class \code{estimate_R_mcmc_control}, as
-returned by function \code{make_mcmc_control}.
-\item \code{mean_prior}: A positive number giving the mean of the common prior
-distribution for all reproduction numbers (see details).
-\item \code{std_prior}: A positive number giving the standard deviation of the
-common prior distribution for all reproduction numbers (see details).
-\item \code{cv_posterior}: A positive number giving the aimed posterior coefficient
-of variation (see details).
-}}
+\item{...}{Acceptable arguments for `...` are:
+
+- `t_start`: Vector of positive integers giving the starting times of each
+  window over which the reproduction number will be estimated. These must be
+  in ascending order, and so that for all `i`, `t_start[i] <= t_end[i]`.
+  `t_start[1]` should be strictly after the first day with non null
+  incidence.
+
+- `t_end`: Vector of positive integers giving the ending times of each window
+  over which the reproduction number will be estimated. These must be in
+  ascending order, and so that for all `i`, `t_start[i] <= t_end[i]`.
+
+- `n1`: For method "uncertain_si" and "si_from_data"; positive integer giving
+  the size of the sample of SI distributions to be drawn (see details).
+
+- `n2`: For methods "uncertain_si", "si_from_data" and "si_from_sample";
+  positive integer giving the size of the sample drawn from the posterior
+  distribution of R for each serial interval distribution considered (see
+  details).
+
+- `mean_si`: For method "parametric_si" and "uncertain_si"; positive real
+  giving the mean serial interval (method "parametric_si") or the average
+  mean serial interval (method "uncertain_si", see details).
+
+- `std_si`: For method "parametric_si" and "uncertain_si"; non negative real
+  giving the standard deviation of the serial interval (method
+  "parametric_si") or the average standard deviation of the serial interval
+  (method "uncertain_si", see details).
+
+- `std_mean_si`: For method "uncertain_si"; standard deviation of the
+  distribution from which mean serial intervals are drawn (see details).
+
+- `min_mean_si`: For method "uncertain_si"; lower bound of the distribution
+  from which mean serial intervals are drawn (see details).
+
+- `max_mean_si`: For method "uncertain_si"; upper bound of the distribution
+  from which mean serial intervals are drawn (see details).
+
+- `std_std_si`: For method "uncertain_si"; standard deviation of the
+  distribution from which standard deviations of the serial interval are
+  drawn (see details).
+
+- `min_std_si`: For method "uncertain_si"; lower bound of the distribution
+  from which standard deviations of the serial interval are drawn (see
+  details).
+
+- `max_std_si`: For method "uncertain_si"; upper bound of the distribution
+  from which standard deviations of the serial interval are drawn (see
+  details).
+
+- `si_distr`: For method "non_parametric_si"; vector of probabilities giving
+  the discrete distribution of the serial interval, starting with
+  `si_distr[1]` (probability that the serial interval is zero), which should
+  be zero.
+
+- `si_parametric_distr`: For method "si_from_data"; the parametric
+  distribution to use when estimating the serial interval from data on dates
+  of symptoms of pairs of infector/infected individuals (see details). Should
+  be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
+  shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
+  shifted by 1).
+
+- `mcmc_control`: An object of class \code{estimate_R_mcmc_control}, as 
+returned by function \code{make_mcmc_control}. 
+
+- `mean_prior`: A positive number giving the mean of the common prior
+  distribution for all reproduction numbers (see details).
+
+- `std_prior`: A positive number giving the standard deviation of the
+  common prior distribution for all reproduction numbers (see details).
+
+- `cv_posterior`: A positive number giving the aimed posterior coefficient
+  of variation (see details).}
 
 \item{incid}{One of the following
 
