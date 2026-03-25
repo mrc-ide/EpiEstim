@@ -1,0 +1,121 @@
+
+
+test_that(
+  "wallinga_teunis() outputs the right errors/warnings",
+  {
+
+    msg <- "method non_parametric_si requires to specify the config\\$mean_si argument."
+    expect_error(
+      wallinga_teunis(
+        1:10,
+        method = "parametric_si",
+        config = list(t_start = 3,
+                      t_end = 6,
+                      n_sim = 10)
+      ),
+      msg
+    )
+
+    msg <- "method non_parametric_si requires to specify the config\\$std_si argument."
+    expect_error(
+      wallinga_teunis(
+        1:10,
+        method = "parametric_si",
+        config = list(t_start = 3,
+                      t_end = 6,
+                      n_sim = 10,
+                      mean_si = 3)
+      ),
+      msg
+    )
+    
+    msg <- "method parametric_si requires a value >1 for config\\$mean_si."
+    expect_error(
+      wallinga_teunis(
+        1:10,
+        method = "parametric_si",
+        config = list(t_start = 3,
+                      t_end = 6,
+                      n_sim = 10,
+                      mean_si = -2,
+                      std_si = 3)
+      ),
+      msg
+    )
+
+  }
+)
+
+
+
+
+
+test_that("wallinga_teunis() gives expected results with flat incidence", {
+  i <- flat_incid <- rep(10, 100)
+  res <- wallinga_teunis(
+    i,
+    method = "non_parametric_si",
+    config = list(t_start = 2:100, t_end = 2:100,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50)
+  )
+  
+  ### expect final R estimate to be zero
+  expect_equal(tail(res$R$`Mean(R)`, 1), 0)
+  
+  ### expect R estimates to be ~1 except very early and very late ones
+  expect_equal(mean(res$R$`Mean(R)`[10:80]), 1)
+
+})
+
+
+
+
+
+test_that("wallinga_teunis() gives expected results with increasing incidence", {
+
+  ## Expected results
+  ##
+  ## The first epicurve grows exponentially, we should find R > 1
+  ## The second epicurve grows faster, we should find R_2 > R_1
+  i_1 <- rpois(100, lambda = exp(0.0523 * 1:100))
+  i_2 <- rpois(100, lambda = exp(0.0765 * 1:100))
+  
+  res_1 <- wallinga_teunis(
+    i_1,
+    method = "non_parametric_si",
+    config = list(t_start = 10, t_end = 90,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50)
+  )
+  res_2 <- wallinga_teunis(
+    i_2,
+    method = "non_parametric_si",
+    config = list(t_start = 10, t_end = 90,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50)
+  )
+  
+  expect_true(res_1$R$`Quantile.0.025(R)` > 1)
+  expect_true(res_2$R$`Quantile.0.025(R)` > res_1$R$`Quantile.0.975(R)`)
+
+})
+
+
+
+
+
+## data("Flu2009")
+
+## test_that("Example 1 matches saved output", {
+##   out <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
+##                     config = list(t_start = 2:26, t_end = 8:32,
+##                                   si_distr = Flu2009$si_distr, 
+##                                   seed = 1, 
+##                                   n_sim = 50))
+##   ## TODO: save output (with fixed seed) into am rda as we did for estimate_T
+##   #expect_equal_to_reference(out, "../expected_output/Example1.rda", update = FALSE)
+## })
