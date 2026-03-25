@@ -2,9 +2,25 @@
 % Please edit documentation in R/plot.R
 \name{plot.estimate_R}
 \alias{plot.estimate_R}
+\alias{plot.wallinga_teunis}
 \title{Plot outputs of \code{\link[=estimate_R]{estimate_R()}}}
 \usage{
 \method{plot}{estimate_R}(
+  x,
+  what = c("all", "incid", "R", "SI"),
+  plot_theme = "v2",
+  add_imported_cases = FALSE,
+  options_I = list(col = palette(), transp = 0.7, xlim = NULL, ylim = NULL, interval =
+    1L, xlab = "Time", ylab = "Incidence"),
+  options_R = list(col = palette(), transp = 0.2, xlim = NULL, ylim = NULL, xlab =
+    "Time", ylab = "R"),
+  options_SI = list(prob_min = 0.001, col = "black", transp = 0.25, xlim = NULL, ylim =
+    NULL, xlab = "Time", ylab = "Frequency"),
+  legend = TRUE,
+  ...
+)
+
+\method{plot}{wallinga_teunis}(
   x,
   what = c("all", "incid", "R", "SI"),
   plot_theme = "v2",
