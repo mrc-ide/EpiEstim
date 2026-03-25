@@ -157,7 +157,7 @@
 #' 
 #' @seealso [estimate_R()] for details of the core function
 #'  
-#' @author Rebecca Nash \email{r.nash@imperial.ac.uk} and Anne Cori \email{a.cori@imperial.ac.uk}
+#' @author Rebecca Nash and Anne Cori
 #' 
 #' @references 
 #' Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number
