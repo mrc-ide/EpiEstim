@@ -785,4 +785,24 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
   
 })
 
+
+test_that("t_start and t_end work when dt is used without specifying dt_out", {
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si,
+                             t_start = c(8, 16),
+                             t_end = c(15, 30)))
   
+  expect_no_error(
+    res <- suppressWarnings(estimate_R(incid = weekly_inc,
+                                       dt = 7L,
+                                       iter = 10L,
+                                       config = config,
+                                       method = method))
+  )
+  
+  # check that R is estimated for exactly the two specified windows
+  expect_equal(res$R$t_start, c(8, 16))
+  expect_equal(res$R$t_end, c(15, 30))
+  expect_equal(nrow(res$R), 2)
+})
