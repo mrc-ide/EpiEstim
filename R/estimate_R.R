@@ -343,7 +343,7 @@ estimate_R <- function(incid,
                        ),
                        si_data = NULL,
                        si_sample = NULL,
-                       config = make_config(incid = incid, method = method),
+                       config = make_config(incid = incid),
                        dt = 1L, # aggregation window of the data
                        dt_out = 7L, # desired sliding window length
                        recon_opt = "naive",
@@ -374,7 +374,7 @@ estimate_R <- function(incid,
     incid <- backimpute_I(incid, window_b = backimputation_window)
   }
 
-  config <- make_config(incid = incid, method = method, config = config)
+  config <- make_config(incid = incid, config = config)
   config <- process_config(config)
   check_config(config, method)
 

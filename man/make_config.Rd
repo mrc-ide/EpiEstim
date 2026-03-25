@@ -4,12 +4,7 @@
 \alias{make_config}
 \title{Set and check parameter settings for \code{\link[=estimate_R]{estimate_R()}}}
 \usage{
-make_config(
-  ...,
-  incid = NULL,
-  method = c("non_parametric_si", "parametric_si", "uncertain_si", "si_from_data",
-    "si_from_sample")
-)
+make_config(..., incid = NULL)
 }
 \arguments{
 \item{...}{Acceptable arguments for \code{...} are:
@@ -88,9 +83,6 @@ contains a column \code{incid$dates}, this is used for plotting.
 
 Note that the cases from the first time step are always all assumed to be
 imported cases.}
-
-\item{method}{One of "non_parametric_si", "parametric_si", "uncertain_si",
-"si_from_data" or "si_from_sample" (see details).}
 }
 \value{
 An object of class \code{estimate_R_config} with components
