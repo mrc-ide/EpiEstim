@@ -53,7 +53,8 @@ details).
 \item \code{si_distr}: For method "non_parametric_si"; vector of probabilities giving
 the discrete distribution of the serial interval, starting with
 \code{si_distr[1]} (probability that the serial interval is zero), which should
-be zero.
+be zero. Note that EpiEstim assumes that the serial interval is always
+strictly positive.
 \item \code{si_parametric_distr}: For method "si_from_data"; the parametric
 distribution to use when estimating the serial interval from data on dates
 of symptoms of pairs of infector/infected individuals (see details). Should
@@ -164,19 +165,21 @@ interval distribution as described in Cori et al. AJE 2013. We allow the mean
 \eqn{\mu} and standard deviation \eqn{\sigma} of the serial interval to vary
 according to truncated normal distributions. We sample \code{n1} pairs of mean and
 standard deviations,
-\eqn{(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_2)},\sigma^{(n_2)})}, by first
+\eqn{(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_1)},\sigma^{(n_1)})}, by
+independently
 sampling the mean \eqn{\mu^{(k)}} from its truncated normal distribution
 (with mean \code{mean_si}, standard deviation \code{std_mean_si}, minimum \code{min_mean_si}
-and maximum \code{max_mean_si}), and then sampling the standard deviation
+and maximum \code{max_mean_si}), and the standard deviation
 \eqn{\sigma^{(k)}} from its truncated normal distribution (with mean
 \code{std_si}, standard deviation \code{std_std_si}, minimum \code{min_std_si} and maximum
-\code{max_std_si}), but imposing that \eqn{\sigma^{(k)}<\mu^{(k)}}. This
-constraint ensures that the Gamma probability density function of the serial
-interval is null at \eqn{t=0}. Warnings are produced when the truncated
+\code{max_std_si}). Warnings are produced when the truncated
 normal distributions are not symmetric around the mean. For each pair
 \eqn{(\mu^{(k)},\sigma^{(k)})}, we then draw a sample of size \code{n2} in the
 posterior distribution of the reproduction number over each time window,
-conditionally on this serial interval distribution. After pooling, a sample
+conditionally on this parametric serial interval distribution (using the
+\code{discr_si} function to generate the corresponding serial interval probability
+mass function).
+After pooling across the \code{n1} serial interval distributions, a sample
 of size \eqn{`n1` \times `n2`} of the joint posterior distribution of the
 reproduction number over each time window is obtained. The posterior mean,
 standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles

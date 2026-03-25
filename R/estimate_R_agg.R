@@ -16,9 +16,6 @@
 #' \item{An object of class \code{\link{incidence}}}
 #' \item{An object of class \code{\link{incidence2}}}
 #' }
-#'
-#' Note that the cases from the first time step are always all assumed to be
-#' imported cases.
 #' 
 #' @param dt length of temporal aggregations of the incidence data. This should 
 #' be an integer or vector of integers. If a vector, this will be recycled. For 

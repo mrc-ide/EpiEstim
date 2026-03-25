@@ -756,7 +756,6 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
     I = weekly_inc,
     dates = seq(as.Date("2020-01-01"), by = "week", length.out = length(weekly_inc))
   )
-  ## get incidence per group (location)
   inc_obj_group <- incidence2::incidence(data, date_index = "dates",
                                          date_names_to = "dates", counts = "I",
                                          count_values_to = "I")
