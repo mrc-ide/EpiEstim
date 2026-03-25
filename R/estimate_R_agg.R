@@ -77,8 +77,7 @@
 #' - `dates`: a vector of dates corresponding to the incidence time series
 #' 
 #' 
-#' @importFrom epitrix gamma_mucv2shapescale r2R0
-#' @importFrom distcrete distcrete
+#' @importFrom epitrix r2R0
 #' @export
 #'
 #' @details 
@@ -388,10 +387,7 @@ estimate_R_agg <- function(incid,
                                grid) {
         r_grid <- seq(grid$min, grid$max, grid$precision)
         if (is.null(si_distr)) {
-          si_pars <- gamma_mucv2shapescale(mu = si_mean, cv = si_sd / si_mean)
-          si_distr <- distcrete("gamma", interval = 1,
-                                           shape = si_pars$shape,
-                                           scale = si_pars$scale, w = 0.5)
+          si_distr <- discr_si(seq(0, T), mu = si_mean, sigma = si_sd)
         }
         # using a grid of r values translate that into R using r2R0
         R_grid <- epitrix::r2R0(r = r_grid, w = si_distr)
