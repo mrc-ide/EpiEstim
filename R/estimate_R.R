@@ -160,7 +160,7 @@
 #' - [sample_posterior_R()] to draw samples of R values from the posterior distribution 
 #'   from the output of [estimate_R()]
 #'
-#' @author Anne Cori \email{a.cori@imperial.ac.uk}
+#' @author Anne Cori
 #' 
 #' @references 
 #' Cori, A. et al. A new framework and software to estimate time-varying

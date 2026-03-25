@@ -131,5 +131,5 @@ similar impacts of control measures (AJE 2004).
 \code{\link[=discr_si]{discr_si()}}, \code{\link[=estimate_R]{estimate_R()}}
 }
 \author{
-Anne Cori \email{a.cori@imperial.ac.uk}
+Anne Cori
 }
