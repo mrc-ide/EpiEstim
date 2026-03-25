@@ -1,4 +1,4 @@
-
+data(Flu2009)
 
 test_that(
   "wallinga_teunis() outputs the right errors/warnings",
@@ -44,6 +44,31 @@ test_that(
     )
 
   }
+)
+
+
+
+
+test_that("wallinga_teunis(): results have the right shape/format", {
+
+  i <- flat_incid <- rep(10, 100)
+  res <- wallinga_teunis(
+    i,
+    method = "non_parametric_si",
+    config = list(t_start = 2:100, t_end = 2:100,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50)
+  )
+  
+  expect_equal(class(res), "wallinga_teunis")
+  expect_true(is.list(res))
+  exp_names <- c("R", "method", "si_distr", "SI.Moments", "dates", "I", "I_local", 
+                 "I_imported")
+  expect_identical(names(res), exp_names)
+  expect_identical(dim(res$R), c(99L, 6L))
+  
+}
 )
 
 
