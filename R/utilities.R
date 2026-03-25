@@ -122,7 +122,7 @@ process_I <- function(incid) {
 process_I_vector <- function(incid) {
   # incidence2 object
   if (inherits(incid, "incidence2")) {
-    I_col <- incidence2::get_count_variable_name(incid)
+    I_col <- incidence2::get_count_value_name(incid)
     date_col <- incidence2::get_date_index_name(incid)
     if ("group" %in% names(incid) && "local" %in% incid$group) {
       incid <- incid[[I_col]][incid$group == "local"]
