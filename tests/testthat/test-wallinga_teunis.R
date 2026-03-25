@@ -131,9 +131,52 @@ test_that("wallinga_teunis() gives expected results with increasing incidence", 
 
 
 
-
-
-## data("Flu2009")
+test_that(
+  "seed fixing in wallinga_teunis config works as expected", {
+    
+    # seed = 1 - acts as reference for this test
+    out1 <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
+                                                config = list(t_start = 2:26, t_end = 8:32,
+                                                              si_distr = Flu2009$si_distr, 
+                                                              n_sim = 50,
+                                                              seed = 1))
+    
+    # same seed
+    out2<- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
+                            config = list(t_start = 2:26, t_end = 8:32,
+                                          si_distr = Flu2009$si_distr, 
+                                          n_sim = 50,
+                                          seed = 1))
+    
+    # different seed
+    out3 <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
+                            config = list(t_start = 2:26, t_end = 8:32,
+                                          si_distr = Flu2009$si_distr, 
+                                          n_sim = 50,
+                                          seed = 2))
+    # no seed
+    out4 <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
+                            config = list(t_start = 2:26, t_end = 8:32,
+                                          si_distr = Flu2009$si_distr, 
+                                          n_sim = 50,
+                                          seed = 2))
+    
+    # same seed should produce same R estimates
+    expect_equal(out1$R, out2$R)
+    
+    # different seed should produce same mean R estimates but different 
+    # uncertainty
+    expect_equal(out1$R$`Mean(R)`, out3$R$`Mean(R)`)
+    expect_true(any(out1$R$`Quantile.0.025(R)` != out3$R$`Quantile.0.025(R)`))
+    expect_true(any(out1$R$`Quantile.0.975(R)` != out3$R$`Quantile.0.975(R)`))
+    
+    # not fixing the seed should produce same mean R estimates but different 
+    # uncertainty
+    expect_equal(out1$R$`Mean(R)`, out4$R$`Mean(R)`)
+    expect_true(any(out1$R$`Quantile.0.025(R)` != out4$R$`Quantile.0.025(R)`))
+    expect_true(any(out1$R$`Quantile.0.975(R)` != out4$R$`Quantile.0.975(R)`))
+     }
+)
 
 ## test_that("Example 1 matches saved output", {
 ##   out <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",

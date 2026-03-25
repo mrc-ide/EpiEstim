@@ -34,6 +34,7 @@
 #' - `n_sim`: A positive integer giving the number of simulated epidemic trees
 #'   used for computation of the confidence intervals of the case reproduction
 #'   number (see details).
+#' - `seed`: A random seed used to enable full reproducibility
 #'
 #' @return a list with components:
 #' - `R`: a dataframe containing: the times of start and end of each time window
@@ -100,7 +101,8 @@
 #'    method = "non_parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  si_distr = Flu2009$si_distr,
-#'                  n_sim = 100))
+#'                  n_sim = 100,
+#'                  seed = 1))
 #' plot(res)
 #' ## the second plot produced shows, at each each day,
 #' ## the estimate of the case reproduction number over the 7-day window
@@ -186,6 +188,14 @@ wallinga_teunis <- function(incid,
   if (is.null(config$n_sim)) {
     config$n_sim <- 10
     warning("setting config$n_sim to 10 as config$n_sim was not specified. ")
+  }
+  ## setting the seed
+  if (!is.null(config$seed)) {
+    if(!is.numeric(config$seed)){
+      stop("config$seed must be a numeric.")
+    } else {
+      set.seed(config$seed)
+    }
   }
   
   if (method == "non_parametric_si") {
