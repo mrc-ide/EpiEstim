@@ -89,7 +89,7 @@ There are three other optional parameters that can be modified, however, we reco
 
 - `grid` is a list of "precision", "min", and "max" values to define a grid of growth rate parameters used inside the EM algorithm. The grid is used to convert reproduction number estimates for each aggregation of incidence data into growth rates, which are then used to reconstruct the daily incidence data assuming exponential growth. The grid will auto-adjust if it is not large enough, so we recommend using the default values.
 
-The SI distibution can be specified as as either using the `method` and `config` parameters (see the full_EpiEstim_vignette for more details).
+The SI distibution can be specified as normal using the `method` and `config` parameters (see the full_EpiEstim_vignette for more details).
 
 
 <div style="margin-top:30px;">
