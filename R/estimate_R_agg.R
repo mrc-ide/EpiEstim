@@ -8,16 +8,13 @@
 #' containing the incidence time series; these can be aggregated at any time
 #' unit as specified by argument \code{dt}}
 #'
-#' \item{A dataframe of non-negative integers with either i) \code{incid$I}
-#' containing the total incidence, or ii) two columns, so that
-#' \code{incid$local} contains the incidence of cases due to local transmission
-#' and \code{incid$imported} contains the incidence of imported cases (with
-#' \code{incid$local + incid$imported} the total incidence). If the dataframe
+#' \item{A dataframe of non-negative integers with \code{incid$I}
+#' containing the total incidence. If the dataframe
 #' contains a column \code{incid$dates}, this is used for plotting.
 #' \code{incid$dates} must contains only dates in a row.}
 #'
 #' \item{An object of class \code{\link{incidence}}}
-#'
+#' \item{An object of class \code{\link{incidence2}}}
 #' }
 #'
 #' Note that the cases from the first time step are always all assumed to be
