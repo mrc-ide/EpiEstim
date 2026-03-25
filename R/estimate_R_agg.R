@@ -248,6 +248,8 @@ estimate_R_agg <- function(incid,
                            method = c("non_parametric_si", "parametric_si"),
                            grid = list(precision = 0.001, min = -1, max = 1)){ 
   
+  method <- match.arg(method)
+  
   if (!is.integer(dt)) {
     stop ("dt must be an integer or a vector of integers e.g. dt = 7L, dt = c(2L,2L,3L)")
   }
@@ -290,7 +292,6 @@ estimate_R_agg <- function(incid,
   # EM algorithm). These use a fixed window length matched to dt (aggregation window)
   # 'config_out' for the final estimated R using sliding windows (supplied by user)
   
-  method <- match.arg(method)
   config <- process_config(config)
   check_config(config, method)
   config_out <- config 
