@@ -126,7 +126,7 @@ wallinga_teunis <- function(incid, ...) {
 #' @export
 wallinga_teunis.default <- function(incid, ...) {
   msg <- sprintf(
-    "No `project()` method for oject of the class: %s",
+    "No `project()` method for object of the class: %s",
     paste(class(incid), collapse = ", ")
     )
   stop(msg)
@@ -413,7 +413,7 @@ wallinga_teunis.incidence <- function(incid,
     incid <- incidence::pool(incid)
   }
 
-  x <- as.numeric(rowSums(incidence::get_counts(I_inc)))
+  x <- as.numeric(rowSums(incidence::get_counts(incid)))
 
   ## dispatch to numeric method; we re-add dates at the end
   out <- wallinga_teunis(
@@ -422,7 +422,7 @@ wallinga_teunis.incidence <- function(incid,
     config = config
   )
 
-  out$dates <- get_dates(incid)
+  out$dates <- incidence::get_dates(incid)
   out
 }
 
