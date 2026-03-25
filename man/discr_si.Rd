@@ -59,5 +59,5 @@ reproduction numbers during epidemics (AJE 2013).
 \code{\link[=overall_infectivity]{overall_infectivity()}}, \code{\link[=estimate_R]{estimate_R()}}
 }
 \author{
-Anne Cori \email{a.cori@imperial.ac.uk}
+Anne Cori
 }
