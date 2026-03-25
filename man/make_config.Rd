@@ -53,7 +53,8 @@ details).
 \item \code{si_distr}: For method "non_parametric_si"; vector of probabilities giving
 the discrete distribution of the serial interval, starting with
 \code{si_distr[1]} (probability that the serial interval is zero), which should
-be zero.
+be zero. Note that EpiEstim assumes that the serial interval is always
+strictly positive.
 \item \code{si_parametric_distr}: For method "si_from_data"; the parametric
 distribution to use when estimating the serial interval from data on dates
 of symptoms of pairs of infector/infected individuals (see details). Should
