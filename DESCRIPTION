@@ -38,6 +38,7 @@ Imports:
     fitdistrplus,
     coda,
     incidence (>= 1.7.0),
+    incidence2,
     scales,
     grDevices,
     abind,

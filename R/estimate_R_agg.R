@@ -1,7 +1,21 @@
 
 #' Estimate instantaneous reproduction number from coarsely aggregated data
 #'
-#' @param incid aggregated incidence data, supplied as a vector
+#' @param incid Aggregated incidence data, supplied as one of the following
+#' \itemize{
+#'
+#' \item{A vector (or a dataframe with a single column) of non-negative integers
+#' containing the incidence time series; these can be aggregated at any time
+#' unit as specified by argument \code{dt}}
+#'
+#' \item{A dataframe of non-negative integers with \code{incid$I}
+#' containing the total incidence. If the dataframe
+#' contains a column \code{incid$dates}, this is used for plotting.
+#' \code{incid$dates} must contains only dates in a row.}
+#'
+#' \item{An object of class \code{\link{incidence}}}
+#' \item{An object of class \code{\link{incidence2}}}
+#' }
 #' 
 #' @param dt length of temporal aggregations of the incidence data. This should 
 #' be an integer or vector of integers. If a vector, this will be recycled. For 
