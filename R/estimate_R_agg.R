@@ -263,20 +263,23 @@ estimate_R_agg <- function(incid,
   if (iter < 2L) {
     stop ("iter must be at least 2L")
   }
-  if (!is.list(grid) || !length(grid) == 3){
-    stop ("grid must be a list of 3 elements: precision, min, and max")
+  if (!is.numeric(grid$precision) || !is.numeric(grid$min) || !is.numeric(grid$max)){
+    stop ("grid precision, min, and max, must all be numeric")
   }
   if (grid$max < grid$min){
     stop ("grid max must be larger than grid min")
   }
+  if (!is.list(grid) || !length(grid) == 3){
+    stop ("grid must be a list of 3 elements: precision, min, and max")
+  }
   if (grid$precision > grid$max-grid$min){
     stop ("grid precision must be less than grid max - grid min")
   }
-  if (!is.numeric(grid$precision) || !is.numeric(grid$min) || !is.numeric(grid$max)){
-    stop ("grid precision, min, and max, must all be numeric")
+  if (method == "parametric_si" && (is.null(config$mean_si) || is.null(config$std_si))) {
+    stop ("'config$mean_si' and 'config$std_si' must be specified when using method 'parametric_si'")
   }
-  if (!method == "parametric_si" && !method == "non_parametric_si"){
-    stop ("'arg' should be one of 'non_parametric_si' and 'parametric_si'")
+  if (method == "non_parametric_si" && is.null(config$si_distr)) {
+    stop ("'config$si_distr' must be specified when using method 'non_parametric_si'")
   }
   if (!recon_opt == "naive" && !recon_opt == "match"){
     stop ("'recon_opt' should be one of 'naive' and 'match'")
@@ -290,7 +293,7 @@ estimate_R_agg <- function(incid,
   # EM algorithm). These use a fixed window length matched to dt (aggregation window)
   # 'config_out' for the final estimated R using sliding windows (supplied by user)
   
-  method <- match.arg(method) # potentially add an error message but maybe automatic
+  method <- match.arg(method)
   config <- process_config(config)
   check_config(config, method)
   config_out <- config 
