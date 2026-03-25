@@ -212,14 +212,16 @@ the linelist if you have data for infector-infected pairs.</p>
 <p><strong>Serial interval from the literature:</strong></p>
 <p>If a disease has been well characterised, then you have the option to
 use estimates of the serial interval that can be found in the
-literature. You can either supply the mean and standard deviation
-(parametric distribution) or the full distribution (non-parametric
-distribution). See examples A and B in the Examples section.</p>
+literature. Note that EpiEstim assumes the serial interval is strictly
+positive. You can either supply the mean and standard deviation
+(parametric distribution) of the serial interval, or its full
+distribution (non-parametric distribution). See examples A and B in the
+Examples section.</p>
 <p><strong>Serial interval from infector-infected pairs:</strong></p>
-<p>This feature was recently incorporated into EpiEstim by Thompson et
-al 2019. If you have data for infector-infected pairs of cases you can
-estimate the serial interval distribution directly from your own data
-and account for its uncertainty.</p>
+<p>This feature was incorporated into EpiEstim by Thompson et al 2019.
+If you have data for infector-infected pairs of cases you can estimate
+the serial interval distribution directly from your own data and account
+for its uncertainty.</p>
 <div style="margin-top:20px;">
 <div style="margin-bottom:20px;">
 <p><img src="figs/Serial_interval_with_uncertainty.png" class="r-plt" alt="" width="90%"></p>

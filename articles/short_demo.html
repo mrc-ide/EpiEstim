@@ -177,10 +177,12 @@ distribution of the serial interval.</p>
 <p>For i), the default behavior is to estimate R over weekly sliding
 windows. This can be changed through the <code>config$t_start</code> and
 <code>config$t_end</code> arguments (see below, “Changing the time
-windows for estimation”). For ii), there are several options, specified
-in the <code>method</code> argument.</p>
-<p>The simplest is the <code>parametric_si</code> method, where you only
-specify the mean and standard deviation of the SI.</p>
+windows for estimation”).</p>
+<p>For ii), there are several options, specified in the
+<code>method</code> argument. All options assume that the serial
+interval is strictly positive. The simplest option is the
+<code>parametric_si</code> method, where you only specify the mean and
+standard deviation of the SI.</p>
 </div>
 <div class="section level2">
 <h2 id="estimating-r-on-sliding-weekly-windows-with-a-parametric-serial-interval">Estimating R on sliding weekly windows, with a parametric serial
@@ -188,9 +190,9 @@ interval<a class="anchor" aria-label="anchor" href="#estimating-r-on-sliding-wee
 </h2>
 <p>In this example, we only specify the mean and standard deviation of
 the serial interval. In that case an offset gamma distribution is used
-for the serial interval. In the following example, we use the mean and
-standard deviation of the serial interval for flu from Ferguson et al.,
-Nature, 2005:</p>
+for the serial interval (the offset ensuring the serial interval is
+&gt;0). In the following example, we use the mean and standard deviation
+of the serial interval for flu from Ferguson et al., Nature, 2005:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_parametric_si</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span>
 <span>                                method<span class="op">=</span><span class="st">"parametric_si"</span>,</span>
@@ -251,7 +253,9 @@ time window) and the discrete distribution of the serial interval.</p>
 </h2>
 <p>If one already has a full distribution of the serial interval, and
 not only a mean and standard deviation, this can be fed into
-<code>estimate_r</code> as follows:</p>
+<code>estimate_r</code> as demonstrated below. Note that the serial
+interval distribution provided must have a probability mass of zero for
+the first time step, ensuring the SI is &gt;0.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_non_parametric_si</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_R.html">estimate_R</a></span><span class="op">(</span><span class="va">Flu2009</span><span class="op">$</span><span class="va">incidence</span>, </span>
 <span>                                    method<span class="op">=</span><span class="st">"non_parametric_si"</span>,</span>
@@ -260,14 +264,20 @@ not only a mean and standard deviation, this can be fed into
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span></span>
 <span><span class="co">#&gt;     To change this change the t_start and t_end arguments.</span></span>
-<span><span class="co"># si_distr gives the probability mass function of the serial interval for </span></span>
+<span><span class="co"># si_distr gives the probability mass function (PMF) of the serial interval for </span></span>
 <span><span class="co"># time intervals 0, 1, 2, etc.</span></span>
+<span><span class="co"># the first value of the PMF must be zero, ensuring the SI is &gt;0.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res_non_parametric_si</span>, <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="figs-demo/estimate_r_non_parametric_si-1.png" class="r-plt" alt="" width="576"></p>
 <p>Note that you can obtain such a full distribution of the serial
 interval using <code>discr_si</code> function (this is how
-<code>Flu2009$si_distr</code> was obtained, with additional
-rounding):</p>
+<code>Flu2009$si_distr</code> was obtained, with additional rounding).
+The discretisation method implemented in <code>discr_si</code> is
+documented in the supplementary material of Cori et al. AJE 2013. It
+assumes a Gamma distributed serial interval, and accounts for the fact
+that the serial interval is double-censored, i.e.  the time of symptom
+onset in both the primary and secondary cases are discrete (typically
+with a daily interval).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/discr_si.html">discr_si</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span>, mu <span class="op">=</span> <span class="fl">2.6</span>, sigma <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] 0.000000e+00 2.331721e-01 3.585794e-01 1.981108e-01 1.033427e-01</span></span>
