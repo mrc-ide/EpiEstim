@@ -140,19 +140,21 @@
 #' \eqn{\mu} and standard deviation \eqn{\sigma} of the serial interval to vary
 #' according to truncated normal distributions. We sample `n1` pairs of mean and
 #' standard deviations,
-#' \eqn{(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_2)},\sigma^{(n_2)})}, by first
+#' \eqn{(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_1)},\sigma^{(n_1)})}, by 
+#' independently
 #' sampling the mean \eqn{\mu^{(k)}} from its truncated normal distribution
 #' (with mean `mean_si`, standard deviation `std_mean_si`, minimum `min_mean_si`
-#' and maximum `max_mean_si`), and then sampling the standard deviation
+#' and maximum `max_mean_si`), and the standard deviation
 #' \eqn{\sigma^{(k)}} from its truncated normal distribution (with mean
 #' `std_si`, standard deviation `std_std_si`, minimum `min_std_si` and maximum
-#' `max_std_si`), but imposing that \eqn{\sigma^{(k)}<\mu^{(k)}}. This
-#' constraint ensures that the Gamma probability density function of the serial
-#' interval is null at \eqn{t=0}. Warnings are produced when the truncated
+#' `max_std_si`). Warnings are produced when the truncated
 #' normal distributions are not symmetric around the mean. For each pair
 #' \eqn{(\mu^{(k)},\sigma^{(k)})}, we then draw a sample of size `n2` in the
 #' posterior distribution of the reproduction number over each time window,
-#' conditionally on this serial interval distribution. After pooling, a sample
+#' conditionally on this parametric serial interval distribution (using the 
+#' `discr_si` function to generate the corresponding serial interval probability
+#' mass function). 
+#' After pooling across the `n1` serial interval distributions, a sample
 #' of size \eqn{`n1` \times `n2`} of the joint posterior distribution of the
 #' reproduction number over each time window is obtained. The posterior mean,
 #' standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles
