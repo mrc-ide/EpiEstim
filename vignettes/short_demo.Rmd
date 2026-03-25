@@ -448,7 +448,6 @@ This feature is new to `EpiEstim` and described in a manuscript in preparation
 
 ## EpiEstimApp
 
-We have a shiny app in development which integrates all the features presented 
-above. You can follow its developments here: 
-[https://github.com/jstockwin/EpiEstimApp](https://github.com/jstockwin/EpiEstimApp)
-Please note the app is still in development!
+We have a shiny app which integrates some of the core features presented 
+above 
+[https://github.com/jstockwin/EpiEstimApp](https://github.com/jstockwin/EpiEstimApp). Please note the app does not have all features from the R package. 
