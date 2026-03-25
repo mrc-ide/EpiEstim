@@ -578,9 +578,6 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
     t_min <- compute_t_min(incid, si_distr)
   }
   
-  if (!identical(priors, default_priors())) {
-    warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
-  }
 
   T <- nrow(incid)
   n_loc <- ncol(incid)
@@ -768,70 +765,68 @@ process_I_multivariant <- function(incid, incid_imported = NULL) {
 }
 
 
+check_incidence <- function(incid) {
+}
 
-
-check_mvepiestim_inputs <- function(incid, si_distr, priors, mcmc_control, t_min, t_max, seed) {
-  if (!is.integer(t_min) || !is.integer(t_max)) {
-    stop("t_min and t_max must be integers")
-  }
-  if (t_min < 2 || t_max < 2) {
-    stop("t_min and t_max must be >=2")
-  }
-  if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
-  }
-  if (any(si_distr[1,] != 0)){
+check_si_distr <- function(si_distr) {
+  if (any(si_distr[1, ] != 0)) {
     stop("Values in the first row of si_distr must be 0")
   }
   if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
     stop("The sum of each column in si_distr should be equal to 1")
   }
-  if (any(si_distr < 0)){
+  if (any(si_distr < 0)) {
     stop("si_distr must be >=0")
   }
-  if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)){
+}
+
+check_priors <- function(priors) {
+
+  if (!identical(priors, default_priors())) {
+    warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
+  }
+
+}
+
+check_mcmc_control <- function(mcmc_control) {
+
+  if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)) {
     stop("n_iter in mcmc_control must be a positive integer")
   }
-  if (mcmc_control$burnin < 0 || !is.integer(mcmc_control$burnin)){
+  if (mcmc_control$burnin < 0 || !is.integer(mcmc_control$burnin)) {
     stop("burnin in mcmc_control must be a positive integer")
   }
-  if (mcmc_control$thin < 0 || !is.integer(mcmc_control$thin)){
+  if (mcmc_control$thin < 0 || !is.integer(mcmc_control$thin)) {
     stop("thin in mcmc_control must be a positive integer")
   }
-  if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
+  if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin) {
     stop("In mcmc_control, n_iter must be greater than burnin + thin")
   }
+
+}
+
+check_t_min_t_max <- function(t_min, t_max, incid) {
+    if (!is.integer(t_min) || !is.integer(t_max)) {
+      stop("t_min and t_max must be integers")
+    }
+    if (t_min < 2 || t_max < 2) {
+      stop("t_min and t_max must be >=2")
+    }
+    if (t_min > nrow(incid) || t_max > nrow(incid)) {
+      stop("t_min and t_max must be <= nrow(incid)")
+    }
+    if (t_min > t_max) {
+      stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
+    }
+}
+
+
+
+check_mvepiestim_inputs <- function(incid, si_distr, priors, mcmc_control, t_min, t_max, seed) {
   if (!is.null(seed) && !is.numeric(seed)){
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
-
-  if (t_min > t_max) {
-    stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
-  }
-    if (any(si_distr[1, ] != 0)) {
-      stop("Values in the first row of si_distr must be 0")
-    }
-    if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
-      stop("The sum of each column in si_distr should be equal to 1")
-    }
-    if (any(si_distr < 0)) {
-      stop("si_distr must be >=0")
-    }
-  if (!is.integer(t_min) || !is.integer(t_max)) {
-    stop("t_min and t_max must be integers")
-  }
-  if (t_min < 2 || t_max < 2) {
-    stop("t_min and t_max must be >=2")
-  }
-  if (t_min > nrow(incid) || t_max > nrow(incid)) {
-    stop("t_min and t_max must be <= nrow(incid)")
-  }
-  if (!is.null(seed) && !is.numeric(seed)) {
-    stop("seed must be numeric")
-  }
-
-
 }
 
 
