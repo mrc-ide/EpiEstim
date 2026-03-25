@@ -17,32 +17,39 @@ wallinga_teunis(incid, ...)
 \method{wallinga_teunis}{numeric}(
   incid,
   method = c("non_parametric_si", "parametric_si"),
-  config
+  config,
+  ...
 )
 
 \method{wallinga_teunis}{integer}(
   incid,
   method = c("non_parametric_si", "parametric_si"),
-  config
+  config,
+  ...
 )
 
 \method{wallinga_teunis}{data.frame}(
   incid,
   count = 1L,
   method = c("non_parametric_si", "parametric_si"),
-  config
+  config,
+  ...
 )
 
 \method{wallinga_teunis}{incidence}(
   incid,
   method = c("non_parametric_si", "parametric_si"),
-  config
+  config,
+  quiet = FALSE,
+  ...
 )
 
 \method{wallinga_teunis}{incidence2}(
   incid,
   method = c("non_parametric_si", "parametric_si"),
-  config
+  config,
+  quiet = FALSE,
+  ...
 )
 }
 \arguments{
@@ -54,6 +61,8 @@ wallinga_teunis(incid, ...)
 column \code{dates}, this is used for plotting
 \item an \code{incidence} object as returned by \code{\link[incidence:incidence]{incidence::incidence()}}
 }}
+
+\item{...}{further arguments to be passed to methods.}
 
 \item{method}{the method used to estimate R, one of "non_parametric_si",
 "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
@@ -85,6 +94,9 @@ number (see details).
 \item{count}{An \code{integer} or \code{character} indicating the column of the
 \code{data.frame} containing counts; defaults to 1L, i.e. the first column is
 assumed to contain counts}
+
+\item{quiet}{A \code{logical} indicating if warnings should be issued when
+relevant. Defaults to \code{FALSE}.}
 }
 \value{
 a list with components:
@@ -170,5 +182,6 @@ similar impacts of control measures (AJE 2004).
 \code{\link[=discr_si]{discr_si()}}, \code{\link[=estimate_R]{estimate_R()}}
 }
 \author{
-Anne Cori \email{a.cori@imperial.ac.uk}
+Anne Cori \email{a.cori@imperial.ac.uk}; generic and methods by
+Thibaut Jombart
 }

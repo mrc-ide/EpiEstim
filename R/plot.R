@@ -117,7 +117,8 @@
 #'
 #' ## estimate the instantaneous reproduction number
 #' ## (method "non_parametric_si")
-#' R_c <- wallinga_teunis(Flu2009$incidence,
+#' R_c <- wallinga_teunis(
+#'   Flu2009$incidence, "I"
 #'   method = "non_parametric_si",
 #'   config = list(
 #'     t_start = seq(2, 26),

@@ -35,6 +35,8 @@
 #'   used for computation of the confidence intervals of the case reproduction
 #'   number (see details).
 #'
+#' @param ... further arguments to be passed to methods.
+#'
 #' @return a list with components:
 #' - `R`: a dataframe containing: the times of start and end of each time window
 #'   considered; the estimated mean, std, and 0.025 and 0.975 quantiles of the
@@ -77,7 +79,8 @@
 #'
 #' @seealso [discr_si()], [estimate_R()]
 #'
-#' @author Anne Cori \email{a.cori@imperial.ac.uk}
+#' @author Anne Cori \email{a.cori@imperial.ac.uk}; generic and methods by
+#'   Thibaut Jombart
 #' 
 #' @references 
 #' Cori, A. et al. A new framework and software to estimate time-varying
@@ -138,7 +141,8 @@ wallinga_teunis.default <- function(incid, ...) {
 #' @export
 wallinga_teunis.numeric <- function(incid,
                                     method = c("non_parametric_si", "parametric_si"),
-                                    config) {
+                                    config,
+                                    ...) {
   
   draw_one_set_of_ancestries <- function() {
     out <- vector()
@@ -353,7 +357,8 @@ wallinga_teunis.numeric <- function(incid,
 #' @export
 wallinga_teunis.integer <- function(incid,
                                     method = c("non_parametric_si", "parametric_si"),
-                                    config) {
+                                    config,
+                                    ...) {
   ## We dispatch to the `numeric` method
   wallinga_teunis(
     as.numeric(incid),
@@ -375,7 +380,8 @@ wallinga_teunis.integer <- function(incid,
 wallinga_teunis.data.frame <- function(incid,
                                        count = 1L,
                                        method = c("non_parametric_si", "parametric_si"),
-                                       config) {
+                                       config,
+                                       ...) {
   x <- incid[[count]]
   out <- wallinga_teunis(
     x,
@@ -393,9 +399,13 @@ wallinga_teunis.data.frame <- function(incid,
 
 #' @rdname wallinga_teunis
 #' @export
+#' @param quiet A `logical` indicating if warnings should be issued when
+#'   relevant. Defaults to `FALSE`.
 wallinga_teunis.incidence <- function(incid,
                                       method = c("non_parametric_si", "parametric_si"),
-                                      config) {
+                                      config,
+                                      quiet = FALSE,
+                                      ...) {
 
   ## checks specific to incidence objects
   if (as.integer(mean(incidence::get_interval(incid))) != 1L) {
@@ -434,7 +444,9 @@ wallinga_teunis.incidence <- function(incid,
 #' @export
 wallinga_teunis.incidence2 <- function(incid,
                                        method = c("non_parametric_si", "parametric_si"),
-                                       config) {
+                                       config,
+                                       quiet = FALSE,
+                                       ...) {
 
   ## checks specific to incidence2 objects
   dates <- incidence2::get_dates(incid)
