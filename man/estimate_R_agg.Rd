@@ -241,5 +241,5 @@ growth rates and reproductive numbers (Proc Biol Sci 2007).
 \code{\link[=estimate_R]{estimate_R()}} for details of the core function
 }
 \author{
-Rebecca Nash \email{r.nash@imperial.ac.uk} and Anne Cori \email{a.cori@imperial.ac.uk}
+Rebecca Nash and Anne Cori
 }
