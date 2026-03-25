@@ -677,3 +677,9 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
     return(plot)
   }
 }
+
+
+
+#' @rdname plot.estimate_R
+#' @export
+plot.wallinga_teunis <- plot.estimate_R
