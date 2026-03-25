@@ -39,6 +39,8 @@ Daily incidence data is reconstructed from aggregated data using an expectation-
 
 The daily incidence that is reconstructed after the final iteration of the EM algorithm is then used to estimate R~t~ using the same process as the original `estimate_R()` function, with sliding weekly time windows used as the default.
 
+Note that we do not support the distinction between local and imported cases when using temporally aggregated incidence as we assume that this level of data would not be available.
+
 **Aggregation windows**
 
 Aggregation windows can be specified using the parameter `dt`, and can be provided in one of three ways:
@@ -87,7 +89,7 @@ There are three other optional parameters that can be modified, however, we reco
 
 - `grid` is a list of "precision", "min", and "max" values to define a grid of growth rate parameters used inside the EM algorithm. The grid is used to convert reproduction number estimates for each aggregation of incidence data into growth rates, which are then used to reconstruct the daily incidence data assuming exponential growth. The grid will auto-adjust if it is not large enough, so we recommend using the default values.
 
-The SI distibution can be specified as normal using the `method` and `config` parameters (see the full_EpiEstim_vignette for more details).
+The SI distibution can be specified as as either using the `method` and `config` parameters (see the full_EpiEstim_vignette for more details).
 
 
 <div style="margin-top:30px;">
