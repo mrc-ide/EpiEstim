@@ -2,6 +2,11 @@
 
 S3method(plot,estimate_R)
 S3method(plot,wallinga_teunis)
+S3method(wallinga_teunis,data.frame)
+S3method(wallinga_teunis,default)
+S3method(wallinga_teunis,incidence)
+S3method(wallinga_teunis,integer)
+S3method(wallinga_teunis,numeric)
 export(DiscrSI)
 export(EstimateR)
 export(OverallInfectivity)

@@ -133,6 +133,41 @@ test_that("wallinga_teunis() gives expected results with increasing incidence", 
 
 
 
+test_that("wallinga_teunis() works with data.frame inputs", {
+
+  ## We test that results are the same as with a numeric vector with identical
+  ## incidence, and also that dates are preserved
+  i <- rpois(100, lambda = exp(0.0523 * 1:100))
+  df <- data.frame(incid = i, dates = Sys.Date() + 1:100)
+
+  set.seed(1)
+  res_i <- wallinga_teunis(
+    i,
+    method = "non_parametric_si",
+    config = list(t_start = 10, t_end = 90,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50)
+  )
+  set.seed(1)
+  res_df <- wallinga_teunis(
+    df,
+    method = "non_parametric_si",
+    config = list(t_start = 10, t_end = 90,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50)
+  )
+
+  expect_equal(res_i$R, res_df$R)
+  expect_equal(res_df$dates, df$dates)
+})
+
+
+
+
+
+
 ## data("Flu2009")
 
 ## test_that("Example 1 matches saved output", {

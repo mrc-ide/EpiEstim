@@ -2,22 +2,49 @@
 % Please edit documentation in R/wallinga_teunis.R
 \name{wallinga_teunis}
 \alias{wallinga_teunis}
+\alias{wallinga_teunis.default}
+\alias{wallinga_teunis.numeric}
+\alias{wallinga_teunis.integer}
+\alias{wallinga_teunis.data.frame}
+\alias{wallinga_teunis.incidence}
 \title{Estimate case reproduction number using the Wallinga and Teunis method}
 \usage{
-wallinga_teunis(
+wallinga_teunis(incid, ...)
+
+\method{wallinga_teunis}{default}(incid, ...)
+
+\method{wallinga_teunis}{numeric}(
+  incid,
+  method = c("non_parametric_si", "parametric_si"),
+  config
+)
+
+\method{wallinga_teunis}{integer}(
+  incid,
+  method = c("non_parametric_si", "parametric_si"),
+  config
+)
+
+\method{wallinga_teunis}{data.frame}(
+  incid,
+  method = c("non_parametric_si", "parametric_si"),
+  config
+)
+
+\method{wallinga_teunis}{incidence}(
   incid,
   method = c("non_parametric_si", "parametric_si"),
   config
 )
 }
 \arguments{
-\item{incid}{One of the following:
+\item{incid}{An incidence time series provided as:
 \itemize{
-\item Vector (or a dataframe with a column named \code{incid}) of non-negative
-integers containing an incidence time series. If the dataframe contains a
-column \code{dates}, this is used for plotting. \code{incid$dates} must contains only
-dates in a row.
-\item An object of class \code{\link[incidence:incidence]{incidence::incidence()}}
+\item a non-negative \code{integer} vector
+\item a non-negative \code{numeric} vector
+\item a \code{data.frame} with a column named \code{incid}; if the dataframe contains a
+column \code{dates}, this is used for plotting
+\item an \code{incidence} object as returned by \code{\link[incidence:incidence]{incidence::incidence()}}
 }}
 
 \item{method}{the method used to estimate R, one of "non_parametric_si",
