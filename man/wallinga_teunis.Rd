@@ -7,6 +7,7 @@
 \alias{wallinga_teunis.integer}
 \alias{wallinga_teunis.data.frame}
 \alias{wallinga_teunis.incidence}
+\alias{wallinga_teunis.incidence2}
 \title{Estimate case reproduction number using the Wallinga and Teunis method}
 \usage{
 wallinga_teunis(incid, ...)
@@ -27,11 +28,18 @@ wallinga_teunis(incid, ...)
 
 \method{wallinga_teunis}{data.frame}(
   incid,
+  count = 1L,
   method = c("non_parametric_si", "parametric_si"),
   config
 )
 
 \method{wallinga_teunis}{incidence}(
+  incid,
+  method = c("non_parametric_si", "parametric_si"),
+  config
+)
+
+\method{wallinga_teunis}{incidence2}(
   incid,
   method = c("non_parametric_si", "parametric_si"),
   config
@@ -73,6 +81,10 @@ be zero.
 used for computation of the confidence intervals of the case reproduction
 number (see details).
 }}
+
+\item{count}{An \code{integer} or \code{character} indicating the column of the
+\code{data.frame} containing counts; defaults to 1L, i.e. the first column is
+assumed to contain counts}
 }
 \value{
 a list with components:

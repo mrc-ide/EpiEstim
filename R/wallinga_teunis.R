@@ -426,3 +426,48 @@ wallinga_teunis.incidence <- function(incid,
   out
 }
 
+
+
+
+
+#' @rdname wallinga_teunis
+#' @export
+wallinga_teunis.incidence2 <- function(incid,
+                                       method = c("non_parametric_si", "parametric_si"),
+                                       config) {
+
+  ## checks specific to incidence2 objects
+  dates <- incidence2::get_dates(incid)
+  ## interval <- grates::get_n(dates)
+  ## TODO: restore this test once incidence2::get_interval is back
+  ## if (interval != 1L) {
+  ##   msg <- sprintf(
+  ##     "daily incidence needed, but interval is %d days",
+  ##     interval
+  ##   )
+  ##   stop(msg)
+  ## }
+
+  has_groups <- length(incidence2::get_groups(incid))
+  if (has_groups) {
+    msg <- sprintf("stratification in incidence2 object will be ignored")
+    if (!quiet) warning(msg)
+    incid <- incidence2::regroup(incid)
+  }
+
+
+  ## We extract the data we need from the incidence object and use the
+  ## project.numeric method.
+  x <- as.numeric(as.vector(incidence2::get_count_value(incid)))
+
+  ## dispatch to numeric method; we re-add dates at the end
+  out <- wallinga_teunis(
+    x,
+    method = method,
+    config = config
+  )
+
+  out$dates <- incidence2::get_dates(incid)
+  out
+}
+
