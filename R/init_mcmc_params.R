@@ -10,17 +10,25 @@
 #' @param si_data data on dates of symptoms of pairs of infector/infected
 #'   individuals to be used to estimate the serial interval distribution. This
 #'   should be a dataframe with 5 columns: 
-#' - `EL`: the lower bound of the symptom onset date of the infector (given as an integer)
-#' - `ER`: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that `ER >= EL`. If the dates are known exactly use `ER = EL`
-#' - `SL`: the lower bound of the symptom onset date of the infected individual (given as an integer)
-#' - `SR`: the upper bound of the symptom onset date of the infected individual (given as an integer). Should be such that `SR >= SL`. If the dates are known exactly use `SR = SL`
-#' - `type` (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates
-#'
-#' @param dist parametric distribution to use for the serial interval. 
-#'   Should be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G"
-#'   (Gamma shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
-#'   shifted by 1).
-#'
+#'   \itemize{ 
+#'   \item{EL: the lower bound
+#'   of the symptom onset date of the infector (given as an integer)} 
+#'   \item{ER:
+#'   the upper bound of the symptom onset date of the infector (given as an
+#'   integer). Should be such that ER>=EL. If the dates are known exactly use
+#'   ER = EL} 
+#'   \item{SL: the lower bound of the
+#'   symptom onset date of the infected individual (given as an integer)} 
+#'   \item{SR: the upper bound of the symptom onset date of the infected
+#'   individual (given as an integer). Should be such that SR>=SL. If the dates 
+#'   are known exactly use SR = SL} 
+#'   \item{type
+#'   (optional): can have entries 0, 1, or 2, corresponding to doubly
+#'   interval-censored, single interval-censored or exact observations, 
+#'   respectively, see Reich et al. Statist. Med. 2009. If not specified, this
+#'   will be automatically computed from the dates} 
+#'   }
+#' @inheritParams coarse2estim
 #' @return A vector containing the initial values for the two parameters of the
 #'   distribution of the serial interval. These are the shape and scale for all
 #'   but the lognormal distribution, for which it is the meanlog and sdlog.
@@ -41,7 +49,7 @@
 #' 
 #' ## get clever initial values for shape and scale of a Gamma distribution
 #' ## fitted to the the data MockRotavirus$si_data
-#' clever_init_param <- init_mcmc_params(MockRotavirus$si_data, "G")
+#' clever_init_param <- init_mcmc_params(MockRotavirus$si_data, "gamma")
 #' 
 #' ## estimate the serial interval from data using a clever starting point for 
 #' ## the MCMC chain
@@ -65,15 +73,19 @@
 #' converg_diag_clever
 #' converg_diag_naive
 #' }
-
-init_mcmc_params <- function(si_data, 
-                             dist = c("G", "W", "L", "off1G", 
-                                      "off1W", "off1L")) {
-  dist <- match.arg(dist)
+init_mcmc_params <- function(si_data, dist) {
+  
+  rtn <- si_from_data_valid_distrs(dist)
+  if (!rtn$is_dist_valid) {
+    stop("The supported distributions are 'gamma', 'weibull',
+           'lognormal', 'gamma_offset_1' (Gamma shifted by 1),
+           'weibull_offset_1' (Weibull shifted by 1),
+           or 'lognormal_offset_1' (Lognormal shifted by 1). ")
+  }
   naive_SI_obs <- (si_data$SR + si_data$SL) / 2 - (si_data$ER + si_data$EL) / 2
   mu <- mean(naive_SI_obs)
   sigma <- sd(naive_SI_obs)
-  if (dist == "G") {
+  if (dist == "gamma"| dist == "G") {
     shape <- (mu / sigma)^2
     scale <- sigma^2 / mu
     # check this is what we want
@@ -81,7 +93,7 @@ init_mcmc_params <- function(si_data,
     # mean(tmp)
     # sd(tmp)
     param <- c(shape, scale)
-  } else if (dist == "W") {
+  } else if (dist == "weibull"| dist == "W") {
     fit.w <- fitdist(naive_SI_obs + 0.1, "weibull") 
     ## using +0.1 to avoid issues with zero
     shape <- fit.w$estimate["shape"]
@@ -91,7 +103,7 @@ init_mcmc_params <- function(si_data,
     # mean(tmp)
     # sd(tmp)
     param <- c(shape, scale)
-  } else if (dist == "L") {
+  } else if (dist == "lognormal"| dist == "L") {
     sdlog <- sqrt(log(sigma^2 / (mu^2) + 1))
     meanlog <- log(mu) - sdlog^2 / 2
     # check this is what we want
@@ -99,7 +111,7 @@ init_mcmc_params <- function(si_data,
     # mean(tmp)
     # sd(tmp)
     param <- c(meanlog, sdlog)
-  } else if (dist == "off1G") {
+  } else if (dist == "gamma_offset_1"| dist == "off1G") {
     shape <- ((mu - 1) / sigma)^2
     if (shape <= 0) shape <- 0.001 
     ## this is to avoid issues when the mean SI is <1
@@ -109,7 +121,7 @@ init_mcmc_params <- function(si_data,
     # mean(tmp)
     # sd(tmp)
     param <- c(shape, scale)
-  } else if (dist == "off1W") {
+  } else if (dist == "weibull_offset_1"| dist == "off1W") {
     fit.w <- fitdist(naive_SI_obs - 1 + 0.1, "weibull") 
     ## using +0.1 to avoid issues with zero
     shape <- fit.w$estimate["shape"]
@@ -119,7 +131,7 @@ init_mcmc_params <- function(si_data,
     # mean(tmp)
     # sd(tmp)
     param <- c(shape, scale)
-  } else if (dist == "off1L") {
+  } else if (dist == "lognormal_offset_1"| dist == "off1L") {
     sdlog <- sqrt(log(sigma^2 / ((mu - 1)^2) + 1))
     meanlog <- log(mu - 1) - sdlog^2 / 2
     # check this is what we want
@@ -127,9 +139,8 @@ init_mcmc_params <- function(si_data,
     # mean(tmp)
     # sd(tmp)
     param <- c(meanlog, sdlog)
-  } else {
-    stop(sprintf("Distribtion (%s) not supported", dist))
   }
+  
   if (anyNA(param)) {
     stop("NA result. Check that si_data is in the right format. ")
   }

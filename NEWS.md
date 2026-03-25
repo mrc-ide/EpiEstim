@@ -1,3 +1,7 @@
+# EpiEstim 2.5.1
+
+* The distribution names valid when using si_from_data option in estimate_R have been edited to be descriptive and self-explanatory.
+
 # EpiEstim 2.5
 
 * Implemented back-imputation procedure described in (Brizzi, O'Driscoll and 
@@ -10,6 +14,7 @@
   to 0 no backimputation will be performed. 0 is the default value guaranteeing
   compatibility with previous versions of the package. 
 * added vignette `vignettes/EpiEstim_backimputation.Rmd` and `tests/testthat/test-backimpute.R`.
+
 
 # EpiEstim 2.4
 
