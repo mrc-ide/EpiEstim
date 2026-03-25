@@ -352,6 +352,21 @@ estimate_R <- function(incid,
                        grid = list(precision = 0.001, min = -1, max = 1),
                        backimputation_window = 0
                        ) {
+  
+  if (is.data.frame(incid) && "dates" %in% names(incid)) {
+    if (!all(diff(incid$dates) > 0)) {
+      stop("dates in incid must be in ascending order")
+    }
+  } else if (inherits(incid, "incidence")) {
+    if (!all(diff(incid$dates) > 0)) {
+      stop("dates in incid must be in ascending order")
+    }
+  } else if (inherits(incid, "incidence2")) {
+    dates <- unique(incid[[incidence2::get_date_index_name(incid)]])
+    if (!all(diff(dates) > 0)) {
+      stop("dates in incid must be in ascending order")
+    }
+  }
 
   method <- match.arg(method)
 
