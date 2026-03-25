@@ -96,7 +96,6 @@
                         <h4 data-toc-skip class="author">Rebecca
 Nash</h4>
             
-            <h4 data-toc-skip class="date">2026-03-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/main/vignettes/EpiEstim_aggregated_data.Rmd" class="external-link"><code>vignettes/EpiEstim_aggregated_data.Rmd</code></a></small>
       <div class="hidden name"><code>EpiEstim_aggregated_data.Rmd</code></div>
@@ -156,6 +155,9 @@ and maximisation steps repeat iteratively until convergence.</li>
 of the EM algorithm is then used to estimate R<sub>t</sub> using the
 same process as the original <code><a href="../reference/estimate_R.html">estimate_R()</a></code> function, with
 sliding weekly time windows used as the default.</p>
+<p>Note that we do not support the distinction between local and
+imported cases when using temporally aggregated incidence as we assume
+that this level of data would not be available.</p>
 <p><strong>Aggregation windows</strong></p>
 <p>Aggregation windows can be specified using the parameter
 <code>dt</code>, and can be provided in one of three ways:</p>
@@ -300,32 +302,32 @@ window, and SI distribution, we can supply these to the
 daily incidence data:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">output</span><span class="op">$</span><span class="va">I</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 3 3 3 3 3 3</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.7429645 1.0820885 1.5760047 2.2953675 3.3430814 4.8690213</span></span></code></pre></div>
 <p>And the R<sub>t</sub> estimates (in this case, using the default
 weekly sliding windows):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">output</span><span class="op">$</span><span class="va">R</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   t_start t_end  Mean(R)    Std(R) Quantile.0.025(R) Quantile.0.05(R)</span></span>
-<span><span class="co">#&gt; 1       8    14 5.472053 0.3517569          4.804283         4.906602</span></span>
-<span><span class="co">#&gt; 2       9    15 4.940857 0.2770256          4.412755         4.494190</span></span>
-<span><span class="co">#&gt; 3      10    16 4.440229 0.2176621          4.023813         4.088375</span></span>
-<span><span class="co">#&gt; 4      11    17 4.095384 0.1758868          3.757861         3.810433</span></span>
-<span><span class="co">#&gt; 5      12    18 3.865754 0.1457340          3.585360         3.629207</span></span>
-<span><span class="co">#&gt; 6      13    19 3.708135 0.1229331          3.471074         3.508271</span></span>
+<span><span class="co">#&gt; 1       8    14 5.009506 0.3220232          4.398181         4.491852</span></span>
+<span><span class="co">#&gt; 2       9    15 4.582393 0.2573535          4.091815         4.167459</span></span>
+<span><span class="co">#&gt; 3      10    16 4.211267 0.2070000          3.815276         3.876664</span></span>
+<span><span class="co">#&gt; 4      11    17 3.953807 0.1703587          3.626916         3.677826</span></span>
+<span><span class="co">#&gt; 5      12    18 3.780193 0.1429754          3.505123         3.548134</span></span>
+<span><span class="co">#&gt; 6      13    19 3.660329 0.1216857          3.425684         3.462500</span></span>
 <span><span class="co">#&gt;   Quantile.0.25(R) Median(R) Quantile.0.75(R) Quantile.0.95(R)</span></span>
-<span><span class="co">#&gt; 1         5.230868  5.464518         5.705025         6.063209</span></span>
-<span><span class="co">#&gt; 2         4.751292  4.935681         5.124780         5.405182</span></span>
-<span><span class="co">#&gt; 3         4.291544  4.436673         4.585038         4.804214</span></span>
-<span><span class="co">#&gt; 4         3.975417  4.092866         4.212605         4.388922</span></span>
-<span><span class="co">#&gt; 5         3.766486  3.863923         3.963027         4.108548</span></span>
-<span><span class="co">#&gt; 6         3.624494  3.706777         3.790295         3.912632</span></span>
+<span><span class="co">#&gt; 1         4.788708  5.002607         5.222784         5.550692</span></span>
+<span><span class="co">#&gt; 2         4.406285  4.577576         4.753250         5.013758</span></span>
+<span><span class="co">#&gt; 3         4.069861  4.207876         4.348977         4.557437</span></span>
+<span><span class="co">#&gt; 4         3.837607  3.951360         4.067340         4.238132</span></span>
+<span><span class="co">#&gt; 5         3.682800  3.778391         3.875621         4.018400</span></span>
+<span><span class="co">#&gt; 6         3.577535  3.658981         3.741654         3.862758</span></span>
 <span><span class="co">#&gt;   Quantile.0.975(R)</span></span>
-<span><span class="co">#&gt; 1          6.182645</span></span>
-<span><span class="co">#&gt; 2          5.498376</span></span>
-<span><span class="co">#&gt; 3          4.876853</span></span>
-<span><span class="co">#&gt; 4          4.447213</span></span>
-<span><span class="co">#&gt; 5          4.156555</span></span>
-<span><span class="co">#&gt; 6          3.952916</span></span></code></pre></div>
+<span><span class="co">#&gt; 1          5.660032</span></span>
+<span><span class="co">#&gt; 2          5.100343</span></span>
+<span><span class="co">#&gt; 3          4.626529</span></span>
+<span><span class="co">#&gt; 4          4.294601</span></span>
+<span><span class="co">#&gt; 5          4.065506</span></span>
+<span><span class="co">#&gt; 6          3.902637</span></span></code></pre></div>
 <p>In this example, you will notice that R<sub>t</sub> estimation does
 not start until day 8. This is because the daily incidence data cannot
 be reconstructed, and R<sub>t</sub> estimation cannot start, until the
