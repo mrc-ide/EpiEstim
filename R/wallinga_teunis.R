@@ -52,9 +52,12 @@
 #'
 #' @details Estimates of the case reproduction number for an epidemic over
 #' predefined time windows can be obtained, for a given discrete distribution of
-#' the serial interval, as proposed by Wallinga and Teunis (AJE, 2004).
+#' the serial interval, as described by Wallinga and Teunis (AJE, 2004).
 #' Confidence intervals are obtained by simulating a number (`config$n_sim`) of
 #' possible transmission trees (only done if `config$n_sim > 0`).
+#' Note the method implemented here is as described in Wallinga and Teunis 
+#' (AJE, 2004), and in particular does not implement additional features such as
+#' correcting for right censoring as proposed by Cauchemez et al. (AJE 2006).
 #'
 #' ## Methods
 #' 
@@ -192,12 +195,10 @@ wallinga_teunis <- function(incid,
   
   if (method == "parametric_si") {
     if (is.null(config$mean_si)) {
-      stop("method non_parametric_si requires to specify the config$mean_si
-           argument.")
+      stop("method non_parametric_si requires to specify the config$mean_si argument.")
     }
     if (is.null(config$std_si)) {
-      stop("method non_parametric_si requires to specify the config$std_si
-           argument.")
+      stop("method non_parametric_si requires to specify the config$std_si argument.")
     }
     if (config$mean_si < 1) {
       stop("method parametric_si requires a value >1 for config$mean_si.")
@@ -329,6 +330,6 @@ wallinga_teunis <- function(incid,
   results$I_local[1] <- 0
   results$I_imported <- c(incid[1], rep(0, length(incid) - 1))
   
-  class(results) <- "estimate_R"
+  class(results) <- "wallinga_teunis"
   return(results)
 }
