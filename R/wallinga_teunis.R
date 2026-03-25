@@ -192,12 +192,10 @@ wallinga_teunis <- function(incid,
   
   if (method == "parametric_si") {
     if (is.null(config$mean_si)) {
-      stop("method non_parametric_si requires to specify the config$mean_si
-           argument.")
+      stop("method non_parametric_si requires to specify the config$mean_si argument.")
     }
     if (is.null(config$std_si)) {
-      stop("method non_parametric_si requires to specify the config$std_si
-           argument.")
+      stop("method non_parametric_si requires to specify the config$std_si argument.")
     }
     if (config$mean_si < 1) {
       stop("method parametric_si requires a value >1 for config$mean_si.")
@@ -329,6 +327,6 @@ wallinga_teunis <- function(incid,
   results$I_local[1] <- 0
   results$I_imported <- c(incid[1], rep(0, length(incid) - 1))
   
-  class(results) <- "estimate_R"
+  class(results) <- "wallinga_teunis"
   return(results)
 }
