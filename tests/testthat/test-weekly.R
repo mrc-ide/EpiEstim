@@ -732,7 +732,9 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
                                              method = method))
   
   # dataframe with I column
-  weekly_inc_df <- data.frame(I = weekly_inc)
+  weekly_inc_df <- data.frame(I = weekly_inc,
+                              dates = seq(as.Date("2020-01-01"), by = "week",
+                                          length.out = length(weekly_inc)))
   res_df <- suppressWarnings(estimate_R(incid = weekly_inc_df,
                                         dt = 7L,
                                         dt_out = 7L,
@@ -754,7 +756,7 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
   expect_equal(res_int$R, res_df$R)
   expect_equal(res_int$R, res_inc_obj$R)
   
-  # grouped incidence object
+  # grouped incidence2 object
   data <- data.frame(
     local = c(3, weekly_inc[2:length(weekly_inc)]),
     imported = c(1, rep(0, length(weekly_inc) -1)),
@@ -779,6 +781,18 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
   
   relative_error <- na.omit(relative_error)
   expect_true(all(relative_error < 0.1))
+  
+  ## check it works with incidence2 without naming
+  inc_obj_group2 <- incidence2::incidence(data_long, date_index = "dates",
+                                         counts = "I", groups = "group")
+  res_grouped_obj2 <- suppressWarnings(estimate_R(incid = inc_obj_group2,
+                                                 dt = 7L,
+                                                 dt_out = 7L,
+                                                 iter = 10L,
+                                                 config = config,
+                                                 method = method))
+  
+  expect_equal(res_grouped_obj$R, res_grouped_obj2$R)
   
 })
 
