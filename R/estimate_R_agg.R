@@ -383,18 +383,18 @@ estimate_R_agg <- function(incid,
       incid_to_reconstruct <- incid[aggs_to_reconstruct]
       
       # Translate R to growth rate
-      get_r_from_R <- function(R, gt_mean, gt_sd, 
-                               gt_distr,
+      get_r_from_R <- function(R, si_mean, si_sd, 
+                               si_distr,
                                grid) {
         r_grid <- seq(grid$min, grid$max, grid$precision)
-        if (is.null(gt_distr)) {
-          gt_pars <- gamma_mucv2shapescale(mu = gt_mean, cv = gt_sd / gt_mean)
-          gt_distr <- distcrete("gamma", interval = 1,
-                                           shape = gt_pars$shape,
-                                           scale = gt_pars$scale, w = 0.5)
+        if (is.null(si_distr)) {
+          si_pars <- gamma_mucv2shapescale(mu = si_mean, cv = si_sd / si_mean)
+          si_distr <- distcrete("gamma", interval = 1,
+                                           shape = si_pars$shape,
+                                           scale = si_pars$scale, w = 0.5)
         }
         # using a grid of r values translate that into R using r2R0
-        R_grid <- epitrix::r2R0(r = r_grid, w = gt_distr)
+        R_grid <- epitrix::r2R0(r = r_grid, w = si_distr)
         
         # find location of the value in the R grid which has the smallest 
         # difference to the input of R the user provided e.g. R_grid[idx_r]:
@@ -406,15 +406,15 @@ estimate_R_agg <- function(incid,
           if (grid$max > 0) grid$max <- grid_multiplier * grid$max else grid$max <- - grid$max
           if (grid$min < 0) grid$min <- grid_multiplier * grid$min else grid$min <- - grid$min
           r_grid <- seq(grid$min, grid$max, grid$precision)
-          R_grid <- r2R0(r = r_grid, w = gt_distr)
+          R_grid <- r2R0(r = r_grid, w = si_distr)
           idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L))
         }
         vapply(idx_r, function(e) r_grid[e], numeric(1L))
       }
       
       gr <- get_r_from_R(R = Mean_R, 
-                         gt_mean = config$mean_si, gt_sd = config$std_si, 
-                         gt_distr = config$si_distr,
+                         si_mean = config$mean_si, si_sd = config$std_si, 
+                         si_distr = config$si_distr,
                          grid = grid)
       
       # Assume the growth rates match to reconstruct preceding aggregation window:
@@ -516,8 +516,8 @@ estimate_R_agg <- function(incid,
       
       # Translate R to growth rate again
       gr <- get_r_from_R(R = Mean_R, 
-                         gt_mean = config$mean_si, gt_sd = config$std_si, 
-                         gt_distr = config$si_distr,
+                         si_mean = config$mean_si, si_sd = config$std_si, 
+                         si_distr = config$si_distr,
                          grid = grid)
       
       if (recon_opt == "match"){
