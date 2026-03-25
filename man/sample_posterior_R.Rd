@@ -2,31 +2,28 @@
 % Please edit documentation in R/sample_posterior_R.R
 \name{sample_posterior_R}
 \alias{sample_posterior_R}
-\title{sample from the posterior R distribution}
+\title{Sample from the posterior R distribution}
 \usage{
 sample_posterior_R(R, n = 1000, window = 1L)
 }
 \arguments{
-\item{R}{an \code{estimate_R} object from the estimate_r function
-function.}
+\item{R}{an \code{estimate_R} object from the \code{\link[=estimate_R]{estimate_R()}} function.}
 
 \item{n}{an integer specifying the number of samples to be taken from the
 gamma distribution.}
 
-\item{window}{an integer (or sequence of integers) specifying the window(s) 
+\item{window}{an integer (or sequence of integers) specifying the window(s)
 from which to estimate R. Defaults to the first window. If multiple windows
-are specified, the resulting samples will be drawn from several 
+are specified, the resulting samples will be drawn from several
 distributions.}
 }
 \value{
 n values of R from the posterior R distribution
 }
 \description{
-sample from the posterior R distribution
+Sample from the posterior R distribution
 }
 \examples{
-
-
 ## load data on pandemic flu in a school in 2009
 data("Flu2009")
 

@@ -13,6 +13,7 @@ reference:
     - first_nonzero_incid
     - get_shape_R_flat
     - get_shape_epsilon
+    - si_from_data_valid_distrs
   - title: Estimation
     contents:
     - estimate_R

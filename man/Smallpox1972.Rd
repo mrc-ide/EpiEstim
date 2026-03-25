@@ -7,13 +7,13 @@
 \format{
 A list of two elements:
 \itemize{
-\item \strong{incidence:} a vector containing 57 days of observation,
-\item \strong{si_distr:} a vector containing a set of 46 probabilities.
+\item \strong{incidence}: a vector containing 57 days of observation,
+\item \strong{si_distr}: a vector containing a set of 46 probabilities.
 }
 }
 \source{
-Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World
-Health Organization.
+Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World Health
+Organization.
 }
 \description{
 This data set gives:
@@ -35,6 +35,7 @@ res <- estimate_R(Smallpox1972$incidence, method="non_parametric_si",
                       t_start = seq(27, 51), 
                       t_end = seq(33, 57),
                       si_distr = Smallpox1972$si_distr)))
+
 plot(res)
 ## the second plot produced shows, at each each day,
 ## the estimate of the reproduction number
