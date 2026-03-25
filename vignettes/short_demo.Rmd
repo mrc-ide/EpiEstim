@@ -76,16 +76,18 @@ serial interval.
 For i), the default behavior is to estimate R over weekly sliding windows. 
 This can be changed through the `config$t_start` and `config$t_end` arguments 
 (see below, "Changing the time windows for estimation"). 
-For ii), there are several options, specified in the `method` argument. 
 
-The simplest is the `parametric_si` method, where you only specify the mean and
-standard deviation of the SI. 
+For ii), there are several options, specified in the `method` argument. All 
+options assume that the serial interval is strictly positive. 
+The simplest option is the `parametric_si` method, where you only specify the 
+mean and standard deviation of the SI. 
 
 ## Estimating R on sliding weekly windows, with a parametric serial interval
 
 In this example, we only specify the mean and standard deviation of the serial
 interval. In that case an offset gamma distribution is used for the serial 
-interval. In the following example, we use the mean and standard deviation of the serial 
+interval (the offset ensuring the serial interval is >0). 
+In the following example, we use the mean and standard deviation of the serial 
 interval for flu from Ferguson et al., Nature, 2005:
 
 ```{r estimate_r_parametric_si}
@@ -119,7 +121,9 @@ distribution of the serial interval.
 ## Estimating R with a non parametric serial interval distribution
 
 If one already has a full distribution of the serial interval, and not only a 
-mean and standard deviation, this can be fed into `estimate_r` as follows: 
+mean and standard deviation, this can be fed into `estimate_r` as demonstrated
+below. Note that the serial interval distribution provided must have a 
+probability mass of zero for the first time step, ensuring the SI is >0. 
 
 ```{r estimate_r_non_parametric_si}
 res_non_parametric_si <- estimate_R(Flu2009$incidence, 
@@ -127,14 +131,20 @@ res_non_parametric_si <- estimate_R(Flu2009$incidence,
                                     config = make_config(list(
                                       si_distr = Flu2009$si_distr))
 )
-# si_distr gives the probability mass function of the serial interval for 
+# si_distr gives the probability mass function (PMF) of the serial interval for 
 # time intervals 0, 1, 2, etc.
+# the first value of the PMF must be zero, ensuring the SI is >0.
 plot(res_non_parametric_si, "R")
 ```
 
 Note that you can obtain such a full distribution of the serial interval using 
 `discr_si` function (this is how `Flu2009$si_distr` was obtained, with 
-additional rounding): 
+additional rounding). The discretisation method implemented in `discr_si` is
+documented in the supplementary material of Cori et al. AJE 2013. It assumes
+a Gamma distributed serial interval, and accounts
+for the fact that the serial interval is double-censored, i.e. 
+the time of symptom onset in both the primary and secondary cases are
+discrete (typically with a daily interval). 
 
 ```{r discr_si}
 discr_si(0:20, mu = 2.6, sigma = 1.5)

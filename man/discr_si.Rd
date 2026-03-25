@@ -28,7 +28,7 @@ with shift 1.
 Assuming that the serial interval is a shifted Gamma distributed with mean
 \eqn{\mu}, standard deviation \eqn{\sigma} and shift \eqn{1},
 the discrete probability \eqn{w_k} that the serial interval is equal to
-\eqn{k} is:
+\eqn{k} is (see supplement of Cori et al. AJE 2013):
 
 \deqn{w_k = kF_{\{\mu-1,\sigma\}}(k)+(k-2)F_{\{\mu-1,\sigma\}}
 (k-2)-2(k-1)F_{\{\mu-1,\sigma\}}(k-1)\\
