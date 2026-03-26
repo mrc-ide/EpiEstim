@@ -24,9 +24,9 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.84096521"
-     inkscape:cx="740.81543"
-     inkscape:cy="419.75577"
+     inkscape:zoom="1.6819304"
+     inkscape:cx="1027.9855"
+     inkscape:cy="221.17443"
      inkscape:window-width="1920"
      inkscape:window-height="1123"
      inkscape:window-x="0"
@@ -728,7 +728,7 @@
          x="230.87236"
          y="31.562254">projections.fable</tspan></text>
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker11783)"
+       style="fill:none;fill-rule:evenodd;stroke:#6f907c;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:0.5411765;marker-end:url(#marker11783)"
        d="M 222.43477,65.353028 229.408,36.702102"
        id="path11775"
        inkscape:connector-type="polyline"
