@@ -37,6 +37,7 @@ Imports:
     coda,
     scales,
     abind,
+    reshape2,
     epitrix,
     patchwork (>= 1.2.0)
 Suggests:
