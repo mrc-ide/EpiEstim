@@ -160,6 +160,7 @@ test_that("wallinga_teunis() works with data.frame inputs", {
 
   expect_equal(res_i$R, res_df$R)
   expect_equal(res_df$dates, df$dates)
+  expect_equal(res_df$I, res_i$I)
 
 })
 
@@ -195,6 +196,7 @@ test_that("wallinga_teunis() works with incidence inputs", {
 
   expect_equal(res_incid$R, res_df$R)
   expect_equal(res_df$dates, df$dates)
+  expect_equal(res_incid$I, res_df$I)
 
 }
 )
@@ -233,6 +235,7 @@ test_that("wallinga_teunis() works with incidence2 inputs", {
 
   expect_equal(res_incid$R, res_df$R)
   expect_equal(res_incid$dates, res_df$dates)
+  expect_equal(res_incid$I, res_df$I)
 
 }
 )
@@ -245,7 +248,7 @@ test_that(
   "seed fixing in wallinga_teunis config works as expected", {
     
     # seed = 1 - acts as reference for this test
-    out1 <- wallinga_teunis(Flu2009$incidence, "I",
+    out1 <- wallinga_teunis(Flu2009$incidence,
                             method = "non_parametric_si",
                             config = list(t_start = 2:26, t_end = 8:32,
                                           si_distr = Flu2009$si_distr, 
@@ -253,7 +256,7 @@ test_that(
                                           seed = 1))
     
     # same seed
-    out2 <- wallinga_teunis(Flu2009$incidence,  "I",
+    out2 <- wallinga_teunis(Flu2009$incidence,
                             method = "non_parametric_si",
                             config = list(t_start = 2:26, t_end = 8:32,
                                           si_distr = Flu2009$si_distr, 
@@ -261,14 +264,14 @@ test_that(
                                           seed = 1))
     
     # different seed
-    out3 <- wallinga_teunis(Flu2009$incidence,  "I",
+    out3 <- wallinga_teunis(Flu2009$incidence,
                             method = "non_parametric_si",
                             config = list(t_start = 2:26, t_end = 8:32,
                                           si_distr = Flu2009$si_distr, 
                                           n_sim = 50,
                                           seed = 2))
     # no seed
-    out4 <- wallinga_teunis(Flu2009$incidence,  "I",
+    out4 <- wallinga_teunis(Flu2009$incidence,
                             method = "non_parametric_si",
                             config = list(t_start = 2:26, t_end = 8:32,
                                           si_distr = Flu2009$si_distr, 
