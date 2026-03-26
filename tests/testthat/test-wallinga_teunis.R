@@ -140,7 +140,6 @@ test_that("wallinga_teunis() works with data.frame inputs", {
   i <- rpois(100, lambda = exp(0.0523 * 1:100))
   df <- data.frame(incid = i, dates = Sys.Date() + 1:100)
 
-  set.seed(1)
   res_i <- wallinga_teunis(
     i,
     method = "non_parametric_si",
@@ -149,7 +148,6 @@ test_that("wallinga_teunis() works with data.frame inputs", {
                   seed = 1, 
                   n_sim = 50)
   )
-  set.seed(1)
   res_df <- wallinga_teunis(
     df,
     method = "non_parametric_si",
@@ -178,7 +176,6 @@ test_that("wallinga_teunis() works with incidence inputs", {
   incid <- incidence::incidence(onset)
   df <- as.data.frame(incid)
 
-  set.seed(1)
   res_incid <- wallinga_teunis(
     incid,
     method = "non_parametric_si",
@@ -187,7 +184,6 @@ test_that("wallinga_teunis() works with incidence inputs", {
                   seed = 1, 
                   n_sim = 50)
   )
-  set.seed(1)
   res_df <- wallinga_teunis(
     df, "counts",
     method = "non_parametric_si",
@@ -217,7 +213,6 @@ test_that("wallinga_teunis() works with incidence2 inputs", {
   df <- as.data.frame(incid)
   names(df)[1] <- "dates" 
 
-  set.seed(1)
   res_incid <- wallinga_teunis(
     incid,
     method = "non_parametric_si",
