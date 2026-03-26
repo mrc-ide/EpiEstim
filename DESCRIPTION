@@ -39,7 +39,8 @@ Imports:
     abind,
     reshape2,
     epitrix,
-    patchwork (>= 1.2.0)
+    patchwork (>= 1.2.0),
+    rlang
 Suggests:
     testthat,
     utils,
