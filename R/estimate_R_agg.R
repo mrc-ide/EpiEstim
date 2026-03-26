@@ -256,11 +256,8 @@ estimate_R_agg <- function(incid,
   if (!is.integer(dt_out)) {
     stop ("dt_out must be an integer e.g. dt_out = 7L")
   }
-  if (!is.integer(iter)) {
-    stop ("iter must be an integer e.g. 10L")
-  }
-  if (iter < 2L) {
-    stop ("iter must be at least 2L")
+  if (!is.list(grid) || !length(grid) == 3){
+    stop ("grid must be a list of 3 elements: precision, min, and max")
   }
   if (!is.numeric(grid$precision) || !is.numeric(grid$min) || !is.numeric(grid$max)){
     stop ("grid precision, min, and max, must all be numeric")
@@ -268,11 +265,14 @@ estimate_R_agg <- function(incid,
   if (grid$max < grid$min){
     stop ("grid max must be larger than grid min")
   }
-  if (!is.list(grid) || !length(grid) == 3){
-    stop ("grid must be a list of 3 elements: precision, min, and max")
-  }
   if (grid$precision > grid$max-grid$min){
     stop ("grid precision must be less than grid max - grid min")
+  }
+  if (!is.integer(iter)) {
+    stop ("iter must be an integer e.g. 10L")
+  }
+  if (iter < 2L) {
+    stop ("iter must be at least 2L")
   }
   if (method == "parametric_si" && (is.null(config$mean_si) || is.null(config$std_si))) {
     stop ("'config$mean_si' and 'config$std_si' must be specified when using method 'parametric_si'")
