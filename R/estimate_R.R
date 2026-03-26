@@ -748,6 +748,12 @@ estimate_R_func <- function(incid,
     "Median(R)", "Quantile.0.75(R)", "Quantile.0.95(R)",
     "Quantile.0.975(R)"
   )
+
+  if (!is.null(incid$Date)) {
+    results$R$date_start <- incid$Date[config$t_start][non_na_rows]
+    results$R$date_end <- incid$Date[config$t_end][non_na_rows]
+  }
+  
   results$method <- method
   results$si_distr <- config$si_distr
   if (is.matrix(results$si_distr)) {
