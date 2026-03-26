@@ -33,7 +33,7 @@ containing the total incidence, or ii) two columns, so that
 and \code{incid$imported} contains the incidence of imported cases (with
 \code{incid$local + incid$imported} the total incidence). If the dataframe
 contains a column \code{incid$dates}, this is used for plotting.
-\code{incid$dates} must contains only dates in a row.}
+\code{incid$dates} must contains only consecutive dates.}
 
 \item{An object of class \code{\link{incidence}}}
 
