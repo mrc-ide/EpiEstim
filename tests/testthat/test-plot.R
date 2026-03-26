@@ -10,14 +10,15 @@ R_i <- estimate_R(Flu2009$incidence,
                                )
                  )
 
-R_c <- wallinga_teunis(Flu2009$incidence, 
-                      method = "non_parametric_si",
-                      config = list(t_start = seq(2, 26), 
-                                    t_end = seq(8, 32), 
-                                    si_distr = Flu2009$si_distr,
-                                    n_sim = 10L
-                                   )
-                     )
+R_c <- wallinga_teunis(
+  Flu2009$incidence,
+  method = "non_parametric_si",
+  config = list(t_start = seq(2, 26), 
+                t_end = seq(8, 32), 
+                si_distr = Flu2009$si_distr,
+                n_sim = 10L
+                )
+)
 
 test_that("plot.estimate_R doesn't have to include the legend", {
   skip("vdiffr tests not working - see #106")

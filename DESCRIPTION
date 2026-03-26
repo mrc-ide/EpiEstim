@@ -1,5 +1,5 @@
 Package: EpiEstim
-Version: 2.5.2
+Version: 3.0.0
 Title: Estimate Time Varying Reproduction Numbers from Epidemic Curves
 Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-8443-9162")), 
   person("Simon", "Cauchemez", role = "ctb"),
@@ -32,13 +32,13 @@ Imports:
     coarseDataTools (>= 0.6-4),
     stats,
     graphics,
+    incidence (>= 1.7.0),
+    incidence2 (>= 2.6.4.9000),
     reshape2,
     ggplot2,
     gridExtra,
     fitdistrplus,
     coda,
-    incidence (>= 1.7.0),
-    incidence2,
     scales,
     grDevices,
     abind,
@@ -64,3 +64,4 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
+Remotes: reconverse/incidence2/pkg

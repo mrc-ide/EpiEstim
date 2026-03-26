@@ -552,6 +552,7 @@ test_that("estimate_advantage produces expected results (2var, 4loc, imports)", 
 
 
 test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 1.1, R_loc2 = 1.5)", {
+  skip_if_not_installed("projections")
   n_v <- 2 # 2 variants
   n_loc <- 2 # 2 locations
   T <- 100 # 100 time steps

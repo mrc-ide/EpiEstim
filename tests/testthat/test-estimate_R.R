@@ -1,5 +1,15 @@
 data("Flu2009")
 
+test_that("There is an informative error if dates are not ascending", {
+  inc_shuffled_dates <- Flu2009$incidence[sample(nrow(Flu2009$incidence)), ]
+  expect_error(estimate_R(inc_shuffled_dates, method = "non_parametric_si",
+                          config = list(t_start = 2:26, t_end = 8:32,
+                                        si_distr = Flu2009$si_distr, 
+                                        seed = 1)),
+               "dates in incid must be in ascending order")
+})
+
+
 # The following examples are from EpiEstim's documentation.
 # set.seed(1)
 
