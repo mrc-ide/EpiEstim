@@ -94,7 +94,6 @@
 #' 
 #' @export
 #' 
-#' @import reshape2 gridExtra
 #' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon
 #'   geom_line xlab ylab xlim geom_hline ylim geom_histogram
 #' 

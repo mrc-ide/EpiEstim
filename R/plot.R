@@ -76,8 +76,6 @@
 #' @author Rolina van Gaalen and Anne Cori; S3 method by Thibaut Jombart; v2
 #'  theme by Rebecca Nash
 #'
-#' @import reshape2 grid gridExtra
-#'
 #' @importFrom scales alpha
 #'
 #' @importFrom grDevices palette
@@ -139,7 +137,8 @@
 #' p_Rc <- plot(R_c, "R",
 #'              options_R = list(ylim = c(0, 4)))
 #' # plots the estimated case reproduction number
-#' gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
+#' library(patchwork) # For figure placement
+#' (p_I + p_SI) / (p_Ri + p_Rc)
 
 plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme = "v2",
                             add_imported_cases = FALSE,
@@ -342,7 +341,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           options_R$xlim <- c(min(dates), max(dates) + 1)
         }
 
-        df <- melt(data.frame(
+        df <- reshape2::melt(data.frame(
           start = dates[t_start] - 0.5, end = dates[t_end] + 0.5, meanR = mean_posterior,
           lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
@@ -412,7 +411,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           options_R$xlim <- c(min(dates), max(dates) + 1)
         }
 
-        df <- melt(df, id = id)
+        df <- reshape2::melt(df, id = id)
         df$group <- as.factor(rep(
           seq_len(length(t_start)),
           dim(df)[1] / length(t_start)
@@ -558,7 +557,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
 
       si_distr_for_plot <- si_distr[, seq_len(stop_at)]
 
-      dataL <- melt(t(si_distr_for_plot))
+      dataL <- reshape2::melt(t(si_distr_for_plot))
       dataL$Var1 <- seq(0, (ncol(si_distr_for_plot) - 1))
       p3 <- ggplot(dataL, aes_string(
         x = "Var1", y = "value",

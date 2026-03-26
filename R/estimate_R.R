@@ -303,9 +303,10 @@
 #'                           mean_si = mean(R_si_from_data$SI.Moments$Mean),
 #'                              std_si = mean(R_si_from_data$SI.Moments$Std))))
 #' ## generate plots
+#' library(patchwork) # To arrange side-by-side
 #' p_uncertainty <- plot(R_si_from_data, "R", options_R=list(ylim=c(0, 1.5)))
 #' p_no_uncertainty <- plot(R_Parametric, "R", options_R=list(ylim=c(0, 1.5)))
-#' gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
+#' p_uncertainty + p_no_uncertainty
 #'
 #' ## the left hand side graph is with uncertainty in the SI distribution, the
 #' ## right hand side without.
