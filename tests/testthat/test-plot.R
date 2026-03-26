@@ -12,7 +12,6 @@ R_i <- estimate_R(Flu2009$incidence,
 
 R_c <- wallinga_teunis(
   Flu2009$incidence,
-  "I",
   method = "non_parametric_si",
   config = list(t_start = seq(2, 26), 
                 t_end = seq(8, 32), 
