@@ -113,7 +113,8 @@ this CV.
 The methods vary in the way the serial interval distribution is specified.
 
 In short there are five methods to specify the serial interval distribution
-(see below for details on each method). In the first two methods, a unique
+(see below for details on each method). This is specified in the argument
+\code{method} of the \code{\link[=estimate_R]{estimate_R()}} function. In the first two methods, a unique
 serial interval distribution is considered, whereas in the last three, a
 range of serial interval distributions are integrated over:
 \itemize{
@@ -248,7 +249,6 @@ data("MockRotavirus")
 incid <- MockRotavirus$incidence
 method <- "si_from_data"
 config <- make_config(incid = incid,
-                     method = method,
                      list(si_parametric_distr = "G",
                      mcmc_control = make_mcmc_control(burnin = 1000,
                      thin = 10, seed = 1),

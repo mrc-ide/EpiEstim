@@ -99,7 +99,8 @@
 #' The methods vary in the way the serial interval distribution is specified.
 #'
 #' In short there are five methods to specify the serial interval distribution
-#' (see below for details on each method). In the first two methods, a unique
+#' (see below for details on each method). This is specified in the argument
+#' `method` of the [estimate_R()] function. In the first two methods, a unique
 #' serial interval distribution is considered, whereas in the last three, a
 #' range of serial interval distributions are integrated over:
 #' - "non_parametric_si": the user specifies the discrete distribution
@@ -231,7 +232,6 @@
 #' incid <- MockRotavirus$incidence
 #' method <- "si_from_data"
 #' config <- make_config(incid = incid,
-#'                      method = method,
 #'                      list(si_parametric_distr = "G",
 #'                      mcmc_control = make_mcmc_control(burnin = 1000,
 #'                      thin = 10, seed = 1),
@@ -265,6 +265,13 @@ make_config <- function(..., incid = NULL) {
   config <- list(...)
   if (length(config) == 1L && is.list(config[[1]])) {
     config <- config[[1]]
+  }
+  
+  # catch if user (wrongly) specifies method
+  if(!is.null(config$method)) {
+    msg <- paste("`method` should be specified as an argument to",
+                 "`estimate_R`, not `make_config`.")
+    stop(msg)
   }
 
   ## SET DEFAULTS
