@@ -171,10 +171,6 @@
 #' Reich, N.G. et al. Estimating incubation period distributions with coarse
 #' data (Statis. Med. 2009)
 #' 
-#' @importFrom coarseDataTools dic.fit.mcmc
-#' @importFrom coda as.mcmc.list as.mcmc
-#' @importFrom incidence incidence
-#' 
 #' @export
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
@@ -403,7 +399,7 @@ estimate_R <- function(incid,
     si_parametric_distr <- convert_distr_name_for_mcmc(config$si_parametric_distr)
     ## estimate serial interval from serial interval data first
     if (!is.null(config$mcmc_control$seed)) {
-      cdt <- dic.fit.mcmc(
+      cdt <- coarseDataTools::dic.fit.mcmc(
         dat = si_data,
         dist = si_parametric_distr,
         burnin = config$mcmc_control$burnin,
@@ -412,7 +408,7 @@ estimate_R <- function(incid,
         seed = config$mcmc_control$seed
       )
     } else {
-      cdt <- dic.fit.mcmc(
+      cdt <- coarseDataTools::dic.fit.mcmc(
         dat = si_data,
         dist = si_parametric_distr,
         burnin = config$mcmc_control$burnin,
@@ -470,10 +466,7 @@ estimate_R <- function(incid,
 #' Internal function
 #' 
 #' Doing the heavy work in estimate_R
-#' 
-#' @importFrom stats median qgamma quantile rnorm sd
 #'
-#' @importFrom incidence as.incidence
 #' @noRd
 
 estimate_R_func <- function(incid,
@@ -559,7 +552,7 @@ estimate_R_func <- function(incid,
     })
     sample_r_posterior <- vapply(seq_len(nb_time_periods), function(t)
       if (!is.na(a_posterior[t])) {
-        rgamma(sample_size,
+        stats::rgamma(sample_size,
                shape = unlist(a_posterior[t]),
                scale = unlist(b_posterior[t])
         )
@@ -627,14 +620,14 @@ estimate_R_func <- function(incid,
       for (k in seq_len(config$n1)) {
         while (mean_si_sample[k] < config$min_mean_si || mean_si_sample[k] >
                config$max_mean_si) {
-          mean_si_sample[k] <- rnorm(1,
+          mean_si_sample[k] <- stats::rnorm(1,
                                      mean = config$mean_si,
                                      sd = config$std_mean_si
           )
         }
         while (std_si_sample[k] < config$min_std_si || std_si_sample[k] >
                config$max_std_si) {
-          std_si_sample[k] <- rnorm(1, mean = config$std_si,
+          std_si_sample[k] <- stats::rnorm(1, mean = config$std_si,
                                     sd = config$std_std_si)
         }
       }
@@ -654,29 +647,29 @@ estimate_R_func <- function(incid,
                                                                                                                         mean_si_sample[k])]
       }
       mean_posterior <- colMeans(r_sample, na.rm = TRUE)
-      std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
-      quantile_0.025_posterior <- apply(r_sample, 2, quantile,
+      std_posterior <- apply(r_sample, 2, stats::sd, na.rm = TRUE)
+      quantile_0.025_posterior <- apply(r_sample, 2, stats::quantile,
                                         0.025,
                                         na.rm = TRUE
       )
-      quantile_0.05_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.05_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.05,
                                        na.rm = TRUE
       )
-      quantile_0.25_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.25_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.25,
                                        na.rm = TRUE
       )
-      median_posterior <- apply(r_sample, 2, median, na.rm = TRUE)
-      quantile_0.75_posterior <- apply(r_sample, 2, quantile,
+      median_posterior <- apply(r_sample, 2, stats::median, na.rm = TRUE)
+      quantile_0.75_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.75,
                                        na.rm = TRUE
       )
-      quantile_0.95_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.95_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.95,
                                        na.rm = TRUE
       )
-      quantile_0.975_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.975_posterior <- apply(r_sample, 2, stats::quantile,
                                         0.975,
                                         na.rm = TRUE
       )
@@ -708,29 +701,29 @@ estimate_R_func <- function(incid,
                                                                                                                        mean_si_sample[k])]
       }
       mean_posterior <- colMeans(r_sample, na.rm = TRUE)
-      std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
-      quantile_0.025_posterior <- apply(r_sample, 2, quantile,
+      std_posterior <- apply(r_sample, 2, stats::sd, na.rm = TRUE)
+      quantile_0.025_posterior <- apply(r_sample, 2, stats::quantile,
                                         0.025,
                                         na.rm = TRUE
       )
-      quantile_0.05_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.05_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.05,
                                        na.rm = TRUE
       )
-      quantile_0.25_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.25_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.25,
                                        na.rm = TRUE
       )
-      median_posterior <- apply(r_sample, 2, median, na.rm = TRUE)
-      quantile_0.75_posterior <- apply(r_sample, 2, quantile,
+      median_posterior <- apply(r_sample, 2, stats::median, na.rm = TRUE)
+      quantile_0.75_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.75,
                                        na.rm = TRUE
       )
-      quantile_0.95_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.95_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.95,
                                        na.rm = TRUE
       )
-      quantile_0.975_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.975_posterior <- apply(r_sample, 2, stats::quantile,
                                         0.975,
                                         na.rm = TRUE
       )
@@ -755,31 +748,31 @@ estimate_R_func <- function(incid,
     b_posterior <- unlist(post[[2]])
     mean_posterior <- a_posterior * b_posterior
     std_posterior <- sqrt(a_posterior) * b_posterior
-    quantile_0.025_posterior <- qgamma(0.025,
+    quantile_0.025_posterior <- stats::qgamma(0.025,
                                        shape = a_posterior,
                                        scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    quantile_0.05_posterior <- qgamma(0.05,
+    quantile_0.05_posterior <- stats::qgamma(0.05,
                                       shape = a_posterior,
                                       scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    quantile_0.25_posterior <- qgamma(0.25,
+    quantile_0.25_posterior <- stats::qgamma(0.25,
                                       shape = a_posterior,
                                       scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    median_posterior <- qgamma(0.5,
+    median_posterior <- stats::qgamma(0.5,
                                shape = a_posterior,
                                scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    quantile_0.75_posterior <- qgamma(0.75,
+    quantile_0.75_posterior <- stats::qgamma(0.75,
                                       shape = a_posterior,
                                       scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    quantile_0.95_posterior <- qgamma(0.95,
+    quantile_0.95_posterior <- stats::qgamma(0.95,
                                       shape = a_posterior,
                                       scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    quantile_0.975_posterior <- qgamma(0.975,
+    quantile_0.975_posterior <- stats::qgamma(0.975,
                                        shape = a_posterior,
                                        scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )

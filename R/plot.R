@@ -75,22 +75,12 @@
 #'
 #' @author Rolina van Gaalen and Anne Cori; S3 method by Thibaut Jombart; v2
 #'  theme by Rebecca Nash
-#'
-#' @importFrom scales alpha
-#'
-#' @importFrom grDevices palette
-#'
+#' 
 #' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle
 #'   geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
 #'   scale_colour_manual scale_fill_manual scale_linetype_manual lims theme
 #'   margin element_rect theme_light %+replace% element_blank element_line
-#'   element_text scale_y_continuous 
-#'
-#' @importFrom graphics plot
-#'
-#' @importFrom incidence as.incidence
-#'
-#' @importFrom patchwork plot_layout
+#'   element_text scale_y_continuous  
 #'
 #' @export
 #'
@@ -143,14 +133,14 @@
 plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme = "v2",
                             add_imported_cases = FALSE,
                             options_I = list(
-                              col = palette(), transp = 0.7,
+                              col = grDevices::palette(), transp = 0.7,
                               xlim = NULL, ylim = NULL,
                               interval = 1L,
                               xlab = "Time",
                               ylab = "Incidence"
                             ),
                             options_R = list(
-                              col = palette(), transp = 0.2,
+                              col = grDevices::palette(), transp = 0.2,
                               xlim = NULL, ylim = NULL,
                               xlab = "Time",
                               ylab = "R"
@@ -165,13 +155,13 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
                             legend = TRUE, ...) {
   ## dealing with the fact that some options may be left to default but others
   ## may have been specified by user
-  if (is.null(options_I$col)) options_I$col <- palette()
+  if (is.null(options_I$col)) options_I$col <- grDevices::palette()
   if (is.null(options_I$transp)) options_I$transp <- 0.7
   if (is.null(options_I$xlab)) options_I$xlab <- "Time"
   if (is.null(options_I$ylab)) options_I$ylab <- "Incidence"
   if (is.null(options_I$interval)) options_I$interval <- 1L
 
-  if (is.null(options_R$col)) options_R$col <- palette()
+  if (is.null(options_R$col)) options_R$col <- grDevices::palette()
   if (is.null(options_R$transp)) options_R$transp <- 0.2
   if (is.null(options_R$xlab)) options_R$xlab <- "Time"
   if (is.null(options_R$ylab)) options_R$ylab <- "R"
@@ -292,7 +282,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
   if (what %in% c("incid", "all")) {
     if (add_imported_cases) {
       p1 <- plot(
-        as.incidence(incid,
+        incidence::as.incidence(incid,
           dates = x$dates,
           interval = options_I$interval
         ),
@@ -303,7 +293,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
         ggtitle("Epidemic curve")
     } else {
       p1 <- plot(
-        as.incidence(rowSums(incid),
+        incidence::as.incidence(rowSums(incid),
           dates = x$dates,
           interval = options_I$interval
         ),
@@ -363,7 +353,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           xlim(options_R$xlim) +
           ylim(options_R$ylim) +
           scale_colour_manual("", values = options_R$col) +
-          scale_fill_manual("", values = alpha(
+          scale_fill_manual("", values = scales::alpha(
             options_R$col,
             options_R$transp
           )) +
@@ -448,7 +438,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           ylim(options_R$ylim) +
           scale_colour_manual("", values = options_R$col) +
           scale_fill_manual("",
-            values = alpha(options_R$col, options_R$transp)
+            values = scales::alpha(options_R$col, options_R$transp)
           ) +
           ggtitle("Estimated R")
       }
@@ -477,7 +467,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           ylim(options_R$ylim) +
           ggtitle("Estimated R") +
           scale_colour_manual("", values = options_R$col) +
-          scale_fill_manual("", values = alpha(options_R$col, options_R$transp))
+          scale_fill_manual("", values = scales::alpha(options_R$col, options_R$transp))
       } else {
         df_tmp <- data.frame(
           start = dates[t_start], end = dates[t_end],
@@ -546,7 +536,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           ylim(options_R$ylim) +
           ggtitle("Estimated R") +
           scale_colour_manual("", values = options_R$col) +
-          scale_fill_manual("", values = alpha(options_R$col, options_R$transp))
+          scale_fill_manual("", values = scales::alpha(options_R$col, options_R$transp))
       }
     }
   }
@@ -671,7 +661,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
         )
     }
 
-    plot <- p1 + p2 + p3 + plot_layout(ncol = 1)
+    plot <- patchwork::wrap_plots(p1, p2, p3, ncol = 1)
 
     return(plot)
   }

@@ -166,7 +166,7 @@ wallinga_teunis.numeric <- function(incid,
           ot <- which(onset == t)
           if (any(prob > 0)) {
             out[ot] <-
-              possible_ances_time[[t]][which(rmultinom(length(ot),
+              possible_ances_time[[t]][which(stats::rmultinom(length(ot),
                                                        size = 1, prob = prob) 
                                              == 1, arr.ind = TRUE)[, 1]]
           } else {
@@ -321,11 +321,11 @@ wallinga_teunis.numeric <- function(incid,
         sum(incid[seq(config$t_start[i], config$t_end[i])]), 
       numeric(config$n_sim))
     
-    r025_wt <- apply(r_sim, 2, quantile, 0.025, na.rm = TRUE)
+    r025_wt <- apply(r_sim, 2, stats::quantile, 0.025, na.rm = TRUE)
     r025_wt <- r025_wt[which(!is.na(r025_wt))]
-    r975_wt <- apply(r_sim, 2, quantile, 0.975, na.rm = TRUE)
+    r975_wt <- apply(r_sim, 2, stats::quantile, 0.975, na.rm = TRUE)
     r975_wt <- r975_wt[which(!is.na(r975_wt))]
-    std_wt <- apply(r_sim, 2, sd, na.rm = TRUE)
+    std_wt <- apply(r_sim, 2, stats::sd, na.rm = TRUE)
     std_wt <- std_wt[which(!is.na(std_wt))]
   } else {
     r025_wt <- rep(NA, length(mean_r_per_date_wt))

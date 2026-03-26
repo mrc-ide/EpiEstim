@@ -326,5 +326,5 @@ test_that("the Rt of the reference variant is returned both with and without inc
                              t_min = 2L, t_max = nrow(incid),
                              seed = NULL, reorder_incid = FALSE)
   
-  expect_equal(median(out$R, na.rm = T), median(out2$R, na.rm = T), tolerance = 0.001)
+  expect_equal(stats::median(out$R, na.rm = T), stats::median(out2$R, na.rm = T), tolerance = 0.001)
 })
