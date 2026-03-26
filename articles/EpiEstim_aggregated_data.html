@@ -302,32 +302,32 @@ window, and SI distribution, we can supply these to the
 daily incidence data:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">output</span><span class="op">$</span><span class="va">I</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.7429645 1.0820885 1.5760047 2.2953675 3.3430814 4.8690213</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.817031 1.164069 1.658514 2.362976 3.366662 4.796669</span></span></code></pre></div>
 <p>And the R<sub>t</sub> estimates (in this case, using the default
 weekly sliding windows):</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">output</span><span class="op">$</span><span class="va">R</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   t_start t_end  Mean(R)    Std(R) Quantile.0.025(R) Quantile.0.05(R)</span></span>
-<span><span class="co">#&gt; 1       8    14 5.009506 0.3220232          4.398181         4.491852</span></span>
-<span><span class="co">#&gt; 2       9    15 4.582393 0.2573535          4.091815         4.167459</span></span>
-<span><span class="co">#&gt; 3      10    16 4.211267 0.2070000          3.815276         3.876664</span></span>
-<span><span class="co">#&gt; 4      11    17 3.953807 0.1703587          3.626916         3.677826</span></span>
-<span><span class="co">#&gt; 5      12    18 3.780193 0.1429754          3.505123         3.548134</span></span>
-<span><span class="co">#&gt; 6      13    19 3.660329 0.1216857          3.425684         3.462500</span></span>
+<span><span class="co">#&gt; 1       8    14 4.852244 0.3119140          4.260110         4.350840</span></span>
+<span><span class="co">#&gt; 2       9    15 4.491777 0.2516604          4.012019         4.086002</span></span>
+<span><span class="co">#&gt; 3      10    16 4.169784 0.2042461          3.779027         3.839612</span></span>
+<span><span class="co">#&gt; 4      11    17 3.934157 0.1688907          3.610057         3.660539</span></span>
+<span><span class="co">#&gt; 5      12    18 3.766547 0.1420022          3.493333         3.536057</span></span>
+<span><span class="co">#&gt; 6      13    19 3.645352 0.1209050          3.412203         3.448787</span></span>
 <span><span class="co">#&gt;   Quantile.0.25(R) Median(R) Quantile.0.75(R) Quantile.0.95(R)</span></span>
-<span><span class="co">#&gt; 1         4.788708  5.002607         5.222784         5.550692</span></span>
-<span><span class="co">#&gt; 2         4.406285  4.577576         4.753250         5.013758</span></span>
-<span><span class="co">#&gt; 3         4.069861  4.207876         4.348977         4.557437</span></span>
-<span><span class="co">#&gt; 4         3.837607  3.951360         4.067340         4.238132</span></span>
-<span><span class="co">#&gt; 5         3.682800  3.778391         3.875621         4.018400</span></span>
-<span><span class="co">#&gt; 6         3.577535  3.658981         3.741654         3.862758</span></span>
+<span><span class="co">#&gt; 1         4.638377  4.845562         5.058827         5.376440</span></span>
+<span><span class="co">#&gt; 2         4.319571  4.487078         4.658862         4.913581</span></span>
+<span><span class="co">#&gt; 3         4.030265  4.166450         4.305669         4.511330</span></span>
+<span><span class="co">#&gt; 4         3.818963  3.931740         4.046717         4.216018</span></span>
+<span><span class="co">#&gt; 5         3.669820  3.764763         3.861329         4.003124</span></span>
+<span><span class="co">#&gt; 6         3.563091  3.644016         3.726157         3.846477</span></span>
 <span><span class="co">#&gt;   Quantile.0.975(R)</span></span>
-<span><span class="co">#&gt; 1          5.660032</span></span>
-<span><span class="co">#&gt; 2          5.100343</span></span>
-<span><span class="co">#&gt; 3          4.626529</span></span>
-<span><span class="co">#&gt; 4          4.294601</span></span>
-<span><span class="co">#&gt; 5          4.065506</span></span>
-<span><span class="co">#&gt; 6          3.902637</span></span></code></pre></div>
+<span><span class="co">#&gt; 1          5.482348</span></span>
+<span><span class="co">#&gt; 2          4.998238</span></span>
+<span><span class="co">#&gt; 3          4.579489</span></span>
+<span><span class="co">#&gt; 4          4.271989</span></span>
+<span><span class="co">#&gt; 5          4.049902</span></span>
+<span><span class="co">#&gt; 6          3.886097</span></span></code></pre></div>
 <p>In this example, you will notice that R<sub>t</sub> estimation does
 not start until day 8. This is because the daily incidence data cannot
 be reconstructed, and R<sub>t</sub> estimation cannot start, until the
