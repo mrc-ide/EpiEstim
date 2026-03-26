@@ -1,3 +1,17 @@
+# EpiEstim 3.0.0
+
+## New features
+
+- `wallinga_teunis()` is now an S3 generic with methods for `integer`,
+  `numeric`, `data.frame`, `incidence` and `incidence2` objects
+
+- `wallinga_teunis()` now returns an S3 object with class "wallinga_teunis"
+  (used to be "estimate_R")
+
+## Bug fixes
+
+## Backward compatibility
+
 # EpiEstim 2.5.1
 
 * The distribution names valid when using si_from_data option in estimate_R have been edited to be descriptive and self-explanatory.

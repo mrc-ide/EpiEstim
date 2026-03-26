@@ -133,6 +133,169 @@ test_that("wallinga_teunis() gives expected results with increasing incidence", 
 
 
 
+test_that("wallinga_teunis() works with data.frame inputs", {
+
+  ## We test that results are the same as with a numeric vector with identical
+  ## incidence, and also that dates are preserved
+  i <- rpois(100, lambda = exp(0.0523 * 1:100))
+  df <- data.frame(incid = i, dates = Sys.Date() + 1:100)
+
+  res_i <- wallinga_teunis(
+    i,
+    method = "non_parametric_si",
+    config = list(t_start = 10, t_end = 90,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50)
+  )
+  res_df <- wallinga_teunis(
+    df,
+    method = "non_parametric_si",
+    config = list(t_start = 10, t_end = 90,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50),
+    count = "incid"
+  )
+
+  expect_equal(res_i$R, res_df$R)
+  expect_equal(res_df$dates, df$dates)
+  expect_equal(res_df$I, res_i$I)
+
+})
+
+
+
+
+
+test_that("wallinga_teunis() works with incidence inputs", {
+
+  ## We test that results are the same for an incidence object as for the
+  ## corresponding data.frame.
+  i <- rpois(100, lambda = exp(0.0523 * 1:100))
+  onset <- rep(Sys.Date() + 1:100, i)
+  incid <- incidence::incidence(onset)
+  df <- as.data.frame(incid)
+
+  res_incid <- wallinga_teunis(
+    incid,
+    method = "non_parametric_si",
+    config = list(t_start = 10, t_end = 90,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50)
+  )
+  res_df <- wallinga_teunis(
+    df, "counts",
+    method = "non_parametric_si",
+    config = list(t_start = 10, t_end = 90,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50)
+  )
+
+  expect_equal(res_incid$R, res_df$R)
+  expect_equal(res_df$dates, df$dates)
+  expect_equal(res_incid$I, res_df$I)
+
+}
+)
+
+
+
+
+
+test_that("wallinga_teunis() works with incidence2 inputs", {
+
+  ## We test that results are the same for an incidence2 object as for the
+  ## corresponding data.frame.
+  i <- rpois(100, lambda = exp(0.0523 * 1:100))
+  onset <- rep(Sys.Date() + 1:100, i)
+  incid <- incidence2::incidence(data.frame(onset), "onset")
+  df <- as.data.frame(incid)
+  names(df)[1] <- "dates" 
+
+  res_incid <- wallinga_teunis(
+    incid,
+    method = "non_parametric_si",
+    config = list(t_start = 10, t_end = 90,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50)
+  )
+  res_df <- wallinga_teunis(
+    df, "count",
+    method = "non_parametric_si",
+    config = list(t_start = 10, t_end = 90,
+                  si_distr = Flu2009$si_distr, 
+                  seed = 1, 
+                  n_sim = 50,
+                  seed = 1)
+  )
+
+  expect_equal(res_incid$R, res_df$R)
+  expect_equal(res_incid$dates, res_df$dates)
+  expect_equal(res_incid$I, res_df$I)
+
+}
+)
+
+
+
+
+
+test_that(
+  "seed fixing in wallinga_teunis config works as expected", {
+    
+    # seed = 1 - acts as reference for this test
+    out1 <- wallinga_teunis(Flu2009$incidence,
+                            method = "non_parametric_si",
+                            config = list(t_start = 2:26, t_end = 8:32,
+                                          si_distr = Flu2009$si_distr, 
+                                          n_sim = 50,
+                                          seed = 1))
+    
+    # same seed
+    out2 <- wallinga_teunis(Flu2009$incidence,
+                            method = "non_parametric_si",
+                            config = list(t_start = 2:26, t_end = 8:32,
+                                          si_distr = Flu2009$si_distr, 
+                                          n_sim = 50,
+                                          seed = 1))
+    
+    # different seed
+    out3 <- wallinga_teunis(Flu2009$incidence,
+                            method = "non_parametric_si",
+                            config = list(t_start = 2:26, t_end = 8:32,
+                                          si_distr = Flu2009$si_distr, 
+                                          n_sim = 50,
+                                          seed = 2))
+    # no seed
+    out4 <- wallinga_teunis(Flu2009$incidence,
+                            method = "non_parametric_si",
+                            config = list(t_start = 2:26, t_end = 8:32,
+                                          si_distr = Flu2009$si_distr, 
+                                          n_sim = 50,
+                                          seed = 2))
+    
+    # same seed should produce same R estimates
+    expect_equal(out1$R, out2$R)
+    
+    # different seed should produce same mean R estimates but different 
+    # uncertainty
+    expect_equal(out1$R$`Mean(R)`, out3$R$`Mean(R)`)
+    expect_true(any(out1$R$`Quantile.0.025(R)` != out3$R$`Quantile.0.025(R)`))
+    expect_true(any(out1$R$`Quantile.0.975(R)` != out3$R$`Quantile.0.975(R)`))
+    
+    # not fixing the seed should produce same mean R estimates but different 
+    # uncertainty
+    expect_equal(out1$R$`Mean(R)`, out4$R$`Mean(R)`)
+    expect_true(any(out1$R$`Quantile.0.025(R)` != out4$R$`Quantile.0.025(R)`))
+    expect_true(any(out1$R$`Quantile.0.975(R)` != out4$R$`Quantile.0.975(R)`))
+  }
+)
+
+
 ## data("Flu2009")
 
 ## test_that("Example 1 matches saved output", {

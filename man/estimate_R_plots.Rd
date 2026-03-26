@@ -51,7 +51,7 @@ R_case <- wallinga_teunis(Flu2009$incidence,
                   config = list(t_start = seq(2, 26), 
                                 t_end = seq(8, 32), 
                                 si_distr = Flu2009$si_distr
-                  )
+                  ) 
                  )
 
 ## visualise R estimates on the same plot

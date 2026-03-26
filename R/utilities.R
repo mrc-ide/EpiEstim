@@ -61,6 +61,7 @@ process_si_data <- function(si_data) {
 process_I <- function(incid) {
   # If the input is an incidence object, we want to convert it to a data frame
   # that EpiEstim understands, which contains a single column for the I counts.
+  ## TODO: remove this bit once estimate_R and wallinga_teunis have methods
   if (inherits(incid, "incidence")) {
     I_inc   <- incid
     incid   <- as.data.frame(I_inc)

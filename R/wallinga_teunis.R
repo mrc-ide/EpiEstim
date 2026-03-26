@@ -1,14 +1,18 @@
 #' Estimate case reproduction number using the Wallinga and Teunis method
 #'
-#' Estimate the case reproduction number of an epidemic,
-#' given the incidence time series and the serial interval distribution.
+#' Estimate the case reproduction number of an epidemic, given the incidence
+#' time series and the serial interval distribution. `wallinga_teunis()` is a
+#' generic function with S3 methods for classes: `integer`, `numeric`,
+#' `data.frame`, `incidence`, `incidence2`.
 #'
-#' @param incid One of the following:
-#' - Vector (or a dataframe with a column named `incid`) of non-negative
-#'   integers containing an incidence time series. If the dataframe contains a
-#'   column `dates`, this is used for plotting. `incid$dates` must contains only
-#'   dates in a row.
-#' - An object of class [incidence::incidence()]
+#' @param incid An incidence time series provided as:
+#' - a non-negative `integer` vector
+#' - a non-negative `numeric` vector
+#' - a `data.frame` with a column named `I` by default (see argument 'count')
+#'   containing incidence; if the data.frame contains a column `dates`, this
+#'   is used for plotting
+#' - an `incidence` object as returned by [incidence::incidence()]
+#' - an `incidence2` object as returned by [incidence2::incidence()]
 #'
 #' @param method the method used to estimate R, one of "non_parametric_si",
 #'   "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
@@ -34,6 +38,9 @@
 #' - `n_sim`: A positive integer giving the number of simulated epidemic trees
 #'   used for computation of the confidence intervals of the case reproduction
 #'   number (see details).
+#' - `seed`: A random seed used to enable full reproducibility.
+#' 
+#' @param ... further arguments to be passed to S3 methods.
 #'
 #' @return a list with components:
 #' - `R`: a dataframe containing: the times of start and end of each time window
@@ -77,7 +84,7 @@
 #'
 #' @seealso [discr_si()], [estimate_R()]
 #'
-#' @author Anne Cori
+#' @author Anne Cori; generic and S3 methods by Thibaut Jombart
 #' 
 #' @references 
 #' Cori, A. et al. A new framework and software to estimate time-varying
@@ -100,7 +107,9 @@
 #'    method = "non_parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  si_distr = Flu2009$si_distr,
-#'                  n_sim = 100))
+#'                  n_sim = 100,
+#'                  seed = 1)
+#' )
 #' plot(res)
 #' ## the second plot produced shows, at each each day,
 #' ## the estimate of the case reproduction number over the 7-day window
@@ -110,52 +119,72 @@
 #' res <- wallinga_teunis(Flu2009$incidence, method = "parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  mean_si = 2.6, std_si = 1.5,
-#'                  n_sim = 100))
+#'                  n_sim = 100,
+#'                  seed = 1)
+#' )
 #' plot(res)
 #' ## the second plot produced shows, at each each day,
 #' ## the estimate of the case reproduction number over the 7-day window
 #' ## finishing on that day.
 
-wallinga_teunis <- function(incid,
-                            method = c("non_parametric_si", "parametric_si"),
-                            config) {
-  
-  ### Functions ###
-  
-  #########################################################
-  # Draws a possile transmission tree                     #
-  #########################################################
+wallinga_teunis <- function(incid, ...) {
+  UseMethod("wallinga_teunis")
+}
+
+
+
+#' @rdname wallinga_teunis
+#' @export
+wallinga_teunis.default <- function(incid, ...) {
+  msg <- sprintf(
+    "No `project()` method for object of the class: %s",
+    paste(class(incid), collapse = ", ")
+    )
+  stop(msg)
+}
+
+
+
+#' @rdname wallinga_teunis
+#' @export
+wallinga_teunis.numeric <- function(incid,
+                                    method = c("non_parametric_si", "parametric_si"),
+                                    config,
+                                    ...) {
+  ## handle the seed argument
+  if (!is.null(config$seed)) {
+    set.seed(config$seed)
+  }
   
   draw_one_set_of_ancestries <- function() {
-    res <- vector()
+    out <- vector()
     for (t in seq_len(T))
     {
-      if (any(Onset == t)) {
+      if (any(onset == t)) {
         if (length(possible_ances_time[[t]]) > 0) {
           prob <- config$si_distr[t - possible_ances_time[[t]] + 1] *
             incid[possible_ances_time[[t]]]
-          ot <- which(Onset == t)
+          ot <- which(onset == t)
           if (any(prob > 0)) {
-            res[ot] <-
+            out[ot] <-
               possible_ances_time[[t]][which(rmultinom(length(ot),
                                                        size = 1, prob = prob) 
                                              == 1, arr.ind = TRUE)[, 1]]
           } else {
-            res[ot] <- NA
+            out[ot] <- NA
           }
         } else {
-          res[which(Onset == t)] <- NA
+          out[which(onset == t)] <- NA
         }
       }
     }
-    return(res)
+    return(out)
   }
-  
-  ### Error messages ###
-  
+
+
   method <- match.arg(method)
-  
   incid <- process_I(incid)
+  
   if (!is.null(incid$dates)) {
     dates <- check_dates(incid)
     incid <- process_I_vector(rowSums(incid[, c("local", "imported")]))
@@ -168,8 +197,7 @@ wallinga_teunis <- function(incid,
   
   
   ### Adjusting t_start and t_end so that at least an incident case has been
-  ### observed before t_start[1] ###
-  
+  ### observed before t_start[1] ### 
   i <- 1
   while (sum(incid[seq_len(config$t_start[i] - 1)]) == 0) {
     i <- i + 1
@@ -185,7 +213,7 @@ wallinga_teunis <- function(incid,
   
   if (is.null(config$n_sim)) {
     config$n_sim <- 10
-    warning("setting config$n_sim to 10 as config$n_sim was not specified. ")
+    warning("setting config$n_sim to 10 as config$n_sim was not specified.")
   }
   
   if (method == "non_parametric_si") {
@@ -237,8 +265,7 @@ wallinga_teunis <- function(incid,
                          final_mean_si^2)
   
   time_periods_with_no_incidence <- vector()
-  for (i in seq_len(nb_time_periods))
-  {
+  for (i in seq_len(nb_time_periods)) {
     if (sum(incid[seq(config$t_start[i],config$t_end[i])]) == 0) {
       time_periods_with_no_incidence <- c(time_periods_with_no_incidence, i)
     }
@@ -249,9 +276,9 @@ wallinga_teunis <- function(incid,
     nb_time_periods <- length(config$t_start)
   }
   
-  Onset <- vector()
+  onset <- vector()
   for (t in seq_len(T)) {
-    Onset <- c(Onset, rep(t, incid[t]))
+    onset <- c(onset, rep(t, incid[t]))
   }
   
   delay <- outer(seq_len(T), seq_len(T), "-")
@@ -280,11 +307,10 @@ wallinga_teunis <- function(incid,
              incid[which((seq_len(T) >= config$t_start[i]) * 
                            (seq_len(T) <= config$t_end[i]) == 1)])))
   
-  if(config$n_sim>0)
-  {
+  if (config$n_sim > 0) {
     possible_ances_time <- lapply(seq_len(T), function(t) 
-      (t - (which(config$si_distr != 0)) + 
-         1)[which(t - (which(config$si_distr != 0)) + 1 > 0)])
+    (t - (which(config$si_distr != 0)) + 
+       1)[which(t - (which(config$si_distr != 0)) + 1 > 0)])
     
     
     ancestries_time <- t(vapply(seq_len(config$n_sim), function(i) 
@@ -302,16 +328,17 @@ wallinga_teunis <- function(incid,
     r975_wt <- r975_wt[which(!is.na(r975_wt))]
     std_wt <- apply(r_sim, 2, sd, na.rm = TRUE)
     std_wt <- std_wt[which(!is.na(std_wt))]
-  }else
-  {
+  } else {
     r025_wt <- rep(NA, length(mean_r_per_date_wt))
     r975_wt <- rep(NA, length(mean_r_per_date_wt))
     std_wt <- rep(NA, length(mean_r_per_date_wt))
   }
   
-  results <- list(R = as.data.frame(cbind(config$t_start,
-                                          config$t_end, mean_r_per_date_wt,
-                                          std_wt, r025_wt, r975_wt)))
+  results <- list(
+    R = as.data.frame(cbind(config$t_start,
+                            config$t_end, mean_r_per_date_wt,
+                            std_wt, r025_wt, r975_wt))
+  )
   
   names(results$R) <- c("t_start", "t_end", "Mean(R)", "Std(R)",
                         "Quantile.0.025(R)", "Quantile.0.975(R)")
@@ -333,3 +360,133 @@ wallinga_teunis <- function(incid,
   class(results) <- "wallinga_teunis"
   return(results)
 }
+
+
+
+
+
+#' @rdname wallinga_teunis
+#' @export
+wallinga_teunis.integer <- function(incid,
+                                    method = c("non_parametric_si", "parametric_si"),
+                                    config,
+                                    ...) {
+  ## We dispatch to the `numeric` method
+  wallinga_teunis(
+    as.numeric(incid),
+    method = method,
+    config = config
+  )
+  
+}
+
+
+
+
+
+#' @rdname wallinga_teunis
+#' @export
+#' @param count An `integer` or `character` indicating the column of the
+#'   `data.frame` containing counts; defaults to "I"
+wallinga_teunis.data.frame <- function(incid,
+                                       method = c("non_parametric_si", "parametric_si"),
+                                       config,
+                                       count = "I",
+                                       ...) {
+  x <- incid[[count]]
+  out <- wallinga_teunis(
+    x,
+    method = method,
+    config = config
+  )
+  if (!is.null(incid$dates))
+  out$dates <- incid$dates
+  out
+}
+
+
+
+
+
+#' @rdname wallinga_teunis
+#' @export
+#' @param quiet A `logical` indicating if warnings should be issued when
+#'   relevant. Defaults to `FALSE`.
+wallinga_teunis.incidence <- function(incid,
+                                      method = c("non_parametric_si", "parametric_si"),
+                                      config,
+                                      quiet = FALSE,
+                                      ...) {
+
+  ## checks specific to incidence objects
+  if (as.integer(mean(incidence::get_interval(incid))) != 1L) {
+    msg <- sprintf(
+      "daily incidence needed, but interval is %d days",
+      as.integer(mean(incidence::get_interval(incid)))
+    )
+    stop(msg)
+  }
+
+  has_groups <- ncol(incidence::get_counts(incid)) > 1L
+  if (has_groups) {
+    msg <- sprintf("stratification in incidence object will be ignored")
+    if (!quiet) warning(msg)
+    incid <- incidence::pool(incid)
+  }
+
+  x <- as.numeric(rowSums(incidence::get_counts(incid)))
+
+  ## dispatch to numeric method; we re-add dates at the end
+  out <- wallinga_teunis(
+    x,
+    method = method,
+    config = config
+  )
+
+  out$dates <- incidence::get_dates(incid)
+  out
+}
+
+
+
+
+
+#' @rdname wallinga_teunis
+#' @export
+wallinga_teunis.incidence2 <- function(incid,
+                                       method = c("non_parametric_si", "parametric_si"),
+                                       config,
+                                       quiet = FALSE,
+                                       ...) {
+
+  ## checks specific to incidence2 objects
+  dates <- incidence2::get_dates(incid)
+  interval <- incidence2::get_interval_duration(incid)
+  if (any(interval != 1L)) {
+    msg <- "daily incidence needed"
+    stop(msg)
+  }
+
+  has_groups <- length(incidence2::get_groups(incid))
+  if (has_groups) {
+    msg <- sprintf("stratification in incidence2 object will be ignored")
+    if (!quiet) warning(msg)
+    incid <- incidence2::regroup(incid)
+  }
+
+
+  ## We extract the data we need from the incidence object and use the
+  ## project.numeric method.
+  x <- as.numeric(as.vector(incidence2::get_count_value(incid)))
+
+  ## dispatch to numeric method; we re-add dates at the end
+  out <- wallinga_teunis(
+    x,
+    method = method,
+    config = config
+  )
+
+  out$dates <- incidence2::get_dates(incid)
+  out
+}
+

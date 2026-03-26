@@ -2,23 +2,69 @@
 % Please edit documentation in R/wallinga_teunis.R
 \name{wallinga_teunis}
 \alias{wallinga_teunis}
+\alias{wallinga_teunis.default}
+\alias{wallinga_teunis.numeric}
+\alias{wallinga_teunis.integer}
+\alias{wallinga_teunis.data.frame}
+\alias{wallinga_teunis.incidence}
+\alias{wallinga_teunis.incidence2}
 \title{Estimate case reproduction number using the Wallinga and Teunis method}
 \usage{
-wallinga_teunis(
+wallinga_teunis(incid, ...)
+
+\method{wallinga_teunis}{default}(incid, ...)
+
+\method{wallinga_teunis}{numeric}(
   incid,
   method = c("non_parametric_si", "parametric_si"),
-  config
+  config,
+  ...
+)
+
+\method{wallinga_teunis}{integer}(
+  incid,
+  method = c("non_parametric_si", "parametric_si"),
+  config,
+  ...
+)
+
+\method{wallinga_teunis}{data.frame}(
+  incid,
+  method = c("non_parametric_si", "parametric_si"),
+  config,
+  count = "I",
+  ...
+)
+
+\method{wallinga_teunis}{incidence}(
+  incid,
+  method = c("non_parametric_si", "parametric_si"),
+  config,
+  quiet = FALSE,
+  ...
+)
+
+\method{wallinga_teunis}{incidence2}(
+  incid,
+  method = c("non_parametric_si", "parametric_si"),
+  config,
+  quiet = FALSE,
+  ...
 )
 }
 \arguments{
-\item{incid}{One of the following:
+\item{incid}{An incidence time series provided as:
 \itemize{
-\item Vector (or a dataframe with a column named \code{incid}) of non-negative
-integers containing an incidence time series. If the dataframe contains a
-column \code{dates}, this is used for plotting. \code{incid$dates} must contains only
-dates in a row.
-\item An object of class \code{\link[incidence:incidence]{incidence::incidence()}}
+\item a non-negative \code{integer} vector
+\item a non-negative \code{numeric} vector
+\item a \code{data.frame} with a column named \code{I} by default (see argument 'count')
+containing incidence; if the data.frame contains a column \code{dates}, this
+is used for plotting
+\item an \code{incidence} object as returned by \code{\link[incidence:incidence]{incidence::incidence()}}
+\item an \code{incidence2} object as returned by \code{\link[incidence2:incidence]{incidence2::incidence()}}
 }}
+
+\item{...}{further arguments to be passed to S3 methods.}
 
 \item{method}{the method used to estimate R, one of "non_parametric_si",
 "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
@@ -45,7 +91,14 @@ be zero.
 \item \code{n_sim}: A positive integer giving the number of simulated epidemic trees
 used for computation of the confidence intervals of the case reproduction
 number (see details).
+\item \code{seed}: A random seed used to enable full reproducibility.
 }}
+
+\item{count}{An \code{integer} or \code{character} indicating the column of the
+\code{data.frame} containing counts; defaults to "I"}
+
+\item{quiet}{A \code{logical} indicating if warnings should be issued when
+relevant. Defaults to \code{FALSE}.}
 }
 \value{
 a list with components:
@@ -65,8 +118,10 @@ interval distribution(s) used for estimation
 }
 }
 \description{
-Estimate the case reproduction number of an epidemic,
-given the incidence time series and the serial interval distribution.
+Estimate the case reproduction number of an epidemic, given the incidence
+time series and the serial interval distribution. \code{wallinga_teunis()} is a
+generic function with S3 methods for classes: \code{integer}, \code{numeric},
+\code{data.frame}, \code{incidence}, \code{incidence2}.
 }
 \details{
 Estimates of the case reproduction number for an epidemic over
@@ -105,7 +160,9 @@ res <- wallinga_teunis(Flu2009$incidence,
    method = "non_parametric_si",
    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
                  si_distr = Flu2009$si_distr,
-                 n_sim = 100))
+                 n_sim = 100,
+                 seed = 1)
+)
 plot(res)
 ## the second plot produced shows, at each each day,
 ## the estimate of the case reproduction number over the 7-day window
@@ -115,7 +172,9 @@ plot(res)
 res <- wallinga_teunis(Flu2009$incidence, method = "parametric_si",
    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
                  mean_si = 2.6, std_si = 1.5,
-                 n_sim = 100))
+                 n_sim = 100,
+                 seed = 1)
+)
 plot(res)
 ## the second plot produced shows, at each each day,
 ## the estimate of the case reproduction number over the 7-day window
@@ -131,5 +190,5 @@ similar impacts of control measures (AJE 2004).
 \code{\link[=discr_si]{discr_si()}}, \code{\link[=estimate_R]{estimate_R()}}
 }
 \author{
-Anne Cori
+Anne Cori; generic and S3 methods by Thibaut Jombart
 }
