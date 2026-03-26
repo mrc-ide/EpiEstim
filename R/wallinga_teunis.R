@@ -80,8 +80,12 @@
 #'
 #' @seealso [discr_si()], [estimate_R()]
 #'
+<<<<<<< i_200
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}; generic and methods by
 #'   Thibaut Jombart
+=======
+#' @author Anne Cori
+>>>>>>> main
 #' 
 #' @references 
 #' Cori, A. et al. A new framework and software to estimate time-varying

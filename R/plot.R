@@ -73,9 +73,8 @@
 #'
 #' @seealso [estimate_R()], [wallinga_teunis()] and [estimate_R_plots()].
 #'
-#' @author Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori
-#'   \email{a.cori@imperial.ac.uk}; S3 method by Thibaut Jombart; v2 theme by
-#'   Rebecca Nash
+#' @author Rolina van Gaalen and Anne Cori; S3 method by Thibaut Jombart; v2
+#'  theme by Rebecca Nash
 #'
 #' @import reshape2 grid gridExtra
 #'

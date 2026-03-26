@@ -1,7 +1,18 @@
 
 #' Estimate instantaneous reproduction number from coarsely aggregated data
 #'
-#' @param incid aggregated incidence data, supplied as a vector
+#' @param incid Aggregated incidence data, supplied as one of the following
+#' 
+#' - A vector (or a dataframe with a single column) of non-negative integers
+#' containing the incidence time series; these can be aggregated at any time
+#' unit as specified by argument `dt`
+#'
+#' - A dataframe of non-negative integers with `incid$I` containing the total
+#' incidence. If the dataframe contains a column `incid$dates`, this is used for
+#' plotting. `incid$dates` must contains only dates in a row.
+#'
+#' - An object of class [incidence::incidence()]
+#' - An object of class [incidence2::incidence()]
 #' 
 #' @param dt length of temporal aggregations of the incidence data. This should 
 #' be an integer or vector of integers. If a vector, this will be recycled. For 
@@ -141,7 +152,7 @@
 #' 
 #' @seealso [estimate_R()] for details of the core function
 #'  
-#' @author Rebecca Nash \email{r.nash@imperial.ac.uk} and Anne Cori \email{a.cori@imperial.ac.uk}
+#' @author Rebecca Nash and Anne Cori
 #' 
 #' @references 
 #' Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number

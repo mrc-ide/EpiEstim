@@ -164,7 +164,6 @@ gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
 \code{\link[=estimate_R]{estimate_R()}}, \code{\link[=wallinga_teunis]{wallinga_teunis()}} and \code{\link[=estimate_R_plots]{estimate_R_plots()}}.
 }
 \author{
-Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} and Anne Cori
-\email{a.cori@imperial.ac.uk}; S3 method by Thibaut Jombart; v2 theme by
-Rebecca Nash
+Rolina van Gaalen and Anne Cori; S3 method by Thibaut Jombart; v2
+theme by Rebecca Nash
 }

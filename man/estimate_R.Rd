@@ -343,5 +343,5 @@ from the output of \code{\link[=estimate_R]{estimate_R()}}
 }
 }
 \author{
-Anne Cori \email{a.cori@imperial.ac.uk}
+Anne Cori
 }

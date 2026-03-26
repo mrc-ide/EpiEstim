@@ -40,7 +40,7 @@ Other contributors:
   \item Jonathan A. Polonsky (\href{https://orcid.org/0000-0002-8634-4255}{ORCID}) [contributor]
   \item Jake Stockwin [contributor]
   \item Robin Thompson (\href{https://orcid.org/0000-0001-8545-5212}{ORCID}) [contributor]
-  \item Rolina van Gaalen [contributor]
+  \item Rolina van Gaalen \email{rolina.van.gaalen@rivm.nl} [contributor]
   \item Rebecca Nash \email{r.nash@imperial.ac.uk} (\href{https://orcid.org/0000-0002-5213-4364}{ORCID}) [contributor]
   \item Sangeeta Bhatia (\href{https://orcid.org/0000-0001-6525-101X}{ORCID}) [contributor]
   \item Jack Wardle (\href{https://orcid.org/0000-0002-5363-1653}{ORCID}) [contributor]

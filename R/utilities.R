@@ -121,10 +121,18 @@ process_I <- function(incid) {
 }
 
 process_I_vector <- function(incid) {
-  # here, the incident counts are being forced into a vector.
+  # incidence2 object
+  if (inherits(incid, "incidence2")) {
+    I_col <- incidence2::get_count_value_name(incid)
+    date_col <- incidence2::get_date_index_name(incid)
+    dates <- unique(incid[[date_col]])
+    incid <- tapply(incid[[I_col]], incid[[date_col]], sum)[as.character(dates)]
+    return(as.vector(incid))
+    }
+  # incidence object, the incident counts are being forced into a vector
   if (inherits(incid, "incidence")) {
     incid <- rowSums(incidence::get_counts(incid))
-  }
+    }
   if (!is.vector(incid)) {
     if (is.data.frame(incid)) {
       if (ncol(incid) == 1) {
