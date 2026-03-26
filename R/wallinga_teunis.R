@@ -1,7 +1,9 @@
 #' Estimate case reproduction number using the Wallinga and Teunis method
 #'
-#' Estimate the case reproduction number of an epidemic,
-#' given the incidence time series and the serial interval distribution.
+#' Estimate the case reproduction number of an epidemic, given the incidence
+#' time series and the serial interval distribution. `wallinga_teunis()` is a
+#' generic function with S3 methods for classes: `integer`, `numeric`,
+#' `data.frame`, `incidence`, `incidence2`.
 #'
 #' @param incid An incidence time series provided as:
 #' - a non-negative `integer` vector
@@ -38,7 +40,7 @@
 #'   number (see details).
 #' - `seed`: A random seed used to enable full reproducibility.
 #' 
-#' @param ... further arguments to be passed to methods.
+#' @param ... further arguments to be passed to S3 methods.
 #'
 #' @return a list with components:
 #' - `R`: a dataframe containing: the times of start and end of each time window
@@ -82,8 +84,7 @@
 #'
 #' @seealso [discr_si()], [estimate_R()]
 #'
-#' @author Anne Cori \email{a.cori@imperial.ac.uk}; generic and methods by
-#'   Thibaut Jombart
+#' @author Anne Cori; generic and S3 methods by Thibaut Jombart
 #' 
 #' @references 
 #' Cori, A. et al. A new framework and software to estimate time-varying

@@ -64,7 +64,7 @@ is used for plotting
 \item an \code{incidence2} object as returned by \code{\link[incidence2:incidence]{incidence2::incidence()}}
 }}
 
-\item{...}{further arguments to be passed to methods.}
+\item{...}{further arguments to be passed to S3 methods.}
 
 \item{method}{the method used to estimate R, one of "non_parametric_si",
 "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
@@ -118,8 +118,10 @@ interval distribution(s) used for estimation
 }
 }
 \description{
-Estimate the case reproduction number of an epidemic,
-given the incidence time series and the serial interval distribution.
+Estimate the case reproduction number of an epidemic, given the incidence
+time series and the serial interval distribution. \code{wallinga_teunis()} is a
+generic function with S3 methods for classes: \code{integer}, \code{numeric},
+\code{data.frame}, \code{incidence}, \code{incidence2}.
 }
 \details{
 Estimates of the case reproduction number for an epidemic over
@@ -188,6 +190,5 @@ similar impacts of control measures (AJE 2004).
 \code{\link[=discr_si]{discr_si()}}, \code{\link[=estimate_R]{estimate_R()}}
 }
 \author{
-Anne Cori \email{a.cori@imperial.ac.uk}; generic and methods by
-Thibaut Jombart
+Anne Cori; generic and S3 methods by Thibaut Jombart
 }
