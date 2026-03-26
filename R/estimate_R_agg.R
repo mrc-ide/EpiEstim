@@ -389,6 +389,10 @@ estimate_R_agg <- function(incid,
         r_grid <- seq(grid$min, grid$max, grid$precision)
         if (is.null(si_distr)) {
           si_distr <- discr_si(seq(0, T), mu = si_mean, sigma = si_sd)
+          # remove tail
+          threshold <- 1e-6
+          si_distr <- si_distr[c(TRUE, si_distr[-1] >= threshold)]
+          si_distr <- si_distr / sum(si_distr)
         }
         # using a grid of r values translate that into R using r2R0
         R_grid <- epitrix::r2R0(r = r_grid, w = si_distr)
