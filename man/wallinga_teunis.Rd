@@ -89,6 +89,7 @@ be zero.
 \item \code{n_sim}: A positive integer giving the number of simulated epidemic trees
 used for computation of the confidence intervals of the case reproduction
 number (see details).
+\item \code{seed}: A random seed used to enable full reproducibility.
 }}
 
 \item{count}{An \code{integer} or \code{character} indicating the column of the
@@ -156,7 +157,8 @@ res <- wallinga_teunis(Flu2009$incidence, "I",
    method = "non_parametric_si",
    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
                  si_distr = Flu2009$si_distr,
-                 n_sim = 100)
+                 n_sim = 100,
+                 seed = 1)
 )
 plot(res)
 ## the second plot produced shows, at each each day,
@@ -167,7 +169,8 @@ plot(res)
 res <- wallinga_teunis(Flu2009$incidence, "I", method = "parametric_si",
    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
                  mean_si = 2.6, std_si = 1.5,
-                 n_sim = 100)
+                 n_sim = 100,
+                 seed = 1)
 )
 plot(res)
 ## the second plot produced shows, at each each day,

@@ -34,7 +34,8 @@
 #' - `n_sim`: A positive integer giving the number of simulated epidemic trees
 #'   used for computation of the confidence intervals of the case reproduction
 #'   number (see details).
-#'
+#' - `seed`: A random seed used to enable full reproducibility.
+#' 
 #' @param ... further arguments to be passed to methods.
 #'
 #' @return a list with components:
@@ -103,7 +104,8 @@
 #'    method = "non_parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  si_distr = Flu2009$si_distr,
-#'                  n_sim = 100)
+#'                  n_sim = 100,
+#'                  seed = 1)
 #' )
 #' plot(res)
 #' ## the second plot produced shows, at each each day,
@@ -114,7 +116,8 @@
 #' res <- wallinga_teunis(Flu2009$incidence, "I", method = "parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  mean_si = 2.6, std_si = 1.5,
-#'                  n_sim = 100)
+#'                  n_sim = 100,
+#'                  seed = 1)
 #' )
 #' plot(res)
 #' ## the second plot produced shows, at each each day,
@@ -145,6 +148,10 @@ wallinga_teunis.numeric <- function(incid,
                                     method = c("non_parametric_si", "parametric_si"),
                                     config,
                                     ...) {
+  ## handle the seed argument
+  if (!is.null(config$seed)) {
+    set.seed(config$seed)
+  }
   
   draw_one_set_of_ancestries <- function() {
     out <- vector()
@@ -452,15 +459,11 @@ wallinga_teunis.incidence2 <- function(incid,
 
   ## checks specific to incidence2 objects
   dates <- incidence2::get_dates(incid)
-  ## interval <- grates::get_n(dates)
-  ## TODO: restore this test once incidence2::get_interval is back
-  ## if (interval != 1L) {
-  ##   msg <- sprintf(
-  ##     "daily incidence needed, but interval is %d days",
-  ##     interval
-  ##   )
-  ##   stop(msg)
-  ## }
+  interval <- incidence2::get_interval_duration(incid)
+  if (any(interval != 1L)) {
+    msg <- "daily incidence needed"
+    stop(msg)
+  }
 
   has_groups <- length(incidence2::get_groups(incid))
   if (has_groups) {

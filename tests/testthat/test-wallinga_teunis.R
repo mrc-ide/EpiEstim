@@ -224,14 +224,14 @@ test_that("wallinga_teunis() works with incidence2 inputs", {
                   seed = 1, 
                   n_sim = 50)
   )
-  set.seed(1)
   res_df <- wallinga_teunis(
     df, "count",
     method = "non_parametric_si",
     config = list(t_start = 10, t_end = 90,
                   si_distr = Flu2009$si_distr, 
                   seed = 1, 
-                  n_sim = 50)
+                  n_sim = 50,
+                  seed = 1)
   )
 
   expect_equal(res_incid$R, res_df$R)
@@ -243,6 +243,57 @@ test_that("wallinga_teunis() works with incidence2 inputs", {
 
 
 
+
+test_that(
+  "seed fixing in wallinga_teunis config works as expected", {
+    
+    # seed = 1 - acts as reference for this test
+    out1 <- wallinga_teunis(Flu2009$incidence, "I",
+                            method = "non_parametric_si",
+                            config = list(t_start = 2:26, t_end = 8:32,
+                                          si_distr = Flu2009$si_distr, 
+                                          n_sim = 50,
+                                          seed = 1))
+    
+    # same seed
+    out2 <- wallinga_teunis(Flu2009$incidence,  "I",
+                            method = "non_parametric_si",
+                            config = list(t_start = 2:26, t_end = 8:32,
+                                          si_distr = Flu2009$si_distr, 
+                                          n_sim = 50,
+                                          seed = 1))
+    
+    # different seed
+    out3 <- wallinga_teunis(Flu2009$incidence,  "I",
+                            method = "non_parametric_si",
+                            config = list(t_start = 2:26, t_end = 8:32,
+                                          si_distr = Flu2009$si_distr, 
+                                          n_sim = 50,
+                                          seed = 2))
+    # no seed
+    out4 <- wallinga_teunis(Flu2009$incidence,  "I",
+                            method = "non_parametric_si",
+                            config = list(t_start = 2:26, t_end = 8:32,
+                                          si_distr = Flu2009$si_distr, 
+                                          n_sim = 50,
+                                          seed = 2))
+    
+    # same seed should produce same R estimates
+    expect_equal(out1$R, out2$R)
+    
+    # different seed should produce same mean R estimates but different 
+    # uncertainty
+    expect_equal(out1$R$`Mean(R)`, out3$R$`Mean(R)`)
+    expect_true(any(out1$R$`Quantile.0.025(R)` != out3$R$`Quantile.0.025(R)`))
+    expect_true(any(out1$R$`Quantile.0.975(R)` != out3$R$`Quantile.0.975(R)`))
+    
+    # not fixing the seed should produce same mean R estimates but different 
+    # uncertainty
+    expect_equal(out1$R$`Mean(R)`, out4$R$`Mean(R)`)
+    expect_true(any(out1$R$`Quantile.0.025(R)` != out4$R$`Quantile.0.025(R)`))
+    expect_true(any(out1$R$`Quantile.0.975(R)` != out4$R$`Quantile.0.975(R)`))
+  }
+)
 
 
 ## data("Flu2009")
