@@ -1,7 +1,6 @@
 ---
 title: "EpiEstim for aggregated incidence data"
 author: "Rebecca Nash"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
@@ -39,6 +38,8 @@ Daily incidence data is reconstructed from aggregated data using an expectation-
 - **Maximisation.** The reproduction number estimates are then translated into growth rates for each aggregation window (Wallinga & Lipsitch, 2007) and used to reconstruct daily incidence data assuming exponential growth. The daily incidence is adjusted by a constant to ensure that if the daily incidence were to be re-aggregated, it would still sum to the original aggregated totals. The expectation and maximisation steps repeat iteratively until convergence.
 
 The daily incidence that is reconstructed after the final iteration of the EM algorithm is then used to estimate R~t~ using the same process as the original `estimate_R()` function, with sliding weekly time windows used as the default.
+
+Note that we do not support the distinction between local and imported cases when using temporally aggregated incidence as we assume that this level of data would not be available.
 
 **Aggregation windows**
 

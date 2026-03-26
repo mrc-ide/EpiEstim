@@ -45,6 +45,7 @@ influenza in San Antonio, Texas, USA (from Morgan et al., EID 2010).
 ```{r data}
 library(EpiEstim)
 library(ggplot2)
+library(incidence) # used later to showcase compatibility with incidence package
 
 ## load data
 data(Flu2009)
@@ -64,7 +65,6 @@ head(Flu2009$si_data)
 We can use the `incidence` R package to easily plot the daily incidence data:
   
 ```{r, incidence}
-library(incidence)
 plot(as.incidence(Flu2009$incidence$I, dates = Flu2009$incidence$dates))
 ```
 
@@ -76,16 +76,18 @@ serial interval.
 For i), the default behavior is to estimate R over weekly sliding windows. 
 This can be changed through the `config$t_start` and `config$t_end` arguments 
 (see below, "Changing the time windows for estimation"). 
-For ii), there are several options, specified in the `method` argument. 
 
-The simplest is the `parametric_si` method, where you only specify the mean and
-standard deviation of the SI. 
+For ii), there are several options, specified in the `method` argument. All 
+options assume that the serial interval is strictly positive. 
+The simplest option is the `parametric_si` method, where you only specify the 
+mean and standard deviation of the SI. 
 
 ## Estimating R on sliding weekly windows, with a parametric serial interval
 
 In this example, we only specify the mean and standard deviation of the serial
 interval. In that case an offset gamma distribution is used for the serial 
-interval. In the following example, we use the mean and standard deviation of the serial 
+interval (the offset ensuring the serial interval is >0). 
+In the following example, we use the mean and standard deviation of the serial 
 interval for flu from Ferguson et al., Nature, 2005:
 
 ```{r estimate_r_parametric_si}
@@ -119,7 +121,9 @@ distribution of the serial interval.
 ## Estimating R with a non parametric serial interval distribution
 
 If one already has a full distribution of the serial interval, and not only a 
-mean and standard deviation, this can be fed into `estimate_r` as follows: 
+mean and standard deviation, this can be fed into `estimate_r` as demonstrated
+below. Note that the serial interval distribution provided must have a 
+probability mass of zero for the first time step, ensuring the SI is >0. 
 
 ```{r estimate_r_non_parametric_si}
 res_non_parametric_si <- estimate_R(Flu2009$incidence, 
@@ -127,14 +131,20 @@ res_non_parametric_si <- estimate_R(Flu2009$incidence,
                                     config = make_config(list(
                                       si_distr = Flu2009$si_distr))
 )
-# si_distr gives the probability mass function of the serial interval for 
+# si_distr gives the probability mass function (PMF) of the serial interval for 
 # time intervals 0, 1, 2, etc.
+# the first value of the PMF must be zero, ensuring the SI is >0.
 plot(res_non_parametric_si, "R")
 ```
 
 Note that you can obtain such a full distribution of the serial interval using 
 `discr_si` function (this is how `Flu2009$si_distr` was obtained, with 
-additional rounding): 
+additional rounding). The discretisation method implemented in `discr_si` is
+documented in the supplementary material of Cori et al. AJE 2013. It assumes
+a Gamma distributed serial interval, and accounts
+for the fact that the serial interval is double-censored, i.e. 
+the time of symptom onset in both the primary and secondary cases are
+discrete (typically with a daily interval). 
 
 ```{r discr_si}
 discr_si(0:20, mu = 2.6, sigma = 1.5)
@@ -244,9 +254,11 @@ every time. You can do this as follow:
 ## first estimate the SI distribution using function dic.fit.mcmc fron 
 ## coarseDataTools package:
 n_mcmc_samples <- config$n1*mcmc_control$thin
+dist <- "G"
+dist_nice_name <- "gamma"
 SI_fit <- coarseDataTools::dic.fit.mcmc(dat = Flu2009$si_data,
                   dist = dist,
-                  init.pars = init_mcmc_params(Flu2009$si_data, dist),
+                  init.pars = init_mcmc_params(Flu2009$si_data, dist_nice_name),
                   burnin = mcmc_control$burnin,
                   n.samples = n_mcmc_samples,
                   seed = mcmc_control$seed)
@@ -328,6 +340,37 @@ The results above suggest that the school closure was effective in terms of
 reducing transmissibility, as the estimated reproduction number during the 
 school closure was significantly lower than that before closure, and was 
 estimated to be under the threshold value 1. 
+
+## Accounting for missed generations of infections
+
+A common source of bias for early estimates of the reproduction number is the 
+inability to account for the existence of infections that preceded the first reported
+case (as observed by [O'Driscoll et al. (2021)](https://doi.org/10.1093/cid/ciaa1599)). 
+A simple solution, outlined in [Brizzi, O'Driscoll, and Dorigatti (2022)](https://doi.org/10.1093/cid/ciac138),
+consists in using early incidence to impute the number of past, unobserved infections
+prior to estimating the reproduction number.
+To use this method, specify the `backimputation_window` argument in `estimate_R` 
+to an integer. This specifies the length of the observation window used for
+backimputation.
+
+```{r estimate_r_backimputation}
+res_backimputation <- estimate_R(Flu2009$incidence$I, 
+                                method="parametric_si",
+                                config = make_config(list(
+                                  mean_si = 2.6, 
+                                  std_si = 1.5)),
+                                backimputation_window = 7)
+plot(res_backimputation, "R")
+```
+
+Here, the first $R_t$ estimates obtained with back-imputation (`r res_backimputation$R[1,"Mean(R)"]`) 
+closely match those obtained without back-imputation (`r res_parametric_si$R[1,"Mean(R)"]`) 
+stored in `res_parametric_si`.
+In this case, this suggests that the $R_t$ estimates are are robust to the 
+existence of unobserved cases.
+However, in other scenarios, the difference between the two estimates can be
+substantial. The back-imputation method can then be used to avoid misleading
+conclusions based on early data. For more examples, refer to the [vignette](EpiEstim_backimputation.html)
 
 ## Different ways of specifying the incidence
 
@@ -415,7 +458,6 @@ This feature is new to `EpiEstim` and described in a manuscript in preparation
 
 ## EpiEstimApp
 
-We have a shiny app in development which integrates all the features presented 
-above. You can follow its developments here: 
-[https://github.com/jstockwin/EpiEstimApp](https://github.com/jstockwin/EpiEstimApp)
-Please note the app is still in development!
+We have a shiny app which integrates some of the core features presented 
+above 
+[https://github.com/jstockwin/EpiEstimApp](https://github.com/jstockwin/EpiEstimApp). Please note the app does not have all features from the R package. 

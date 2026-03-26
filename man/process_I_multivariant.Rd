@@ -2,7 +2,7 @@
 % Please edit documentation in R/gibbs_draws.R
 \name{process_I_multivariant}
 \alias{process_I_multivariant}
-\title{Process incidence input for multivariant analyses with estimate_advantage}
+\title{Process incidence input for multivariant analyses}
 \usage{
 process_I_multivariant(incid, incid_imported = NULL)
 }
@@ -14,25 +14,22 @@ pathogen/strain/variant (3rd dimension)}
 \item{incid_imported}{an optional multidimensional array containing values
 of the incidence of imported cases
 for each time step (1st dimension), location (2nd dimension) and
-pathogen/strain/variant (3rd dimension). `incid - incid_imported` is
-therefore the incidence of locally infected cases. If `incid_imported` is
-NULL this means there are no
+pathogen/strain/variant (3rd dimension). \code{incid - incid_imported} is
+therefore the incidence of locally infected cases. If \code{incid_imported} is
+\code{NULL} this means there are no
 known imported cases and all cases other than on those from the first
 time step will be considered locally infected.}
 }
 \value{
-a list with two elements.
-  1) `local` a multidimensional array containing values of the incidence
-  of locally infected cases
-  for each time step (1st dimension), location (2nd dimension) and
-  pathogen/strain/variant (3rd dimension)
-  2) `imported` a multidimensional array containing values of the incidence
-  of imported cases
-  for each time step (1st dimension), location (2nd dimension) and
-  pathogen/strain/variant (3rd dimension)
+a list with two multidimensional elements each with three dimensions:
+timestep, location and pathogen/strain/variant:
+\itemize{
+\item \code{local}: an array of the incidence of locally infected cases
+\item \code{imported}: an array of the incidence of imported cases
+}
 }
 \description{
-Process incidence input for multivariant analyses with estimate_advantage
+Process incidence input for multivariant analyses with \code{\link[=estimate_advantage]{estimate_advantage()}}
 }
 \examples{
 n_v <- 3 # 3 variants
@@ -41,5 +38,4 @@ T <- 100 # 100 time steps
 # constant incidence 10 per day everywhere
 incid <- array(10, dim = c(T, n_loc, n_v))
 process_I_multivariant(incid)
-
 }

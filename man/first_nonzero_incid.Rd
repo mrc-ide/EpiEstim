@@ -2,8 +2,7 @@
 % Please edit documentation in R/gibbs_draws.R
 \name{first_nonzero_incid}
 \alias{first_nonzero_incid}
-\title{Get the first day of non-zero incidence across
-all variants and locations.}
+\title{First day of non-zero incidence}
 \usage{
 first_nonzero_incid(incid)
 }
@@ -16,14 +15,11 @@ pathogen/strain/variant (3rd dimension)}
 integer
 }
 \description{
-Get the first day of non-zero incidence across
-all variants and locations.
+Get the first day of non-zero incidence across all variants and locations.
 }
 \details{
-For each variant, find the first day of
-non-zero incidence. The maximum of these
-is the smallest possible point at which
-estimation can begin.
+For each variant, find the first day of non-zero incidence. The maximum of
+these is the smallest possible point at which estimation can begin.
 }
 \author{
 Sangeeta Bhatia

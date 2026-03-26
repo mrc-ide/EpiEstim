@@ -7,15 +7,15 @@
 estimate_R_plots(..., legend = FALSE)
 }
 \arguments{
-\item{...}{Arguments of 
-\code{\link{plot.estimate_R}}, but in addition,
-parameter \code{x} can be a objects of class \code{estimate_R} (obtained as 
-outputs of functions \code{\link{estimate_R}} or 
-\code{\link{wallinga_teunis}}.  
-If \code{x} is a list, and \code{what='R'} or \code{what='all'}, 
+\item{...}{Arguments of
+\code{\link[=plot.estimate_R]{plot.estimate_R()}}, but in addition,
+parameter \code{x} can be a objects of class \code{\link[=estimate_R]{estimate_R()}} (obtained as
+outputs of functions \code{\link[=estimate_R]{estimate_R()}} or
+\code{\link[=wallinga_teunis]{wallinga_teunis()}}).
+If \code{x} is a list, and \code{what = 'R'} or \code{what = 'all'},
 all estimates of R are plotted on a
-single graph. This will only work if all the \code{estimate_R} objects in 
-the list were computed using the same \code{config$t_start} and 
+single graph. This will only work if all the \code{\link[=estimate_R]{estimate_R()}} objects in
+the list were computed using the same \code{config$t_start} and
 \code{config$t_end}}
 
 \item{legend}{A boolean (TRUE by default) governing the presence / absence of
@@ -23,10 +23,10 @@ legends on the plots}
 }
 \value{
 a plot (if \code{what = "incid"}, \code{"R"}, or \code{"SI"}) or a
-  \code{\link[grid]{grob}} object (if \code{what = "all"}).
+\code{\link[grid:grid.grob]{grid::grob()}} object (if \code{what = "all"}).
 }
 \description{
-This wrapper has been created so that several \code{estimate_R} objects can 
+This wrapper has been created so that several \code{\link[=estimate_R]{estimate_R()}} objects can
 be plotted at the same time.
 }
 \examples{
@@ -51,7 +51,7 @@ R_case <- wallinga_teunis(Flu2009$incidence,
                   config = list(t_start = seq(2, 26), 
                                 t_end = seq(8, 32), 
                                 si_distr = Flu2009$si_distr
-                  )
+                  ) 
                  )
 
 ## visualise R estimates on the same plot
@@ -81,7 +81,7 @@ estimate_R_plots(list(R_weekly, R_biweekly), what = "R",
                  options_R = list(col = c("blue", "red")), legend = TRUE)
 }
 \seealso{
-\code{\link{plot.estimate_R}}
+\code{\link[=plot.estimate_R]{plot.estimate_R()}}
 }
 \author{
 Anne Cori, Zhian Kamvar

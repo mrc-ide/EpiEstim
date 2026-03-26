@@ -1,17 +1,28 @@
 
-#' @title Estimated Instantaneous Reproduction Number from coarsely aggregated data
+#' Estimate instantaneous reproduction number from coarsely aggregated data
 #'
-#' @param incid aggregated incidence data, supplied as a vector
+#' @param incid Aggregated incidence data, supplied as one of the following
+#' 
+#' - A vector (or a dataframe with a single column) of non-negative integers
+#' containing the incidence time series; these can be aggregated at any time
+#' unit as specified by argument `dt`
+#'
+#' - A dataframe of non-negative integers with `incid$I` containing the total
+#' incidence. If the dataframe contains a column `incid$dates`, this is used for
+#' plotting. `incid$dates` must contains only dates in a row.
+#'
+#' - An object of class [incidence::incidence()]
+#' - An object of class [incidence2::incidence()]
 #' 
 #' @param dt length of temporal aggregations of the incidence data. This should 
 #' be an integer or vector of integers. If a vector, this will be recycled. For 
-#' example, \code{dt = c(3L, 4L)} would correspond to alternating incidence 
+#' example, `dt = c(3L, 4L)` would correspond to alternating incidence 
 #' aggregation windows of 3 and 4 days. The default value is 7 time units 
 #' (typically days) - see details.
 #' 
 #' @param dt_out length of the sliding windows used for R estimates (numeric, 
-#' 7 time units (typically days)  by default). Only used if \code{dt > 1}; in
-#' this case this will supersede config$t_start and config$t_end, see estimate_R().
+#' 7 time units (typically days)  by default). Only used if `dt > 1`; in
+#' this case this will supersede config$t_start and config$t_end, see [estimate_R()].
 #' 
 #' @param recon_opt one of "naive" or "match" (see details).
 #' 
@@ -19,138 +30,136 @@
 #' 
 #' @param tol tolerance used in the convergence check (numeric, 1e-6 by default)
 #' 
-#' @param config an object of class \code{estimate_R_config}, as returned by 
-#' function \code{make_config}. 
+#' @param config an object of class `estimate_R_config`, as returned by 
+#' function [make_config()]. 
 #' 
 #' @param method one of "non_parametric_si" or "parametric_si" (see details).
 #' 
-#' @param grid named list containing "precision", "min", and "max" which are used to
+#' @param grid named list containing `precision`, `min`, and `max` which are used to
 #' define a grid of growth rate parameters that are used inside the EM algorithm 
 #' (see details). We recommend using the default values. 
 #'
-#' @return {
-#' an object of class \code{estimate_R}, with components:
-#' \itemize{
+#' @return 
+#' An object of class [estimate_R()], with components:
 #'
-#' \item{R}{: a dataframe containing:
-#' the times of start and end of each time window considered ;
-#' the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975
-#' quantiles of the reproduction number for each time window.}
+#' - `R`: a dataframe containing the times of start and end of each time window
+#' considered; the posterior mean, std, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95,
+#' 0.975 quantiles of the reproduction number for each time window.
 #'
-#' \item{method}{: the method used to estimate R, one of "non_parametric_si",
-#' "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
+#' - `method`: the method used to estimate R, one of "non_parametric_si",
+#' "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
 #'
-#' \item{si_distr}{: a vector or dataframe (depending on the method) containing
-#'  the discrete serial interval distribution(s) used for estimation}
+#' - `si_distr`: a vector or dataframe (depending on the method) containing
+#'  the discrete serial interval distribution(s) used for estimation
 #'
-#' \item{SI.Moments}{: a vector or dataframe (depending on the method)
+#' - `SI.Moments`: a vector or dataframe (depending on the method)
 #' containing the mean and std of the discrete serial interval distribution(s)
-#' used for estimation}
+#' used for estimation
 #'
-#' \item{I}{: the time series of daily incidence reconstructed by the EM algorithm.
+#' - `I`: the time series of daily incidence reconstructed by the EM algorithm.
 #' For the initial incidence that cannot be reconstructed (e.g. the first aggregation
 #' window and aggregation windows where incidence is too low to estimate Rt - see 
 #' details) then the incidence returned will be the naive disaggregation of the 
-#' incidence data used to initialise the EM algorithm. }
+#' incidence data used to initialise the EM algorithm.
 #'
-#' \item{I_local}{: the time series of incidence of local cases (so that
-#' \code{I_local + I_imported = I})}
+#' - `I_local`: the time series of incidence of local cases (so that
+#' `I_local + I_imported = I`)
 #'
-#' \item{I_imported}{: the time series of incidence of imported cases (so that
-#' \code{I_local + I_imported = I})}
+#' - `I_imported`: the time series of incidence of imported cases (so that
+#' `I_local + I_imported = I`)
 #'
-#' \item{dates}{: a vector of dates corresponding to the incidence time series}
-
-#' }
-#' }
-#' @importFrom epitrix gamma_mucv2shapescale r2R0
-#' @importFrom distcrete distcrete
+#' - `dates`: a vector of dates corresponding to the incidence time series
+#' 
+#' 
+#' @importFrom epitrix r2R0
 #' @export
 #'
 #' @details 
 #' Estimation of the time-varying reproduction number from temporally-aggregated
 #' incidence data. For full details about how Rt is estimated within this 
-#' bayesian framework, see details in \code{\link{estimate_R}}.
+#' bayesian framework, see details in [estimate_R()].
 #' 
 #' Here, an expectation maximisation (EM) algorithm is used to reconstruct daily 
 #' incidence from data that is provided on another timescale. In addition to the 
-#' usual parameters required in \code{estimate_R}, the \code{estimate_R_agg()} 
-#' function requires that the user specify two additional parameters: dt and 
-#' dt_out. There are two other parameters that the user may modify, iter and 
-#' grid, however we recommend that the default values are used.
+#' usual parameters required in [estimate_R()], `estimate_R_agg()` 
+#' requires that the user specify two additional parameters: `dt` and 
+#' `dt_out`. There are two other parameters that the user may modify, `iter` and 
+#' `grid`, however we recommend that the default values are used.
 #' 
-#' \itemize{
-#' \item{dt is the length of the temporal aggregations of the incidence data in 
+#' - `dt` is the length of the temporal aggregations of the incidence data in 
 #' days. This can be a single integer if the aggregations do not change. E.g. 
-#' for weekly data, the user would supply dt = 7L. If the aggregation windows 
+#' for weekly data, the user would supply `dt = 7L`. If the aggregation windows 
 #' vary in length, a vector of integers can be supplied. If the aggregations 
 #' have a repeating pattern, for instance, if incidence is always reported three 
 #' times per week on the same day of the week, you can supply a vector such as: 
-#' dt = c(2L,2L,3L). If the aggregations change over time, or do not have a 
+#' `dt = c(2L,2L,3L)`. If the aggregations change over time, or do not have a 
 #' repeating pattern, the user can supply a full vector of aggregations matching 
-#' the length of the incidence data supplied.}
-#' \item{dt_out is the length of the sliding window used to estimate Rt from the 
+#' the length of the incidence data supplied.
+#' 
+#' - `dt_out` is the length of the sliding window used to estimate Rt from the 
 #' reconstructed daily data. By default, Rt estimation uses weekly sliding time 
 #' windows, however, we recommend that the sliding window is at least equal to 
-#' the length of the longest aggregation window (dt) in the data.}
-#' \item{recon_opt specifies how to handle the initial incidence data that cannot
+#' the length of the longest aggregation window (`dt`) in the data.
+#' 
+#' - `recon_opt` specifies how to handle the initial incidence data that cannot
 #' be reconstructed by the EM algorithm (e.g. the incidence data for the aggregation
 #' window that precedes the first aggregation window that R can be estimated for).
 #' If `"naive"` is chosen, the naive disaggregation of the incidence data will be
 #' kept. If `"match"` is chosen, the incidence in the preceding aggregation window
 #' will be reconstructed by assuming that the growth rate matches that of the first
-#' estimation window. This is `"naive"` by default.}
-#' \item{iter is the number of iterations of the EM algorithm used to reconstruct
-#' the daily incidence data. By default, iter = 10L, which has been demonstrated
+#' estimation window. This is `"naive"` by default.
+#' 
+#' - `iter` is the number of iterations of the EM algorithm used to reconstruct
+#' the daily incidence data. By default, `iter = 10L`, which has been demonstrated
 #' to exceed the number of iterations necessary to reach convergence in simulation 
 #' studies and analysis of real-world data by the package authors (manuscript in 
-#' prep).}
-#' \item{grid is a named list containing "precision", "min", and "max" which are 
+#' prep).
+#' 
+#' - `grid` is a named list containing `precision`, `min`, and `max` which are 
 #' used to define a grid of growth rate parameters used inside the EM algorithm.
 #' The grid is used to convert reproduction number estimates for each aggregation
 #' of incidence data into growth rates, which are then used to reconstruct the 
 #' daily incidence data assuming exponential growth. The grid will auto-adjust 
-#' if it is not large enough, so we recommend using the default values.}
-#' }
+#' if it is not large enough, so we recommend using the default values.
+#' 
 #' 
 #' There are three stages of the EM algorithm:
-#' \itemize{
-#' \item{Initialisation. The EM algorithm is initialised with a naive disaggregation 
+#' 
+#' - Initialisation. The EM algorithm is initialised with a naive disaggregation 
 #' of the incidence data. For example, if there were 70 cases over the course of a 
-#' week, this would be naively split into 10 cases per day.}
-#' \item{Expectation. The reproduction number is estimated for each aggregation 
+#' week, this would be naively split into 10 cases per day.
+#' 
+#' - Expectation. The reproduction number is estimated for each aggregation 
 #' window, except for the first aggregation window (as there is no past incidence 
 #' data). This means that the earliest the incidence reconstruction can start is
 #' at least the first day of the second aggregation window. Additionally, if the 
 #' disaggregated incidence in subsequent aggregation windows is too low to estimate 
 #' the reproduction number, this will mean that the reconstruction will not start 
-#' until case numbers are sufficiently high.}
-#' \item{Maximisation. The reproduction number estimates are then translated 
+#' until case numbers are sufficiently high.
+#' 
+#' - Maximisation. The reproduction number estimates are then translated 
 #' into growth rates for each aggregation window (Wallinga & Lipsitch, 2007) and 
 #' used to reconstruct daily incidence data assuming exponential growth. The daily
 #' incidence is adjusted by a constant to ensure that if the daily incidence were
 #' to be re-aggregated, it would still sum to the original aggregated totals. The
-#' expectation and maximisation steps repeat iteratively until convergence.}
-#' }
+#' expectation and maximisation steps repeat iteratively until convergence.
 #' 
 #' The daily incidence that is reconstructed after the final iteration of the EM 
 #' algorithm is then used to estimate Rt using the same process as the original 
-#' \code{estimate_R} function, with sliding weekly time windows used as the default.
+#' [estimate_R()]` function, with sliding weekly time windows used as the default.
 #' 
 #' 
-#' @seealso \itemize{
-#'  \item{\code{\link{estimate_R}}}{ for details of the core function}
-#'  }
+#' @seealso [estimate_R()] for details of the core function
 #'  
-#' @author Rebecca Nash \email{r.nash@imperial.ac.uk} and Anne Cori \email{a.cori@imperial.ac.uk}
-#' @references {
-#' Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number from 
-#' temporally aggregated incidence data: a statistical modelling approach and software 
-#' tool. medRxiv pre-print. (medRxiv pre-print)
+#' @author Rebecca Nash and Anne Cori
 #' 
-#' Wallinga & Lipsitch. How generation intervals shape the relationship between 
+#' @references 
+#' Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number
+#' from temporally aggregated incidence data: a statistical modelling approach
+#' and software tool. medRxiv pre-print. (medRxiv pre-print)
+#' 
+#' Wallinga & Lipsitch. How generation intervals shape the relationship between
 #' growth rates and reproductive numbers (Proc Biol Sci 2007).
-#' }
 #' 
 #' @examples 
 #' ## Example for constant aggregation windows e.g. weekly reporting
@@ -225,7 +234,7 @@
 #' 
 #' # Plot the result
 #' plot(res_agg)
-#'
+
 estimate_R_agg <- function(incid,
                            dt = 7L, # aggregation window of the data
                            dt_out = 7L, # desired sliding window length
@@ -236,20 +245,19 @@ estimate_R_agg <- function(incid,
                            method = c("non_parametric_si", "parametric_si"),
                            grid = list(precision = 0.001, min = -1, max = 1)){ 
   
+  method <- match.arg(method)
+  
   if (!is.integer(dt)) {
     stop ("dt must be an integer or a vector of integers e.g. dt = 7L, dt = c(2L,2L,3L)")
   }
   if (!is.integer(dt_out)) {
     stop ("dt_out must be an integer e.g. dt_out = 7L")
   }
-  if (!is.integer(iter)) {
-    stop ("iter must be an integer e.g. 10L")
-  }
-  if (iter < 2L) {
-    stop ("iter must be at least 2L")
-  }
   if (!is.list(grid) || !length(grid) == 3){
     stop ("grid must be a list of 3 elements: precision, min, and max")
+  }
+  if (!is.numeric(grid$precision) || !is.numeric(grid$min) || !is.numeric(grid$max)){
+    stop ("grid precision, min, and max, must all be numeric")
   }
   if (grid$max < grid$min){
     stop ("grid max must be larger than grid min")
@@ -257,11 +265,17 @@ estimate_R_agg <- function(incid,
   if (grid$precision > grid$max-grid$min){
     stop ("grid precision must be less than grid max - grid min")
   }
-  if (!is.numeric(grid$precision) || !is.numeric(grid$min) || !is.numeric(grid$max)){
-    stop ("grid precision, min, and max, must all be numeric")
+  if (!is.integer(iter)) {
+    stop ("iter must be an integer e.g. 10L")
   }
-  if (!method == "parametric_si" && !method == "non_parametric_si"){
-    stop ("'arg' should be one of 'non_parametric_si' and 'parametric_si'")
+  if (iter < 2L) {
+    stop ("iter must be at least 2L")
+  }
+  if (method == "parametric_si" && (is.null(config$mean_si) || is.null(config$std_si))) {
+    stop ("'config$mean_si' and 'config$std_si' must be specified when using method 'parametric_si'")
+  }
+  if (method == "non_parametric_si" && is.null(config$si_distr)) {
+    stop ("'config$si_distr' must be specified when using method 'non_parametric_si'")
   }
   if (!recon_opt == "naive" && !recon_opt == "match"){
     stop ("'recon_opt' should be one of 'naive' and 'match'")
@@ -275,7 +289,6 @@ estimate_R_agg <- function(incid,
   # EM algorithm). These use a fixed window length matched to dt (aggregation window)
   # 'config_out' for the final estimated R using sliding windows (supplied by user)
   
-  method <- match.arg(method) # potentially add an error message but maybe automatic
   config <- process_config(config)
   check_config(config, method)
   config_out <- config 
@@ -367,18 +380,19 @@ estimate_R_agg <- function(incid,
       incid_to_reconstruct <- incid[aggs_to_reconstruct]
       
       # Translate R to growth rate
-      get_r_from_R <- function(R, gt_mean, gt_sd, 
-                               gt_distr,
+      get_r_from_R <- function(R, si_mean, si_sd, 
+                               si_distr,
                                grid) {
         r_grid <- seq(grid$min, grid$max, grid$precision)
-        if (is.null(gt_distr)) {
-          gt_pars <- gamma_mucv2shapescale(mu = gt_mean, cv = gt_sd / gt_mean)
-          gt_distr <- distcrete("gamma", interval = 1,
-                                           shape = gt_pars$shape,
-                                           scale = gt_pars$scale, w = 0.5)
+        if (is.null(si_distr)) {
+          si_distr <- discr_si(seq(0, T), mu = si_mean, sigma = si_sd)
+          # remove tail
+          threshold <- 1e-6
+          si_distr <- si_distr[c(TRUE, si_distr[-1] >= threshold)]
+          si_distr <- si_distr / sum(si_distr)
         }
         # using a grid of r values translate that into R using r2R0
-        R_grid <- epitrix::r2R0(r = r_grid, w = gt_distr)
+        R_grid <- epitrix::r2R0(r = r_grid, w = si_distr)
         
         # find location of the value in the R grid which has the smallest 
         # difference to the input of R the user provided e.g. R_grid[idx_r]:
@@ -390,15 +404,15 @@ estimate_R_agg <- function(incid,
           if (grid$max > 0) grid$max <- grid_multiplier * grid$max else grid$max <- - grid$max
           if (grid$min < 0) grid$min <- grid_multiplier * grid$min else grid$min <- - grid$min
           r_grid <- seq(grid$min, grid$max, grid$precision)
-          R_grid <- r2R0(r = r_grid, w = gt_distr)
+          R_grid <- r2R0(r = r_grid, w = si_distr)
           idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L))
         }
         vapply(idx_r, function(e) r_grid[e], numeric(1L))
       }
       
       gr <- get_r_from_R(R = Mean_R, 
-                         gt_mean = config$mean_si, gt_sd = config$std_si, 
-                         gt_distr = config$si_distr,
+                         si_mean = config$mean_si, si_sd = config$std_si, 
+                         si_distr = config$si_distr,
                          grid = grid)
       
       # Assume the growth rates match to reconstruct preceding aggregation window:
@@ -500,8 +514,8 @@ estimate_R_agg <- function(incid,
       
       # Translate R to growth rate again
       gr <- get_r_from_R(R = Mean_R, 
-                         gt_mean = config$mean_si, gt_sd = config$std_si, 
-                         gt_distr = config$si_distr,
+                         si_mean = config$mean_si, si_sd = config$std_si, 
+                         si_distr = config$si_distr,
                          grid = grid)
       
       if (recon_opt == "match"){

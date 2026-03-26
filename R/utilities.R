@@ -61,6 +61,7 @@ process_si_data <- function(si_data) {
 process_I <- function(incid) {
   # If the input is an incidence object, we want to convert it to a data frame
   # that EpiEstim understands, which contains a single column for the I counts.
+  ## TODO: remove this bit once estimate_R and wallinga_teunis have methods
   if (inherits(incid, "incidence")) {
     I_inc   <- incid
     incid   <- as.data.frame(I_inc)
@@ -104,7 +105,7 @@ process_I <- function(incid) {
     }
   }
 
-  incid[which(is.na(incid))] <- 0
+  incid[is.na(incid)] <- 0
   date_col <- names(incid) == "dates"
   if (any(date_col)) {
     if (any(incid[, !date_col] < 0)) {
@@ -120,10 +121,18 @@ process_I <- function(incid) {
 }
 
 process_I_vector <- function(incid) {
-  # here, the incident counts are being forced into a vector.
+  # incidence2 object
+  if (inherits(incid, "incidence2")) {
+    I_col <- incidence2::get_count_value_name(incid)
+    date_col <- incidence2::get_date_index_name(incid)
+    dates <- unique(incid[[date_col]])
+    incid <- tapply(incid[[I_col]], incid[[date_col]], sum)[as.character(dates)]
+    return(as.vector(incid))
+    }
+  # incidence object, the incident counts are being forced into a vector
   if (inherits(incid, "incidence")) {
     incid <- rowSums(incidence::get_counts(incid))
-  }
+    }
   if (!is.vector(incid)) {
     if (is.data.frame(incid)) {
       if (ncol(incid) == 1) {
@@ -270,9 +279,11 @@ process_config <- function(config) {
 }
 
 process_config_si_from_data <- function(config, si_data) {
+
+  valid_distrs <-
+    si_from_data_valid_distrs(config$si_parametric_distr)$all_valid_distrs
   config$si_parametric_distr <- match.arg(
-    config$si_parametric_distr,
-    c("G", "W", "L", "off1G", "off1W", "off1L")
+    config$si_parametric_distr, valid_distrs    
   )
   if (is.null(config$n1)) {
     stop("method si_from_data requires to specify the config$n1 argument.")
@@ -290,9 +301,9 @@ process_config_si_from_data <- function(config, si_data) {
     config$mcmc_control$init_pars <-
       init_mcmc_params(si_data, config$si_parametric_distr)
   }
-  if ((config$si_parametric_distr == "off1G" ||
-    config$si_parametric_distr == "off1W" ||
-    config$si_parametric_distr == "off1L") &&
+  if ((config$si_parametric_distr == "gamma_offset_1" ||
+    config$si_parametric_distr == "weibull_offset_1" ||
+    config$si_parametric_distr == "lognormal_offset_1") &&
     any(si_data$SR - si_data$EL <= 1)) {
     stop(
       "You cannot fit a distribution with offset 1 to this SI ",
@@ -445,3 +456,65 @@ modify_defaults <- function(defaults, x, strict = TRUE) {
   }
   utils::modifyList(defaults, x, keep.null = TRUE) # keep.null is needed here
 }
+
+##' Convert EpiEstim distribution names to those used by coarsedatatools
+##'
+##' coarseDataTools uses abberviated names for distributions e.g. "G" for gamma etc
+##' To provide a smooth user experience, we convert the more descriptive names.
+##' This function performs the user-provided names to the abberviated ones.
+##' @param distr A string with the name of the distribution as provided by the user.
+##' @return A string with the converted distribution name.
+##' @author Sangeeta Bhatia
+##' @keywords internal
+convert_distr_name_for_mcmc <- function(distr) {
+  if (distr %in% c("gamma") | distr %in% c("G")) {
+    return("G")
+  } else if (distr %in% c("weibull") | distr %in% c("W")) {
+    return("W")
+  } else if (distr %in% c("lognormal") | distr %in% c("L")) {
+    return("L")
+  } else if (distr %in% c("gamma_offset_1") | distr %in% c("off1G")) {
+    return("off1G")
+  } else if (distr %in% c("weibull_offset_1") | distr %in% c("off1W")) {
+    return("off1W")
+  } else if (distr %in% c("lognormal_offset_1") | distr %in% c("off1L")) {
+    return("off1L")
+  } else {
+    stop("Unsupported distribution name: ", distr)
+  }
+}
+
+##' Distribution names valid when using MCMC to estimate SI from data
+##'
+##' When using si_from_data method, the package will use
+##' \code{\link[coarseDataTools]{dic.fit.mcmc}} to fit the serial interval
+##' distribution. This method supports only a limited set of distributions.
+##' This function returns the valid distribution names as used by EpiEstim. The
+##' names are internally converted to those used by coarsedatatools by
+##' \code{\link{convert_distr_name_for_mcmc}} function.
+##' @inheritParams coarse2estim
+##' 
+##' @return A two element list - the first element is a flag `is_dist_valid`
+##' indicating whether the passed distribution is valid. Te second element
+##' `all_valid_distrs` is a character vector with the valid distribution names.
+##' @author Sangeeta Bhatia
+##' @export
+si_from_data_valid_distrs <- function(dist) {
+  new_names <- c(
+    "gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
+    "lognormal_offset_1"
+  )
+  old_names <- c("G", "W", "L", "off1G", "off1W", "off1L")
+  valid_names <- c(old_names, new_names)
+  if (dist %in% old_names) {
+    warning(
+      paste(
+        "The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and
+            'off1L' are deprecated. Please use the more descriptive names",
+        new_names, "instead."
+      )
+    )
+  }
+  list(is_dist_valid = dist %in% valid_names, all_valid_distrs = valid_names)
+}
+

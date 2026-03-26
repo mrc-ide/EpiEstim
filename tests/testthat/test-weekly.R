@@ -606,32 +606,6 @@ test_that("grid in estimate_R_agg is in the correct format", {
 })
 
 
-test_that("you can't run estimate_R_agg unless incidence is supplied as a vector", {
-  method <- "parametric_si"
-  config <- make_config(list(mean_si = mean_si,
-                             std_si = std_si))
-  
-inc_obj <- as.incidence(weekly_inc)
-expect_error(suppressWarnings(estimate_R_agg(incid = inc_obj, 
-                                             dt = 7L, 
-                                             dt_out = 7L, 
-                                             iter = 10L,
-                                             config = config,
-                                             method = method,
-                                             grid = list(precision = 0.001, min = -1, max = 1))))
-
-inc_df <- data.frame(weekly_inc)
-expect_error(suppressWarnings(estimate_R_agg(incid = inc_df, 
-                                             dt = 7L, 
-                                             dt_out = 7L, 
-                                             iter = 10L,
-                                             config = config,
-                                             method = method,
-                                             grid = list(precision = 0.001, min = -1, max = 1))))
-
-})
-
-
 test_that("you can't run estimate_R_agg unless using parametric/non-parametric SI methods", {
   method <- "uncertain_si"
   config <- make_config(list(mean_si = 2.6, std_mean_si = 1,
@@ -646,7 +620,7 @@ test_that("you can't run estimate_R_agg unless using parametric/non-parametric S
                  config = config,
                  method = method,
                  grid = list(precision = 0.001, min = -1, max = 1)),
-               "'arg' should be one of 'non_parametric_si' and 'parametric_si'")
+               "'arg' should be one of \"non_parametric_si\", \"parametric_si\"")
   
 })
 
@@ -736,4 +710,99 @@ test_that("method works with different single integers of dt", {
   
 })
 
+test_that("estimate_R_agg handles different incid input formats consistently", {
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si))
   
+  # integer vector
+  res_int <- suppressWarnings(estimate_R(incid = weekly_inc,
+                                         dt = 7L,
+                                         dt_out = 7L,
+                                         iter = 10L,
+                                         config = config,
+                                         method = method))
+  
+  # numeric vector
+  res_numeric <- suppressWarnings(estimate_R(incid = as.numeric(weekly_inc),
+                                             dt = 7L,
+                                             dt_out = 7L,
+                                             iter = 10L,
+                                             config = config,
+                                             method = method))
+  
+  # dataframe with I column
+  weekly_inc_df <- data.frame(I = weekly_inc,
+                              dates = seq(as.Date("2020-01-01"), by = "week",
+                                          length.out = length(weekly_inc)))
+  res_df <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+                                        dt = 7L,
+                                        dt_out = 7L,
+                                        iter = 10L,
+                                        config = config,
+                                        method = method))
+  
+  # incidence object
+  inc_obj <- as.incidence(weekly_inc, interval = 7L)
+  res_inc_obj <- suppressWarnings(estimate_R(incid = inc_obj,
+                                             dt = 7L,
+                                             dt_out = 7L,
+                                             iter = 10L,
+                                             config = config,
+                                             method = method))
+  
+  # incidence2 object
+  data <- data.frame(
+    I = weekly_inc,
+    dates = seq(as.Date("2020-01-01"), by = "week", length.out = length(weekly_inc))
+  )
+  inc_obj_group <- incidence2::incidence(data, date_index = "dates",
+                                         date_names_to = "dates", counts = "I",
+                                         count_values_to = "I")
+  res_grouped_obj <- suppressWarnings(estimate_R(incid = inc_obj_group,
+                                                 dt = 7L,
+                                                 dt_out = 7L,
+                                                 iter = 10L,
+                                                 config = config,
+                                                 method = method))
+  
+  ## check it works with incidence2 without naming
+  inc_obj_group2 <- incidence2::incidence(data, date_index = "dates",
+                                         counts = "I")
+  res_grouped_obj2 <- suppressWarnings(estimate_R(incid = inc_obj_group2,
+                                                 dt = 7L,
+                                                 dt_out = 7L,
+                                                 iter = 10L,
+                                                 config = config,
+                                                 method = method))
+  
+  # all formats should produce identical R estimates
+  expect_equal(res_int$R, res_numeric$R)
+  expect_equal(res_int$R, res_df$R)
+  expect_equal(res_int$R, res_inc_obj$R)
+  expect_equal(res_int$R, res_grouped_obj$R)
+  expect_equal(res_int$R, res_grouped_obj2$R)
+  
+})
+
+
+test_that("t_start and t_end work when dt is used without specifying dt_out", {
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si,
+                             t_start = c(8, 16),
+                             t_end = c(15, 30)))
+  
+  expect_no_error(
+    res <- suppressWarnings(estimate_R(incid = weekly_inc,
+                                       dt = 7L,
+                                       iter = 10L,
+                                       config = config,
+                                       method = method))
+  )
+  
+  # check that R is estimated for exactly the two specified windows
+  expect_equal(res$R$t_start, c(8, 16))
+  expect_equal(res$R$t_end, c(15, 30))
+  expect_equal(nrow(res$R), 2)
+})
