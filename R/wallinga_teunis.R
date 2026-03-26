@@ -94,8 +94,7 @@
 #' 
 #' @export
 #' 
-#' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle geom_ribbon
-#'   geom_line xlab ylab xlim geom_hline ylim geom_histogram
+
 #' 
 #' @examples
 #' ## load data on pandemic flu in a school in 2009
