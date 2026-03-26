@@ -16,7 +16,7 @@
 #' and \code{incid$imported} contains the incidence of imported cases (with
 #' \code{incid$local + incid$imported} the total incidence). If the dataframe
 #' contains a column \code{incid$dates}, this is used for plotting.
-#' \code{incid$dates} must contains only dates in a row.}
+#' \code{incid$dates} must contains only consecutive dates.}
 #'
 #' \item{An object of class \code{\link{incidence}}}
 #'
@@ -749,9 +749,9 @@ estimate_R_func <- function(incid,
     "Quantile.0.975(R)"
   )
 
-  if (!is.null(incid$Date)) {
-    results$R$date_start <- incid$Date[config$t_start][non_na_rows]
-    results$R$date_end <- incid$Date[config$t_end][non_na_rows]
+  if (!is.null(incid$dates)) {
+    results$R$date_start <- incid$dates[config$t_start][non_na_rows]
+    results$R$date_end <- incid$dates[config$t_end][non_na_rows]
   }
   
   results$method <- method
@@ -773,7 +773,7 @@ estimate_R_func <- function(incid,
     ))
   }
   names(results$SI.Moments) <- c("Mean", "Std")
-  
+
   if (!is.null(incid$dates)) {
     results$dates <- check_dates(incid)
   } else {
