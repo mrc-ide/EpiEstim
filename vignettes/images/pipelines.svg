@@ -25,8 +25,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="0.84096521"
-     inkscape:cx="739.62632"
-     inkscape:cy="422.13399"
+     inkscape:cx="740.81543"
+     inkscape:cy="419.75577"
      inkscape:window-width="1920"
      inkscape:window-height="1123"
      inkscape:window-x="0"
@@ -213,7 +213,10 @@
      id="layer1">
     <g
        id="g1526"
-       transform="matrix(0.65197177,0,0,0.65197177,115.7202,85.917736)">
+       transform="matrix(0.65197177,0,0,0.65197177,115.7202,85.917736)"
+       inkscape:export-filename="pipelines.png"
+       inkscape:export-xdpi="150"
+       inkscape:export-ydpi="150">
       <rect
          style="opacity:0.542196;fill:#6f917c;stroke:#916f6f;stroke-width:0.175432;stroke-opacity:0.588235"
          id="rect254"
@@ -607,7 +610,7 @@
        inkscape:connection-end="#g1546" />
     <g
        id="g8652"
-       transform="matrix(0.77794877,0,0,0.77794877,76.608141,42.518232)">
+       transform="matrix(0.63573786,0,0,0.63573786,108.48621,65.126019)">
       <g
          id="g8633"
          transform="translate(0,4.0132735)">
@@ -698,12 +701,12 @@
     <rect
        style="opacity:1;fill:#666666;fill-opacity:0;stroke:#666666;stroke-width:0.499999;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect11438"
-       width="269.33994"
-       height="146.99316"
+       width="266.61542"
+       height="146.0097"
        x="9.8782158"
        y="7.8248205"
-       rx="1.0412695"
-       ry="0.88714027" />
+       rx="3.4186068"
+       ry="3.4186068" />
     <rect
        style="opacity:0.542196;fill:#6f917c;stroke:#916f6f;stroke-width:0.114377;stroke-opacity:0.588235"
        id="rect254-9-2"
