@@ -31,15 +31,17 @@ Thompson et al. Epidemics 2019
 (EpiEstim versions >= 1.1-0, using `method = "si_from_data"` or 
 `method = "si_from_sample"`)
 
-- Allowing user-specified incidence split between imported and local cases, as described 
-in Thompson et al. Epidemics 2019 
-(v >= 1.1-0) 
+- Allowing user-specified incidence split between imported and local cases, as 
+described in Thompson et al. Epidemics 2019 
+(v >= 1.1-0, by modifying `incid` argument) 
 
 - Allowing input incidence aggregated at time steps longer than 1, as described 
-in Nash et al. PLoS Comp Biol 2023 (v >= 2.4) 
+in Nash et al. PLoS Comp Biol 2023 (v >= 2.4, by modifying `incid` and 
+specifying `dt` argument) 
 
 - Enabling backcalculation of early incidence (before first observation) to 
-improve early R estimation as described in Brizzi et al. CID 2022. (v >= 2.5)
+improve early R estimation as described in Brizzi et al. CID 2022. (v >= 2.5, 
+with `backimputation_window` argument)
 
 ### Estimation of the transmission advantage of pathogen variants: `estimate_advantage()`
 
