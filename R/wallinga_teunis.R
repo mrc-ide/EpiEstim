@@ -6,9 +6,11 @@
 #' @param incid An incidence time series provided as:
 #' - a non-negative `integer` vector
 #' - a non-negative `numeric` vector
-#' - a `data.frame` with a column named `incid`; if the dataframe contains a
-#'   column `dates`, this is used for plotting
+#' - a `data.frame` with a column named `I` by default (see argument 'count')
+#'   containing incidence; if the data.frame contains a column `dates`, this
+#'   is used for plotting
 #' - an `incidence` object as returned by [incidence::incidence()]
+#' - an `incidence2` object as returned by [incidence2::incidence()]
 #'
 #' @param method the method used to estimate R, one of "non_parametric_si",
 #'   "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
@@ -80,12 +82,8 @@
 #'
 #' @seealso [discr_si()], [estimate_R()]
 #'
-<<<<<<< i_200
 #' @author Anne Cori \email{a.cori@imperial.ac.uk}; generic and methods by
 #'   Thibaut Jombart
-=======
-#' @author Anne Cori
->>>>>>> main
 #' 
 #' @references 
 #' Cori, A. et al. A new framework and software to estimate time-varying
@@ -104,7 +102,7 @@
 #' data("Flu2009")
 #'
 #' ## estimate the case reproduction number (method "non_parametric_si")
-#' res <- wallinga_teunis(Flu2009$incidence, "I",
+#' res <- wallinga_teunis(Flu2009$incidence,
 #'    method = "non_parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  si_distr = Flu2009$si_distr,
@@ -117,7 +115,7 @@
 #' ## finishing on that day.
 #'
 #' ## estimate the case reproduction number (method "parametric_si")
-#' res <- wallinga_teunis(Flu2009$incidence, "I", method = "parametric_si",
+#' res <- wallinga_teunis(Flu2009$incidence, method = "parametric_si",
 #'    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
 #'                  mean_si = 2.6, std_si = 1.5,
 #'                  n_sim = 100,
@@ -388,12 +386,11 @@ wallinga_teunis.integer <- function(incid,
 #' @rdname wallinga_teunis
 #' @export
 #' @param count An `integer` or `character` indicating the column of the
-#'   `data.frame` containing counts; defaults to 1L, i.e. the first column is
-#'   assumed to contain counts
+#'   `data.frame` containing counts; defaults to "I"
 wallinga_teunis.data.frame <- function(incid,
-                                       count = 1L,
                                        method = c("non_parametric_si", "parametric_si"),
                                        config,
+                                       count = "I",
                                        ...) {
   x <- incid[[count]]
   out <- wallinga_teunis(

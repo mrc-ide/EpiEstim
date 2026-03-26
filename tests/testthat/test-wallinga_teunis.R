@@ -156,11 +156,13 @@ test_that("wallinga_teunis() works with data.frame inputs", {
     config = list(t_start = 10, t_end = 90,
                   si_distr = Flu2009$si_distr, 
                   seed = 1, 
-                  n_sim = 50)
+                  n_sim = 50),
+    count = "incid"
   )
 
   expect_equal(res_i$R, res_df$R)
   expect_equal(res_df$dates, df$dates)
+
 })
 
 

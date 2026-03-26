@@ -30,9 +30,9 @@ wallinga_teunis(incid, ...)
 
 \method{wallinga_teunis}{data.frame}(
   incid,
-  count = 1L,
   method = c("non_parametric_si", "parametric_si"),
   config,
+  count = "I",
   ...
 )
 
@@ -57,9 +57,11 @@ wallinga_teunis(incid, ...)
 \itemize{
 \item a non-negative \code{integer} vector
 \item a non-negative \code{numeric} vector
-\item a \code{data.frame} with a column named \code{incid}; if the dataframe contains a
-column \code{dates}, this is used for plotting
+\item a \code{data.frame} with a column named \code{I} by default (see argument 'count')
+containing incidence; if the data.frame contains a column \code{dates}, this
+is used for plotting
 \item an \code{incidence} object as returned by \code{\link[incidence:incidence]{incidence::incidence()}}
+\item an \code{incidence2} object as returned by \code{\link[incidence2:incidence]{incidence2::incidence()}}
 }}
 
 \item{...}{further arguments to be passed to methods.}
@@ -93,8 +95,7 @@ number (see details).
 }}
 
 \item{count}{An \code{integer} or \code{character} indicating the column of the
-\code{data.frame} containing counts; defaults to 1L, i.e. the first column is
-assumed to contain counts}
+\code{data.frame} containing counts; defaults to "I"}
 
 \item{quiet}{A \code{logical} indicating if warnings should be issued when
 relevant. Defaults to \code{FALSE}.}
@@ -153,7 +154,7 @@ derived automatically using \code{\link[=discr_si]{discr_si()}}.
 data("Flu2009")
 
 ## estimate the case reproduction number (method "non_parametric_si")
-res <- wallinga_teunis(Flu2009$incidence, "I",
+res <- wallinga_teunis(Flu2009$incidence,
    method = "non_parametric_si",
    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
                  si_distr = Flu2009$si_distr,
@@ -166,7 +167,7 @@ plot(res)
 ## finishing on that day.
 
 ## estimate the case reproduction number (method "parametric_si")
-res <- wallinga_teunis(Flu2009$incidence, "I", method = "parametric_si",
+res <- wallinga_teunis(Flu2009$incidence, method = "parametric_si",
    config = list(t_start = seq(2, 26), t_end = seq(8, 32),
                  mean_si = 2.6, std_si = 1.5,
                  n_sim = 100,
