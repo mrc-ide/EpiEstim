@@ -23,6 +23,7 @@
 ## MISC
 
 * lintr is now part of EpiEstim continuous integration toolkit, alongside R CMD check. This should detect and eliminate suboptimal code pattern and potential bugs before they even make it to `master` (#159, @Bisaloo).
+
 # EpiEstim 2.3
 
 * new function estimate_joint to estimate the transmission advantage of a strain or variant

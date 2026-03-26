@@ -12,12 +12,56 @@ To install the latest version, use:
 install.packages('EpiEstim', repos = c('https://mrc-ide.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
-### Vignettes
+## Functionalities
+
+EpiEstim offers multiple functionalities around reproduction number estimation, 
+which are summarised below. 
+
+### Instantaneous reproduction number estimation: `estimate_R()`
+
+The function `estimate_R` estimates the time-varying case instantaneous 
+reproduction number using the methodology described in Cori et al. AJE 2013. 
+
+Functionalities 
+have been added over time to support the following: 
+
+- Within the R estimation, nesting an estimation of the serial interval from 
+double censored data using the `coarseDataTools` package, as described in 
+Thompson et al. Epidemics 2019 
+(EpiEstim versions >= 1.1-0, using `method = "si_from_data"` or 
+`method = "si_from_sample"`)
+
+- Allowing user-specified incidence split between imported and local cases, as described 
+in Thompson et al. Epidemics 2019 
+(v >= 1.1-0) 
+
+- Allowing input incidence aggregated at time steps longer than 1, as described 
+in Nash et al. PLoS Comp Biol 2023 (v >= 2.4) 
+
+- Enabling backcalculation of early incidence (before first observation) to 
+improve early R estimation as described in Brizzi et al. CID 2022. (v >= 2.5)
+
+### Estimation of the transmission advantage of pathogen variants: `estimate_advantage()`
+
+The function `estimate_advantage` jointly estimates the instantaneous 
+reproduction number for a reference variant (or pathogen or strain) and the 
+relative transmissibility of a "new" variant (or pathogen or strain), 
+using the methodology described in Bhatia et al. Epidemics 2023.
+
+### Case reproduction number estimation: `wallinga_teunis()`
+
+The function `wallinga_teunis` estimates the time-varying case reproduction 
+number using the methodology described in Wallinga and Teunis et al. AJE 2004.
+Note that EpiEstim currently does not implement any additional features such as
+correcting for right censoring as proposed by Cauchemez et al. AJE 2006.
+
+## Vignettes
+
 Please see https://mrc-ide.github.io/EpiEstim/ for vignettes with worked examples, 
 FAQs and details about how EpiEstim can be used alongside some other R packages 
 in an outbreak analysis workflow.
 
-### Cite our papers
+## Cite our papers
 
 The methodology underlying EpiEstim is detailed in the following papers:
 
@@ -35,7 +79,7 @@ Brizzi A, O'Driscoll M, Dorigatti I., [Refining Reproduction Number Estimates to
 
 You can download a formatted bibtex file containing all our papers [here](inst/epiestimpapers.bib).
 
-### Citing this code resource
+## Citing this code resource
 
 We kindly request that you cite this codebase as follows (BibTeX format):
 
