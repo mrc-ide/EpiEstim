@@ -44,7 +44,7 @@ with the `backimputation_window` argument)
 
 ### Estimation of the transmission advantage of pathogen variants: `estimate_advantage()`
 
-The function `estimate_advantage` jointly estimates the instantaneous 
+The function [`estimate_advantage`](https://mrc-ide.github.io/EpiEstim/reference/estimate_advantage.html) jointly estimates the instantaneous 
 reproduction number for a reference variant (or pathogen or strain) and the 
 relative transmissibility of a "new" variant (or pathogen or strain), 
 using the methodology described in Bhatia et al. Epidemics 2023.
