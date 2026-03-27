@@ -11,49 +11,46 @@ test_that("There is an informative error if dates are not ascending", {
 
 
 # The following examples are from EpiEstim's documentation.
-# set.seed(1)
 
 test_that("Example 1 matches saved output", {
+  testthat::local_edition(3)
   out <- estimate_R(Flu2009$incidence, method = "non_parametric_si",
                     config = list(t_start = 2:26, t_end = 8:32,
                                   si_distr = Flu2009$si_distr, 
                                   seed = 1))
-  expect_equal_to_reference(out, "../expected_output/Example1.rds", update = FALSE)
+  expect_snapshot(out)
 })
 
 test_that("Example 2 matches saved output", {
-
+  testthat::local_edition(3)
   data <- c(0, 1, 1, 2, 1, 3, 4, 5, 5, 5, 5, 4, 4, 26, 6, 7, 9)
   location <- c("imported", "local", "imported", "imported", "local",
                 "imported", "imported", "imported", "imported",
                 "local", "local", "local", "imported", "local",
                 "imported", "local", "imported")
-  # get incidence per group (location)
   incid <- incidence::incidence(data, groups = location)
   out <- estimate_R(incid, method = "parametric_si",
                     config = list(t_start = 2:21, 
                                   t_end = 8:27,
                                   mean_si = 2.6, 
                                   std_si = 1.5, 
-                                  seed = 1)
-                    )
-  expect_equal_to_reference(out, "../expected_output/Example2.rds", update = FALSE)
+                                  seed = 1))
+  expect_snapshot(out)
 })
 
 test_that("Example 3 matches saved output", {
-  ## estimate the reproduction number (method "parametric_si")
+  testthat::local_edition(3)
   out <- estimate_R(Flu2009$incidence, method = "parametric_si",
                     config = list(t_start = 2:26, 
                                   t_end = 8:32,
                                   mean_si = 2.6, 
                                   std_si = 1.5, 
-                                  seed = 1)
-                    )
-  expect_equal_to_reference(out, "../expected_output/Example3.rds", update = FALSE)
+                                  seed = 1))
+  expect_snapshot(out)
 })
 
 test_that("Example 4 matches saved output", {
-  ## estimate the reproduction number (method "uncertain_si")
+  testthat::local_edition(3)
   out <- estimate_R(Flu2009$incidence, method = "uncertain_si",
                     config = list(t_start = 2:26, 
                                   t_end = 8:32,
@@ -67,10 +64,6 @@ test_that("Example 4 matches saved output", {
                                   max_std_si = 2.5,
                                   n1 = 100, 
                                   n2 = 100, 
-                                  seed = 1)
-                    )
-  expect_equal_to_reference(out, "../expected_output/Example4.rds", update = FALSE)
+                                  seed = 1))
+  expect_snapshot(out)
 })
-
-
-
