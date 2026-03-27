@@ -66,8 +66,8 @@ is used for plotting
 
 \item{...}{further arguments to be passed to S3 methods.}
 
-\item{method}{the method used to estimate R, one of "non_parametric_si",
-"parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"}
+\item{method}{the method used to estimate R, one of "non_parametric_si" or
+"parametric_si"}
 
 \item{config}{a list with the following elements:
 \itemize{
