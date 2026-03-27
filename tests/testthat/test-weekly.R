@@ -607,20 +607,21 @@ test_that("grid in estimate_R_agg is in the correct format", {
 
 
 test_that("you can't run estimate_R_agg unless using parametric/non-parametric SI methods", {
+  testthat::local_edition(3)
   method <- "uncertain_si"
   config <- make_config(list(mean_si = 2.6, std_mean_si = 1,
                              min_mean_si = 1, max_mean_si = 4.2,
                              std_si = 1.5, std_std_si = 0.5,
                              min_std_si = 0.5, max_std_si = 2.5))
   
-  expect_error(estimate_R_agg(incid = weekly_inc, 
+  expect_snapshot(estimate_R_agg(incid = weekly_inc, 
                  dt = 7L, 
                  dt_out = 7L, 
                  iter = 10L,
                  config = config,
                  method = method,
                  grid = list(precision = 0.001, min = -1, max = 1)),
-               "'arg' should be one of \"non_parametric_si\", \"parametric_si\"")
+               error = TRUE)
   
 })
 
