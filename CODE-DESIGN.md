@@ -8,14 +8,14 @@ The typical user workflow is:
 
 1. Get Incidence data (e.g., incidence & incidence2)
 2. Estimate R - uses configuration (`make_config()`)
-    - `estimate_R()` (also wrappers `estimate_R_agg()`, `estimate_advantage()`
+    - `estimate_R()` (also wrappers `estimate_R_agg()`), `estimate_advantage()`
     - `wallinga_teunis()`
 3. Plot results (`plot()`)
 4. Send to other packages (e.g., projections)
 
 ## Be Careful
 
-- [Any common pitfalls a developer working with this package might encounter?]
+- EpiEstim's main functions (outlined above) can handle multiple formats for specify the `incid` argument in multiple formats (e.g. as a numeric vector, a data frame, an `incidence` or `incidence2` object). They also enable the user to specify the serial interval in different way (through the `method` argument). We aim for any changes to the code to preserve this flexibility as much as possible, i.e. be compatible with all `incid` and `method` combinations. The only exception for this is if complexity (computational or statistical) becomes a challenge. For example,  `estimate_advantage` relies on a computationally expensive MCMC algorithm and hence is only implemented for the simplest serial interval specifications i.e. `method = "parametric_si"` or `method = "non_parametric_si"`. 
 
 ## Style
 
