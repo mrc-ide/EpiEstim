@@ -36,7 +36,7 @@ described in Thompson et al. Epidemics 2019
 
 - Allowing input incidence aggregated at time steps longer than 1, as described 
 in Nash et al. PLoS Comp Biol 2023 (v >= 2.4, by modifying `incid` and 
-specifying `dt` argument) 
+specifying the `dt` argument) 
 
 - Enabling backcalculation of early incidence (before first observation) to 
 improve early R estimation as described in Brizzi et al. CID 2022. (v >= 2.5, 
