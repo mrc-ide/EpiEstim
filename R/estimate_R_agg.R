@@ -71,7 +71,6 @@
 #' - `dates`: a vector of dates corresponding to the incidence time series
 #' 
 #' 
-#' @importFrom epitrix r2R0
 #' @export
 #'
 #' @details 
@@ -404,7 +403,7 @@ estimate_R_agg <- function(incid,
           if (grid$max > 0) grid$max <- grid_multiplier * grid$max else grid$max <- - grid$max
           if (grid$min < 0) grid$min <- grid_multiplier * grid$min else grid$min <- - grid$min
           r_grid <- seq(grid$min, grid$max, grid$precision)
-          R_grid <- r2R0(r = r_grid, w = si_distr)
+          R_grid <- epitrix::r2R0(r = r_grid, w = si_distr)
           idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L))
         }
         vapply(idx_r, function(e) r_grid[e], numeric(1L))

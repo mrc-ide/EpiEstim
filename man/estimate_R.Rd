@@ -10,7 +10,7 @@ estimate_R(
     "si_from_sample"),
   si_data = NULL,
   si_sample = NULL,
-  config = make_config(incid = incid, method = method),
+  config = make_config(incid = incid),
   dt = 1L,
   dt_out = 7L,
   recon_opt = "naive",
@@ -293,9 +293,10 @@ R_Parametric <- estimate_R(MockRotavirus$incidence,
                           mean_si = mean(R_si_from_data$SI.Moments$Mean),
                              std_si = mean(R_si_from_data$SI.Moments$Std))))
 ## generate plots
+library(patchwork) # To arrange side-by-side
 p_uncertainty <- plot(R_si_from_data, "R", options_R=list(ylim=c(0, 1.5)))
 p_no_uncertainty <- plot(R_Parametric, "R", options_R=list(ylim=c(0, 1.5)))
-gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
+p_uncertainty + p_no_uncertainty
 
 ## the left hand side graph is with uncertainty in the SI distribution, the
 ## right hand side without.

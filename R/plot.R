@@ -76,24 +76,6 @@
 #' @author Rolina van Gaalen and Anne Cori; S3 method by Thibaut Jombart; v2
 #'  theme by Rebecca Nash
 #'
-#' @import reshape2 grid gridExtra
-#'
-#' @importFrom scales alpha
-#'
-#' @importFrom grDevices palette
-#'
-#' @importFrom ggplot2 last_plot ggplot aes aes_string geom_step ggtitle
-#'   geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
-#'   scale_colour_manual scale_fill_manual scale_linetype_manual lims theme
-#'   margin element_rect theme_light %+replace% element_blank element_line
-#'   element_text scale_y_continuous 
-#'
-#' @importFrom graphics plot
-#'
-#' @importFrom incidence as.incidence
-#'
-#' @importFrom patchwork plot_layout
-#'
 #' @export
 #'
 #' @examples
@@ -139,19 +121,20 @@
 #' p_Rc <- plot(R_c, "R",
 #'              options_R = list(ylim = c(0, 4)))
 #' # plots the estimated case reproduction number
-#' gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
+#' library(patchwork) # For figure placement
+#' (p_I + p_SI) / (p_Ri + p_Rc)
 
 plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme = "v2",
                             add_imported_cases = FALSE,
                             options_I = list(
-                              col = palette(), transp = 0.7,
+                              col = grDevices::palette(), transp = 0.7,
                               xlim = NULL, ylim = NULL,
                               interval = 1L,
                               xlab = "Time",
                               ylab = "Incidence"
                             ),
                             options_R = list(
-                              col = palette(), transp = 0.2,
+                              col = grDevices::palette(), transp = 0.2,
                               xlim = NULL, ylim = NULL,
                               xlab = "Time",
                               ylab = "R"
@@ -166,13 +149,13 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
                             legend = TRUE, ...) {
   ## dealing with the fact that some options may be left to default but others
   ## may have been specified by user
-  if (is.null(options_I$col)) options_I$col <- palette()
+  if (is.null(options_I$col)) options_I$col <- grDevices::palette()
   if (is.null(options_I$transp)) options_I$transp <- 0.7
   if (is.null(options_I$xlab)) options_I$xlab <- "Time"
   if (is.null(options_I$ylab)) options_I$ylab <- "Incidence"
   if (is.null(options_I$interval)) options_I$interval <- 1L
 
-  if (is.null(options_R$col)) options_R$col <- palette()
+  if (is.null(options_R$col)) options_R$col <- grDevices::palette()
   if (is.null(options_R$transp)) options_R$transp <- 0.2
   if (is.null(options_R$xlab)) options_R$xlab <- "Time"
   if (is.null(options_R$ylab)) options_R$ylab <- "R"
@@ -272,16 +255,6 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
     dates <- seq_len(T)
   }
 
-  ########################################################################
-  ### these few lines are to make CRAN checks happy with ggplot2... ###
-  value <- NULL
-  meanR <- NULL
-  group <- NULL
-  lower <- NULL
-  upper <- NULL
-  end <- NULL
-  ########################################################################
-
   ## temp fix for estimate_R_agg to be able to plot disaggreated incidence <1
   if (any(rowSums(incid) < 1 & rowSums(incid) > 0)) {
     idx_round <- which(rowSums(incid) < 1 & rowSums(incid) > 0)
@@ -293,7 +266,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
   if (what %in% c("incid", "all")) {
     if (add_imported_cases) {
       p1 <- plot(
-        as.incidence(incid,
+        incidence::as.incidence(incid,
           dates = x$dates,
           interval = options_I$interval
         ),
@@ -304,7 +277,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
         ggtitle("Epidemic curve")
     } else {
       p1 <- plot(
-        as.incidence(rowSums(incid),
+        incidence::as.incidence(rowSums(incid),
           dates = x$dates,
           interval = options_I$interval
         ),
@@ -342,7 +315,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           options_R$xlim <- c(min(dates), max(dates) + 1)
         }
 
-        df <- melt(data.frame(
+        df <- reshape2::melt(data.frame(
           start = dates[t_start] - 0.5, end = dates[t_end] + 0.5, meanR = mean_posterior,
           lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
@@ -353,18 +326,18 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
         ))
 
         p2 <- ggplot(df, aes(
-          x = value, y = as.numeric(meanR),
-          group = as.factor(group)
+          x = .data$value, y = as.numeric(.data$meanR),
+          group = as.factor(.data$group)
         )) +
           theme_epiestim() +
-          geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
-          geom_line(aes(y = meanR, colour = "Mean")) +
+          geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper, fill = "95%CrI")) +
+          geom_line(aes(y = .data$meanR, colour = "Mean")) +
           xlab(options_R$xlab) +
           ylab(options_R$ylab) +
           xlim(options_R$xlim) +
           ylim(options_R$ylim) +
           scale_colour_manual("", values = options_R$col) +
-          scale_fill_manual("", values = alpha(
+          scale_fill_manual("", values = scales::alpha(
             options_R$col,
             options_R$transp
           )) +
@@ -412,32 +385,32 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           options_R$xlim <- c(min(dates), max(dates) + 1)
         }
 
-        df <- melt(df, id = id)
+        df <- reshape2::melt(df, id = id)
         df$group <- as.factor(rep(
           seq_len(length(t_start)),
           dim(df)[1] / length(t_start)
         ))
 
         p2 <- ggplot(df, aes(
-          x = value, y = as.numeric(meanR),
-          group = as.factor(group)
+          x = .data$value, y = as.numeric(.data$meanR),
+          group = as.factor(.data$group)
         )) +
           theme_epiestim() +
-          geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
-          geom_line(aes(y = meanR, colour = "Mean"))
+          geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper, fill = "95%CrI")) +
+          geom_line(aes(y = .data$meanR, colour = "Mean"))
 
         for (i in seq(2, length(x_list)))
         {
           p2 <- p2 +
             theme_epiestim() +
-            geom_ribbon(aes_string(
-              ymin = paste0("lower", i),
-              ymax = paste0("upper", i),
-              fill = shQuote(paste0("95%CrI", i))
+            geom_ribbon(aes(
+              ymin = .data[[paste0("lower", i)]],
+              ymax = .data[[paste0("upper", i)]],
+              fill = paste0("95%CrI", i)
             )) +
-            geom_line(aes_string(
-              y = paste0("meanR", i),
-              colour = shQuote(paste0("Mean", i))
+            geom_line(aes(
+              y = .data[[paste0("meanR", i)]],
+              colour = paste0("Mean", i)
             ))
         }
 
@@ -449,7 +422,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           ylim(options_R$ylim) +
           scale_colour_manual("", values = options_R$col) +
           scale_fill_manual("",
-            values = alpha(options_R$col, options_R$transp)
+            values = scales::alpha(options_R$col, options_R$transp)
           ) +
           ggtitle("Estimated R")
       }
@@ -467,9 +440,9 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           start = dates[t_start], end = dates[t_end], meanR = mean_posterior,
           lower = quantile_0.025_posterior,
           upper = quantile_0.975_posterior
-        ), aes(end, meanR)) +
+        ), aes(x = .data$end, y = .data$meanR)) +
           theme_epiestim() +
-          geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
+          geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper, fill = "95%CrI")) +
           geom_line(aes(colour = "Mean")) +
           geom_hline(yintercept = 1, linetype = "dotted") +
           xlab(options_R$xlab) +
@@ -478,7 +451,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           ylim(options_R$ylim) +
           ggtitle("Estimated R") +
           scale_colour_manual("", values = options_R$col) +
-          scale_fill_manual("", values = alpha(options_R$col, options_R$transp))
+          scale_fill_manual("", values = scales::alpha(options_R$col, options_R$transp))
       } else {
         df_tmp <- data.frame(
           start = dates[t_start], end = dates[t_end],
@@ -518,23 +491,23 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           options_R$xlim <- c(min(dates), max(dates) + 1)
         }
 
-        p2 <- ggplot(df, aes(end, meanR)) +
+        p2 <- ggplot(df, aes(x = .data$end, y = .data$meanR)) +
           theme_epiestim() +
-          geom_ribbon(aes(ymin = lower, ymax = upper, fill = "95%CrI")) +
-          geom_line(aes(y = meanR, colour = "Mean"))
+          geom_ribbon(aes(ymin = .data$lower, ymax = .data$upper, fill = "95%CrI")) +
+          geom_line(aes(y = .data$meanR, colour = "Mean"))
 
         for (i in seq(2, length(x_list)))
         {
           p2 <- p2 +
             theme_epiestim() +
-            geom_ribbon(aes_string(
-              ymin = paste0("lower", i),
-              ymax = paste0("upper", i),
-              fill = shQuote(paste0("95%CrI", i))
+            geom_ribbon(aes(
+              ymin = .data[[paste0("lower", i)]],
+              ymax = .data[[paste0("upper", i)]],
+              fill = paste0("95%CrI", i)
             )) +
-            geom_line(aes_string(
-              y = paste0("meanR", i),
-              colour = shQuote(paste0("Mean", i))
+            geom_line(aes(
+              y = .data[[paste0("meanR", i)]],
+              colour = paste0("Mean", i)
             ))
         }
 
@@ -547,7 +520,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           ylim(options_R$ylim) +
           ggtitle("Estimated R") +
           scale_colour_manual("", values = options_R$col) +
-          scale_fill_manual("", values = alpha(options_R$col, options_R$transp))
+          scale_fill_manual("", values = scales::alpha(options_R$col, options_R$transp))
       }
     }
   }
@@ -558,11 +531,11 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
 
       si_distr_for_plot <- si_distr[, seq_len(stop_at)]
 
-      dataL <- melt(t(si_distr_for_plot))
+      dataL <- reshape2::melt(t(si_distr_for_plot))
       dataL$Var1 <- seq(0, (ncol(si_distr_for_plot) - 1))
-      p3 <- ggplot(dataL, aes_string(
-        x = "Var1", y = "value",
-        group = "Var2"
+      p3 <- ggplot(dataL, aes(
+        x = .data$Var1, y = .data$value,
+        group = .data$Var2
       )) +
         theme_epiestim() +
         geom_line(col = options_SI$col, alpha = options_SI$transp) +
@@ -591,7 +564,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
         Times = seq(0, length(si_distr_for_plot) - 1),
         SIDistr = si_distr_for_plot
       )
-      p3 <- ggplot(dataL, aes_string(x = "Times", y = "SIDistr")) +
+      p3 <- ggplot(dataL, aes(x = .data$Times, y = .data$SIDistr)) +
         theme_epiestim() +
         geom_line(col = options_SI$col, alpha = options_SI$transp) +
         ggtitle("Explored SI distribution") +
@@ -672,7 +645,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
         )
     }
 
-    plot <- p1 + p2 + p3 + plot_layout(ncol = 1)
+    plot <- patchwork::wrap_plots(p1, p2, p3, ncol = 1)
 
     return(plot)
   }

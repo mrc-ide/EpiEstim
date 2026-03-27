@@ -53,6 +53,6 @@ sample_posterior_R <- function(R, n = 1000, window = 1L) {
   cv    <- sigma / mu # coefficient of variation
   shape <- 1 / (cv ^ 2)
   scale <- mu * cv ^ 2
-  rgamma(n, shape = shape, scale = scale)
+  stats::rgamma(n, shape = shape, scale = scale)
 
 }
