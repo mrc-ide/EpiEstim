@@ -14,8 +14,8 @@
 #' - an `incidence` object as returned by [incidence::incidence()]
 #' - an `incidence2` object as returned by [incidence2::incidence()]
 #'
-#' @param method the method used to estimate R, one of "non_parametric_si",
-#'   "parametric_si", "uncertain_si", "si_from_data" or "si_from_sample"
+#' @param method the method used to estimate R, one of "non_parametric_si" or
+#'   "parametric_si"
 #'
 #' @param config a list with the following elements:
 #' - `t_start`: Vector of positive integers giving the starting times of each
