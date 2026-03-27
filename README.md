@@ -84,6 +84,15 @@ You can download a formatted bibtex file containing all our papers [here](inst/e
 
 We kindly request that you cite this codebase as follows:
 
+Cori A, Nash R, Jombart T, Kamvar Z, Stockwin J, Thompson R, Bhatia S, Brizzi
+  A, Dahlqwist E, FitzJohn R, Gruson H, Wardle J, van Gaalen R, Pollington T,
+  Monticone P, ter Hoeven E, Polonsky J, Li S, Lessler J, Demarsh P, Ferguson N,
+  Fraser C, Cauchemez S (2026). _EpiEstim: Estimate Time Varying Reproduction
+  Numbers from Epidemic Curves_. R package version 2.4,
+  <https://github.com/mrc-ide/EpiEstim>.
+  
+  BibTeX Format:
+  
 ```console
   @Manual{,
     title = {EpiEstim: Estimate Time Varying Reproduction Numbers from Epidemic Curves},
