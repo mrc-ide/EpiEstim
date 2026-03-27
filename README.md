@@ -82,7 +82,7 @@ You can download a formatted bibtex file containing all our papers [here](inst/e
 
 ## Citing this code resource
 
-We kindly request that you cite this codebase as follows (BibTeX format):
+We kindly request that you cite this codebase as follows:
 
 ```console
   @Manual{,
