@@ -17,7 +17,8 @@ estimate_R(
   iter = 10L,
   tol = 1e-06,
   grid = list(precision = 0.001, min = -1, max = 1),
-  backimputation_window = 0
+  backimputation_window = 0,
+  date_convention = NULL
 )
 }
 \arguments{
@@ -90,6 +91,16 @@ Only used if \code{dt > 1}, see \code{\link[=estimate_R_agg]{estimate_R_agg()}}.
 prior to the first reported cases. The default value is 0, meaning that no
 back-imputation is performed. If a positive integer is provided, the
 incidence is imputed for the first \code{backimputation_window} time units.}
+
+\item{date_convention}{One of \code{"start"} or \code{"end"}, specifying whether the
+dates supplied in \code{incid$dates} correspond to the first or last day of each
+aggregation window. Must be specified if incidence are temporally
+aggregated (\code{dt > 1}) and \code{incid$dates} is supplied.
+For example, for weekly epi-week data where the date label
+corresponds to the first day of the week (e.g. Monday), use \code{"start"}. For
+data reported multiple times per week where the date corresponds to the
+reporting date (i.e. the last day of the accumulation window), use \code{"end"}.
+Ignored if no dates are supplied.}
 }
 \value{
 an object of class \code{estimate_R}, with components:

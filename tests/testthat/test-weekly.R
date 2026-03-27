@@ -607,20 +607,21 @@ test_that("grid in estimate_R_agg is in the correct format", {
 
 
 test_that("you can't run estimate_R_agg unless using parametric/non-parametric SI methods", {
+  testthat::local_edition(3)
   method <- "uncertain_si"
   config <- make_config(list(mean_si = 2.6, std_mean_si = 1,
                              min_mean_si = 1, max_mean_si = 4.2,
                              std_si = 1.5, std_std_si = 0.5,
                              min_std_si = 0.5, max_std_si = 2.5))
   
-  expect_error(estimate_R_agg(incid = weekly_inc, 
+  expect_snapshot(estimate_R_agg(incid = weekly_inc, 
                  dt = 7L, 
                  dt_out = 7L, 
                  iter = 10L,
                  config = config,
                  method = method,
                  grid = list(precision = 0.001, min = -1, max = 1)),
-               "'arg' should be one of \"non_parametric_si\", \"parametric_si\"")
+               error = TRUE)
   
 })
 
@@ -733,55 +734,78 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
   
   # dataframe with I column
   weekly_inc_df <- data.frame(I = weekly_inc,
-                              dates = seq(as.Date("2020-01-01"), by = "week",
+                              dates = seq(as.Date("2019-12-30"), by = "week",
                                           length.out = length(weekly_inc)))
   res_df <- suppressWarnings(estimate_R(incid = weekly_inc_df,
                                         dt = 7L,
                                         dt_out = 7L,
                                         iter = 10L,
                                         config = config,
-                                        method = method))
+                                        method = method,
+                                        date_convention = "start"))
   
   # incidence object
-  inc_obj <- incidence::as.incidence(weekly_inc, interval = 7L)
+  inc_obj <- incidence::as.incidence(weekly_inc,
+                                     dates = seq(as.Date("2019-12-30"), by = "week",
+                                                 length.out = length(weekly_inc)))
   res_inc_obj <- suppressWarnings(estimate_R(incid = inc_obj,
                                              dt = 7L,
                                              dt_out = 7L,
                                              iter = 10L,
                                              config = config,
-                                             method = method))
+                                             method = method,
+                                             date_convention = "start"))
   
   # incidence2 object
   data <- data.frame(
     I = weekly_inc,
-    dates = seq(as.Date("2020-01-01"), by = "week", length.out = length(weekly_inc))
+    dates = seq(as.Date("2019-12-30"), by = "week", length.out = length(weekly_inc))
   )
-  inc_obj_group <- incidence2::incidence(data, date_index = "dates",
-                                         date_names_to = "dates", counts = "I",
-                                         count_values_to = "I")
-  res_grouped_obj <- suppressWarnings(estimate_R(incid = inc_obj_group,
-                                                 dt = 7L,
-                                                 dt_out = 7L,
-                                                 iter = 10L,
-                                                 config = config,
-                                                 method = method))
+  inc2_obj <- incidence2::incidence(data, date_index = "dates",
+                                    date_names_to = "dates", counts = "I",
+                                    count_values_to = "I")
+  res_inc2_obj <- suppressWarnings(estimate_R(incid = inc2_obj,
+                                              dt = 7L,
+                                              dt_out = 7L,
+                                              iter = 10L,
+                                              config = config,
+                                              method = method,
+                                              date_convention = "start"))
   
   ## check it works with incidence2 without naming
-  inc_obj_group2 <- incidence2::incidence(data, date_index = "dates",
+  inc2_obj2 <- incidence2::incidence(data, date_index = "dates",
                                          counts = "I")
-  res_grouped_obj2 <- suppressWarnings(estimate_R(incid = inc_obj_group2,
-                                                 dt = 7L,
-                                                 dt_out = 7L,
-                                                 iter = 10L,
-                                                 config = config,
-                                                 method = method))
+  res_inc2_obj2 <- suppressWarnings(estimate_R(incid = inc2_obj2,
+                                               dt = 7L,
+                                               dt_out = 7L,
+                                               iter = 10L,
+                                               config = config,
+                                               method = method,
+                                               date_convention = "start"))
+
+  # ignore date column
+  drop_date_cols <- function(R) {
+    R[, !names(R) %in% c("date_start", "date_end")]
+  }
   
   # all formats should produce identical R estimates
-  expect_equal(res_int$R, res_numeric$R)
-  expect_equal(res_int$R, res_df$R)
-  expect_equal(res_int$R, res_inc_obj$R)
-  expect_equal(res_int$R, res_grouped_obj$R)
-  expect_equal(res_int$R, res_grouped_obj2$R)
+  expect_equal(drop_date_cols(res_int$R), drop_date_cols(res_numeric$R))
+  expect_equal(drop_date_cols(res_int$R), drop_date_cols(res_df$R))
+  expect_equal(drop_date_cols(res_int$R), drop_date_cols(res_inc_obj$R))
+  expect_equal(drop_date_cols(res_int$R), drop_date_cols(res_inc2_obj$R))
+  expect_equal(drop_date_cols(res_int$R), drop_date_cols(res_inc2_obj2$R))
+  
+  # check date columns present when dates supplied
+  expect_true(all(c("date_start", "date_end") %in% names(res_df$R)))
+  expect_true(all(c("date_start", "date_end") %in% names(res_inc_obj$R)))
+  expect_true(all(c("date_start", "date_end") %in% names(res_inc2_obj$R)))
+  expect_true(all(c("date_start", "date_end") %in% names(res_inc2_obj2$R)))
+  
+  # check they match each other
+  expect_equal(res_df$R$date_start, res_inc_obj$R$date_start)
+  expect_equal(res_df$R$date_end, res_inc_obj$R$date_end)
+  expect_equal(res_df$R$date_start, res_inc2_obj$R$date_start)
+  expect_equal(res_df$R$date_end, res_inc2_obj$R$date_end)
   
 })
 
