@@ -51,7 +51,7 @@ using the methodology described in Bhatia et al. Epidemics 2023.
 
 ### Case reproduction number estimation: `wallinga_teunis()`
 
-The function `wallinga_teunis` estimates the time-varying case reproduction 
+The function [`wallinga_teunis`](https://mrc-ide.github.io/EpiEstim/reference/wallinga_teunis.html) estimates the time-varying case reproduction 
 number using the methodology described in Wallinga and Teunis et al. AJE 2004.
 Note that EpiEstim currently does not implement any additional features such as
 correcting for right censoring as proposed by Cauchemez et al. AJE 2006.
