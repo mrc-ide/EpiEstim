@@ -19,7 +19,7 @@ which are summarised below.
 
 ### Instantaneous reproduction number estimation: `estimate_R()`
 
-The function `estimate_R` estimates the time-varying case instantaneous 
+The function [`estimate_R`](https://mrc-ide.github.io/EpiEstim/reference/estimate_R.html) estimates the time-varying case instantaneous 
 reproduction number using the methodology described in Cori et al. AJE 2013. 
 
 Among other features, this supports the following: 
