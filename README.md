@@ -58,7 +58,7 @@ correcting for right censoring as proposed by Cauchemez et al. AJE 2006.
 
 ## Vignettes
 
-Please see https://mrc-ide.github.io/EpiEstim/ for vignettes with worked examples, 
+Please see the [vignettes](https://mrc-ide.github.io/EpiEstim/) on our documentation website for vignettes with worked examples, 
 FAQs and details about how EpiEstim can be used alongside some other R packages 
 in an outbreak analysis workflow.
 
