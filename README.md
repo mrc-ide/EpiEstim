@@ -22,8 +22,7 @@ which are summarised below.
 The function `estimate_R` estimates the time-varying case instantaneous 
 reproduction number using the methodology described in Cori et al. AJE 2013. 
 
-Functionalities 
-have been added over time to support the following: 
+Among other features, this supports the following: 
 
 - Within the R estimation, nesting an estimation of the serial interval from 
 double censored data using the `coarseDataTools` package, as described in 
