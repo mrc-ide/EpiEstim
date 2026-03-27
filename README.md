@@ -40,7 +40,7 @@ specifying the `dt` argument)
 
 - Enabling backcalculation of early incidence (before first observation) to 
 improve early R estimation as described in Brizzi et al. CID 2022. (v >= 2.5, 
-with `backimputation_window` argument)
+with the `backimputation_window` argument)
 
 ### Estimation of the transmission advantage of pathogen variants: `estimate_advantage()`
 
