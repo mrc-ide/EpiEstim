@@ -18,7 +18,7 @@ test_that("Example 1 matches saved output", {
                     config = list(t_start = 2:26, t_end = 8:32,
                                   si_distr = Flu2009$si_distr, 
                                   seed = 1))
-  expect_equal_to_reference(out, "../expected_output/Example1.rda", update = FALSE)
+  expect_equal_to_reference(out, "../expected_output/Example1.rds", update = FALSE)
 })
 
 test_that("Example 2 matches saved output", {
@@ -37,7 +37,7 @@ test_that("Example 2 matches saved output", {
                                   std_si = 1.5, 
                                   seed = 1)
                     )
-  expect_equal_to_reference(out, "../expected_output/Example2.rda", update = FALSE)
+  expect_equal_to_reference(out, "../expected_output/Example2.rds", update = FALSE)
 })
 
 test_that("Example 3 matches saved output", {
@@ -49,7 +49,7 @@ test_that("Example 3 matches saved output", {
                                   std_si = 1.5, 
                                   seed = 1)
                     )
-  expect_equal_to_reference(out, "../expected_output/Example3.rda", update = FALSE)
+  expect_equal_to_reference(out, "../expected_output/Example3.rds", update = FALSE)
 })
 
 test_that("Example 4 matches saved output", {
@@ -69,7 +69,7 @@ test_that("Example 4 matches saved output", {
                                   n2 = 100, 
                                   seed = 1)
                     )
-  expect_equal_to_reference(out, "../expected_output/Example4.rda", update = FALSE)
+  expect_equal_to_reference(out, "../expected_output/Example4.rds", update = FALSE)
 })
 
 
