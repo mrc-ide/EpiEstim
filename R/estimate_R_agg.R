@@ -156,7 +156,7 @@
 #' @references 
 #' Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number
 #' from temporally aggregated incidence data: a statistical modelling approach
-#' and software tool. medRxiv pre-print. (medRxiv pre-print)
+#' and software tool. medRxiv pre-print. \doi{https://doi.org/10.1371/journal.pcbi.1011439}.
 #' 
 #' Wallinga & Lipsitch. How generation intervals shape the relationship between
 #' growth rates and reproductive numbers (Proc Biol Sci 2007).
