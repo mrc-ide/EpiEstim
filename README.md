@@ -32,7 +32,7 @@ Thompson et al. Epidemics 2019
 
 - Allowing user-specified incidence split between imported and local cases, as 
 described in Thompson et al. Epidemics 2019 
-(v >= 1.1-0, by modifying `incid` argument) 
+(v >= 1.1-0, by modifying the `incid` argument) 
 
 - Allowing input incidence aggregated at time steps longer than 1, as described 
 in Nash et al. PLoS Comp Biol 2023 (v >= 2.4, by modifying `incid` and 
