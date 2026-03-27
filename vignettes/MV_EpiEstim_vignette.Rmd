@@ -20,7 +20,6 @@ library(EpiEstim)
 library(ggplot2)
 library(incidence)
 library(dplyr)
-library(gridExtra)
 library(readxl)
 ```
 

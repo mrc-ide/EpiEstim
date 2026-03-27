@@ -36,7 +36,7 @@
 #' @seealso [estimate_R()]
 #'
 #' @author Anne Cori
-#' @importFrom fitdistrplus fitdist
+#' 
 #' @export
 #' @examples
 #' \dontrun{
@@ -84,24 +84,24 @@ init_mcmc_params <- function(si_data, dist) {
   }
   naive_SI_obs <- (si_data$SR + si_data$SL) / 2 - (si_data$ER + si_data$EL) / 2
   mu <- mean(naive_SI_obs)
-  sigma <- sd(naive_SI_obs)
+  sigma <- stats::sd(naive_SI_obs)
   if (dist == "gamma"| dist == "G") {
     shape <- (mu / sigma)^2
     scale <- sigma^2 / mu
     # check this is what we want
-    # tmp <- rgamma(10000, shape=shape, scale = scale)
+    # tmp <- stats::rgamma(10000, shape=shape, scale = scale)
     # mean(tmp)
-    # sd(tmp)
+    # stats::sd(tmp)
     param <- c(shape, scale)
   } else if (dist == "weibull"| dist == "W") {
-    fit.w <- fitdist(naive_SI_obs + 0.1, "weibull") 
+    fit.w <- fitdistrplus::fitdist(naive_SI_obs + 0.1, "weibull") 
     ## using +0.1 to avoid issues with zero
     shape <- fit.w$estimate["shape"]
     scale <- fit.w$estimate["scale"]
     # check this is what we want
     # tmp <- rweibull(10000, shape=shape, scale = scale)
     # mean(tmp)
-    # sd(tmp)
+    # stats::sd(tmp)
     param <- c(shape, scale)
   } else if (dist == "lognormal"| dist == "L") {
     sdlog <- sqrt(log(sigma^2 / (mu^2) + 1))
@@ -109,7 +109,7 @@ init_mcmc_params <- function(si_data, dist) {
     # check this is what we want
     # tmp <- rlnorm(10000, meanlog=meanlog, sdlog = sdlog)
     # mean(tmp)
-    # sd(tmp)
+    # stats::sd(tmp)
     param <- c(meanlog, sdlog)
   } else if (dist == "gamma_offset_1"| dist == "off1G") {
     shape <- ((mu - 1) / sigma)^2
@@ -117,19 +117,19 @@ init_mcmc_params <- function(si_data, dist) {
     ## this is to avoid issues when the mean SI is <1
     scale <- sigma^2 / (mu - 1)
     # check this is what we want
-    # tmp <- 1+rgamma(10000, shape=shape, scale = scale)
+    # tmp <- 1+stats::rgamma(10000, shape=shape, scale = scale)
     # mean(tmp)
-    # sd(tmp)
+    # stats::sd(tmp)
     param <- c(shape, scale)
   } else if (dist == "weibull_offset_1"| dist == "off1W") {
-    fit.w <- fitdist(naive_SI_obs - 1 + 0.1, "weibull") 
+    fit.w <- fitdistrplus::fitdist(naive_SI_obs - 1 + 0.1, "weibull") 
     ## using +0.1 to avoid issues with zero
     shape <- fit.w$estimate["shape"]
     scale <- fit.w$estimate["scale"]
     # check this is what we want
     # tmp <- 1+rweibull(10000, shape=shape, scale = scale)
     # mean(tmp)
-    # sd(tmp)
+    # stats::sd(tmp)
     param <- c(shape, scale)
   } else if (dist == "lognormal_offset_1"| dist == "off1L") {
     sdlog <- sqrt(log(sigma^2 / ((mu - 1)^2) + 1))
@@ -137,7 +137,7 @@ init_mcmc_params <- function(si_data, dist) {
     # check this is what we want
     # tmp <- 1+rlnorm(10000, meanlog=meanlog, sdlog = sdlog)
     # mean(tmp)
-    # sd(tmp)
+    # stats::sd(tmp)
     param <- c(meanlog, sdlog)
   }
   

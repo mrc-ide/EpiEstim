@@ -743,7 +743,7 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
                                         method = method))
   
   # incidence object
-  inc_obj <- as.incidence(weekly_inc, interval = 7L)
+  inc_obj <- incidence::as.incidence(weekly_inc, interval = 7L)
   res_inc_obj <- suppressWarnings(estimate_R(incid = inc_obj,
                                              dt = 7L,
                                              dt_out = 7L,

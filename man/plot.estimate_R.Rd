@@ -10,10 +10,10 @@
   what = c("all", "incid", "R", "SI"),
   plot_theme = "v2",
   add_imported_cases = FALSE,
-  options_I = list(col = palette(), transp = 0.7, xlim = NULL, ylim = NULL, interval =
-    1L, xlab = "Time", ylab = "Incidence"),
-  options_R = list(col = palette(), transp = 0.2, xlim = NULL, ylim = NULL, xlab =
-    "Time", ylab = "R"),
+  options_I = list(col = grDevices::palette(), transp = 0.7, xlim = NULL, ylim = NULL,
+    interval = 1L, xlab = "Time", ylab = "Incidence"),
+  options_R = list(col = grDevices::palette(), transp = 0.2, xlim = NULL, ylim = NULL,
+    xlab = "Time", ylab = "R"),
   options_SI = list(prob_min = 0.001, col = "black", transp = 0.25, xlim = NULL, ylim =
     NULL, xlab = "Time", ylab = "Frequency"),
   legend = TRUE,
@@ -25,10 +25,10 @@
   what = c("all", "incid", "R", "SI"),
   plot_theme = "v2",
   add_imported_cases = FALSE,
-  options_I = list(col = palette(), transp = 0.7, xlim = NULL, ylim = NULL, interval =
-    1L, xlab = "Time", ylab = "Incidence"),
-  options_R = list(col = palette(), transp = 0.2, xlim = NULL, ylim = NULL, xlab =
-    "Time", ylab = "R"),
+  options_I = list(col = grDevices::palette(), transp = 0.7, xlim = NULL, ylim = NULL,
+    interval = 1L, xlab = "Time", ylab = "Incidence"),
+  options_R = list(col = grDevices::palette(), transp = 0.2, xlim = NULL, ylim = NULL,
+    xlab = "Time", ylab = "R"),
   options_SI = list(prob_min = 0.001, col = "black", transp = 0.25, xlim = NULL, ylim =
     NULL, xlab = "Time", ylab = "Frequency"),
   legend = TRUE,
@@ -158,7 +158,8 @@ p_Ri <- plot(R_i, "R",
 p_Rc <- plot(R_c, "R",
              options_R = list(ylim = c(0, 4)))
 # plots the estimated case reproduction number
-gridExtra::grid.arrange(p_I, p_SI, p_Ri, p_Rc, ncol = 2)
+library(patchwork) # For figure placement
+(p_I + p_SI) / (p_Ri + p_Rc)
 }
 \seealso{
 \code{\link[=estimate_R]{estimate_R()}}, \code{\link[=wallinga_teunis]{wallinga_teunis()}} and \code{\link[=estimate_R_plots]{estimate_R_plots()}}.
