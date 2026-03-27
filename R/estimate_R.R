@@ -820,6 +820,12 @@ estimate_R_func <- function(incid,
   if (!is.null(incid$dates)) {
     results$R$date_start <- incid$dates[config$t_start][non_na_rows]
     results$R$date_end <- incid$dates[config$t_end][non_na_rows]
+    # reorder so date columns appear after t_start and t_end
+    results$R <- results$R[, c("t_start", "t_end", "date_start", "date_end",
+                               "Mean(R)", "Std(R)", "Quantile.0.025(R)", 
+                               "Quantile.0.05(R)", "Quantile.0.25(R)", "Median(R)", 
+                               "Quantile.0.75(R)", "Quantile.0.95(R)", 
+                               "Quantile.0.975(R)")]
   }
   
   results$method <- method
