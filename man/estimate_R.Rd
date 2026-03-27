@@ -10,7 +10,7 @@ estimate_R(
     "si_from_sample"),
   si_data = NULL,
   si_sample = NULL,
-  config = make_config(incid = incid, method = method),
+  config = make_config(incid = incid),
   dt = 1L,
   dt_out = 7L,
   recon_opt = "naive",

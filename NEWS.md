@@ -9,12 +9,15 @@
   (used to be "estimate_R")
 
 ## Bug fixes
+* Superfluous argument "method" removed from `make_config()` function
 
 ## Backward compatibility
 
+
 # EpiEstim 2.5.1
 
-* The distribution names valid when using si_from_data option in estimate_R have been edited to be descriptive and self-explanatory.
+* The distribution names valid when using si_from_data option in estimate_R have 
+  been edited to be descriptive and self-explanatory.
 
 # EpiEstim 2.5
 
