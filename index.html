@@ -100,16 +100,46 @@
 <p>EpiEstim is a tool to estimate the time-varying instantaneous reproduction number during epidemics. To install the latest version, use:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'EpiEstim'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://mrc-ide.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="functionalities">Functionalities<a class="anchor" aria-label="anchor" href="#functionalities"></a>
+</h2>
+<p>EpiEstim offers multiple functionalities around reproduction number estimation, which are summarised below.</p>
 <div class="section level3">
-<h3 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
+<h3 id="instantaneous-reproduction-number-estimation-estimate_r">Instantaneous reproduction number estimation: <code>estimate_R()</code>
+<a class="anchor" aria-label="anchor" href="#instantaneous-reproduction-number-estimation-estimate_r"></a>
 </h3>
-<p>Please see <a href="https://mrc-ide.github.io/EpiEstim/" class="uri">https://mrc-ide.github.io/EpiEstim/</a> for vignettes with worked examples, FAQs and details about how EpiEstim can be used alongside some other R packages in an outbreak analysis workflow.</p>
+<p>The function <a href="https://mrc-ide.github.io/EpiEstim/reference/estimate_R.html"><code>estimate_R</code></a> estimates the time-varying case instantaneous reproduction number using the methodology described in Cori et al. AJE 2013.</p>
+<p>Among other features, this supports the following:</p>
+<ul>
+<li><p>Within the R estimation, nesting an estimation of the serial interval from double censored data using the <code>coarseDataTools</code> package, as described in Thompson et al. Epidemics 2019 (EpiEstim versions &gt;= 1.1-0, using <code>method = "si_from_data"</code> or <code>method = "si_from_sample"</code>)</p></li>
+<li><p>Allowing user-specified incidence split between imported and local cases, as described in Thompson et al. Epidemics 2019 (v &gt;= 1.1-0, by modifying the <code>incid</code> argument)</p></li>
+<li><p>Allowing input incidence aggregated at time steps longer than 1, as described in Nash et al. PLoS Comp Biol 2023 (v &gt;= 2.4, by modifying <code>incid</code> and specifying the <code>dt</code> argument)</p></li>
+<li><p>Enabling backcalculation of early incidence (before first observation) to improve early R estimation as described in Brizzi et al. CID 2022. (v &gt;= 2.5, with the <code>backimputation_window</code> argument)</p></li>
+</ul>
 </div>
 <div class="section level3">
-<h3 id="cite-our-papers">Cite our papers<a class="anchor" aria-label="anchor" href="#cite-our-papers"></a>
+<h3 id="estimation-of-the-transmission-advantage-of-pathogen-variants-estimate_advantage">Estimation of the transmission advantage of pathogen variants: <code>estimate_advantage()</code>
+<a class="anchor" aria-label="anchor" href="#estimation-of-the-transmission-advantage-of-pathogen-variants-estimate_advantage"></a>
 </h3>
+<p>The function <a href="https://mrc-ide.github.io/EpiEstim/reference/estimate_advantage.html"><code>estimate_advantage</code></a> jointly estimates the instantaneous reproduction number for a reference variant (or pathogen or strain) and the relative transmissibility of a “new” variant (or pathogen or strain), using the methodology described in Bhatia et al. Epidemics 2023.</p>
+</div>
+<div class="section level3">
+<h3 id="case-reproduction-number-estimation-wallinga_teunis">Case reproduction number estimation: <code>wallinga_teunis()</code>
+<a class="anchor" aria-label="anchor" href="#case-reproduction-number-estimation-wallinga_teunis"></a>
+</h3>
+<p>The function <a href="https://mrc-ide.github.io/EpiEstim/reference/wallinga_teunis.html"><code>wallinga_teunis</code></a> estimates the time-varying case reproduction number using the methodology described in Wallinga and Teunis et al. AJE 2004. Note that EpiEstim currently does not implement any additional features such as correcting for right censoring as proposed by Cauchemez et al. AJE 2006.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
+</h2>
+<p>Please see the <a href="https://mrc-ide.github.io/EpiEstim/">vignettes</a> on our documentation website for vignettes with worked examples, FAQs and details about how EpiEstim can be used alongside some other R packages in an outbreak analysis workflow.</p>
+</div>
+<div class="section level2">
+<h2 id="cite-our-papers">Cite our papers<a class="anchor" aria-label="anchor" href="#cite-our-papers"></a>
+</h2>
 <p>The methodology underlying EpiEstim is detailed in the following papers:</p>
-<p>Anne Cori, Neil M. Ferguson, Christophe Fraser, Simon Cauchemez, <a href="https://doi.org/10.1093/aje/kwt133" class="external-link">A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics</a>, American Journal of Epidemiology, Volume 178, Issue 9, 1 November 2013, Pages 1505–1512.</p>
+<p>Cori A, Ferguson NM, Fraser C, Cauchemez S, <a href="https://doi.org/10.1093/aje/kwt133" class="external-link">A New Framework and Software to Estimate Time-Varying Reproduction Numbers During Epidemics</a>, American Journal of Epidemiology, Volume 178, Issue 9, 1 November 2013, Pages 1505–1512.</p>
 <p>Thompson RN, Stockwin JE, van Gaalen RD, Polonsky JA, Kamvar ZN, Demarsh PA, et al. <a href="https://doi.org/10.1016/j.epidem.2019.100356" class="external-link">Improved inference of time-varying reproduction numbers during infectious disease outbreaks</a>, Epidemics, Volume 29, 1 December 2019, 100356.</p>
 <p>Nash RK, Nouvellet P, Cori A. <a href="https://doi.org/10.1371/journal.pdig.0000052" class="external-link">Real-time estimation of the epidemic reproduction number: Scoping review of the applications and challenges</a>, PLOS Digital Health, Volume 1, Issue 6, 27 June 2022, e0000052.</p>
 <p>Bhatia S, Wardle J, Nash RK, Nouvellet P, Cori A. <a href="https://doi.org/10.1016/j.epidem.2023.100692" class="external-link">Extending EpiEstim to estimate the transmission advantage of pathogen variants in real-time: SARS-CoV-2 as a case-study</a>, Epidemics, 21 June 2023, 100692.</p>
@@ -117,10 +147,12 @@
 <p>Brizzi A, O’Driscoll M, Dorigatti I., <a href="https://doi.org/10.1093/cid/ciac138" class="external-link">Refining Reproduction Number Estimates to Account for Unobserved Generations of Infection in Emerging Epidemics</a>, Clinical Infectious Diseases, Volume 75, Issue 1, 1 July 2022, Pages e114–e121.</p>
 <p>You can download a formatted bibtex file containing all our papers <a href="inst/epiestimpapers.bib">here</a>.</p>
 </div>
-<div class="section level3">
-<h3 id="citing-this-code-resource">Citing this code resource<a class="anchor" aria-label="anchor" href="#citing-this-code-resource"></a>
-</h3>
-<p>We kindly request that you cite this codebase as follows (BibTeX format):</p>
+<div class="section level2">
+<h2 id="citing-this-code-resource">Citing this code resource<a class="anchor" aria-label="anchor" href="#citing-this-code-resource"></a>
+</h2>
+<p>We kindly request that you cite this codebase as follows:</p>
+<p>Cori A, Nash R, Jombart T, Kamvar Z, Stockwin J, Thompson R, Bhatia S, Brizzi A, Dahlqwist E, FitzJohn R, Gruson H, Wardle J, van Gaalen R, Pollington T, Monticone P, ter Hoeven E, Polonsky J, Li S, Lessler J, Demarsh P, Ferguson N, Fraser C, Cauchemez S (2026). <em>EpiEstim: Estimate Time Varying Reproduction Numbers from Epidemic Curves</em>. R package version 2.4, <a href="https://github.com/mrc-ide/EpiEstim" class="external-link uri">https://github.com/mrc-ide/EpiEstim</a>.</p>
+<p>BibTeX Format:</p>
 <pre class="console"><code>  @Manual{,
     title = {EpiEstim: Estimate Time Varying Reproduction Numbers from Epidemic Curves},
     author = {Anne Cori and Rebecca Nash and Thibaut Jombart and Zhian N. Kamvar and Jake Stockwin and Robin Thompson and Sangeeta Bhatia and Andrea Brizzi and Elisabeth Dahlqwist and Rich FitzJohn and Hugo Gruson and Jack Wardle and Rolina {van Gaalen} and Tim Pollington and Pietro Monticone and Ewout {ter Hoeven} and Jonathan A. Polonsky and Shikun Li and Justin Lessler and P. Alex Demarsh and Neil M. Ferguson and Christophe Fraser and Simon Cauchemez},
