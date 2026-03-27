@@ -223,12 +223,12 @@ this is the case.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Default config will estimate R on weekly sliding windows.</span></span>
 <span><span class="co">#&gt;     To change this change the t_start and t_end arguments.</span></span>
-<span><span class="fu">gridExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/gridExtra/man/arrangeGrob.html" class="external-link">grid.arrange</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">no_truncation_no_imputation</span>, <span class="st">"R"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"No imputation"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">no_truncation_with_imputation</span>, <span class="st">"R"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"With imputation"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="EpiEstim_backimputation_files/figure-html/covid-no-imputation-1.png" class="r-plt" alt="" width="672">
-The reduction in R<sub>t</sub> estimates is strongest in the early
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">no_truncation_no_imputation</span>, <span class="st">"R"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"No imputation"</span><span class="op">)</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">no_truncation_with_imputation</span>, <span class="st">"R"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"With imputation"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p1</span> <span class="op">/</span> <span class="va">p2</span></span></code></pre></div>
+<p><img src="EpiEstim_backimputation_files/figure-html/covid-no-imputation-1.png" class="r-plt" alt="" width="672"></p>
+<p>The reduction in R<sub>t</sub> estimates is strongest in the early
 stages, and vanishes with time.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">time</span> <span class="op">&lt;-</span> <span class="va">no_truncation_no_imputation</span><span class="op">$</span><span class="va">R</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"t_start"</span>, <span class="st">"t_end"</span><span class="op">)</span><span class="op">]</span></span>
