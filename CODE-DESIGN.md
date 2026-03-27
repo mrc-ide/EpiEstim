@@ -19,6 +19,10 @@ EpiEstim's main functions (outlined above) can handle multiple formats for speci
 
 The only exception for this is if complexity (computational or statistical) becomes a challenge. For example, `estimate_advantage` relies on a computationally expensive MCMC algorithm and hence is only implemented for the simplest serial interval specifications i.e. `method = "parametric_si"` or `method = "non_parametric_si"`.
 
+## Roadmap
+
+...
+
 ## Style
 
 - Use R version >= 3.3.0 (i.e., no `|>` and no `\(x)`)
