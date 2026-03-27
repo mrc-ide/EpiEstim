@@ -38,6 +38,21 @@
 #' @param grid named list containing `precision`, `min`, and `max` which are used to
 #' define a grid of growth rate parameters that are used inside the EM algorithm 
 #' (see details). We recommend using the default values. 
+#' 
+#' @param agg_dates dates corresponding to each aggregated incidence count, 
+#' supplied as a vector of class \code{Date}. If supplied, \code{date_convention}
+#' must also be specified. If \code{NULL} (default), no date information is 
+#' added to the output.
+#'
+#' @param date_convention One of `"start"` or `"end"`, specifying whether the 
+#' dates supplied in `incid$dates` correspond to the first or last day of each 
+#' aggregation window. Must be specified if incidence are temporally
+#' aggregated (`dt > 1`) and `incid$dates` is supplied.
+#' For example, for weekly epi-week data where the date label 
+#' corresponds to the first day of the week (e.g. Monday), use `"start"`. For 
+#' data reported multiple times per week where the date corresponds to the 
+#' reporting date (i.e. the last day of the accumulation window), use `"end"`.
+#' Ignored if no dates are supplied.
 #'
 #' @return 
 #' An object of class [estimate_R()], with components:
@@ -242,7 +257,9 @@ estimate_R_agg <- function(incid,
                            recon_opt = "naive", # initial naive disaggregation or match growth rate to reconstruct
                            config = make_config(), 
                            method = c("non_parametric_si", "parametric_si"),
-                           grid = list(precision = 0.001, min = -1, max = 1)){ 
+                           grid = list(precision = 0.001, min = -1, max = 1),
+                           agg_dates = NULL,
+                           date_convention = NULL){
   
   method <- match.arg(method)
   
@@ -281,6 +298,12 @@ estimate_R_agg <- function(incid,
   }
   if (dt_out < max(dt)) {
     warning ("dt_out should be at least the length of the longest aggregation present in the data")
+  }
+  
+  if (!is.null(agg_dates) && is.null(date_convention)) {
+    warning("date_convention not specified. Defaulting to 'end', assuming dates 
+          correspond to the reporting date (last day of each aggregation window).")
+    date_convention <- "end"
   }
   
   # Two configs:
@@ -585,11 +608,27 @@ estimate_R_agg <- function(incid,
                             method = method,
                             config = config_out)
         message("R estimation starts on day ", R_out$R$t_start[1])
+        
+        if (!is.null(agg_dates)) {
+          if (date_convention == "start") {
+            daily_dates <- seq(as.Date(agg_dates[1]), by = "day", length.out = T)
+          } else {
+            start_date <- as.Date(agg_dates[1]) - (full_dt[1] - 1)
+            daily_dates <- seq(start_date, by = "day", length.out = T)
+          }
+          R_out$R$date_start <- daily_dates[R_out$R$t_start]
+          R_out$R$date_end <- daily_dates[R_out$R$t_end]
+          R_out$dates <- daily_dates
+          R_out$R <- R_out$R[, c("t_start", "t_end", "date_start", "date_end",
+                                 "Mean(R)", "Std(R)", "Quantile.0.025(R)", 
+                                 "Quantile.0.05(R)", "Quantile.0.25(R)", "Median(R)", 
+                                 "Quantile.0.75(R)", "Quantile.0.95(R)", 
+                                 "Quantile.0.975(R)")]
+        }
       }
-      
     }
   }
   
-    R_out
+  R_out
   
 }

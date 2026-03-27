@@ -72,6 +72,16 @@
 #'    prior to the first reported cases. The default value is 0, meaning that no
 #'    back-imputation is performed. If a positive integer is provided, the
 #'    incidence is imputed for the first `backimputation_window` time units.
+#'    
+#' @param date_convention One of `"start"` or `"end"`, specifying whether the 
+#' dates supplied in `incid$dates` correspond to the first or last day of each 
+#' aggregation window. Must be specified if incidence are temporally
+#' aggregated (`dt > 1`) and `incid$dates` is supplied.
+#' For example, for weekly epi-week data where the date label 
+#' corresponds to the first day of the week (e.g. Monday), use `"start"`. For 
+#' data reported multiple times per week where the date corresponds to the 
+#' reporting date (i.e. the last day of the accumulation window), use `"end"`.
+#' Ignored if no dates are supplied.
 #'
 #' @return an object of class `estimate_R`, with components:
 #' 
@@ -347,7 +357,8 @@ estimate_R <- function(incid,
                        iter = 10L,
                        tol = 1e-6,
                        grid = list(precision = 0.001, min = -1, max = 1),
-                       backimputation_window = 0
+                       backimputation_window = 0,
+                       date_convention = NULL
                        ) {
   
   if (is.data.frame(incid) && "dates" %in% names(incid)) {
@@ -374,9 +385,20 @@ estimate_R <- function(incid,
     msg <- "backimputation_window is currently not supported when dt > 1"
     if(backimputation_window > 0) stop(msg)
     
+    # extract dates before stripping to vector
+    agg_dates <- NULL
+    if (is.data.frame(incid) && "dates" %in% names(incid)) {
+      agg_dates <- incid$dates
+    } else if (inherits(incid, "incidence")) {
+      agg_dates <- incid$dates
+    } else if (inherits(incid, "incidence2")) {
+      agg_dates <- unique(incid[[incidence2::get_date_index_name(incid)]])
+    }
+    
     incid_vec <- process_I_vector(incid)
     out <- estimate_R_agg(incid_vec, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
-                          iter = iter, tol = tol, config = config, method = method, grid = grid)
+                          iter = iter, tol = tol, config = config, method = method, grid = grid,
+                          agg_dates = agg_dates)
 
     return(out)
   }
