@@ -328,26 +328,25 @@ estimate_R_agg <- function(incid,
   n_dt <- length(incid) # number of aggregations
   
   if (length(dt) == 1){
-    T <- n_dt * dt
-    config$t_start <- seq(from = dt + 1, to = T - (dt - 1), dt)
-    config$t_end <- seq(from = min(config$t_start) + (dt - 1),to = T, dt)
+    total_t <- n_dt * dt
+    config$t_start <- seq(from = dt + 1, to = total_t - (dt - 1), dt)
+    config$t_end <- seq(from = min(config$t_start) + (dt - 1), to = total_t, dt)
     } else if (length(dt) == length(incid)){
-      T <- sum(dt)
+      total_t <- sum(dt)
       config$t_start <- cumsum(c(dt[1] + 1, dt[2:length(dt[-1])]))
       config$t_end <- cumsum(c(config$t_start[1] + dt[2] - 1, dt[3:length(dt)]))
       } else { # vector of repeating aggregations
-        T <- sum(rep(dt, length.out = n_dt))
+        total_t <- sum(rep_len(dt, n_dt))
         # reorder dt as R estimation starts on second aggregation window
         reo_dt_start <- c(dt[2:length(dt)], dt[1])
         reo_dt_end <- c(reo_dt_start[2:length(reo_dt_start)], reo_dt_start[1])
-        config$t_start <- cumsum(c(dt[1] + 1, 
-                               rep(reo_dt_start, length.out = n_dt - 2)))
-        config$t_end <- cumsum(c(config$t_start[1] + reo_dt_start[1] - 1, 
-                             rep(reo_dt_end, length.out = n_dt - 2)))
+        config$t_start <- cumsum(c(dt[1] + 1, rep_len(reo_dt_start, n_dt - 2)))
+        config$t_end <- cumsum(c(config$t_start[1] + reo_dt_start[1] - 1,
+                                 rep_len(reo_dt_end, n_dt - 2)))
   }
   
   niter <- seq(1, iter, 1) 
-  sim_inc <- matrix(NA, nrow = T, ncol = iter)
+  sim_inc <- matrix(NA, nrow = total_t, ncol = iter)
   
   for (i in seq_along(niter)){
     if (niter[i] == 1){
@@ -361,7 +360,7 @@ estimate_R_agg <- function(incid,
         dis_inc <- rep(dis, times = dt)
         full_dt <- dt
         } else {
-          full_dt <- rep(dt, length.out = n_dt)
+          full_dt <- rep_len(dt, n_dt)
           dis <- incid / full_dt
           dis_inc <- rep(dis, times = full_dt)
           }
@@ -413,7 +412,7 @@ estimate_R_agg <- function(incid,
                                grid) {
         r_grid <- seq(grid$min, grid$max, grid$precision)
         if (is.null(si_distr)) {
-          si_distr <- discr_si(seq(0, T), mu = si_mean, sigma = si_sd)
+          si_distr <- discr_si(seq(0, total_t), mu = si_mean, sigma = si_sd)
           # remove tail
           threshold <- 1e-6
           si_distr <- si_distr[c(TRUE, si_distr[-1] >= threshold)]
@@ -471,8 +470,8 @@ estimate_R_agg <- function(incid,
       gr_ls <- list()
       
       for (f in seq_along(incid_to_reconstruct)){
-        k_ls[[f]] <- rep(recon_df$k[f], recon_df$dt[f])
-        gr_ls[[f]] <- rep(recon_df$gr[f], recon_df$dt[f])
+        k_ls[[f]] <- rep_len(recon_df$k[f], recon_df$dt[f])
+        gr_ls[[f]] <- rep_len(recon_df$gr[f], recon_df$dt[f])
       }
       k_seq <- unlist(k_ls)
       gr_seq <- unlist(gr_ls)
@@ -571,8 +570,8 @@ estimate_R_agg <- function(incid,
       gr_ls <- list()
       
       for (f in seq_along(incid_to_reconstruct)){
-        k_ls[[f]] <- rep(recon_df$k[f], recon_df$dt[f])
-        gr_ls[[f]] <- rep(recon_df$gr[f], recon_df$dt[f])
+        k_ls[[f]] <- rep_len(recon_df$k[f], recon_df$dt[f])
+        gr_ls[[f]] <- rep_len(recon_df$gr[f], recon_df$dt[f])
       }
       k_seq <- unlist(k_ls)
       gr_seq <- unlist(gr_ls)
@@ -599,7 +598,7 @@ estimate_R_agg <- function(incid,
       
       if (is.null(config_out$t_start)) {
         config_out$t_start <- seq(from = min(R$R$t_start), 
-                                  to = T - (dt_out - 1), 1)
+                                  to = total_t - (dt_out - 1), 1)
       }
       if (is.null(config_out$t_end)) {
         config_out$t_end <- config_out$t_start + (dt_out - 1)
@@ -617,10 +616,10 @@ estimate_R_agg <- function(incid,
         
         if (!is.null(agg_dates)) {
           if (date_convention == "start") {
-            daily_dates <- seq(as.Date(agg_dates[1]), by = "day", length.out = T)
+            daily_dates <- seq(as.Date(agg_dates[1]), by = "day", length.out = total_t)
           } else {
             start_date <- as.Date(agg_dates[1]) - (full_dt[1] - 1)
-            daily_dates <- seq(start_date, by = "day", length.out = T)
+            daily_dates <- seq(start_date, by = "day", length.out = total_t)
           }
           R_out$R$date_start <- daily_dates[R_out$R$t_start]
           R_out$R$date_end <- daily_dates[R_out$R$t_end]
