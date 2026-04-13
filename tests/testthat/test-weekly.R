@@ -66,7 +66,7 @@ test_that("estimate_R_agg works in parametric mode", {
                                               grid = list(precision = 0.001, min = -1, max = 1)))
   
   res_agg2 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
-                                              dt = rep(dt_vec, length.out=length(agg_inc)), 
+                                              dt = rep_len(dt_vec, length(agg_inc)), 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
@@ -189,7 +189,7 @@ test_that("estimate_R_agg works in non-parametric mode", {
                                                 grid = list(precision = 0.001, min = -1, max = 1)))
   
   res_agg2 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
-                                              dt = rep(dt_vec, length.out=length(agg_inc)), 
+                                              dt = rep_len(dt_vec, length(agg_inc)), 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
