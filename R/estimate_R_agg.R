@@ -264,45 +264,51 @@ estimate_R_agg <- function(incid,
   method <- match.arg(method)
   
   if (!is.integer(dt)) {
-    stop ("dt must be an integer or a vector of integers e.g. dt = 7L, dt = c(2L,2L,3L)")
+    stop ("dt must be an integer or a vector of integers e.g. dt = 7L, dt = c(2L,2L,3L)",
+          call. = FALSE)
   }
   if (!is.integer(dt_out)) {
-    stop ("dt_out must be an integer e.g. dt_out = 7L")
+    stop ("dt_out must be an integer e.g. dt_out = 7L", call. = FALSE)
   }
-  if (!is.list(grid) || !length(grid) == 3){
-    stop ("grid must be a list of 3 elements: precision, min, and max")
+  if (!is.list(grid) || length(grid) != 3){
+    stop ("grid must be a list of 3 elements: precision, min, and max",
+          call. = FALSE)
   }
   if (!is.numeric(grid$precision) || !is.numeric(grid$min) || !is.numeric(grid$max)){
-    stop ("grid precision, min, and max, must all be numeric")
+    stop ("grid precision, min, and max, must all be numeric", call. = FALSE)
   }
   if (grid$max < grid$min){
-    stop ("grid max must be larger than grid min")
+    stop ("grid max must be larger than grid min", call. = FALSE)
   }
   if (grid$precision > grid$max-grid$min){
-    stop ("grid precision must be less than grid max - grid min")
+    stop ("grid precision must be less than grid max - grid min", call. = FALSE)
   }
   if (!is.integer(iter)) {
-    stop ("iter must be an integer e.g. 10L")
+    stop ("iter must be an integer e.g. 10L", call. = FALSE)
   }
   if (iter < 2L) {
-    stop ("iter must be at least 2L")
+    stop ("iter must be at least 2L", call. = FALSE)
   }
   if (method == "parametric_si" && (is.null(config$mean_si) || is.null(config$std_si))) {
-    stop ("'config$mean_si' and 'config$std_si' must be specified when using method 'parametric_si'")
+    stop ("'config$mean_si' and 'config$std_si' must be specified when using method 'parametric_si'",
+          call. = FALSE)
   }
   if (method == "non_parametric_si" && is.null(config$si_distr)) {
-    stop ("'config$si_distr' must be specified when using method 'non_parametric_si'")
+    stop ("'config$si_distr' must be specified when using method 'non_parametric_si'",
+          call. = FALSE)
   }
-  if (!recon_opt == "naive" && !recon_opt == "match"){
-    stop ("'recon_opt' should be one of 'naive' and 'match'")
+  if (!(recon_opt %in% c("naive", "match"))) {
+    stop ("'recon_opt' should be one of 'naive' and 'match'", call. = FALSE)
   }
   if (dt_out < max(dt)) {
-    warning ("dt_out should be at least the length of the longest aggregation present in the data")
+    warning ("dt_out should be at least the length of the longest aggregation present in the data",
+             call. = FALSE)
   }
   
   if (!is.null(agg_dates) && is.null(date_convention)) {
     warning("date_convention not specified. Defaulting to 'end', assuming dates 
-          correspond to the reporting date (last day of each aggregation window).")
+          correspond to the reporting date (last day of each aggregation window).",
+            call. = FALSE)
     date_convention <- "end"
   }
   
