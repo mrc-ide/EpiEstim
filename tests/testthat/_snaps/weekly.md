@@ -5,5 +5,5 @@
         min = -1, max = 1))
     Condition
       [1m[33mError[39m in `match.arg()`:[22m
-      [33m![39m 'arg' should be one of “non_parametric_si”, “parametric_si”
+      [33m![39m 'arg' should be one of "non_parametric_si", "parametric_si"
 
