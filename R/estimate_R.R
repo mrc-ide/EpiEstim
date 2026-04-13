@@ -363,16 +363,16 @@ estimate_R <- function(incid,
   
   if (is.data.frame(incid) && "dates" %in% names(incid)) {
     if (!all(diff(incid$dates) > 0)) {
-      stop("dates in incid must be in ascending order")
+      stop("dates in incid must be in ascending order", call. = FALSE)
     }
   } else if (inherits(incid, "incidence")) {
     if (!all(diff(incid$dates) > 0)) {
-      stop("dates in incid must be in ascending order")
+      stop("dates in incid must be in ascending order", call. = FALSE)
     }
   } else if (inherits(incid, "incidence2")) {
     dates <- unique(incid[[incidence2::get_date_index_name(incid)]])
     if (!all(diff(dates) > 0)) {
-      stop("dates in incid must be in ascending order")
+      stop("dates in incid must be in ascending order", call. = FALSE)
     }
   }
 
@@ -603,7 +603,8 @@ estimate_R_func <- function(incid,
 
   if (method == "si_from_sample") {
     if (is.null(config$n2)) {
-      stop("method si_from_sample requires to specify the config$n2 argument.")
+      stop("method si_from_sample requires to specify the config$n2 argument.",
+           call. = FALSE)
     }
     si_sample <- process_si_sample(si_sample)
   }
@@ -616,7 +617,7 @@ estimate_R_func <- function(incid,
   )
   if (incidence_per_time_step[1] < min_nb_cases_per_time_period) {
     warning("You're estimating R too early in the epidemic to get the desired
-            posterior CV.")
+            posterior CV.", call. = FALSE)
   }
 
   if (method == "non_parametric_si") {
