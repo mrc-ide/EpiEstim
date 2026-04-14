@@ -590,7 +590,7 @@ estimate_R_func <- function(incid,
   method <- match.arg(method)
   incid <- process_I(incid)
   idx_raw_incid <- as.integer(rownames(incid)) > 0
-  T <- sum(idx_raw_incid)
+  T <- sum(idx_raw_incid) # nolint
   T_imputed <- nrow(incid) - T
   
   check_times(config$t_start, config$t_end, T)
