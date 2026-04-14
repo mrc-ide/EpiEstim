@@ -367,23 +367,21 @@ estimate_R_agg <- function(incid,
       
       
       # Estimate R
-      R <- estimate_R(dis_inc, 
-                      method = method,
-                      config = config)
+      res_R <- estimate_R(dis_inc, method = method, config = config)
       
       message("Estimated R for iteration: ", i)
-      Mean_R <- R$R$`Mean(R)`
+      Mean_R <- res_R$R$`Mean(R)`
       
       if (anyNA(Mean_R)){
         idx_na <- which(is.na(Mean_R))
-        idx_reconstruct <- seq(min(R$R$t_start[-idx_na]), length(dis_inc))
+        idx_reconstruct <- seq(min(res_R$R$t_start[-idx_na]), length(dis_inc))
         Mean_R <- Mean_R[!is.na(Mean_R)]
       } else {
-        idx_reconstruct <- seq(min(R$R$t_start), length(dis_inc))
+        idx_reconstruct <- seq(min(res_R$R$t_start), length(dis_inc))
       }
      
       # Index for aggregation windows
-      idx_aggregation <- rep(seq(1:n_dt), times=full_dt) 
+      idx_aggregation <- rep(seq(1:n_dt), times = full_dt) 
       
       # Two options:
       # Opt 1) To keep naive disaggregation of the incidence for the aggregation 
@@ -480,7 +478,7 @@ estimate_R_agg <- function(incid,
       w_day <- list()
 
       for (x in seq_along(dt_seq)){
-        w_day[[x]] <- seq(1,dt_seq[x])
+        w_day[[x]] <- seq(1, dt_seq[x])
       }
 
       w_day <- unlist(w_day)
@@ -505,25 +503,23 @@ estimate_R_agg <- function(incid,
       new_inc <- sim_inc[,i-1]
       
       # Re-Estimate R
-      R <- estimate_R(new_inc,
-                      method = method,
-                      config = config)
+      res_R <- estimate_R(new_inc, method = method, config = config)
       
       message("Estimated R for iteration: ", i)
       
-      Mean_R <- R$R$`Mean(R)`
+      Mean_R <- res_R$R$`Mean(R)`
       
       if (anyNA(Mean_R)){
         idx_na <- which(is.na(Mean_R))
-        idx_reconstruct <- seq(min(R$R$t_start[-idx_na]), length(dis_inc))
+        idx_reconstruct <- seq(min(res_R$R$t_start[-idx_na]), length(dis_inc))
         Mean_R <- Mean_R[!is.na(Mean_R)]
       } else {
-        idx_reconstruct <- seq(min(R$R$t_start), length(dis_inc))
+        idx_reconstruct <- seq(min(res_R$R$t_start), length(dis_inc))
       }
       
 
       # Index for aggregation windows
-      idx_aggregation <- rep(seq(1:n_dt), times=full_dt) 
+      idx_aggregation <- rep(seq(1:n_dt), times = full_dt) 
       
       if (recon_opt == "naive"){
         aggs_to_reconstruct <- seq(idx_aggregation[idx_reconstruct[1]], n_dt)
@@ -597,7 +593,7 @@ estimate_R_agg <- function(incid,
       # that incidence was able to be reconstructed over
       
       if (is.null(config_out$t_start)) {
-        config_out$t_start <- seq(from = min(R$R$t_start), 
+        config_out$t_start <- seq(from = min(res_R$R$t_start), 
                                   to = total_t - (dt_out - 1), 1)
       }
       if (is.null(config_out$t_end)) {
