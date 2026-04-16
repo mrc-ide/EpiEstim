@@ -310,7 +310,7 @@ estimate_R_agg <- function(incid,
             call. = FALSE)
     date_convention <- "end"
   }
-  if (!(date_convention %in% c("start", "end"))) {
+  if (!is.null(date_convention) && !(date_convention %in% c("start", "end"))) {
     stop ("'date_convention' should be one of 'start' and 'end'", call. = FALSE)
   }
   
