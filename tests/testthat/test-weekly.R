@@ -809,6 +809,8 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
   expect_equal(res_df$R$date_end, res_inc_obj$R$date_end)
   expect_equal(res_df$R$date_start, res_inc2_obj$R$date_start)
   expect_equal(res_df$R$date_end, res_inc2_obj$R$date_end)
+  expect_equal(res_df$R$date_start, res_inc2_obj2$R$date_start)
+  expect_equal(res_df$R$date_end, res_inc2_obj2$R$date_end)
   
 })
 
