@@ -398,7 +398,7 @@ estimate_R <- function(incid,
     incid_vec <- process_I_vector(incid)
     out <- estimate_R_agg(incid_vec, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
                           iter = iter, tol = tol, config = config, method = method, grid = grid,
-                          agg_dates = agg_dates)
+                          agg_dates = agg_dates, date_convention = date_convention)
 
     return(out)
   }

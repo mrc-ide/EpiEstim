@@ -833,3 +833,26 @@ test_that("t_start and t_end work when dt is used without specifying dt_out", {
   expect_equal(res$R$t_end, c(15, 30))
   expect_equal(nrow(res$R), 2)
 })
+
+test_that("date_convention can only be 'start' or 'end'", {
+  start_date <- as.Date("2020-01-01")
+  weekly_inc_df <- data.frame(I = weekly_inc,
+                              dates = seq(start_date, by = "week",
+                                          length.out = length(weekly_inc)))
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si,
+                             t_start = c(8, 16),
+                             t_end = c(15, 30)))
+  
+  expect_error(
+    res <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+                                       dt = 7L,
+                                       iter = 10L,
+                                       config = config,
+                                       method = method,
+                                       date_convention = "xyz"))
+  )
+  
+})
+
