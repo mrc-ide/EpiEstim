@@ -856,3 +856,55 @@ test_that("date_convention can only be 'start' or 'end'", {
   
 })
 
+test_that("date_convention works with 'start' and 'end'", {
+  start_date <- as.Date("2020-01-01")
+  weekly_inc_df <- data.frame(I = weekly_inc,
+                              dates = seq(start_date, by = "week",
+                                          length.out = length(weekly_inc)))
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si,
+                             t_start = c(8, 16),
+                             t_end = c(15, 30)))
+  
+  res_start <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+                                           dt = 7L,
+                                           iter = 10L,
+                                           config = config,
+                                           method = method,
+                                           date_convention = "start"))
+  
+  expect_equal(res_start$dates, seq(start_date, by = "day", length.out = length(weekly_inc) * 7))
+  
+  res_end <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+                                         dt = 7L,
+                                         iter = 10L,
+                                         config = config,
+                                         method = method,
+                                         date_convention = "end"))
+  
+  expect_equal(res_end$dates, seq(start_date - 6, by = "day", length.out = length(weekly_inc) * 7))
+  
+})
+
+test_that("date_convention defaults to 'end'", {
+  start_date <- as.Date("2020-01-01")
+  weekly_inc_df <- data.frame(I = weekly_inc,
+                              dates = seq(start_date, by = "week",
+                                          length.out = length(weekly_inc)))
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si,
+                             t_start = c(8, 16),
+                             t_end = c(15, 30)))
+  
+  res_end <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+                                         dt = 7L,
+                                         iter = 10L,
+                                         config = config,
+                                         method = method))
+  
+  expect_equal(res_end$dates, seq(start_date - 6, by = "day", length.out = length(weekly_inc) * 7))
+  
+})
+
