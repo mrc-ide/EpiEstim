@@ -910,3 +910,39 @@ test_that("date_convention defaults to 'end'", {
   
 })
 
+test_that("date_convention works with irregular aggregations", {
+  
+  pattern <- c(3, 3, 2)
+  start_date <- as.Date("2020-01-01")
+  n_obs <- length(weekly_inc)
+  day_offsets <- cumsum(c(0, rep_len(pattern, n_obs - 1)))
+  dates = start_date + day_offsets
+  
+  agg_inc_df <- data.frame(I = weekly_inc,
+                              dates = dates)
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si))
+  
+  res_start_irr <- suppressWarnings(estimate_R(incid = agg_inc_df,
+                                         dt = c(3L, 3L, 2L),
+                                         iter = 10L,
+                                         config = config,
+                                         method = method,
+                                         date_convention = "start"))
+  
+  expect_equal(res_start_irr$dates, seq(start_date, by = "day",
+                                        length.out = nrow(agg_inc_df)/3 * sum(pattern)))
+  
+  res_end_irr <- suppressWarnings(estimate_R(incid = agg_inc_df,
+                                               dt = c(3L, 3L, 2L),
+                                               iter = 10L,
+                                               config = config,
+                                               method = method,
+                                               date_convention = "end"))
+  
+  expect_equal(res_end_irr$dates, seq(start_date - (pattern[1] - 1), by = "day",
+                                      length.out = nrow(agg_inc_df)/3 * sum(pattern)))
+})
+
+
