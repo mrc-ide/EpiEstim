@@ -732,9 +732,11 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
                                              config = config,
                                              method = method))
   
+  start_date <- as.Date("2020-01-01")
+  
   # dataframe with I column
   weekly_inc_df <- data.frame(I = weekly_inc,
-                              dates = seq(as.Date("2019-12-30"), by = "week",
+                              dates = seq(start_date, by = "week",
                                           length.out = length(weekly_inc)))
   res_df <- suppressWarnings(estimate_R(incid = weekly_inc_df,
                                         dt = 7L,
@@ -746,8 +748,9 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
   
   # incidence object
   inc_obj <- incidence::as.incidence(weekly_inc,
-                                     dates = seq(as.Date("2019-12-30"), by = "week",
-                                                 length.out = length(weekly_inc)))
+                                     dates = seq(start_date, by = "week",
+                                                 length.out = length(weekly_inc)),
+                                     isoweeks = FALSE)
   res_inc_obj <- suppressWarnings(estimate_R(incid = inc_obj,
                                              dt = 7L,
                                              dt_out = 7L,
@@ -759,7 +762,7 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
   # incidence2 object
   data <- data.frame(
     I = weekly_inc,
-    dates = seq(as.Date("2019-12-30"), by = "week", length.out = length(weekly_inc))
+    dates = seq(start_date, by = "week", length.out = length(weekly_inc))
   )
   inc2_obj <- incidence2::incidence(data, date_index = "dates",
                                     date_names_to = "dates", counts = "I",
