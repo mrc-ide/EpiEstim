@@ -304,13 +304,16 @@ estimate_R_agg <- function(incid,
     warning ("dt_out should be at least the length of the longest aggregation present in the data",
              call. = FALSE)
   }
-  
   if (!is.null(agg_dates) && is.null(date_convention)) {
     warning("date_convention not specified. Defaulting to 'end', assuming dates 
           correspond to the reporting date (last day of each aggregation window).",
             call. = FALSE)
     date_convention <- "end"
   }
+  if (!(date_convention %in% c("start", "end"))) {
+    stop ("'date_convention' should be one of 'start' and 'end'", call. = FALSE)
+  }
+  
   
   # Two configs:
   # 'config' for the R estimates used to reconstruct the incidence (internal to the
