@@ -72,6 +72,16 @@
 #'    prior to the first reported cases. The default value is 0, meaning that no
 #'    back-imputation is performed. If a positive integer is provided, the
 #'    incidence is imputed for the first `backimputation_window` time units.
+#'    
+#' @param date_convention One of `"start"` or `"end"`, specifying whether the 
+#' dates supplied in `incid$dates` correspond to the first or last day of each 
+#' aggregation window. Must be specified if incidence are temporally
+#' aggregated (`dt > 1`) and `incid$dates` is supplied.
+#' For example, for weekly epi-week data where the date label 
+#' corresponds to the first day of the week (e.g. Monday), use `"start"`. For 
+#' data reported multiple times per week where the date corresponds to the 
+#' reporting date (i.e. the last day of the accumulation window), use `"end"`.
+#' Ignored if no dates are supplied.
 #'
 #' @return an object of class `estimate_R`, with components:
 #' 
@@ -347,21 +357,22 @@ estimate_R <- function(incid,
                        iter = 10L,
                        tol = 1e-6,
                        grid = list(precision = 0.001, min = -1, max = 1),
-                       backimputation_window = 0
+                       backimputation_window = 0,
+                       date_convention = NULL
                        ) {
   
   if (is.data.frame(incid) && "dates" %in% names(incid)) {
     if (!all(diff(incid$dates) > 0)) {
-      stop("dates in incid must be in ascending order")
+      stop("dates in incid must be in ascending order", call. = FALSE)
     }
   } else if (inherits(incid, "incidence")) {
     if (!all(diff(incid$dates) > 0)) {
-      stop("dates in incid must be in ascending order")
+      stop("dates in incid must be in ascending order", call. = FALSE)
     }
   } else if (inherits(incid, "incidence2")) {
     dates <- unique(incid[[incidence2::get_date_index_name(incid)]])
     if (!all(diff(dates) > 0)) {
-      stop("dates in incid must be in ascending order")
+      stop("dates in incid must be in ascending order", call. = FALSE)
     }
   }
 
@@ -374,9 +385,20 @@ estimate_R <- function(incid,
     msg <- "backimputation_window is currently not supported when dt > 1"
     if(backimputation_window > 0) stop(msg)
     
+    # extract dates before stripping to vector
+    agg_dates <- NULL
+    if (is.data.frame(incid) && "dates" %in% names(incid)) {
+      agg_dates <- incid$dates
+    } else if (inherits(incid, "incidence")) {
+      agg_dates <- incid$dates
+    } else if (inherits(incid, "incidence2")) {
+      agg_dates <- unique(incid[[incidence2::get_date_index_name(incid)]])
+    }
+    
     incid_vec <- process_I_vector(incid)
     out <- estimate_R_agg(incid_vec, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
-                          iter = iter, tol = tol, config = config, method = method, grid = grid)
+                          iter = iter, tol = tol, config = config, method = method, grid = grid,
+                          agg_dates = agg_dates, date_convention = date_convention)
 
     return(out)
   }
@@ -568,7 +590,7 @@ estimate_R_func <- function(incid,
   method <- match.arg(method)
   incid <- process_I(incid)
   idx_raw_incid <- as.integer(rownames(incid)) > 0
-  T <- sum(idx_raw_incid)
+  T <- sum(idx_raw_incid) # nolint
   T_imputed <- nrow(incid) - T
   
   check_times(config$t_start, config$t_end, T)
@@ -581,7 +603,8 @@ estimate_R_func <- function(incid,
 
   if (method == "si_from_sample") {
     if (is.null(config$n2)) {
-      stop("method si_from_sample requires to specify the config$n2 argument.")
+      stop("method si_from_sample requires to specify the config$n2 argument.",
+           call. = FALSE)
     }
     si_sample <- process_si_sample(si_sample)
   }
@@ -594,7 +617,7 @@ estimate_R_func <- function(incid,
   )
   if (incidence_per_time_step[1] < min_nb_cases_per_time_period) {
     warning("You're estimating R too early in the epidemic to get the desired
-            posterior CV.")
+            posterior CV.", call. = FALSE)
   }
 
   if (method == "non_parametric_si") {
@@ -794,6 +817,18 @@ estimate_R_func <- function(incid,
     "Median(R)", "Quantile.0.75(R)", "Quantile.0.95(R)",
     "Quantile.0.975(R)"
   )
+
+  if (!is.null(incid$dates)) {
+    results$R$date_start <- incid$dates[config$t_start][non_na_rows]
+    results$R$date_end <- incid$dates[config$t_end][non_na_rows]
+    # reorder so date columns appear after t_start and t_end
+    results$R <- results$R[, c("t_start", "t_end", "date_start", "date_end",
+                               "Mean(R)", "Std(R)", "Quantile.0.025(R)", 
+                               "Quantile.0.05(R)", "Quantile.0.25(R)", "Median(R)", 
+                               "Quantile.0.75(R)", "Quantile.0.95(R)", 
+                               "Quantile.0.975(R)")]
+  }
+  
   results$method <- method
   results$si_distr <- config$si_distr
   if (is.matrix(results$si_distr)) {

@@ -70,18 +70,26 @@ test_that("warnings and errors are working as expected", {
 
 test_that("estimate_R outputs shouldn't depend on the format of the incidence data", {
   
-  expect_equal(
-    estimate_R(Flu2009$incidence, 
-               method="parametric_si",
-               backimputation_window = 6,
-               config=config_flu)$R,
-    estimate_R(Flu2009$incidence$I, 
-               method="parametric_si",
-               backimputation_window = 6,
-               config=config_flu)$R 
-  )
+  # ignore date columns
+  drop_date_cols <- function(R) {
+    R[, !names(R) %in% c("date_start", "date_end")]
+  }
+  
+  res_1 <- estimate_R(Flu2009$incidence,
+                      method = "parametric_si",
+                      backimputation_window = 6,
+                      config = config_flu)$R
+  
+  res_2 <- estimate_R(Flu2009$incidence$I, 
+                      method = "parametric_si",
+                      backimputation_window = 6,
+                      config = config_flu)$R
+  
+  # all formats should produce identical R estimates
+  expect_equal(drop_date_cols(res_1), drop_date_cols(res_2))
   
 })
+
 
 test_that("backimpute_I is working as expected", {
   
