@@ -87,7 +87,9 @@
 <span>  recon_opt <span class="op">=</span> <span class="st">"naive"</span>,</span>
 <span>  config <span class="op">=</span> <span class="fu"><a href="make_config.html">make_config</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"non_parametric_si"</span>, <span class="st">"parametric_si"</span><span class="op">)</span>,</span>
-<span>  grid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>precision <span class="op">=</span> <span class="fl">0.001</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  grid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>precision <span class="op">=</span> <span class="fl">0.001</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  agg_dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  date_convention <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -146,6 +148,25 @@ function <code><a href="make_config.html">make_config()</a></code>.</p></dd>
 <dd><p>named list containing <code>precision</code>, <code>min</code>, and <code>max</code> which are used to
 define a grid of growth rate parameters that are used inside the EM algorithm
 (see details). We recommend using the default values.</p></dd>
+
+
+<dt id="arg-agg-dates">agg_dates<a class="anchor" aria-label="anchor" href="#arg-agg-dates"></a></dt>
+<dd><p>dates corresponding to each aggregated incidence count,
+supplied as a vector of class <code>Date</code>. If supplied, <code>date_convention</code>
+must also be specified. If <code>NULL</code> (default), no date information is
+added to the output.</p></dd>
+
+
+<dt id="arg-date-convention">date_convention<a class="anchor" aria-label="anchor" href="#arg-date-convention"></a></dt>
+<dd><p>One of <code>"start"</code> or <code>"end"</code>, specifying whether the
+dates supplied in <code>incid$dates</code> correspond to the first or last day of each
+aggregation window. Must be specified if incidence are temporally
+aggregated (<code>dt &gt; 1</code>) and <code>incid$dates</code> is supplied.
+For example, for weekly epi-week data where the date label
+corresponds to the first day of the week (e.g. Monday), use <code>"start"</code>. For
+data reported multiple times per week where the date corresponds to the
+reporting date (i.e. the last day of the accumulation window), use <code>"end"</code>.
+Ignored if no dates are supplied.</p></dd>
 
 </dl></div>
     <div id="value">

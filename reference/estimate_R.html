@@ -93,7 +93,8 @@ incidence time series and the serial interval distribution.</p>
 <span>  iter <span class="op">=</span> <span class="fl">10L</span>,</span>
 <span>  tol <span class="op">=</span> <span class="fl">1e-06</span>,</span>
 <span>  grid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>precision <span class="op">=</span> <span class="fl">0.001</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  backimputation_window <span class="op">=</span> <span class="fl">0</span></span>
+<span>  backimputation_window <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  date_convention <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -187,6 +188,18 @@ Only used if <code>dt &gt; 1</code>, see <code><a href="estimate_R_agg.html">est
 prior to the first reported cases. The default value is 0, meaning that no
 back-imputation is performed. If a positive integer is provided, the
 incidence is imputed for the first <code>backimputation_window</code> time units.</p></dd>
+
+
+<dt id="arg-date-convention">date_convention<a class="anchor" aria-label="anchor" href="#arg-date-convention"></a></dt>
+<dd><p>One of <code>"start"</code> or <code>"end"</code>, specifying whether the
+dates supplied in <code>incid$dates</code> correspond to the first or last day of each
+aggregation window. Must be specified if incidence are temporally
+aggregated (<code>dt &gt; 1</code>) and <code>incid$dates</code> is supplied.
+For example, for weekly epi-week data where the date label
+corresponds to the first day of the week (e.g. Monday), use <code>"start"</code>. For
+data reported multiple times per week where the date corresponds to the
+reporting date (i.e. the last day of the accumulation window), use <code>"end"</code>.
+Ignored if no dates are supplied.</p></dd>
 
 </dl></div>
     <div id="value">

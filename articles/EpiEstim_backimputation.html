@@ -117,12 +117,12 @@ analyses.</p>
 <p>In the case of EpiEstim, the first estimates of the reproduction
 number (R<sub>t</sub>) are sensitive to the recent incidence history.
 Indeed, the denominator of the estimator depends on the term:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Λ</mi><mi>t</mi></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>τ</mi><mo>&lt;</mo><mi>t</mi></mrow></munder><msub><mi>w</mi><mrow><mi>t</mi><mo>−</mo><mi>τ</mi></mrow></msub><msub><mi>I</mi><mi>τ</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">Λ</mi><mi>t</mi></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>τ</mi><mo>&lt;</mo><mi>t</mi></mrow></munder><msub><mi>w</mi><mrow><mi>t</mi><mo>−</mo><mi>τ</mi></mrow></msub><msub><mi>I</mi><mi>τ</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
 \Lambda_t = \sum_{\tau &lt; t} w_{t-\tau} I_\tau,
 </annotation></semantics></math> where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>I</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>t</mi></msub><annotation encoding="application/x-tex">(I_t)_{t}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>I</mi><mi>t</mi></msub><msub><mo stretchy="false" form="postfix">)</mo><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">(I_t)_{t}</annotation></semantics></math>
 denotes incidence and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>w</mi><mi>j</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>j</mi></msub><annotation encoding="application/x-tex">(w_j)_{j}</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>w</mi><mi>j</mi></msub><msub><mo stretchy="false" form="postfix">)</mo><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">(w_j)_{j}</annotation></semantics></math>
 the serial interval distribution. If the first cases are not observed,
 this sum will be truncated, hence the denominator will be underestimated
 and infectiousness overestimated.</p>

@@ -95,7 +95,7 @@
       <h1 data-toc-skip>EpiEstim: a demonstration</h1>
                         <h4 data-toc-skip class="author">Anne Cori</h4>
             
-            <h4 data-toc-skip class="date">2026-03-27</h4>
+            <h4 data-toc-skip class="date">2026-04-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/mrc-ide/EpiEstim/blob/main/vignettes/short_demo.Rmd" class="external-link"><code>vignettes/short_demo.Rmd</code></a></small>
       <div class="hidden name"><code>short_demo.Rmd</code></div>
@@ -204,20 +204,20 @@ of the serial interval for flu from Ferguson et al., Nature, 2005:</p>
 <span><span class="co">#&gt;     To change this change the t_start and t_end arguments.</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res_parametric_si</span><span class="op">$</span><span class="va">R</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   t_start t_end  Mean(R)    Std(R) Quantile.0.025(R) Quantile.0.05(R)</span></span>
-<span><span class="co">#&gt; 1       2     8 1.735798 0.4091314         1.0287437         1.121933</span></span>
-<span><span class="co">#&gt; 2       3     9 1.749168 0.3647267         1.1088223         1.195480</span></span>
-<span><span class="co">#&gt; 3       4    10 1.537058 0.3074116         0.9947030         1.068694</span></span>
-<span><span class="co">#&gt; 4       5    11 1.431839 0.2705921         0.9514466         1.017661</span></span>
-<span><span class="co">#&gt; 5       6    12 1.422725 0.2515046         0.9731426         1.035808</span></span>
-<span><span class="co">#&gt; 6       7    13 1.635373 0.2523436         1.1786332         1.243590</span></span>
-<span><span class="co">#&gt;   Quantile.0.25(R) Median(R) Quantile.0.75(R) Quantile.0.95(R)</span></span>
-<span><span class="co">#&gt; 1         1.445198  1.703761         1.991520         2.458972</span></span>
-<span><span class="co">#&gt; 2         1.491345  1.723884         1.979457         2.389121</span></span>
-<span><span class="co">#&gt; 3         1.320090  1.516613         1.731761         2.075176</span></span>
-<span><span class="co">#&gt; 4         1.241251  1.414830         1.603900         1.904047</span></span>
-<span><span class="co">#&gt; 5         1.245996  1.407932         1.583340         1.860107</span></span>
-<span><span class="co">#&gt; 6         1.458847  1.622413         1.797779         2.071372</span></span>
+<span><span class="co">#&gt;   t_start t_end date_start   date_end  Mean(R)    Std(R) Quantile.0.025(R)</span></span>
+<span><span class="co">#&gt; 1       2     8 2009-04-28 2009-05-04 1.735798 0.4091314         1.0287437</span></span>
+<span><span class="co">#&gt; 2       3     9 2009-04-29 2009-05-05 1.749168 0.3647267         1.1088223</span></span>
+<span><span class="co">#&gt; 3       4    10 2009-04-30 2009-05-06 1.537058 0.3074116         0.9947030</span></span>
+<span><span class="co">#&gt; 4       5    11 2009-05-01 2009-05-07 1.431839 0.2705921         0.9514466</span></span>
+<span><span class="co">#&gt; 5       6    12 2009-05-02 2009-05-08 1.422725 0.2515046         0.9731426</span></span>
+<span><span class="co">#&gt; 6       7    13 2009-05-03 2009-05-09 1.635373 0.2523436         1.1786332</span></span>
+<span><span class="co">#&gt;   Quantile.0.05(R) Quantile.0.25(R) Median(R) Quantile.0.75(R) Quantile.0.95(R)</span></span>
+<span><span class="co">#&gt; 1         1.121933         1.445198  1.703761         1.991520         2.458972</span></span>
+<span><span class="co">#&gt; 2         1.195480         1.491345  1.723884         1.979457         2.389121</span></span>
+<span><span class="co">#&gt; 3         1.068694         1.320090  1.516613         1.731761         2.075176</span></span>
+<span><span class="co">#&gt; 4         1.017661         1.241251  1.414830         1.603900         1.904047</span></span>
+<span><span class="co">#&gt; 5         1.035808         1.245996  1.407932         1.583340         1.860107</span></span>
+<span><span class="co">#&gt; 6         1.243590         1.458847  1.622413         1.797779         2.071372</span></span>
 <span><span class="co">#&gt;   Quantile.0.975(R)</span></span>
 <span><span class="co">#&gt; 1          2.624781</span></span>
 <span><span class="co">#&gt; 2          2.533119</span></span>
