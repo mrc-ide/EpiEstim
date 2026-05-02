@@ -20,3 +20,14 @@ test_that("make_config triggers process_I warning when incid$local[1] > 0", {
     make_config(incid = incid),
     "incid\\$local\\[1\\] is >0 but must be 0")
 })
+
+test_that("make_config triggers process_I error for negative counts with dates", {
+  incid <- data.frame(
+    dates = 1:4,
+    local = c(0, -1, 0, 2),
+    imported = c(0, 0, 0, 0)
+  )
+  expect_error(
+    make_config(incid = incid),
+    "incid must contain only non negative integer values\\.")
+})
