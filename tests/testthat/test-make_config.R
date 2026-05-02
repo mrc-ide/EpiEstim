@@ -30,4 +30,9 @@ test_that("make_config triggers process_I error for negative counts with dates",
   expect_error(
     make_config(incid = incid),
     "incid must contain only non negative integer values\\.")
+
+  incid_no_dates <- incid[, c("local", "imported")]
+  expect_error(
+    make_config(incid = incid_no_dates),
+    "incid must contain only non negative integer values\\.")
 })
