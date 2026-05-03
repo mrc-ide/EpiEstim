@@ -1,3 +1,9 @@
+get_scale_epsilon <- function(R, lambda, priors, t) {
+  rate <- vnapply(seq(2, dim(lambda)[3]), function(e)
+    sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
+  1 / rate
+}
+
 #' Draw epsilon from marginal posterior distribution
 #'
 #' @param R a matrix with dimensions containing values of the instantaneous
@@ -82,9 +88,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
   if (is.null(shape_epsilon)) {
     shape_epsilon <- get_shape_epsilon(incid, lambda, priors, t_min, t_max)
   }
-  rate <- vnapply(seq(2, dim(lambda)[3]), function(e)
-    sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
-  scale <- 1 / rate
+  scale <- get_scale_epsilon(R, lambda, priors, t)
   stats::rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale)
 }
 
@@ -173,15 +177,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
   if (is.null(shape_R_flat)) {
     shape_R_flat <- get_shape_R_flat(incid, priors, t_min, t_max)
   }
-  ## overall infectivity
-  temp <- lambda[t, , 1]
-  idx <- seq(2, dim(incid)[3], 1)
-  for(var in idx){
-    ## We want lambda_1 + e_v lambda_v for all t
-    temp <- temp + epsilon[var - 1] * lambda[t, , var]
-  }
-  rate <- temp + 1 / priors$R$scale
-  scale <- 1 / rate
+  scale <- get_scale_R(epsilon, incid, lambda, priors, t)
   scale_flat <- as.numeric(scale)
   R_flat <- stats::rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
   R_fill <- matrix(R_flat, nrow = length(t), ncol = ncol(incid))
@@ -189,4 +185,3 @@ draw_R <- function(epsilon, incid, lambda, priors,
   R[t, ] <- R_fill
   R
 }
-
