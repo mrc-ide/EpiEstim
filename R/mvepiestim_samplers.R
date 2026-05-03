@@ -1,9 +1,3 @@
-get_scale_epsilon <- function(R, lambda, priors, t) {
-  rate <- vnapply(seq(2, dim(lambda)[3]), function(e)
-    sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
-  1 / rate
-}
-
 #' Draw epsilon from marginal posterior distribution
 #'
 #' @param R a matrix with dimensions containing values of the instantaneous

@@ -31,7 +31,6 @@
 #' # constant incidence 10 per day everywhere
 #' incid <- array(10, dim = c(T, n_loc, n_v))
 #' get_shape_R_flat(incid, priors)
-
 get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
   shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape
@@ -92,6 +91,13 @@ get_shape_epsilon <- function(incid, lambda, priors,
 }
 
 
+#' Compute scale of epsilon posterior
+#'
+#' @inheritParams draw_epsilon
+#' @param t integer vector of time indices used for estimation.
+#'
+#' @return a numeric vector of scales for each non-reference variant.
+#' @export
 get_scale_epsilon <- function(R, lambda, priors, t) {
   rate <- vnapply(seq(2, dim(lambda)[3]), function(e) {
     sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale
@@ -99,6 +105,13 @@ get_scale_epsilon <- function(R, lambda, priors, t) {
   1 / rate
 }
 
+#' Compute scale of R posterior
+#'
+#' @inheritParams draw_R
+#' @param t integer vector of time indices used for estimation.
+#'
+#' @return a numeric matrix of scales over time and location.
+#' @export
 get_scale_R <- function(epsilon, incid, lambda, priors, t) {
   temp <- lambda[t, , 1]
   idx <- seq(2, dim(incid)[3], 1)
@@ -147,7 +160,6 @@ get_scale_R <- function(epsilon, incid, lambda, priors, t) {
 #' w_v <- c(0, 0.2, 0.5, 0.3)
 #' si_distr <- cbind(w_v, w_v)
 #' lambda <- compute_lambda(incid, si_distr)
-
 compute_lambda <- function(incid, si_distr) {
   if (!inherits(incid, "incid_multivariant")) {
     msg1 <- "'incid 'should be an 'incid_multivariant' object. "
@@ -190,7 +202,6 @@ compute_lambda <- function(incid, si_distr) {
 #' @return integer
 #' @author Sangeeta Bhatia
 #' @export
-
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
   if (any(colSums(si_distr) != 1)) {
     warning("Input SI distributions should sum to 1. Normalising now")
@@ -218,7 +229,6 @@ compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
 #' @author Sangeeta Bhatia
 #' 
 #' @export
-
 first_nonzero_incid <- function(incid) {
   t_min_incid <- apply(
     incid, c(2, 3),
@@ -250,7 +260,6 @@ first_nonzero_incid <- function(incid) {
 #' @author Sangeeta Bhatia
 #' 
 #' @export
-
 compute_t_min <- function(incid, si_distr, miss_at_most) {
   t_min_si <- compute_si_cutoff(si_distr, 0.05)
   t_min_incid <- first_nonzero_incid(incid)
