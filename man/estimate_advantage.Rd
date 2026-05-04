@@ -122,16 +122,16 @@ the MCMC control parameters.
 \examples{
 n_v <- 2
 n_loc <- 3 # 3 locations
-T <- 100 # 100 time steps
+n_steps <- 100 # 100 time steps
 priors <- default_priors()
 # constant incidence 10 per day everywhere
-incid <- array(10, dim = c(T, n_loc, n_v))
+incid <- array(10, dim = c(n_steps, n_loc, n_v))
 # arbitrary serial interval, same for both variants
 w_v <- c(0, 0.2, 0.5, 0.3)
 si_distr <- cbind(w_v, w_v)
 
 # Dummy initial values for the MCMC
-R_init <- matrix(5, nrow = T, ncol = n_loc)
+R_init <- matrix(5, nrow = n_steps, ncol = n_loc)
 R_init[1, ] <- NA # no estimates of R on first time step
 epsilon_init <- 5
 x <- estimate_advantage(incid, si_distr, priors)

@@ -102,16 +102,16 @@
 #' @examples
 #' n_v <- 2
 #' n_loc <- 3 # 3 locations
-#' T <- 100 # 100 time steps
+#' n_steps <- 100 # 100 time steps
 #' priors <- default_priors()
 #' # constant incidence 10 per day everywhere
-#' incid <- array(10, dim = c(T, n_loc, n_v))
+#' incid <- array(10, dim = c(n_steps, n_loc, n_v))
 #' # arbitrary serial interval, same for both variants
 #' w_v <- c(0, 0.2, 0.5, 0.3)
 #' si_distr <- cbind(w_v, w_v)
 #'
 #' # Dummy initial values for the MCMC
-#' R_init <- matrix(5, nrow = T, ncol = n_loc)
+#' R_init <- matrix(5, nrow = n_steps, ncol = n_loc)
 #' R_init[1, ] <- NA # no estimates of R on first time step
 #' epsilon_init <- 5
 #' x <- estimate_advantage(incid, si_distr, priors)
@@ -187,7 +187,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
     warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
   }
 
-  T <- nrow(incid)
+  n_steps <- nrow(incid)
   n_loc <- ncol(incid)
 
   incid <- process_I_multivariant(incid, incid_imported)
@@ -253,7 +253,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
     priors = priors, shape_R_flat = shape_R_flat, t_min = t_min, t_max = t_max
   )
   
-  R_out <- array(NA, dim= c(T, n_loc, mcmc_control$n_iter + 1))
+  R_out <- array(NA, dim= c(n_steps, n_loc, mcmc_control$n_iter + 1))
   R_out[, , 1] <- R_init
   for (i in seq_len(mcmc_control$n_iter)) {
     R_out[, , i + 1] <- draw_R(epsilon_out[, i], incid$local, lambda, priors,
@@ -322,4 +322,3 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
        ) 
   
 }
-
