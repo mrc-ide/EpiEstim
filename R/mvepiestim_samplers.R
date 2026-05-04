@@ -175,7 +175,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
   r_scale_flat <- as.numeric(r_scale)
   R_flat <- stats::rgamma(length(shape_R_flat), shape = shape_R_flat, scale = r_scale_flat)
   R_fill <- matrix(R_flat, nrow = length(time_idx), ncol = ncol(incid))
-  R <- matrix(NA, nrow(incid), ncol(incid))
-  R[time_idx, ] <- R_fill
-  R
+  R_out <- matrix(NA, nrow(incid), ncol(incid))
+  R_out[time_idx, ] <- R_fill
+  R_out
 }
