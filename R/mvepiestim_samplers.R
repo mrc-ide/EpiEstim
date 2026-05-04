@@ -82,8 +82,8 @@ draw_epsilon <- function(R, incid, lambda, priors,
   if (is.null(shape_epsilon)) {
     shape_epsilon <- get_shape_epsilon(incid, lambda, priors, t_min, t_max)
   }
-  scale <- get_scale_epsilon(R, lambda, priors, t = time_idx)
-  stats::rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale)
+  eps_scale <- get_scale_epsilon(R, lambda, priors, t = time_idx)
+  stats::rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = eps_scale)
 }
 
 #' Draw R from marginal posterior distribution
@@ -171,9 +171,9 @@ draw_R <- function(epsilon, incid, lambda, priors,
   if (is.null(shape_R_flat)) {
     shape_R_flat <- get_shape_R_flat(incid, priors, t_min, t_max)
   }
-  scale <- get_scale_R(epsilon, incid, lambda, priors, t = time_idx)
-  scale_flat <- as.numeric(scale)
-  R_flat <- stats::rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
+  r_scale <- get_scale_R(epsilon, incid, lambda, priors, t = time_idx)
+  r_scale_flat <- as.numeric(r_scale)
+  R_flat <- stats::rgamma(length(shape_R_flat), shape = shape_R_flat, scale = r_scale_flat)
   R_fill <- matrix(R_flat, nrow = length(time_idx), ncol = ncol(incid))
   R <- matrix(NA, nrow(incid), ncol(incid))
   R[time_idx, ] <- R_fill
