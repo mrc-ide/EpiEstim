@@ -32,8 +32,8 @@
 #' incid <- array(10, dim = c(T, n_loc, n_v))
 #' get_shape_R_flat(incid, priors)
 get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
-  t <- seq(t_min, t_max, 1)
-  shape <- apply(incid[t, , , drop = FALSE], c(1, 2), sum) + priors$R$shape
+  time_idx <- seq(t_min, t_max, 1)
+  shape <- apply(incid[time_idx, , , drop = FALSE], c(1, 2), sum) + priors$R$shape
   as.numeric(shape)
 }
 
@@ -85,9 +85,9 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 #' get_shape_epsilon(incid$local, lambda, priors)
 get_shape_epsilon <- function(incid, lambda, priors,
                               t_min = 2L, t_max = nrow(incid)) {
-  t <- seq(t_min, t_max, 1)
+  time_idx <- seq(t_min, t_max, 1)
   vnapply(seq(2, dim(lambda)[3]), function(e)
-    sum(incid[t, , e])) + priors$epsilon$shape
+    sum(incid[time_idx, , e])) + priors$epsilon$shape
 }
 
 
@@ -99,8 +99,9 @@ get_shape_epsilon <- function(incid, lambda, priors,
 #' @return a numeric vector of scales for each non-reference variant.
 #' @export
 get_scale_epsilon <- function(R, lambda, priors, t) {
+  time_idx <- t
   rate <- vnapply(seq(2, dim(lambda)[3]), function(e) {
-    sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale
+    sum(R[time_idx, ] * lambda[time_idx, , e]) + 1 / priors$epsilon$scale
   })
   1 / rate
 }
@@ -113,10 +114,11 @@ get_scale_epsilon <- function(R, lambda, priors, t) {
 #' @return a numeric matrix of scales over time and location.
 #' @export
 get_scale_R <- function(epsilon, incid, lambda, priors, t) {
-  temp <- lambda[t, , 1]
+  time_idx <- t
+  temp <- lambda[time_idx, , 1]
   idx <- seq(2, dim(incid)[3], 1)
   for (var in idx) {
-    temp <- temp + epsilon[var - 1] * lambda[t, , var]
+    temp <- temp + epsilon[var - 1] * lambda[time_idx, , var]
   }
   rate <- temp + 1 / priors$R$scale
   1 / rate

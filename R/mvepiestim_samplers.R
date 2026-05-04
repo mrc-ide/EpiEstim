@@ -78,11 +78,11 @@ draw_epsilon <- function(R, incid, lambda, priors,
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
-  t <- seq(t_min, t_max, 1)
+  time_idx <- seq(t_min, t_max, 1)
   if (is.null(shape_epsilon)) {
     shape_epsilon <- get_shape_epsilon(incid, lambda, priors, t_min, t_max)
   }
-  scale <- get_scale_epsilon(R, lambda, priors, t)
+  scale <- get_scale_epsilon(R, lambda, priors, t = time_idx)
   stats::rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale)
 }
 
@@ -167,15 +167,15 @@ draw_R <- function(epsilon, incid, lambda, priors,
     stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
-  t <- seq(t_min, t_max, 1)
+  time_idx <- seq(t_min, t_max, 1)
   if (is.null(shape_R_flat)) {
     shape_R_flat <- get_shape_R_flat(incid, priors, t_min, t_max)
   }
-  scale <- get_scale_R(epsilon, incid, lambda, priors, t)
+  scale <- get_scale_R(epsilon, incid, lambda, priors, t = time_idx)
   scale_flat <- as.numeric(scale)
   R_flat <- stats::rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
-  R_fill <- matrix(R_flat, nrow = length(t), ncol = ncol(incid))
+  R_fill <- matrix(R_flat, nrow = length(time_idx), ncol = ncol(incid))
   R <- matrix(NA, nrow(incid), ncol(incid))
-  R[t, ] <- R_fill
+  R[time_idx, ] <- R_fill
   R
 }
