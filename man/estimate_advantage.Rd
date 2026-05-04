@@ -91,6 +91,34 @@ Jointly estimate the instantaneous reproduction number for a reference
 pathogen/strain/variant and the relative transmissibility of a "new"
 pathogen/strain/variant.
 }
+\details{
+This function implements a Gibbs sampler to jointly estimate the
+instantaneous reproduction number for a reference variant and the relative
+transmissibility of a "new" variant compared to the reference. Given the
+incidence of cases for each variant, the serial interval distribution for each
+variant, and the prior distributions for the reproduction number and the
+relative transmissibility, we initialise the sampler with the effective
+reproduction number for each variant using \code{\link[=estimate_R]{estimate_R()}}
+and the relative transmissibility as the ratio of the reproduction number of
+the variant to that of the reference.
+We then iteratively sample from the conditional distributions of the
+reproduction number and the relative transmissibility, both assumed to be
+gamma distributed. The MCMC chain is thinned and the burnin is removed before
+returning the output. The conditional distributions have a closed form,
+making the algorithm computationally very fast. For further details on the
+method, see Bhatia et al. (2023).
+
+The function also includes convergence diagnostics based on the Gelman-Rubin
+diagnostic as implemented in the \code{coda} package. Since we do not run multiple
+chains, the MCMC chain for each
+epsilon is split into two chains and the Gelman-Rubin diagnostic is applied
+to check for convergence. In practice, we find that the default number of
+iterations (10,000) is sufficient for convergence in most cases, but users
+should check the convergence diagnostics and increase the number of iterations if
+necessary. Sampling parameters can be adjusted using the \code{mcmc_control}
+argument. See the documentation for \code{\link[=default_mcmc_controls]{default_mcmc_controls()}} for  details on
+the MCMC control parameters.
+}
 \examples{
 n_v <- 2
 n_loc <- 3 # 3 locations
@@ -121,4 +149,9 @@ plot(x$R[20, 2, ], type = "l",
 abline(h = 1, col = "red")
 plot(x$R[30, 3, ], type = "l",
      xlab = "Iteration", ylab = "R time 30 location 3")
+}
+\references{
+Bhatia S, Wardle J, Nash RK, Nouvellet P, Cori A. Extending EpiEstim to
+estimate the transmission advantage of pathogen variants in real-time:
+SARS-CoV-2 as a case-study, Epidemics, 21 June 2023, 100692.
 }
