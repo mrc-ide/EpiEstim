@@ -57,7 +57,6 @@
 #' R <- matrix(1, nrow = T, ncol = n_loc)
 #' R[1, ] <- NA # no estimates of R on first time step
 #' draw_epsilon(R, incid$local, lambda, priors, seed = 1)
-
 draw_epsilon <- function(R, incid, lambda, priors,
                          shape_epsilon = NULL,
                          t_min = 2L, t_max = nrow(incid),
@@ -146,7 +145,6 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #' # Epsilon = 1 i.e. no transmission advantage
 #' epsilon <- 1
 #' draw_R(epsilon, incid$local, lambda, priors, seed = 1, t_min = 2L)
-
 draw_R <- function(epsilon, incid, lambda, priors,
                    shape_R_flat = NULL,
                    t_min = NULL, t_max = nrow(incid),
