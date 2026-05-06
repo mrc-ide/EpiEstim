@@ -393,7 +393,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
   if (any(colSums(si_distr) != 1)) {
     warning("Input SI distributions should sum to 1. Normalising now")
-    si_distr <- si_distr / colSums(si_distr)
+    si_distr <- normalise_si_distr(si_distr)
   }
   cutoff <- 1 - miss_at_most
   cdf <- apply(si_distr, 2, cumsum)

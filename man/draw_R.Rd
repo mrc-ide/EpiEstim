@@ -12,7 +12,8 @@ draw_R(
   shape_R_flat = NULL,
   t_min = NULL,
   t_max = nrow(incid),
-  seed = NULL
+  seed = NULL,
+  validate_inputs = FALSE
 )
 }
 \arguments{

@@ -6,7 +6,7 @@
 ##' @returns Silently returns TRUE if the checks are passed, otherwise throws an
 ##' error.
 ##' @author Sangeeta Bhatia
-##' @internal
+##' @keywords internal
 check_incidence <- function(incid) {
   if (any(incid < 0)) {
     stop("incid must be >=0")
@@ -45,7 +45,7 @@ check_priors <- function(priors) {
 ##' @returns Silently returns TRUE if the checks are passed, otherwise throws an
 ##' error.
 ##' @author Sangeeta Bhatia
-##' @internal
+##' @keywords internal
 check_mcmc_control <- function(mcmc_control) {
 
   if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)) {
@@ -72,7 +72,7 @@ check_mcmc_control <- function(mcmc_control) {
 ##' @returns Silently returns TRUE if the checks are passed, otherwise throws an
 ##' error.
 ##' @author Sangeeta Bhatia
-##' @internal
+##' @keywords internal
 check_t_min_t_max <- function(t_min, t_max, incid) {
     if (!is.integer(t_min) || !is.integer(t_max)) {
       stop("t_min and t_max must be integers")
@@ -106,6 +106,17 @@ check_seed <- function(seed) {
 }
 
 
+##' Validate inputs to estimate_advantage
+##'
+##' Runs all available input checks for \code{\link{estimate_advantage}} based on
+##' the supplied arguments. Each check is called only if the corresponding
+##' argument is present.
+##'
+##' @param ... Named arguments passed to \code{\link{estimate_advantage}}.
+##' @returns Invisibly returns \code{NULL}; throws an error if any input check
+##' fails.
+##' @author Sangeeta Bhatia
+##' @keywords internal
 check_estimate_advantage_inputs <- function(...) {
   estimate_advantage_args <- list(...)
   arg_names <- names(estimate_advantage_args)
@@ -113,7 +124,7 @@ check_estimate_advantage_inputs <- function(...) {
     check_incidence(estimate_advantage_args$incid)
 
   if ("si" %in% arg_names)
-    check_si_distr(estimate_advantage_args$si_distr)
+    apply(estimate_advantage_args$si_distr, 2, check_si_distr)
 
   if ("priors" %in% arg_names)
     check_priors(estimate_advantage_args$priors)

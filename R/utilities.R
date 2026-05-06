@@ -509,3 +509,9 @@ si_from_data_valid_distrs <- function(dist) {
   list(is_dist_valid = dist %in% valid_names, all_valid_distrs = valid_names)
 }
 
+#' Normalise a serial interval distribution
+#' @keywords internal
+#' @noRd
+normalise_si_distr <- function(si_distr) {
+  si_distr <- si_distr / colSums(si_distr)
+}

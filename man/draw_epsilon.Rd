@@ -12,7 +12,8 @@ draw_epsilon(
   shape_epsilon = NULL,
   t_min = 2L,
   t_max = nrow(incid),
-  seed = NULL
+  seed = NULL,
+  validate_inputs = FALSE
 )
 }
 \arguments{
