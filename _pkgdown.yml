@@ -12,7 +12,9 @@ reference:
     - discr_si
     - first_nonzero_incid
     - get_shape_R_flat
+    - get_scale_R
     - get_shape_epsilon
+    - get_scale_epsilon
     - si_from_data_valid_distrs
   - title: Estimation
     contents:
