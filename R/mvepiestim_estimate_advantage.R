@@ -285,40 +285,16 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
     R_out <- R_out / as.vector(epsilon_out)
   }
   
-  # Add in convergence check (gelman diagnostic)
-  # Split epsilon into 2 chains
-  diag <- lapply(
-    seq_len(nrow(epsilon_out)), function(row) {
-      x <- epsilon_out[row, ]
-      if(length(x)%%2 != 0){ # if length is odd
-        eps1 <- coda::as.mcmc(x[1:((length(x)+1)/2)])
-        eps2 <- coda::as.mcmc(x[length(eps1):length(x)])
-      }
-      if(length(x)%%2==0){ # if length is even
-        eps1 <- coda::as.mcmc(x[1:(length(x)/2)])
-        eps2 <- coda::as.mcmc(x[(length(eps1)+1):length(x)])
-      }
+  convergence_diagnostic <- compute_convergence_diagnostic(epsilon_out)
+  diagnostic <- convergence_diagnostic$diagnostic
+  conv_check <- convergence_diagnostic$convergence
 
-      eps_2chain <- coda::mcmc.list(eps1,eps2)
-      coda::gelman.diag(eps_2chain, confidence = 0.95)
-
-    }
-  )
-  conv_check <- lapply(diag, function(x) {
-  # Are any of the scale reduction factors >1.1?
-   if (any(x$psrf[, "Upper C.I."] > 1.1)) {
-     message("The Gelman-Rubin algorithm suggests the MCMC may not have converged
+  if (any(!conv_check)) {
+    message("The Gelman-Rubin algorithm suggests the MCMC may not have converged
                   within the number of iterations specified.")
-     convergence <- FALSE
-   } else {
-     convergence <- TRUE
-   }
-    convergence
   }
-  )
-  conv_check <- unlist(conv_check)
 
-  list(epsilon = epsilon_out, R = R_out, convergence = conv_check, diag = diag #, max_transmiss = max_transmiss
+  list(epsilon = epsilon_out, R = R_out, convergence = conv_check, diag = diagnostic #, max_transmiss = max_transmiss
        ) 
   
 }

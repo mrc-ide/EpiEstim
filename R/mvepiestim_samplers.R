@@ -177,3 +177,52 @@ draw_R <- function(epsilon, incid, lambda, priors,
   R_out[time_idx, ] <- R_fill
   R_out
 }
+
+
+
+#' Compute Gelman-Rubin diagnostics for `estimate_advantage` epsilon chains
+#'
+#' Split each epsilon MCMC chain into two sub-chains and compute the
+#' Gelman-Rubin potential scale reduction factor for each chain.
+#'
+#' @param epsilon_mat A numeric matrix of posterior samples for epsilon, where
+#'   each row is a variant-specific epsilon chain and each column is one MCMC
+#'   iteration after burn-in/thinning.
+#' @param scale_reduction_threshold Numeric threshold used to determine
+#'   convergence from the upper confidence limit of the scale reduction factor.
+#'   Rows with any `Upper C.I.` value above this threshold are flagged as not
+#'   converged. Defaults to `1.1`.
+#'
+#' @return A named list with:
+#' \itemize{
+#'   \item `diagnostic`: a list of `coda::gelman.diag()` outputs (one per row of
+#'   `epsilon_mat`).
+#'   \item `convergence`: a logical vector with one value per row of
+#'   `epsilon_mat`, where `TRUE` indicates convergence under
+#'   `scale_reduction_threshold`.
+#' }
+#'
+#' @keywords internal
+compute_convergence_diagnostic <- function(
+    epsilon_mat, scale_reduction_threshold = 1.1) {
+  diagnostic <- lapply(seq_len(nrow(epsilon_mat)), function(row) {
+    x <- epsilon_mat[row, ]
+    if (length(x) %% 2 != 0) {
+      eps1 <- coda::as.mcmc(x[1:((length(x) + 1) / 2)])
+      eps2 <- coda::as.mcmc(x[length(eps1):length(x)])
+    }
+    if (length(x) %% 2 == 0) {
+      eps1 <- coda::as.mcmc(x[1:(length(x) / 2)])
+      eps2 <- coda::as.mcmc(x[(length(eps1) + 1):length(x)])
+    }
+
+    eps_2chain <- coda::mcmc.list(eps1, eps2)
+    coda::gelman.diag(eps_2chain, confidence = 0.95)
+  })
+
+  conv_check <- unlist(lapply(diagnostic, function(x) {
+    !any(x$psrf[, "Upper C.I."] > scale_reduction_threshold)
+  }))
+
+  list(diagnostic = diagnostic, convergence = conv_check)
+}
