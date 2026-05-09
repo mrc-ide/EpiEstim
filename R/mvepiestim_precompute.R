@@ -166,16 +166,16 @@ compute_lambda <- function(incid, si_distr) {
   if (!inherits(incid, "incid_multivariant")) {
     msg1 <- "'incid 'should be an 'incid_multivariant' object. "
     msg2 <- "Use function 'process_I_multivariant' first"
-    stop(msg1, msg2)
+    stop(msg1, msg2, call. = FALSE)
   }
   if (any(si_distr[1,] != 0)){
-    stop("Values in the first row of si_distr must be 0")
+    stop("Values in the first row of si_distr must be 0", call. = FALSE)
   }
   if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
-    stop("The sum of each column in si_distr should be equal to 1")
+    stop("The sum of each column in si_distr should be equal to 1", call. = FALSE)
   }
   if (any(si_distr < 0)){
-    stop("si_distr must be >=0")
+    stop("si_distr must be >=0", call. = FALSE)
   }
   lambda <- array(NA, dim = dim(incid$local))
   for(l in seq_len(dim(incid$local)[2])) {
@@ -206,7 +206,7 @@ compute_lambda <- function(incid, si_distr) {
 #' @export
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
   if (any(colSums(si_distr) != 1)) {
-    warning("Input SI distributions should sum to 1. Normalising now")
+    warning("Input SI distributions should sum to 1. Normalising now", call. = FALSE)
     si_distr <- si_distr / colSums(si_distr)
   }
   cutoff <- 1 - miss_at_most
@@ -240,7 +240,7 @@ first_nonzero_incid <- function(incid) {
     warning(
       "For some variants/locations, incidence is
        always zero. This will cause estimate_advantage to fail."
-    )
+    , call. = FALSE)
   }
   max(t_min_incid)
 }

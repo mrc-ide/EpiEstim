@@ -39,7 +39,7 @@ process_I_multivariant <- function(incid, incid_imported = NULL) {
   dim1 <- dim(incid)
   dim2 <- dim(incid_imported)
   if (length(dim1) != length(dim2) || !all(dim1 == dim2)) {
-    stop("'incid' and 'incid_imported' have incompatible dimensions")
+    stop("'incid' and 'incid_imported' have incompatible dimensions", call. = FALSE)
   }
   incid_local <- incid - incid_imported
   res <- list(local = incid_local, imported = incid_imported)

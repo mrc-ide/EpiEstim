@@ -62,19 +62,19 @@ draw_epsilon <- function(R, incid, lambda, priors,
                          t_min = 2L, t_max = nrow(incid),
                          seed = NULL) {
   if (!is.integer(t_min) || !is.integer(t_max)){
-    stop("t_min and t_max must be integers")
+    stop("t_min and t_max must be integers", call. = FALSE)
   }
   if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
+    stop("t_min and t_max must be >=2", call. = FALSE)
   }
   if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
+    stop("t_min and t_max must be <= nrow(incid)", call. = FALSE)
   }
   if(any(R[!is.na(R)] < 0)) {
-    stop("R must be >= 0")
+    stop("R must be >= 0", call. = FALSE)
   }
   if (!is.null(seed) && !is.numeric(seed)){
-    stop("seed must be numeric")
+    stop("seed must be numeric", call. = FALSE)
   }
   if (!is.null(seed)) set.seed(seed)
   time_idx <- seq(t_min, t_max, 1)
@@ -150,19 +150,19 @@ draw_R <- function(epsilon, incid, lambda, priors,
                    t_min = NULL, t_max = nrow(incid),
                    seed = NULL) {
   if (!is.integer(t_min) || !is.integer(t_max)){
-    stop("t_min and t_max must be integers")
+    stop("t_min and t_max must be integers", call. = FALSE)
   }
   if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
+    stop("t_min and t_max must be >=2", call. = FALSE)
   }
   if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
+    stop("t_min and t_max must be <= nrow(incid)", call. = FALSE)
   }
   if (any(epsilon < 0)){
-    stop("epsilon must be > 0")
+    stop("epsilon must be > 0", call. = FALSE)
   }
   if (!is.null(seed) && !is.numeric(seed)){
-    stop("seed must be numeric")
+    stop("seed must be numeric", call. = FALSE)
   }
   if (!is.null(seed)) set.seed(seed)
   time_idx <- seq(t_min, t_max, 1)

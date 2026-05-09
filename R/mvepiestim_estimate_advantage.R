@@ -145,46 +145,46 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
     t_min <- compute_t_min(incid, si_distr)
   }
   if (!is.integer(t_min) || !is.integer(t_max)) {
-    stop("t_min and t_max must be integers")
+    stop("t_min and t_max must be integers", call. = FALSE)
   }
   if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
+    stop("t_min and t_max must be >=2", call. = FALSE)
   }
   if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
+    stop("t_min and t_max must be <= nrow(incid)", call. = FALSE)
   }
   if (any(si_distr[1,] != 0)){
-    stop("Values in the first row of si_distr must be 0")
+    stop("Values in the first row of si_distr must be 0", call. = FALSE)
   }
   if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
-    stop("The sum of each column in si_distr should be equal to 1")
+    stop("The sum of each column in si_distr should be equal to 1", call. = FALSE)
   }
   if (any(si_distr < 0)){
-    stop("si_distr must be >=0")
+    stop("si_distr must be >=0", call. = FALSE)
   }
   if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)){
-    stop("n_iter in mcmc_control must be a positive integer")
+    stop("n_iter in mcmc_control must be a positive integer", call. = FALSE)
   }
   if (mcmc_control$burnin < 0 || !is.integer(mcmc_control$burnin)){
-    stop("burnin in mcmc_control must be a positive integer")
+    stop("burnin in mcmc_control must be a positive integer", call. = FALSE)
   }
   if (mcmc_control$thin < 0 || !is.integer(mcmc_control$thin)){
-    stop("thin in mcmc_control must be a positive integer")
+    stop("thin in mcmc_control must be a positive integer", call. = FALSE)
   }
   if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
-    stop("In mcmc_control, n_iter must be greater than burnin + thin")
+    stop("In mcmc_control, n_iter must be greater than burnin + thin", call. = FALSE)
   }
   if (!is.null(seed) && !is.numeric(seed)){
-    stop("seed must be numeric")
+    stop("seed must be numeric", call. = FALSE)
   }
   if (!is.null(seed)) set.seed(seed)
 
   if (t_min > t_max) {
-    stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
+    stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.", call. = FALSE)
   }
   
   if (!identical(priors, default_priors())) {
-    warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
+    warning("Priors where the mean of epsilon is different from 1 are not currently supported.", call. = FALSE)
   }
 
   n_steps <- nrow(incid)
