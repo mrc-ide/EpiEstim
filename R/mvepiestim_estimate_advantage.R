@@ -289,7 +289,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   diagnostic <- convergence_diagnostic$diagnostic
   conv_check <- convergence_diagnostic$convergence
 
-  if (any(!conv_check)) {
+  if (!all(conv_check)) {
     message("The Gelman-Rubin algorithm suggests the MCMC may not have converged
                   within the number of iterations specified.")
   }
