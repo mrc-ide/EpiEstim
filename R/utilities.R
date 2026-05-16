@@ -522,5 +522,5 @@ si_from_data_valid_distrs <- function(dist) {
 #' @keywords internal
 #' @noRd
 normalise_si_distr <- function(si_distr) {
-  si_distr <- si_distr / colSums(si_distr)
+  sweep(si_distr, 2, colSums(si_distr), "/")
 }
