@@ -388,10 +388,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #' @export
 
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
-  if (any(colSums(si_distr) != 1)) {
-    warning("Input SI distributions should sum to 1. Normalising now")
-    si_distr <- normalise_si_distr(si_distr)
-  }
+
   cutoff <- 1 - miss_at_most
   cdf <- apply(si_distr, 2, cumsum)
   idx <- apply(
@@ -565,11 +562,19 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
                            precompute = TRUE,
                            reorder_incid = TRUE) {
 
+  if (any(colSums(si_distr) != 1)) {
+    warning(
+      "Input SI distributions should sum to 1. Normalising now", call. = FALSE
+    )
+    si_distr <- normalise_si_distr(si_distr)
+  }
+  
   if (is.null(t_min)) {
     t_min <- compute_t_min(incid, si_distr)
   }
 
   estimate_advantage_args <- as.list(environment())
+  estimate_advantage_args$si_distr <- si_distr # normalized value
   do.call(check_estimate_advantage_inputs, args = estimate_advantage_args)
 
   T <- nrow(incid)

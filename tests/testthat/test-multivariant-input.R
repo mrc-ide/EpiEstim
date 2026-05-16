@@ -183,7 +183,7 @@ test_that("si_distr is specified correctly", {
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "si_distr should be so that si_distr[1] = 0.")
+               "si_distr should be so that si_distr[1] = 0.", fixed=TRUE)
   expect_error(estimate_advantage(incid=incid, si_distr=sidistr_2, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),

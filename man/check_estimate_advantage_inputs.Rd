@@ -15,7 +15,7 @@ fails.
 }
 \description{
 Runs all available input checks for \code{\link{estimate_advantage}} based on
-the supplied arguments. Each check is called only when the corresponding
+the supplied arguments. Each check is called only if the corresponding
 argument is present.
 }
 \author{
