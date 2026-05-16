@@ -72,6 +72,16 @@
 #'    prior to the first reported cases. The default value is 0, meaning that no
 #'    back-imputation is performed. If a positive integer is provided, the
 #'    incidence is imputed for the first `backimputation_window` time units.
+#'    
+#' @param date_convention One of `"start"` or `"end"`, specifying whether the 
+#' dates supplied in `incid$dates` correspond to the first or last day of each 
+#' aggregation window. Must be specified if incidence are temporally
+#' aggregated (`dt > 1`) and `incid$dates` is supplied.
+#' For example, for weekly epi-week data where the date label 
+#' corresponds to the first day of the week (e.g. Monday), use `"start"`. For 
+#' data reported multiple times per week where the date corresponds to the 
+#' reporting date (i.e. the last day of the accumulation window), use `"end"`.
+#' Ignored if no dates are supplied.
 #'
 #' @return an object of class `estimate_R`, with components:
 #' 
@@ -160,7 +170,7 @@
 #' - [sample_posterior_R()] to draw samples of R values from the posterior distribution 
 #'   from the output of [estimate_R()]
 #'
-#' @author Anne Cori \email{a.cori@imperial.ac.uk}
+#' @author Anne Cori
 #' 
 #' @references 
 #' Cori, A. et al. A new framework and software to estimate time-varying
@@ -170,10 +180,6 @@
 #' respiratory syndrome reveal similar impacts of control measures (AJE 2004).
 #' Reich, N.G. et al. Estimating incubation period distributions with coarse
 #' data (Statis. Med. 2009)
-#' 
-#' @importFrom coarseDataTools dic.fit.mcmc
-#' @importFrom coda as.mcmc.list as.mcmc
-#' @importFrom incidence incidence
 #' 
 #' @export
 #' @examples
@@ -303,9 +309,10 @@
 #'                           mean_si = mean(R_si_from_data$SI.Moments$Mean),
 #'                              std_si = mean(R_si_from_data$SI.Moments$Std))))
 #' ## generate plots
+#' library(patchwork) # To arrange side-by-side
 #' p_uncertainty <- plot(R_si_from_data, "R", options_R=list(ylim=c(0, 1.5)))
 #' p_no_uncertainty <- plot(R_Parametric, "R", options_R=list(ylim=c(0, 1.5)))
-#' gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
+#' p_uncertainty + p_no_uncertainty
 #'
 #' ## the left hand side graph is with uncertainty in the SI distribution, the
 #' ## right hand side without.
@@ -343,27 +350,56 @@ estimate_R <- function(incid,
                        ),
                        si_data = NULL,
                        si_sample = NULL,
-                       config = make_config(incid = incid, method = method),
+                       config = make_config(incid = incid),
                        dt = 1L, # aggregation window of the data
                        dt_out = 7L, # desired sliding window length
                        recon_opt = "naive",
                        iter = 10L,
                        tol = 1e-6,
                        grid = list(precision = 0.001, min = -1, max = 1),
-                       backimputation_window = 0
+                       backimputation_window = 0,
+                       date_convention = NULL
                        ) {
+  
+  if (is.data.frame(incid) && "dates" %in% names(incid)) {
+    if (!all(diff(incid$dates) > 0)) {
+      stop("dates in incid must be in ascending order", call. = FALSE)
+    }
+  } else if (inherits(incid, "incidence")) {
+    if (!all(diff(incid$dates) > 0)) {
+      stop("dates in incid must be in ascending order", call. = FALSE)
+    }
+  } else if (inherits(incid, "incidence2")) {
+    dates <- unique(incid[[incidence2::get_date_index_name(incid)]])
+    if (!all(diff(dates) > 0)) {
+      stop("dates in incid must be in ascending order", call. = FALSE)
+    }
+  }
 
   method <- match.arg(method)
 
   # switch between the standard estimate_R version and that which disaggregates
   # coarsely aggregated incidence data
-  if (any(dt >= 2)) {
+  if(any(dt >= 2)) {
     
     msg <- "backimputation_window is currently not supported when dt > 1"
     if(backimputation_window > 0) stop(msg)
     
-    out <- estimate_R_agg(incid, dt = dt, dt_out = dt_out, iter = iter,
-                          config = config, method = method, grid = grid)
+    # extract dates before stripping to vector
+    agg_dates <- NULL
+    if (is.data.frame(incid) && "dates" %in% names(incid)) {
+      agg_dates <- incid$dates
+    } else if (inherits(incid, "incidence")) {
+      agg_dates <- incid$dates
+    } else if (inherits(incid, "incidence2")) {
+      agg_dates <- unique(incid[[incidence2::get_date_index_name(incid)]])
+    }
+    
+    incid_vec <- process_I_vector(incid)
+    out <- estimate_R_agg(incid_vec, dt = dt, dt_out = dt_out, recon_opt = recon_opt,
+                          iter = iter, tol = tol, config = config, method = method, grid = grid,
+                          agg_dates = agg_dates, date_convention = date_convention)
+
     return(out)
   }
 
@@ -372,7 +408,7 @@ estimate_R <- function(incid,
     incid <- backimpute_I(incid, window_b = backimputation_window)
   }
 
-  config <- make_config(incid = incid, method = method, config = config)
+  config <- make_config(incid = incid, config = config)
   config <- process_config(config)
   check_config(config, method)
 
@@ -385,7 +421,7 @@ estimate_R <- function(incid,
     si_parametric_distr <- convert_distr_name_for_mcmc(config$si_parametric_distr)
     ## estimate serial interval from serial interval data first
     if (!is.null(config$mcmc_control$seed)) {
-      cdt <- dic.fit.mcmc(
+      cdt <- coarseDataTools::dic.fit.mcmc(
         dat = si_data,
         dist = si_parametric_distr,
         burnin = config$mcmc_control$burnin,
@@ -394,7 +430,7 @@ estimate_R <- function(incid,
         seed = config$mcmc_control$seed
       )
     } else {
-      cdt <- dic.fit.mcmc(
+      cdt <- coarseDataTools::dic.fit.mcmc(
         dat = si_data,
         dist = si_parametric_distr,
         burnin = config$mcmc_control$burnin,
@@ -452,10 +488,7 @@ estimate_R <- function(incid,
 #' Internal function
 #' 
 #' Doing the heavy work in estimate_R
-#' 
-#' @importFrom stats median qgamma quantile rnorm sd
 #'
-#' @importFrom incidence as.incidence
 #' @noRd
 
 estimate_R_func <- function(incid,
@@ -541,7 +574,7 @@ estimate_R_func <- function(incid,
     })
     sample_r_posterior <- vapply(seq_len(nb_time_periods), function(t)
       if (!is.na(a_posterior[t])) {
-        rgamma(sample_size,
+        stats::rgamma(sample_size,
                shape = unlist(a_posterior[t]),
                scale = unlist(b_posterior[t])
         )
@@ -557,7 +590,7 @@ estimate_R_func <- function(incid,
   method <- match.arg(method)
   incid <- process_I(incid)
   idx_raw_incid <- as.integer(rownames(incid)) > 0
-  T <- sum(idx_raw_incid)
+  T <- sum(idx_raw_incid) # nolint
   T_imputed <- nrow(incid) - T
   
   check_times(config$t_start, config$t_end, T)
@@ -570,7 +603,8 @@ estimate_R_func <- function(incid,
 
   if (method == "si_from_sample") {
     if (is.null(config$n2)) {
-      stop("method si_from_sample requires to specify the config$n2 argument.")
+      stop("method si_from_sample requires to specify the config$n2 argument.",
+           call. = FALSE)
     }
     si_sample <- process_si_sample(si_sample)
   }
@@ -583,7 +617,7 @@ estimate_R_func <- function(incid,
   )
   if (incidence_per_time_step[1] < min_nb_cases_per_time_period) {
     warning("You're estimating R too early in the epidemic to get the desired
-            posterior CV.")
+            posterior CV.", call. = FALSE)
   }
 
   if (method == "non_parametric_si") {
@@ -609,14 +643,14 @@ estimate_R_func <- function(incid,
       for (k in seq_len(config$n1)) {
         while (mean_si_sample[k] < config$min_mean_si || mean_si_sample[k] >
                config$max_mean_si) {
-          mean_si_sample[k] <- rnorm(1,
+          mean_si_sample[k] <- stats::rnorm(1,
                                      mean = config$mean_si,
                                      sd = config$std_mean_si
           )
         }
         while (std_si_sample[k] < config$min_std_si || std_si_sample[k] >
                config$max_std_si) {
-          std_si_sample[k] <- rnorm(1, mean = config$std_si,
+          std_si_sample[k] <- stats::rnorm(1, mean = config$std_si,
                                     sd = config$std_std_si)
         }
       }
@@ -636,29 +670,29 @@ estimate_R_func <- function(incid,
                                                                                                                         mean_si_sample[k])]
       }
       mean_posterior <- colMeans(r_sample, na.rm = TRUE)
-      std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
-      quantile_0.025_posterior <- apply(r_sample, 2, quantile,
+      std_posterior <- apply(r_sample, 2, stats::sd, na.rm = TRUE)
+      quantile_0.025_posterior <- apply(r_sample, 2, stats::quantile,
                                         0.025,
                                         na.rm = TRUE
       )
-      quantile_0.05_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.05_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.05,
                                        na.rm = TRUE
       )
-      quantile_0.25_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.25_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.25,
                                        na.rm = TRUE
       )
-      median_posterior <- apply(r_sample, 2, median, na.rm = TRUE)
-      quantile_0.75_posterior <- apply(r_sample, 2, quantile,
+      median_posterior <- apply(r_sample, 2, stats::median, na.rm = TRUE)
+      quantile_0.75_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.75,
                                        na.rm = TRUE
       )
-      quantile_0.95_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.95_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.95,
                                        na.rm = TRUE
       )
-      quantile_0.975_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.975_posterior <- apply(r_sample, 2, stats::quantile,
                                         0.975,
                                         na.rm = TRUE
       )
@@ -690,29 +724,29 @@ estimate_R_func <- function(incid,
                                                                                                                        mean_si_sample[k])]
       }
       mean_posterior <- colMeans(r_sample, na.rm = TRUE)
-      std_posterior <- apply(r_sample, 2, sd, na.rm = TRUE)
-      quantile_0.025_posterior <- apply(r_sample, 2, quantile,
+      std_posterior <- apply(r_sample, 2, stats::sd, na.rm = TRUE)
+      quantile_0.025_posterior <- apply(r_sample, 2, stats::quantile,
                                         0.025,
                                         na.rm = TRUE
       )
-      quantile_0.05_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.05_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.05,
                                        na.rm = TRUE
       )
-      quantile_0.25_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.25_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.25,
                                        na.rm = TRUE
       )
-      median_posterior <- apply(r_sample, 2, median, na.rm = TRUE)
-      quantile_0.75_posterior <- apply(r_sample, 2, quantile,
+      median_posterior <- apply(r_sample, 2, stats::median, na.rm = TRUE)
+      quantile_0.75_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.75,
                                        na.rm = TRUE
       )
-      quantile_0.95_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.95_posterior <- apply(r_sample, 2, stats::quantile,
                                        0.95,
                                        na.rm = TRUE
       )
-      quantile_0.975_posterior <- apply(r_sample, 2, quantile,
+      quantile_0.975_posterior <- apply(r_sample, 2, stats::quantile,
                                         0.975,
                                         na.rm = TRUE
       )
@@ -737,31 +771,31 @@ estimate_R_func <- function(incid,
     b_posterior <- unlist(post[[2]])
     mean_posterior <- a_posterior * b_posterior
     std_posterior <- sqrt(a_posterior) * b_posterior
-    quantile_0.025_posterior <- qgamma(0.025,
+    quantile_0.025_posterior <- stats::qgamma(0.025,
                                        shape = a_posterior,
                                        scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    quantile_0.05_posterior <- qgamma(0.05,
+    quantile_0.05_posterior <- stats::qgamma(0.05,
                                       shape = a_posterior,
                                       scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    quantile_0.25_posterior <- qgamma(0.25,
+    quantile_0.25_posterior <- stats::qgamma(0.25,
                                       shape = a_posterior,
                                       scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    median_posterior <- qgamma(0.5,
+    median_posterior <- stats::qgamma(0.5,
                                shape = a_posterior,
                                scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    quantile_0.75_posterior <- qgamma(0.75,
+    quantile_0.75_posterior <- stats::qgamma(0.75,
                                       shape = a_posterior,
                                       scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    quantile_0.95_posterior <- qgamma(0.95,
+    quantile_0.95_posterior <- stats::qgamma(0.95,
                                       shape = a_posterior,
                                       scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
-    quantile_0.975_posterior <- qgamma(0.975,
+    quantile_0.975_posterior <- stats::qgamma(0.975,
                                        shape = a_posterior,
                                        scale = b_posterior, lower.tail = TRUE, log.p = FALSE
     )
@@ -783,6 +817,18 @@ estimate_R_func <- function(incid,
     "Median(R)", "Quantile.0.75(R)", "Quantile.0.95(R)",
     "Quantile.0.975(R)"
   )
+
+  if (!is.null(incid$dates)) {
+    results$R$date_start <- incid$dates[config$t_start][non_na_rows]
+    results$R$date_end <- incid$dates[config$t_end][non_na_rows]
+    # reorder so date columns appear after t_start and t_end
+    results$R <- results$R[, c("t_start", "t_end", "date_start", "date_end",
+                               "Mean(R)", "Std(R)", "Quantile.0.025(R)", 
+                               "Quantile.0.05(R)", "Quantile.0.25(R)", "Median(R)", 
+                               "Quantile.0.75(R)", "Quantile.0.95(R)", 
+                               "Quantile.0.975(R)")]
+  }
+  
   results$method <- method
   results$si_distr <- config$si_distr
   if (is.matrix(results$si_distr)) {

@@ -1,5 +1,5 @@
 Package: EpiEstim
-Version: 2.5.1
+Version: 3.0.0
 Title: Estimate Time Varying Reproduction Numbers from Epidemic Curves
 Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-8443-9162")), 
   person("Simon", "Cauchemez", role = "ctb"),
@@ -14,7 +14,7 @@ Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("a
   person("Jonathan A.", "Polonsky", role = "ctb", comment = c(ORCID = "0000-0002-8634-4255")),
   person("Jake", "Stockwin", role = "ctb"),
   person("Robin", "Thompson", role = "ctb", comment = c(ORCID = "0000-0001-8545-5212")),
-  person("Rolina", "van Gaalen", role = "ctb"),
+  person("Rolina", "van Gaalen", role = "ctb", email = "rolina.van.gaalen@rivm.nl"),
   person("Rebecca", "Nash", email = "r.nash@imperial.ac.uk", role = "ctb", comment = c(ORCID = "0000-0002-5213-4364")),
   person("Sangeeta", "Bhatia", role = "ctb", comment = c(ORCID = "0000-0001-6525-101X")),
   person("Jack", "Wardle", role = "ctb", comment = c(ORCID = "0000-0002-5363-1653")),
@@ -30,20 +30,17 @@ BugReports: https://github.com/mrc-ide/EpiEstim/issues
 Depends: R (>= 3.3.0)
 Imports:
     coarseDataTools (>= 0.6-4),
-    stats,
-    graphics,
-    reshape2,
+    incidence (>= 1.7.0),
+    incidence2 (>= 2.6.4.9000),
     ggplot2,
-    gridExtra,
     fitdistrplus,
     coda,
-    incidence (>= 1.7.0),
     scales,
-    grDevices,
     abind,
+    reshape2,
     epitrix,
-    distcrete,
-    patchwork (>= 1.2.0)
+    patchwork (>= 1.2.0),
+    rlang
 Suggests:
     testthat,
     utils,
@@ -63,3 +60,4 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
+Remotes: reconverse/incidence2/pkg

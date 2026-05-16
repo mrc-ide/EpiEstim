@@ -236,8 +236,6 @@ compute_lambda <- function(incid, si_distr) {
 #' @return A value or vector of values for epsilon for each non reference
 #'   pathogen/strain/variant, drawn from the marginal posterior distribution
 #'
-#' @importFrom stats median rgamma
-#'
 #' @export
 #'
 #' @examples
@@ -276,7 +274,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
   rate <- vnapply(seq(2, dim(lambda)[3]), function(e)
     sum(R[t, ] * lambda[t, , e]) + 1 / priors$epsilon$scale)
   scale <- 1 / rate
-  rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale)
+  stats::rgamma(dim(lambda)[3] - 1, shape = shape_epsilon, scale = scale)
 }
 
 #' Draw R from marginal posterior distribution
@@ -322,7 +320,6 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   pathogen/strain/variant for each time step (row) and each location (column)
 #'   drawn from the marginal posterior distribution
 #'
-#' @importFrom stats median rgamma
 #' @export
 #'
 #' @examples
@@ -368,7 +365,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
   rate <- temp + 1 / priors$R$scale
   scale <- 1 / rate
   scale_flat <- as.numeric(scale)
-  R_flat <- rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
+  R_flat <- stats::rgamma(length(shape_R_flat), shape = shape_R_flat, scale = scale_flat)
   R_fill <- matrix(R_flat, nrow = length(t), ncol = ncol(incid))
   R <- matrix(NA, nrow(incid), ncol(incid))
   R[t, ] <- R_fill
@@ -529,9 +526,6 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #'
 #' @export
 #'
-#' @importFrom stats median rgamma
-#' @importFrom abind adrop
-#'
 #' @examples
 #' n_v <- 2
 #' n_loc <- 3 # 3 locations
@@ -634,7 +628,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   }
 
   epsilon_init <- unlist(lapply(seq(2, length(R_init)), function(i)
-    median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
+    stats::median(R_init[[i]] / R_init[[1]], na.rm = TRUE)))
   epsilon_out <- matrix(NA, nrow = length(epsilon_init),
                         ncol = mcmc_control$n_iter + 1)
   epsilon_out[, 1] <- epsilon_init

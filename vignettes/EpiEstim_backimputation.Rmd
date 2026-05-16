@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 )
 library(EpiEstim) 
 library(ggplot2)
+library(patchwork) # For arranging figs
 
 theme_epiestim <- function() {
   theme_light() %+replace%
@@ -127,11 +128,12 @@ no_truncation_with_imputation <- estimate_R(
                                             method = "non_parametric_si",
                                             config =  config_covid
 )
-gridExtra::grid.arrange(
-  plot(no_truncation_no_imputation, "R") + ggtitle("No imputation"),
-  plot(no_truncation_with_imputation, "R") + ggtitle("With imputation")
-)
+p1 <- plot(no_truncation_no_imputation, "R") + ggtitle("No imputation")
+p2 <- plot(no_truncation_with_imputation, "R") + ggtitle("With imputation")
+
+p1 / p2
 ```
+
 The reduction in R~t~ estimates is strongest in the early stages, and vanishes with time.
 
 ```{r covid-imputation-comparison, fig.width = 7}

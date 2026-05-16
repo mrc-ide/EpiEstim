@@ -23,8 +23,6 @@
 #' idx <- as.integer(rownames(x)) > -10
 #' x[idx, ]$local
 #' incid_all
-#'
-#' @importFrom stats lm predict.lm
 
 backimpute_I <- function(incid, window_b) {
 
@@ -62,14 +60,14 @@ backimpute_I <- function(incid, window_b) {
         li = log(local_incidence[1:window_b] + safe_shift)
    )
     imputed_t <- seq(from = -100, to = 0)
-    fit_backimpute <- lm(li ~ t, data = log_incid_start)
+    fit_backimpute <- stats::lm(li ~ t, data = log_incid_start)
 
     if (fit_backimpute$coefficients[2] < 0) {
         msg <- "Estimate of the growth rate is negative, consider removing backimputation, or extending the backimputation window"
         warning(msg)
     }
 
-    predict_backimpute_log <- predict.lm(fit_backimpute, newdata = list(t = imputed_t))
+    predict_backimpute_log <- stats::predict.lm(fit_backimpute, newdata = list(t = imputed_t))
     predict_backimpute <- data.frame(
         local = exp(predict_backimpute_log) - safe_shift,
         imported = rep(0, length(imputed_t))

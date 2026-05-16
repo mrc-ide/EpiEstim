@@ -32,8 +32,6 @@
 #' @seealso [estimate_R()]
 #' @author The Hackout3 Parameter Estimation team.
 #'
-#' @importFrom stats pgamma plnorm pweibull qlnorm qweibull rgamma rmultinom
-#'
 #' @export
 #' @examples
 #' \dontrun{
@@ -99,52 +97,52 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
     ## maximum of these as the maximum
     ## serial interval that we need to consider
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(qgamma(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
+      ceiling(stats::qgamma(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
     max_interval <- seq_len(maxValue)
     prob_matrix <- apply(samples, 1, function(x) 
-      pgamma(max_interval + 0.5, shape = x[1], scale = x[2]) - 
-        pgamma(max_interval - 0.5, shape = x[1], scale = x[2]))
+      stats::pgamma(max_interval + 0.5, shape = x[1], scale = x[2]) - 
+        stats::pgamma(max_interval - 0.5, shape = x[1], scale = x[2]))
   } else if (dist == "weibull"| dist == "W") {
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(qweibull(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
+      ceiling(stats::qweibull(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
     max_interval <- seq_len(maxValue)
     prob_matrix <- apply(samples, 1, function(x) 
-      pweibull(max_interval + 0.5, shape = x[1], scale = x[2]) - 
-        pweibull(max_interval - 0.5, shape = x[1], scale = x[2]))
+      stats::pweibull(max_interval + 0.5, shape = x[1], scale = x[2]) - 
+        stats::pweibull(max_interval - 0.5, shape = x[1], scale = x[2]))
   } else if (dist == "lognormal"| dist == "L") {
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(qlnorm(0.999, meanlog = samples[i, 1], sdlog = samples[i, 2]))))
+      ceiling(stats::qlnorm(0.999, meanlog = samples[i, 1], sdlog = samples[i, 2]))))
     max_interval <- seq_len(maxValue)
     prob_matrix <- apply(samples, 1, function(x) 
-      plnorm(max_interval + 0.5, meanlog = x[1], sdlog = x[2]) - 
-        plnorm(max_interval - 0.5, meanlog = x[1], sdlog = x[2]))
+      stats::plnorm(max_interval + 0.5, meanlog = x[1], sdlog = x[2]) - 
+        stats::plnorm(max_interval - 0.5, meanlog = x[1], sdlog = x[2]))
   } else if (dist == "gamma_offset_1"| dist == "off1G") {
     ## offset gamma distribution with shifted min and max value of max
     ## serial interval
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(qgamma(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
+      ceiling(stats::qgamma(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
     max_interval <- seq(0, maxValue)
     prob_matrix <- apply(samples, 1, function(x) 
-      pgamma(max_interval + 0.5, shape = x[1], scale = x[2]) - 
-        pgamma(max_interval - 0.5, shape = x[1], scale = x[2]))
+      stats::pgamma(max_interval + 0.5, shape = x[1], scale = x[2]) - 
+        stats::pgamma(max_interval - 0.5, shape = x[1], scale = x[2]))
   } else if (dist == "weibull_offset_1"| dist == "off1W") {
     ## offset weibull distribution with shifted min and max value of max
     ## serial interval
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(qweibull(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
+      ceiling(stats::qweibull(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
     max_interval <- seq(0, maxValue)
     prob_matrix <- apply(samples, 1, function(x) 
-      pweibull(max_interval + 0.5, shape = x[1], scale = x[2]) - 
-        pweibull(max_interval - 0.5, shape = x[1], scale = x[2]))
+      stats::pweibull(max_interval + 0.5, shape = x[1], scale = x[2]) - 
+        stats::pweibull(max_interval - 0.5, shape = x[1], scale = x[2]))
   } else if (dist == "lognormal_offset_1"| dist == "off1L") {
     ## offset lognormal distribution with shifted min and max value of max
     ## serial interval
     maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(qlnorm(0.999, meanlog = samples[i, 1], sdlog = samples[i, 2]))))
+      ceiling(stats::qlnorm(0.999, meanlog = samples[i, 1], sdlog = samples[i, 2]))))
     max_interval <- seq(0, maxValue)
     prob_matrix <- apply(samples, 1, function(x) 
-      plnorm(max_interval + 0.5, meanlog = x[1], sdlog = x[2]) - 
-        plnorm(max_interval - 0.5, meanlog = x[1], sdlog = x[2]))
+      stats::plnorm(max_interval + 0.5, meanlog = x[1], sdlog = x[2]) - 
+        stats::plnorm(max_interval - 0.5, meanlog = x[1], sdlog = x[2]))
   }
   
   # adding initial 0 for P(SI=0)

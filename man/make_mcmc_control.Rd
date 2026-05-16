@@ -82,7 +82,6 @@ incid <- MockRotavirus$incidence
 method <- "si_from_data"
 overall_seed <- 2
 config <- make_config(incid = incid, 
-                     method = method, 
                      si_parametric_distr = "G",
                      mcmc_control = mcmc_control,
                      n1 = 500

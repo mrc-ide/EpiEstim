@@ -1,6 +1,23 @@
+# EpiEstim 3.0.0
+
+## New features
+
+- `wallinga_teunis()` is now an S3 generic with methods for `integer`,
+  `numeric`, `data.frame`, `incidence` and `incidence2` objects
+
+- `wallinga_teunis()` now returns an S3 object with class "wallinga_teunis"
+  (used to be "estimate_R")
+
+## Bug fixes
+* Superfluous argument "method" removed from `make_config()` function
+
+## Backward compatibility
+
+
 # EpiEstim 2.5.1
 
-* The distribution names valid when using si_from_data option in estimate_R have been edited to be descriptive and self-explanatory.
+* The distribution names valid when using si_from_data option in estimate_R have 
+  been edited to be descriptive and self-explanatory.
 
 # EpiEstim 2.5
 
@@ -23,6 +40,7 @@
 ## MISC
 
 * lintr is now part of EpiEstim continuous integration toolkit, alongside R CMD check. This should detect and eliminate suboptimal code pattern and potential bugs before they even make it to `master` (#159, @Bisaloo).
+
 # EpiEstim 2.3
 
 * new function estimate_joint to estimate the transmission advantage of a strain or variant

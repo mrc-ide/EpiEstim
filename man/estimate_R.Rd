@@ -10,14 +10,15 @@ estimate_R(
     "si_from_sample"),
   si_data = NULL,
   si_sample = NULL,
-  config = make_config(incid = incid, method = method),
+  config = make_config(incid = incid),
   dt = 1L,
   dt_out = 7L,
   recon_opt = "naive",
   iter = 10L,
   tol = 0.000001,
   grid = list(precision = 0.001, min = -1, max = 1),
-  backimputation_window = 0
+  backimputation_window = 0,
+  date_convention = NULL
 )
 }
 \arguments{
@@ -90,6 +91,16 @@ Only used if \code{dt > 1}, see \code{\link[=estimate_R_agg]{estimate_R_agg()}}.
 prior to the first reported cases. The default value is 0, meaning that no
 back-imputation is performed. If a positive integer is provided, the
 incidence is imputed for the first \code{backimputation_window} time units.}
+
+\item{date_convention}{One of \code{"start"} or \code{"end"}, specifying whether the
+dates supplied in \code{incid$dates} correspond to the first or last day of each
+aggregation window. Must be specified if incidence are temporally
+aggregated (\code{dt > 1}) and \code{incid$dates} is supplied.
+For example, for weekly epi-week data where the date label
+corresponds to the first day of the week (e.g. Monday), use \code{"start"}. For
+data reported multiple times per week where the date corresponds to the
+reporting date (i.e. the last day of the accumulation window), use \code{"end"}.
+Ignored if no dates are supplied.}
 }
 \value{
 an object of class \code{estimate_R}, with components:
@@ -293,9 +304,10 @@ R_Parametric <- estimate_R(MockRotavirus$incidence,
                           mean_si = mean(R_si_from_data$SI.Moments$Mean),
                              std_si = mean(R_si_from_data$SI.Moments$Std))))
 ## generate plots
+library(patchwork) # To arrange side-by-side
 p_uncertainty <- plot(R_si_from_data, "R", options_R=list(ylim=c(0, 1.5)))
 p_no_uncertainty <- plot(R_Parametric, "R", options_R=list(ylim=c(0, 1.5)))
-gridExtra::grid.arrange(p_uncertainty, p_no_uncertainty,ncol=2)
+p_uncertainty + p_no_uncertainty
 
 ## the left hand side graph is with uncertainty in the SI distribution, the
 ## right hand side without.
@@ -343,5 +355,5 @@ from the output of \code{\link[=estimate_R]{estimate_R()}}
 }
 }
 \author{
-Anne Cori \email{a.cori@imperial.ac.uk}
+Anne Cori
 }

@@ -10,7 +10,6 @@
 #' 
 #' @seealso `estimate_R()`
 #' @author Anne Cori
-#' @importFrom coda gelman.diag
 #' @export
 #' @examples
 #' \dontrun{
@@ -39,7 +38,7 @@ check_cdt_samples_convergence <- function(cdt_samples) {
   ## between the first and second half of the MCMC sample
   spl1 <- cdt_samples[seq_len(floor(nrow(cdt_samples) / 2)), ]
   spl2 <- cdt_samples[seq(ceiling(nrow(cdt_samples) / 2) + 1, nrow(cdt_samples)), ]
-  GRD <- gelman.diag(as.mcmc.list(list(as.mcmc(spl1), as.mcmc(spl2))))
+  GRD <- coda::gelman.diag(coda::as.mcmc.list(list(coda::as.mcmc(spl1), coda::as.mcmc(spl2))))
   # Is any of the potential scale reduction factors >1.1 
   # (looking at the upper CI)?
   # If so this would suggest that the MCMC has not converged well.

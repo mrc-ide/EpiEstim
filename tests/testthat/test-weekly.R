@@ -66,7 +66,7 @@ test_that("estimate_R_agg works in parametric mode", {
                                               grid = list(precision = 0.001, min = -1, max = 1)))
   
   res_agg2 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
-                                              dt = rep(dt_vec, length.out=length(agg_inc)), 
+                                              dt = rep_len(dt_vec, length(agg_inc)), 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
@@ -189,7 +189,7 @@ test_that("estimate_R_agg works in non-parametric mode", {
                                                 grid = list(precision = 0.001, min = -1, max = 1)))
   
   res_agg2 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
-                                              dt = rep(dt_vec, length.out=length(agg_inc)), 
+                                              dt = rep_len(dt_vec, length(agg_inc)), 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
@@ -606,47 +606,22 @@ test_that("grid in estimate_R_agg is in the correct format", {
 })
 
 
-test_that("you can't run estimate_R_agg unless incidence is supplied as a vector", {
-  method <- "parametric_si"
-  config <- make_config(list(mean_si = mean_si,
-                             std_si = std_si))
-  
-inc_obj <- as.incidence(weekly_inc)
-expect_error(suppressWarnings(estimate_R_agg(incid = inc_obj, 
-                                             dt = 7L, 
-                                             dt_out = 7L, 
-                                             iter = 10L,
-                                             config = config,
-                                             method = method,
-                                             grid = list(precision = 0.001, min = -1, max = 1))))
-
-inc_df <- data.frame(weekly_inc)
-expect_error(suppressWarnings(estimate_R_agg(incid = inc_df, 
-                                             dt = 7L, 
-                                             dt_out = 7L, 
-                                             iter = 10L,
-                                             config = config,
-                                             method = method,
-                                             grid = list(precision = 0.001, min = -1, max = 1))))
-
-})
-
-
 test_that("you can't run estimate_R_agg unless using parametric/non-parametric SI methods", {
+  testthat::local_edition(3)
   method <- "uncertain_si"
   config <- make_config(list(mean_si = 2.6, std_mean_si = 1,
                              min_mean_si = 1, max_mean_si = 4.2,
                              std_si = 1.5, std_std_si = 0.5,
                              min_std_si = 0.5, max_std_si = 2.5))
   
-  expect_error(estimate_R_agg(incid = weekly_inc, 
+  expect_snapshot(estimate_R_agg(incid = weekly_inc, 
                  dt = 7L, 
                  dt_out = 7L, 
                  iter = 10L,
                  config = config,
                  method = method,
                  grid = list(precision = 0.001, min = -1, max = 1)),
-               "'arg' should be one of 'non_parametric_si' and 'parametric_si'")
+               error = TRUE)
   
 })
 
@@ -736,4 +711,238 @@ test_that("method works with different single integers of dt", {
   
 })
 
+test_that("estimate_R_agg handles different incid input formats consistently", {
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si))
   
+  # integer vector
+  res_int <- suppressWarnings(estimate_R(incid = weekly_inc,
+                                         dt = 7L,
+                                         dt_out = 7L,
+                                         iter = 10L,
+                                         config = config,
+                                         method = method))
+  
+  # numeric vector
+  res_numeric <- suppressWarnings(estimate_R(incid = as.numeric(weekly_inc),
+                                             dt = 7L,
+                                             dt_out = 7L,
+                                             iter = 10L,
+                                             config = config,
+                                             method = method))
+  
+  start_date <- as.Date("2020-01-01")
+  
+  # dataframe with I column
+  weekly_inc_df <- data.frame(I = weekly_inc,
+                              dates = seq(start_date, by = "week",
+                                          length.out = length(weekly_inc)))
+  res_df <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+                                        dt = 7L,
+                                        dt_out = 7L,
+                                        iter = 10L,
+                                        config = config,
+                                        method = method,
+                                        date_convention = "start"))
+  
+  # incidence object
+  inc_obj <- incidence::as.incidence(weekly_inc,
+                                     dates = seq(start_date, by = "week",
+                                                 length.out = length(weekly_inc)),
+                                     isoweeks = FALSE)
+  res_inc_obj <- suppressWarnings(estimate_R(incid = inc_obj,
+                                             dt = 7L,
+                                             dt_out = 7L,
+                                             iter = 10L,
+                                             config = config,
+                                             method = method,
+                                             date_convention = "start"))
+  
+  # incidence2 object
+  data <- data.frame(
+    I = weekly_inc,
+    dates = seq(start_date, by = "week", length.out = length(weekly_inc))
+  )
+  inc2_obj <- incidence2::incidence(data, date_index = "dates",
+                                    date_names_to = "dates", counts = "I",
+                                    count_values_to = "I")
+  res_inc2_obj <- suppressWarnings(estimate_R(incid = inc2_obj,
+                                              dt = 7L,
+                                              dt_out = 7L,
+                                              iter = 10L,
+                                              config = config,
+                                              method = method,
+                                              date_convention = "start"))
+  
+  ## check it works with incidence2 without naming
+  inc2_obj2 <- incidence2::incidence(data, date_index = "dates",
+                                         counts = "I")
+  res_inc2_obj2 <- suppressWarnings(estimate_R(incid = inc2_obj2,
+                                               dt = 7L,
+                                               dt_out = 7L,
+                                               iter = 10L,
+                                               config = config,
+                                               method = method,
+                                               date_convention = "start"))
+
+  # ignore date column
+  drop_date_cols <- function(R) {
+    R[, !names(R) %in% c("date_start", "date_end")]
+  }
+  
+  # all formats should produce identical R estimates
+  expect_equal(drop_date_cols(res_int$R), drop_date_cols(res_numeric$R))
+  expect_equal(drop_date_cols(res_int$R), drop_date_cols(res_df$R))
+  expect_equal(drop_date_cols(res_int$R), drop_date_cols(res_inc_obj$R))
+  expect_equal(drop_date_cols(res_int$R), drop_date_cols(res_inc2_obj$R))
+  expect_equal(drop_date_cols(res_int$R), drop_date_cols(res_inc2_obj2$R))
+  
+  # check date columns present when dates supplied
+  expect_true(all(c("date_start", "date_end") %in% names(res_df$R)))
+  expect_true(all(c("date_start", "date_end") %in% names(res_inc_obj$R)))
+  expect_true(all(c("date_start", "date_end") %in% names(res_inc2_obj$R)))
+  expect_true(all(c("date_start", "date_end") %in% names(res_inc2_obj2$R)))
+  
+  # check they match each other
+  expect_equal(res_df$R$date_start, res_inc_obj$R$date_start)
+  expect_equal(res_df$R$date_end, res_inc_obj$R$date_end)
+  expect_equal(res_df$R$date_start, res_inc2_obj$R$date_start)
+  expect_equal(res_df$R$date_end, res_inc2_obj$R$date_end)
+  expect_equal(res_df$R$date_start, res_inc2_obj2$R$date_start)
+  expect_equal(res_df$R$date_end, res_inc2_obj2$R$date_end)
+  
+})
+
+
+test_that("t_start and t_end work when dt is used without specifying dt_out", {
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si,
+                             t_start = c(8, 16),
+                             t_end = c(15, 30)))
+  
+  expect_no_error(
+    res <- suppressWarnings(estimate_R(incid = weekly_inc,
+                                       dt = 7L,
+                                       iter = 10L,
+                                       config = config,
+                                       method = method))
+  )
+  
+  # check that R is estimated for exactly the two specified windows
+  expect_equal(res$R$t_start, c(8, 16))
+  expect_equal(res$R$t_end, c(15, 30))
+  expect_equal(nrow(res$R), 2)
+})
+
+test_that("date_convention can only be 'start' or 'end'", {
+  start_date <- as.Date("2020-01-01")
+  weekly_inc_df <- data.frame(I = weekly_inc,
+                              dates = seq(start_date, by = "week",
+                                          length.out = length(weekly_inc)))
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si,
+                             t_start = c(8, 16),
+                             t_end = c(15, 30)))
+  
+  expect_error(
+    res <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+                                       dt = 7L,
+                                       iter = 10L,
+                                       config = config,
+                                       method = method,
+                                       date_convention = "xyz"))
+  )
+  
+})
+
+test_that("date_convention works with 'start' and 'end'", {
+  start_date <- as.Date("2020-01-01")
+  weekly_inc_df <- data.frame(I = weekly_inc,
+                              dates = seq(start_date, by = "week",
+                                          length.out = length(weekly_inc)))
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si,
+                             t_start = c(8, 16),
+                             t_end = c(15, 30)))
+  
+  res_start <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+                                           dt = 7L,
+                                           iter = 10L,
+                                           config = config,
+                                           method = method,
+                                           date_convention = "start"))
+  
+  expect_equal(res_start$dates, seq(start_date, by = "day", length.out = length(weekly_inc) * 7))
+  
+  res_end <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+                                         dt = 7L,
+                                         iter = 10L,
+                                         config = config,
+                                         method = method,
+                                         date_convention = "end"))
+  
+  expect_equal(res_end$dates, seq(start_date - 6, by = "day", length.out = length(weekly_inc) * 7))
+  
+})
+
+test_that("date_convention defaults to 'end'", {
+  start_date <- as.Date("2020-01-01")
+  weekly_inc_df <- data.frame(I = weekly_inc,
+                              dates = seq(start_date, by = "week",
+                                          length.out = length(weekly_inc)))
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si,
+                             t_start = c(8, 16),
+                             t_end = c(15, 30)))
+  
+  res_end <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+                                         dt = 7L,
+                                         iter = 10L,
+                                         config = config,
+                                         method = method))
+  
+  expect_equal(res_end$dates, seq(start_date - 6, by = "day", length.out = length(weekly_inc) * 7))
+  
+})
+
+test_that("date_convention works with irregular aggregations", {
+  
+  pattern <- c(3, 3, 2)
+  start_date <- as.Date("2020-01-01")
+  n_obs <- length(weekly_inc)
+  day_offsets <- cumsum(c(0, rep_len(pattern, n_obs - 1)))
+  dates = start_date + day_offsets
+  
+  agg_inc_df <- data.frame(I = weekly_inc,
+                              dates = dates)
+  method <- "parametric_si"
+  config <- make_config(list(mean_si = mean_si,
+                             std_si = std_si))
+  
+  res_start_irr <- suppressWarnings(estimate_R(incid = agg_inc_df,
+                                         dt = c(3L, 3L, 2L),
+                                         iter = 10L,
+                                         config = config,
+                                         method = method,
+                                         date_convention = "start"))
+  
+  expect_equal(res_start_irr$dates, seq(start_date, by = "day",
+                                        length.out = nrow(agg_inc_df)/3 * sum(pattern)))
+  
+  res_end_irr <- suppressWarnings(estimate_R(incid = agg_inc_df,
+                                               dt = c(3L, 3L, 2L),
+                                               iter = 10L,
+                                               config = config,
+                                               method = method,
+                                               date_convention = "end"))
+  
+  expect_equal(res_end_irr$dates, seq(start_date - (pattern[1] - 1), by = "day",
+                                      length.out = nrow(agg_inc_df)/3 * sum(pattern)))
+})
+
+

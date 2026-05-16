@@ -57,7 +57,8 @@
 #' - `si_distr`: For method "non_parametric_si"; vector of probabilities giving
 #'   the discrete distribution of the serial interval, starting with
 #'   `si_distr[1]` (probability that the serial interval is zero), which should
-#'   be zero.
+#'   be zero. Note that EpiEstim assumes that the serial interval is always
+#'   strictly positive. 
 #'
 #' - `si_parametric_distr`: For method "si_from_data"; the parametric
 #'   distribution to use when estimating the serial interval from data on dates
@@ -98,7 +99,8 @@
 #' The methods vary in the way the serial interval distribution is specified.
 #'
 #' In short there are five methods to specify the serial interval distribution
-#' (see below for details on each method). In the first two methods, a unique
+#' (see below for details on each method). This is specified in the argument
+#' `method` of the [estimate_R()] function. In the first two methods, a unique
 #' serial interval distribution is considered, whereas in the last three, a
 #' range of serial interval distributions are integrated over:
 #' - "non_parametric_si": the user specifies the discrete distribution
@@ -139,19 +141,21 @@
 #' \eqn{\mu} and standard deviation \eqn{\sigma} of the serial interval to vary
 #' according to truncated normal distributions. We sample `n1` pairs of mean and
 #' standard deviations,
-#' \eqn{(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_2)},\sigma^{(n_2)})}, by first
+#' \eqn{(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_1)},\sigma^{(n_1)})}, by 
+#' independently
 #' sampling the mean \eqn{\mu^{(k)}} from its truncated normal distribution
 #' (with mean `mean_si`, standard deviation `std_mean_si`, minimum `min_mean_si`
-#' and maximum `max_mean_si`), and then sampling the standard deviation
+#' and maximum `max_mean_si`), and the standard deviation
 #' \eqn{\sigma^{(k)}} from its truncated normal distribution (with mean
 #' `std_si`, standard deviation `std_std_si`, minimum `min_std_si` and maximum
-#' `max_std_si`), but imposing that \eqn{\sigma^{(k)}<\mu^{(k)}}. This
-#' constraint ensures that the Gamma probability density function of the serial
-#' interval is null at \eqn{t=0}. Warnings are produced when the truncated
+#' `max_std_si`). Warnings are produced when the truncated
 #' normal distributions are not symmetric around the mean. For each pair
 #' \eqn{(\mu^{(k)},\sigma^{(k)})}, we then draw a sample of size `n2` in the
 #' posterior distribution of the reproduction number over each time window,
-#' conditionally on this serial interval distribution. After pooling, a sample
+#' conditionally on this parametric serial interval distribution (using the 
+#' `discr_si` function to generate the corresponding serial interval probability
+#' mass function). 
+#' After pooling across the `n1` serial interval distributions, a sample
 #' of size \eqn{`n1` \times `n2`} of the joint posterior distribution of the
 #' reproduction number over each time window is obtained. The posterior mean,
 #' standard deviation, and 0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles
@@ -228,7 +232,6 @@
 #' incid <- MockRotavirus$incidence
 #' method <- "si_from_data"
 #' config <- make_config(incid = incid,
-#'                      method = method,
 #'                      list(si_parametric_distr = "G",
 #'                      mcmc_control = make_mcmc_control(burnin = 1000,
 #'                      thin = 10, seed = 1),
@@ -258,13 +261,17 @@
 #' plot(R_si_from_data)
 #' }
 
-make_config <- function(..., incid = NULL,
-                        method = c("non_parametric_si", "parametric_si",
-                                   "uncertain_si", "si_from_data",
-                                   "si_from_sample")) {
+make_config <- function(..., incid = NULL) {
   config <- list(...)
   if (length(config) == 1L && is.list(config[[1]])) {
     config <- config[[1]]
+  }
+  
+  # catch if user (wrongly) specifies method
+  if(!is.null(config$method)) {
+    msg <- paste("`method` should be specified as an argument to",
+                 "`estimate_R`, not `make_config`.")
+    stop(msg)
   }
 
   ## SET DEFAULTS

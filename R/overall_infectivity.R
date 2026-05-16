@@ -30,7 +30,7 @@
 #'
 #' @seealso [discr_si()], [estimate_R()]
 #'
-#' @author Anne Cori \email{a.cori@@imperial.ac.uk}
+#' @author Anne Cori
 #' 
 #' @references 
 #' Cori, A. et al. A new framework and software to estimate time-varying

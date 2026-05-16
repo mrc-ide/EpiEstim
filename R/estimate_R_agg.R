@@ -1,7 +1,18 @@
 
 #' Estimate instantaneous reproduction number from coarsely aggregated data
 #'
-#' @param incid aggregated incidence data, supplied as a vector
+#' @param incid Aggregated incidence data, supplied as one of the following
+#' 
+#' - A vector (or a dataframe with a single column) of non-negative integers
+#' containing the incidence time series; these can be aggregated at any time
+#' unit as specified by argument `dt`
+#'
+#' - A dataframe of non-negative integers with `incid$I` containing the total
+#' incidence. If the dataframe contains a column `incid$dates`, this is used for
+#' plotting. `incid$dates` must contains only dates in a row.
+#'
+#' - An object of class [incidence::incidence()]
+#' - An object of class [incidence2::incidence()]
 #' 
 #' @param dt length of temporal aggregations of the incidence data. This should 
 #' be an integer or vector of integers. If a vector, this will be recycled. For 
@@ -27,6 +38,21 @@
 #' @param grid named list containing `precision`, `min`, and `max` which are used to
 #' define a grid of growth rate parameters that are used inside the EM algorithm 
 #' (see details). We recommend using the default values. 
+#' 
+#' @param agg_dates dates corresponding to each aggregated incidence count, 
+#' supplied as a vector of class \code{Date}. If supplied, \code{date_convention}
+#' must also be specified. If \code{NULL} (default), no date information is 
+#' added to the output.
+#'
+#' @param date_convention One of `"start"` or `"end"`, specifying whether the 
+#' dates supplied in `incid$dates` correspond to the first or last day of each 
+#' aggregation window. Must be specified if incidence are temporally
+#' aggregated (`dt > 1`) and `incid$dates` is supplied.
+#' For example, for weekly epi-week data where the date label 
+#' corresponds to the first day of the week (e.g. Monday), use `"start"`. For 
+#' data reported multiple times per week where the date corresponds to the 
+#' reporting date (i.e. the last day of the accumulation window), use `"end"`.
+#' Ignored if no dates are supplied.
 #'
 #' @return 
 #' An object of class [estimate_R()], with components:
@@ -60,8 +86,6 @@
 #' - `dates`: a vector of dates corresponding to the incidence time series
 #' 
 #' 
-#' @importFrom epitrix gamma_mucv2shapescale r2R0
-#' @importFrom distcrete distcrete
 #' @export
 #'
 #' @details 
@@ -141,7 +165,7 @@
 #' 
 #' @seealso [estimate_R()] for details of the core function
 #'  
-#' @author Rebecca Nash \email{r.nash@imperial.ac.uk} and Anne Cori \email{a.cori@imperial.ac.uk}
+#' @author Rebecca Nash and Anne Cori
 #' 
 #' @references 
 #' Nash RK, Cori A, Nouvellet P. Estimating the epidemic reproduction number
@@ -233,48 +257,69 @@ estimate_R_agg <- function(incid,
                            recon_opt = "naive", # initial naive disaggregation or match growth rate to reconstruct
                            config = make_config(), 
                            method = c("non_parametric_si", "parametric_si"),
-                           grid = list(precision = 0.001, min = -1, max = 1)){ 
+                           grid = list(precision = 0.001, min = -1, max = 1),
+                           agg_dates = NULL,
+                           date_convention = NULL){
+  
+  method <- match.arg(method)
   
   if (!is.integer(dt)) {
-    stop ("dt must be an integer or a vector of integers e.g. dt = 7L, dt = c(2L,2L,3L)")
+    stop ("dt must be an integer or a vector of integers e.g. dt = 7L, dt = c(2L,2L,3L)",
+          call. = FALSE)
   }
   if (!is.integer(dt_out)) {
-    stop ("dt_out must be an integer e.g. dt_out = 7L")
+    stop ("dt_out must be an integer e.g. dt_out = 7L", call. = FALSE)
   }
-  if (!is.integer(iter)) {
-    stop ("iter must be an integer e.g. 10L")
-  }
-  if (iter < 2L) {
-    stop ("iter must be at least 2L")
-  }
-  if (!is.list(grid) || !length(grid) == 3){
-    stop ("grid must be a list of 3 elements: precision, min, and max")
-  }
-  if (grid$max < grid$min){
-    stop ("grid max must be larger than grid min")
-  }
-  if (grid$precision > grid$max-grid$min){
-    stop ("grid precision must be less than grid max - grid min")
+  if (!is.list(grid) || length(grid) != 3){
+    stop ("grid must be a list of 3 elements: precision, min, and max",
+          call. = FALSE)
   }
   if (!is.numeric(grid$precision) || !is.numeric(grid$min) || !is.numeric(grid$max)){
-    stop ("grid precision, min, and max, must all be numeric")
+    stop ("grid precision, min, and max, must all be numeric", call. = FALSE)
   }
-  if (!method == "parametric_si" && !method == "non_parametric_si"){
-    stop ("'arg' should be one of 'non_parametric_si' and 'parametric_si'")
+  if (grid$max < grid$min){
+    stop ("grid max must be larger than grid min", call. = FALSE)
   }
-  if (!recon_opt == "naive" && !recon_opt == "match"){
-    stop ("'recon_opt' should be one of 'naive' and 'match'")
+  if (grid$precision > grid$max-grid$min){
+    stop ("grid precision must be less than grid max - grid min", call. = FALSE)
+  }
+  if (!is.integer(iter)) {
+    stop ("iter must be an integer e.g. 10L", call. = FALSE)
+  }
+  if (iter < 2L) {
+    stop ("iter must be at least 2L", call. = FALSE)
+  }
+  if (method == "parametric_si" && (is.null(config$mean_si) || is.null(config$std_si))) {
+    stop ("'config$mean_si' and 'config$std_si' must be specified when using method 'parametric_si'",
+          call. = FALSE)
+  }
+  if (method == "non_parametric_si" && is.null(config$si_distr)) {
+    stop ("'config$si_distr' must be specified when using method 'non_parametric_si'",
+          call. = FALSE)
+  }
+  if (!(recon_opt %in% c("naive", "match"))) {
+    stop ("'recon_opt' should be one of 'naive' and 'match'", call. = FALSE)
   }
   if (dt_out < max(dt)) {
-    warning ("dt_out should be at least the length of the longest aggregation present in the data")
+    warning ("dt_out should be at least the length of the longest aggregation present in the data",
+             call. = FALSE)
   }
+  if (!is.null(agg_dates) && is.null(date_convention)) {
+    warning("date_convention not specified. Defaulting to 'end', assuming dates 
+          correspond to the reporting date (last day of each aggregation window).",
+            call. = FALSE)
+    date_convention <- "end"
+  }
+  if (!is.null(date_convention) && !(date_convention %in% c("start", "end"))) {
+    stop ("'date_convention' should be one of 'start' and 'end'", call. = FALSE)
+  }
+  
   
   # Two configs:
   # 'config' for the R estimates used to reconstruct the incidence (internal to the
   # EM algorithm). These use a fixed window length matched to dt (aggregation window)
   # 'config_out' for the final estimated R using sliding windows (supplied by user)
   
-  method <- match.arg(method) # potentially add an error message but maybe automatic
   config <- process_config(config)
   check_config(config, method)
   config_out <- config 
@@ -286,26 +331,25 @@ estimate_R_agg <- function(incid,
   n_dt <- length(incid) # number of aggregations
   
   if (length(dt) == 1){
-    T <- n_dt * dt
-    config$t_start <- seq(from = dt + 1, to = T - (dt - 1), dt)
-    config$t_end <- seq(from = min(config$t_start) + (dt - 1),to = T, dt)
+    total_t <- n_dt * dt
+    config$t_start <- seq(from = dt + 1, to = total_t - (dt - 1), dt)
+    config$t_end <- seq(from = min(config$t_start) + (dt - 1), to = total_t, dt)
     } else if (length(dt) == length(incid)){
-      T <- sum(dt)
+      total_t <- sum(dt)
       config$t_start <- cumsum(c(dt[1] + 1, dt[2:length(dt[-1])]))
       config$t_end <- cumsum(c(config$t_start[1] + dt[2] - 1, dt[3:length(dt)]))
       } else { # vector of repeating aggregations
-        T <- sum(rep(dt, length.out = n_dt))
+        total_t <- sum(rep_len(dt, n_dt))
         # reorder dt as R estimation starts on second aggregation window
         reo_dt_start <- c(dt[2:length(dt)], dt[1])
         reo_dt_end <- c(reo_dt_start[2:length(reo_dt_start)], reo_dt_start[1])
-        config$t_start <- cumsum(c(dt[1] + 1, 
-                               rep(reo_dt_start, length.out = n_dt - 2)))
-        config$t_end <- cumsum(c(config$t_start[1] + reo_dt_start[1] - 1, 
-                             rep(reo_dt_end, length.out = n_dt - 2)))
+        config$t_start <- cumsum(c(dt[1] + 1, rep_len(reo_dt_start, n_dt - 2)))
+        config$t_end <- cumsum(c(config$t_start[1] + reo_dt_start[1] - 1,
+                                 rep_len(reo_dt_end, n_dt - 2)))
   }
   
   niter <- seq(1, iter, 1) 
-  sim_inc <- matrix(NA, nrow = T, ncol = iter)
+  sim_inc <- matrix(NA, nrow = total_t, ncol = iter)
   
   for (i in seq_along(niter)){
     if (niter[i] == 1){
@@ -319,30 +363,28 @@ estimate_R_agg <- function(incid,
         dis_inc <- rep(dis, times = dt)
         full_dt <- dt
         } else {
-          full_dt <- rep(dt, length.out = n_dt)
+          full_dt <- rep_len(dt, n_dt)
           dis <- incid / full_dt
           dis_inc <- rep(dis, times = full_dt)
           }
       
       
       # Estimate R
-      R <- estimate_R(dis_inc, 
-                      method = method,
-                      config = config)
+      res_R <- estimate_R(dis_inc, method = method, config = config)
       
       message("Estimated R for iteration: ", i)
-      Mean_R <- R$R$`Mean(R)`
+      Mean_R <- res_R$R$`Mean(R)`
       
       if (anyNA(Mean_R)){
         idx_na <- which(is.na(Mean_R))
-        idx_reconstruct <- seq(min(R$R$t_start[-idx_na]), length(dis_inc))
+        idx_reconstruct <- seq(min(res_R$R$t_start[-idx_na]), length(dis_inc))
         Mean_R <- Mean_R[!is.na(Mean_R)]
       } else {
-        idx_reconstruct <- seq(min(R$R$t_start), length(dis_inc))
+        idx_reconstruct <- seq(min(res_R$R$t_start), length(dis_inc))
       }
      
       # Index for aggregation windows
-      idx_aggregation <- rep(seq(1:n_dt), times=full_dt) 
+      idx_aggregation <- rep(seq(1:n_dt), times = full_dt) 
       
       # Two options:
       # Opt 1) To keep naive disaggregation of the incidence for the aggregation 
@@ -366,18 +408,19 @@ estimate_R_agg <- function(incid,
       incid_to_reconstruct <- incid[aggs_to_reconstruct]
       
       # Translate R to growth rate
-      get_r_from_R <- function(R, gt_mean, gt_sd, 
-                               gt_distr,
+      get_r_from_R <- function(R, si_mean, si_sd, 
+                               si_distr,
                                grid) {
         r_grid <- seq(grid$min, grid$max, grid$precision)
-        if (is.null(gt_distr)) {
-          gt_pars <- gamma_mucv2shapescale(mu = gt_mean, cv = gt_sd / gt_mean)
-          gt_distr <- distcrete("gamma", interval = 1,
-                                           shape = gt_pars$shape,
-                                           scale = gt_pars$scale, w = 0.5)
+        if (is.null(si_distr)) {
+          si_distr <- discr_si(seq(0, total_t), mu = si_mean, sigma = si_sd)
+          # remove tail
+          threshold <- 1e-6
+          si_distr <- si_distr[c(TRUE, si_distr[-1] >= threshold)]
+          si_distr <- si_distr / sum(si_distr)
         }
         # using a grid of r values translate that into R using r2R0
-        R_grid <- epitrix::r2R0(r = r_grid, w = gt_distr)
+        R_grid <- epitrix::r2R0(r = r_grid, w = si_distr)
         
         # find location of the value in the R grid which has the smallest 
         # difference to the input of R the user provided e.g. R_grid[idx_r]:
@@ -389,15 +432,15 @@ estimate_R_agg <- function(incid,
           if (grid$max > 0) grid$max <- grid_multiplier * grid$max else grid$max <- - grid$max
           if (grid$min < 0) grid$min <- grid_multiplier * grid$min else grid$min <- - grid$min
           r_grid <- seq(grid$min, grid$max, grid$precision)
-          R_grid <- r2R0(r = r_grid, w = gt_distr)
+          R_grid <- epitrix::r2R0(r = r_grid, w = si_distr)
           idx_r <- vapply(R, function(e) which.min(abs(R_grid - e)), numeric(1L))
         }
         vapply(idx_r, function(e) r_grid[e], numeric(1L))
       }
       
       gr <- get_r_from_R(R = Mean_R, 
-                         gt_mean = config$mean_si, gt_sd = config$std_si, 
-                         gt_distr = config$si_distr,
+                         si_mean = config$mean_si, si_sd = config$std_si, 
+                         si_distr = config$si_distr,
                          grid = grid)
       
       # Assume the growth rates match to reconstruct preceding aggregation window:
@@ -428,8 +471,8 @@ estimate_R_agg <- function(incid,
       gr_ls <- list()
       
       for (f in seq_along(incid_to_reconstruct)){
-        k_ls[[f]] <- rep(recon_df$k[f], recon_df$dt[f])
-        gr_ls[[f]] <- rep(recon_df$gr[f], recon_df$dt[f])
+        k_ls[[f]] <- rep_len(recon_df$k[f], recon_df$dt[f])
+        gr_ls[[f]] <- rep_len(recon_df$gr[f], recon_df$dt[f])
       }
       k_seq <- unlist(k_ls)
       gr_seq <- unlist(gr_ls)
@@ -438,7 +481,7 @@ estimate_R_agg <- function(incid,
       w_day <- list()
 
       for (x in seq_along(dt_seq)){
-        w_day[[x]] <- seq(1,dt_seq[x])
+        w_day[[x]] <- seq(1, dt_seq[x])
       }
 
       w_day <- unlist(w_day)
@@ -463,25 +506,23 @@ estimate_R_agg <- function(incid,
       new_inc <- sim_inc[,i-1]
       
       # Re-Estimate R
-      R <- estimate_R(new_inc,
-                      method = method,
-                      config = config)
+      res_R <- estimate_R(new_inc, method = method, config = config)
       
       message("Estimated R for iteration: ", i)
       
-      Mean_R <- R$R$`Mean(R)`
+      Mean_R <- res_R$R$`Mean(R)`
       
       if (anyNA(Mean_R)){
         idx_na <- which(is.na(Mean_R))
-        idx_reconstruct <- seq(min(R$R$t_start[-idx_na]), length(dis_inc))
+        idx_reconstruct <- seq(min(res_R$R$t_start[-idx_na]), length(dis_inc))
         Mean_R <- Mean_R[!is.na(Mean_R)]
       } else {
-        idx_reconstruct <- seq(min(R$R$t_start), length(dis_inc))
+        idx_reconstruct <- seq(min(res_R$R$t_start), length(dis_inc))
       }
       
 
       # Index for aggregation windows
-      idx_aggregation <- rep(seq(1:n_dt), times=full_dt) 
+      idx_aggregation <- rep(seq(1:n_dt), times = full_dt) 
       
       if (recon_opt == "naive"){
         aggs_to_reconstruct <- seq(idx_aggregation[idx_reconstruct[1]], n_dt)
@@ -499,8 +540,8 @@ estimate_R_agg <- function(incid,
       
       # Translate R to growth rate again
       gr <- get_r_from_R(R = Mean_R, 
-                         gt_mean = config$mean_si, gt_sd = config$std_si, 
-                         gt_distr = config$si_distr,
+                         si_mean = config$mean_si, si_sd = config$std_si, 
+                         si_distr = config$si_distr,
                          grid = grid)
       
       if (recon_opt == "match"){
@@ -528,8 +569,8 @@ estimate_R_agg <- function(incid,
       gr_ls <- list()
       
       for (f in seq_along(incid_to_reconstruct)){
-        k_ls[[f]] <- rep(recon_df$k[f], recon_df$dt[f])
-        gr_ls[[f]] <- rep(recon_df$gr[f], recon_df$dt[f])
+        k_ls[[f]] <- rep_len(recon_df$k[f], recon_df$dt[f])
+        gr_ls[[f]] <- rep_len(recon_df$gr[f], recon_df$dt[f])
       }
       k_seq <- unlist(k_ls)
       gr_seq <- unlist(gr_ls)
@@ -555,8 +596,8 @@ estimate_R_agg <- function(incid,
       # that incidence was able to be reconstructed over
       
       if (is.null(config_out$t_start)) {
-        config_out$t_start <- seq(from = min(R$R$t_start), 
-                                  to = T - (dt_out - 1), 1)
+        config_out$t_start <- seq(from = min(res_R$R$t_start), 
+                                  to = total_t - (dt_out - 1), 1)
       }
       if (is.null(config_out$t_end)) {
         config_out$t_end <- config_out$t_start + (dt_out - 1)
@@ -571,11 +612,27 @@ estimate_R_agg <- function(incid,
                             method = method,
                             config = config_out)
         message("R estimation starts on day ", R_out$R$t_start[1])
+        
+        if (!is.null(agg_dates)) {
+          if (date_convention == "start") {
+            daily_dates <- seq(as.Date(agg_dates[1]), by = "day", length.out = total_t)
+          } else {
+            start_date <- as.Date(agg_dates[1]) - (full_dt[1] - 1)
+            daily_dates <- seq(start_date, by = "day", length.out = total_t)
+          }
+          R_out$R$date_start <- daily_dates[R_out$R$t_start]
+          R_out$R$date_end <- daily_dates[R_out$R$t_end]
+          R_out$dates <- daily_dates
+          R_out$R <- R_out$R[, c("t_start", "t_end", "date_start", "date_end",
+                                 "Mean(R)", "Std(R)", "Quantile.0.025(R)", 
+                                 "Quantile.0.05(R)", "Quantile.0.25(R)", "Median(R)", 
+                                 "Quantile.0.75(R)", "Quantile.0.95(R)", 
+                                 "Quantile.0.975(R)")]
+        }
       }
-      
     }
   }
   
-    R_out
+  R_out
   
 }

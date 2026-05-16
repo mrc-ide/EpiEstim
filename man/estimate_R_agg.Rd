@@ -13,11 +13,23 @@ estimate_R_agg(
   recon_opt = "naive",
   config = make_config(),
   method = c("non_parametric_si", "parametric_si"),
-  grid = list(precision = 0.001, min = -1, max = 1)
+  grid = list(precision = 0.001, min = -1, max = 1),
+  agg_dates = NULL,
+  date_convention = NULL
 )
 }
 \arguments{
-\item{incid}{aggregated incidence data, supplied as a vector}
+\item{incid}{Aggregated incidence data, supplied as one of the following
+\itemize{
+\item A vector (or a dataframe with a single column) of non-negative integers
+containing the incidence time series; these can be aggregated at any time
+unit as specified by argument \code{dt}
+\item A dataframe of non-negative integers with \code{incid$I} containing the total
+incidence. If the dataframe contains a column \code{incid$dates}, this is used for
+plotting. \code{incid$dates} must contains only dates in a row.
+\item An object of class \code{\link[incidence:incidence]{incidence::incidence()}}
+\item An object of class \code{\link[incidence2:incidence]{incidence2::incidence()}}
+}}
 
 \item{dt}{length of temporal aggregations of the incidence data. This should
 be an integer or vector of integers. If a vector, this will be recycled. For
@@ -43,6 +55,21 @@ function \code{\link[=make_config]{make_config()}}.}
 \item{grid}{named list containing \code{precision}, \code{min}, and \code{max} which are used to
 define a grid of growth rate parameters that are used inside the EM algorithm
 (see details). We recommend using the default values.}
+
+\item{agg_dates}{dates corresponding to each aggregated incidence count,
+supplied as a vector of class \code{Date}. If supplied, \code{date_convention}
+must also be specified. If \code{NULL} (default), no date information is
+added to the output.}
+
+\item{date_convention}{One of \code{"start"} or \code{"end"}, specifying whether the
+dates supplied in \code{incid$dates} correspond to the first or last day of each
+aggregation window. Must be specified if incidence are temporally
+aggregated (\code{dt > 1}) and \code{incid$dates} is supplied.
+For example, for weekly epi-week data where the date label
+corresponds to the first day of the week (e.g. Monday), use \code{"start"}. For
+data reported multiple times per week where the date corresponds to the
+reporting date (i.e. the last day of the accumulation window), use \code{"end"}.
+Ignored if no dates are supplied.}
 }
 \value{
 An object of class \code{\link[=estimate_R]{estimate_R()}}, with components:
@@ -227,5 +254,5 @@ growth rates and reproductive numbers (Proc Biol Sci 2007).
 \code{\link[=estimate_R]{estimate_R()}} for details of the core function
 }
 \author{
-Rebecca Nash \email{r.nash@imperial.ac.uk} and Anne Cori \email{a.cori@imperial.ac.uk}
+Rebecca Nash and Anne Cori
 }

@@ -32,5 +32,4 @@ x <- backimpute_I(incid = incid_trunc, window_b = 6)
 idx <- as.integer(rownames(x)) > -10
 x[idx, ]$local
 incid_all
-
 }
