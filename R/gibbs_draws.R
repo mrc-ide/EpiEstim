@@ -233,6 +233,11 @@ compute_lambda <- function(incid, si_distr) {
 #'
 #' @param seed a numeric value used to fix the random seed
 #'
+#' @param validate_inputs a boolean value indicating whether to validate the
+#' inputs; default value is FALSE as inputs are validated in
+#' \code{estimate_advantage()}, where this function is called. Can be set to TRUE
+#' if this function is called directly for debugging or testing.
+#'
 #' @return A value or vector of values for epsilon for each non reference
 #'   pathogen/strain/variant, drawn from the marginal posterior distribution
 #'
@@ -254,7 +259,6 @@ compute_lambda <- function(incid, si_distr) {
 #' R <- matrix(1, nrow = T, ncol = n_loc)
 #' R[1, ] <- NA # no estimates of R on first time step
 #' draw_epsilon(R, incid$local, lambda, priors, seed = 1)
-
 draw_epsilon <- function(R, incid, lambda, priors,
                          shape_epsilon = NULL,
                          t_min = 2L, t_max = nrow(incid),
@@ -316,6 +320,8 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'
 #' @param seed a numeric value used to fix the random seed
 #'
+#' @inheritParams draw_epsilon
+#' 
 #' @return a matrix of the instantaneous reproduction number R for the reference
 #'   pathogen/strain/variant for each time step (row) and each location (column)
 #'   drawn from the marginal posterior distribution
@@ -502,6 +508,10 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #'   is temporarily assigned to `[, , 1]` of the incidence array. We recommend the
 #'   default value of `TRUE` as we find this to stabilise inference.
 #'
+#' @param validate_inputs a boolean (defaulting to `TRUE`) indicating whether to
+#' validate the inputs before running the estimation. We recommned that this
+#' is set to `TRUE` as it will ensure any mistmatches in inputs are caught early.
+#'
 #' @return A list with the following elements:
 #' - `epsilon`: a matrix containing the MCMC chain (thinned and after burnin)
 #'   for the relative transmissibility of the "new" pathogen/strain/variant(s)
@@ -553,14 +563,14 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' abline(h = 1, col = "red")
 #' plot(x$R[30, 3, ], type = "l",
 #'      xlab = "Iteration", ylab = "R time 30 location 3")
-
 estimate_advantage <- function(incid, si_distr, priors = default_priors(),
                            mcmc_control = default_mcmc_controls(),
                            t_min = NULL, t_max = nrow(incid),
                            seed = NULL,
                            incid_imported = NULL,
                            precompute = TRUE,
-                           reorder_incid = TRUE) {
+                           reorder_incid = TRUE,
+                           validate_inputs = TRUE) {
 
   if (any(colSums(si_distr) != 1)) {
     warning(
@@ -575,8 +585,10 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 
   estimate_advantage_args <- as.list(environment())
   estimate_advantage_args$si_distr <- si_distr # normalized value
-  do.call(check_estimate_advantage_inputs, args = estimate_advantage_args)
-
+  if (validate_inputs) {
+     do.call(check_estimate_advantage_inputs, args = estimate_advantage_args)
+  }
+  
   T <- nrow(incid)
   n_loc <- ncol(incid)
 

@@ -14,7 +14,8 @@ estimate_advantage(
   seed = NULL,
   incid_imported = NULL,
   precompute = TRUE,
-  reorder_incid = TRUE
+  reorder_incid = TRUE,
+  validate_inputs = TRUE
 )
 }
 \arguments{
@@ -63,6 +64,10 @@ incidence array can be internally reordered during the estimation of the
 transmission advantage. If \code{TRUE}, the most transmissible pathogen/strain/variant
 is temporarily assigned to \verb{[, , 1]} of the incidence array. We recommend the
 default value of \code{TRUE} as we find this to stabilise inference.}
+
+\item{validate_inputs}{a boolean (defaulting to \code{TRUE}) indicating whether to
+validate the inputs before running the estimation. We recommned that this
+is set to \code{TRUE} as it will ensure any mistmatches in inputs are caught early.}
 }
 \value{
 A list with the following elements:

@@ -52,6 +52,11 @@ observations at time step 1 and can therefore only start at time step 2).}
 step to consider in the estimation. Default value is \code{nrow(incid)}.}
 
 \item{seed}{a numeric value used to fix the random seed}
+
+\item{validate_inputs}{a boolean value indicating whether to validate the
+inputs; default value is FALSE as inputs are validated in
+\code{estimate_advantage()}, where this function is called. Can be set to TRUE
+if this function is called directly for debugging or testing.}
 }
 \value{
 A value or vector of values for epsilon for each non reference

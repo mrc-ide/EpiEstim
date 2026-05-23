@@ -184,11 +184,11 @@ test_that("si_distr is specified correctly", {
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
                "si_distr should be so that si_distr[1] = 0.", fixed=TRUE)
-  expect_error(estimate_advantage(incid=incid, si_distr=sidistr_2, priors=priors,
+  expect_warning(estimate_advantage(incid=incid, si_distr=sidistr_2, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "si_distr must sum to 1.")
+               "Input SI distributions should sum to 1. Normalising now")
   expect_error(estimate_advantage(incid=incid, si_distr=sidistr_3, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
