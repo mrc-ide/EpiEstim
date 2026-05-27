@@ -1,5 +1,4 @@
 test_that("These things still calculate the same after refactoring", {
-  local_edition(3)
   data("Flu2009")
   
   x1 <- estimate_R(

@@ -607,7 +607,6 @@ test_that("grid in estimate_R_agg is in the correct format", {
 
 
 test_that("you can't run estimate_R_agg unless using parametric/non-parametric SI methods", {
-  testthat::local_edition(3)
   method <- "uncertain_si"
   config <- make_config(list(mean_si = 2.6, std_mean_si = 1,
                              min_mean_si = 1, max_mean_si = 4.2,

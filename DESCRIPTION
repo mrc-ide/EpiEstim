@@ -42,7 +42,7 @@ Imports:
     patchwork (>= 1.2.0),
     rlang
 Suggests:
-    testthat,
+    testthat (>= 3.0.0),
     utils,
     vdiffr,
     covr,
@@ -61,3 +61,4 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Remotes: reconverse/incidence2/pkg
+Config/testthat/edition: 3
