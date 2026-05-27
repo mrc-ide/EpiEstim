@@ -35,3 +35,31 @@ epi_expect_doppelganger <- function(name, code, variant) {
   )
 }
 
+#' Custom snapshot utility function
+#' 
+#' Creates mini snapshots by sampling `x` down to `n`. If `x` is a list, the
+#' sampling applies to all sub-items (which may or may not be appropriate,
+#' depending on the situation). Also rounds to 8 digits to avoid mismatches in
+#' re-loading values with long trailing decimals.
+#'
+#' @param x Vector or list of vectors to take a snapshot of.
+#' @param style Snapshot style (see `?testthat::snapshot_value()`)
+#' @param n Numeric. Number of samples to keep
+#'
+#' @noRd
+epi_snapshot_value <- function(x, style = "json2", n = 5) {
+  set.seed(1) # TODO: could use withr::with_seed()
+
+  sample_x <- function(xx) {
+    # take random sample of 5 points or all
+    nn <- if(length(xx) < n) length(xx) else n
+    xx <- sample(xx, size = nn)
+    # Round to avoid mismatches from truncated records
+    if(is.numeric(xx)) xx <- round(xx, digits = 8) 
+    xx
+  }
+
+  if(is.list(x)) x <- lapply(x, sample_x) else x <- sample_x(x)
+  
+  testthat::expect_snapshot_value(x, style = style)
+}

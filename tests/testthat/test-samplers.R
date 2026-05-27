@@ -26,6 +26,8 @@ test_that("draw_epsilon produces expected results (2 variants, 4 locations)", {
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   expect_equal(mean(x), 1, tolerance = 0.05)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -55,6 +57,8 @@ test_that("draw_epsilon produces expected results (2 variants, 1 location)", {
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   expect_equal(mean(x), 1, tolerance = 0.05)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -86,6 +90,8 @@ test_that("draw_epsilon produces expected results (>2 variants, 4 locations)", {
   expect_equal(
     rowMeans(x), c(1, 1), tolerance = 0.05
   )
+
+  epi_snapshot_value(x)
 })
 
 
@@ -115,7 +121,10 @@ test_that("draw_epsilon produces expected results (>2 variants, 1 location)", {
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   expect_equal(rowMeans(x), c(1, 1), tolerance = 0.05)
+
+  epi_snapshot_value(x)
 })
+
 
 
 test_that("draw_R produces expected results (2 variants, 4 locations)", {
@@ -145,6 +154,8 @@ test_that("draw_R produces expected results (2 variants, 4 locations)", {
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
   expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -175,6 +186,8 @@ test_that("draw_R produces expected results (2 variants, 1 location)", {
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
   expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -205,6 +218,8 @@ test_that("draw_R produces expected results (>2 variants, 4 locations)", {
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
   expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -235,6 +250,9 @@ test_that("draw_R produces expected results (>2 variants, 1 location)", {
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
   expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
+
+  epi_snapshot_value(x)
+})
 })
 
 
@@ -262,6 +280,8 @@ test_that("estimate_advantage produces expected results (2 variants 3 locations)
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -289,6 +309,8 @@ test_that("estimate_advantage produces expected results (2 variants 1 location)"
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -321,6 +343,8 @@ test_that("estimate_advantage produces expected results (>2 variants 4 locs)", {
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -350,6 +374,8 @@ test_that("estimate_advantage produces expected results (>2 variants 1 loc)", {
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -390,6 +416,8 @@ test_that("process_I_multivariant works as expected", {
   expect_true(all(incid_processed$imported[1, , ] == incid[1, , ]))
   expect_true(all(incid_processed$local[-1, , ] == incid[-1, , ]))
   expect_true(all(incid_processed$local[1, , ] == 0))
+
+  epi_snapshot_value(incid_processed)
 })
 
 
@@ -441,6 +469,8 @@ test_that("estimate_advantage produces expected results (>2var, 1loc, imports)",
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -479,6 +509,8 @@ test_that("estimate_advantage produces expected results (>2var, 4loc, imports)",
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -512,6 +544,8 @@ test_that("estimate_advantage produces expected results (2var, 1loc, imports)", 
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -548,6 +582,8 @@ test_that("estimate_advantage produces expected results (2var, 4loc, imports)", 
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+  
+  epi_snapshot_value(x)
 })
 
 
@@ -611,6 +647,7 @@ test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 
   expect_equal(mean(x$R[,1,], na.rm = TRUE), 1.1, tolerance = 0.5)
   expect_equal(mean(x$R[,2,], na.rm = TRUE), 1.5, tolerance = 0.5)
 
+  epi_snapshot_value(x)
 })
 
 test_that("estimate_advantage faster with precompute (2 variants 3 locations)", {
@@ -854,6 +891,8 @@ test_that("estimate_advantage uses the correct t_min", {
   x <- estimate_advantage(incid, si_distr, priors, seed = 1)
   expect_true(all(is.na(x$R[seq(1, t_min - 1, 1), , ])))
   expect_false(anyNA(x$R[seq(t_min, dim(x$R)[1]), , ]))
+
+  epi_snapshot_value(x)
 })
 
 
@@ -880,6 +919,8 @@ test_that("estimate_advantage convergence checks work with >2 variants", {
   ## that is tested in a different set of tests.
   expect_length(x$convergence, 2)
   expect_length(x$diag, 2)
+
+  epi_snapshot_value(x)
 })
 
 test_that("estimate_advantage produces expected warning message", {
