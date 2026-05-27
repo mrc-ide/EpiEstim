@@ -127,6 +127,37 @@ test_that("draw_epsilon produces expected results (>2 variants, 1 location)", {
 
 
 
+test_that("draw_epsilon seed", {
+  n_v <- 3 # 3 variants
+  n_loc <- 1 # 1 location
+  T <- 100 # 100 time steps
+
+  priors <- default_priors()
+
+  # constant incidence 10 per day everywhere
+  incid <- array(10, dim = c(T, n_loc, n_v))
+  incid <- process_I_multivariant(incid)
+
+  # arbitrary serial interval
+  w_v <- c(0, 0.2, 0.5, 0.3)
+  si_distr <- cbind(w_v, w_v, w_v)
+  lambda <- compute_lambda(incid, si_distr)
+
+  # Constant reproduction number of 1
+  R <- matrix(1, nrow = T, ncol = n_loc)
+  R[1, ] <- NA # no estimates of R on first time step
+
+  x1 <- sapply(1:1000, function(e) draw_epsilon(R, incid$local, lambda, priors, seed = 1))
+
+  ## epsilon should be approximately 1
+  ## not exactly 1 because of the first few timesteps & because of priors
+  expect_equal(rowMeans(x1), c(1, 1), tolerance = 0.05)
+
+  epi_snapshot_value(x1)
+})
+
+
+
 test_that("draw_R produces expected results (2 variants, 4 locations)", {
   n_v <- 2 # 2 variants
   n_loc <- 4 # 4 locations
@@ -253,7 +284,31 @@ test_that("draw_R produces expected results (>2 variants, 1 location)", {
 
   epi_snapshot_value(x)
 })
-})
+
+
+test_that("draw_R seed", {
+  n_v <- 3 # 3 variants
+  n_loc <- 1 # 1 locations
+  T <- 100 # 100 time steps
+
+  priors <- default_priors()
+
+  # constant incidence 10 per day everywhere
+  incid <- array(10, dim = c(T, n_loc, n_v))
+  incid <- process_I_multivariant(incid)
+
+  # arbitrary serial interval
+  w_v <- c(0, 0.2, 0.5, 0.3)
+  si_distr <- cbind(w_v, w_v, w_v)
+  lambda <- compute_lambda(incid, si_distr)
+
+  # Epsilon = 1 i.e. no transmission advantage
+  epsilon <- c(1, 1)
+
+  x <- draw_R(epsilon, incid$local, lambda, priors, t_min = 2L, seed = 1)
+
+  epi_snapshot_value(x)
+  })
 
 
 test_that("estimate_advantage produces expected results (2 variants 3 locations)", {
@@ -812,6 +867,33 @@ test_that("estimate_advantage faster with precompute (3 variants 1 location)", {
   expect_lt(max(abs(mean_R2[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
+test_that("estimate_advantage checks", {
+  n_v <- 3 # 3 variants
+  n_loc <- 1 # 1 locations
+  T <- 100 # 100 time steps
+
+  priors <- default_priors()
+
+  # constant incidence 10 per day everywhere
+  incid <- array(10, dim = c(T, n_loc, n_v))
+
+  # arbitrary serial interval
+  w_v <- c(0, 0.2, 0.5, 0.3)
+  si_distr <- cbind(w_v, w_v, w_v)
+
+  expect_error(
+    estimate_advantage(incid, si_distr, priors, t_min = 90L, t_max = 80L),
+    "t\\_min is greater than t\\_max"
+  )
+  
+  mcmc_control <- default_mcmc_controls()
+  mcmc_control$n_iter <- 10L
+  expect_error(
+    estimate_advantage(incid, si_distr, priors, mcmc_control = mcmc_control),
+    "In mcmc\\_control, n\\_iter must be greater than burnin \\+ thin"
+  )
+})
+
 
 test_that("compute_si_cutoff returns the correct value", {
   si_1 <- c(0.1, 0.2, 0.3, 0.2, 0.1, 0.03, 0.02,
@@ -828,6 +910,14 @@ test_that("compute_si_cutoff returns the correct value", {
   si <- cbind(si_1, si_2)
   expect_equal(compute_si_cutoff(si), 7L)
   expect_equal(compute_si_cutoff(si, 0.5), 3L)
+})
+
+test_that("compute_si_cutoff warns and normalizes", {
+  si_1 <- c(1, 2, 3, 2, 1, 0.3, 0.2, 0.1, 0.1, 0.1, 0.2)
+  si <- cbind(si_1, si_1)
+
+  expect_warning(x <- compute_si_cutoff(si), "Input SI distributions should sum to 1")
+  expect_equal(x, 7L)
 })
 
 test_that("first_nonzero_incid returns correct value", {
@@ -849,6 +939,11 @@ test_that("first_nonzero_incid returns correct value", {
   incid <- array(0, dim = c(10, 2, 2))
   incid[10, , ] <- 1
   expect_equal(first_nonzero_incid(incid), 10L)
+})
+
+test_that("first_nonzero_incid warns if all 0", {
+  incid <- array(0, dim = c(10, 2, 2))
+  expect_warning(first_nonzero_incid(incid), "always zero")
 })
 
 test_that("compute_t_min works correctly", {
