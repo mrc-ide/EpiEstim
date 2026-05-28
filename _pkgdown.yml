@@ -7,6 +7,8 @@ reference:
     contents:
     - aggregate_inc
     - backimpute_I
+    - check_priors
+    - check_seed
     - compute_si_cutoff
     - compute_t_min
     - discr_si
