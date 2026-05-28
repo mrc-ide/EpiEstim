@@ -17,7 +17,7 @@ test_that("Example 1 matches saved output", {
                     config = list(t_start = 2:26, t_end = 8:32,
                                   si_distr = Flu2009$si_distr, 
                                   seed = 1))
-  expect_snapshot(out)
+  epi_snapshot_value(out, n = NULL)
 })
 
 test_that("Example 2 matches saved output", {
@@ -33,7 +33,7 @@ test_that("Example 2 matches saved output", {
                                   mean_si = 2.6, 
                                   std_si = 1.5, 
                                   seed = 1))
-  expect_snapshot(out)
+  epi_snapshot_value(out, n = NULL)
 })
 
 test_that("Example 3 matches saved output", {
@@ -43,7 +43,7 @@ test_that("Example 3 matches saved output", {
                                   mean_si = 2.6, 
                                   std_si = 1.5, 
                                   seed = 1))
-  expect_snapshot(out)
+  epi_snapshot_value(out, n = NULL)
 })
 
 test_that("Example 4 matches saved output", {
@@ -61,5 +61,5 @@ test_that("Example 4 matches saved output", {
                                   n1 = 100, 
                                   n2 = 100, 
                                   seed = 1))
-  expect_snapshot(out)
+  epi_snapshot_value(out, n = NULL)
 })
