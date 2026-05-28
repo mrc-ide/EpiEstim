@@ -295,15 +295,13 @@ test_that(
   }
 )
 
-
-## data("Flu2009")
-
-## test_that("Example 1 matches saved output", {
-##   out <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
-##                     config = list(t_start = 2:26, t_end = 8:32,
-##                                   si_distr = Flu2009$si_distr, 
-##                                   seed = 1, 
-##                                   n_sim = 50))
-##   ## TODO: save output (with fixed seed) into am rda as we did for estimate_T
-##   #expect_equal_to_reference(out, "../expected_output/Example1.rda", update = FALSE)
-## })
+test_that("Example 1 matches saved output", {
+  data("Flu2009")
+  
+  out <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
+                    config = list(t_start = 2:26, t_end = 8:32,
+                                  si_distr = Flu2009$si_distr, 
+                                  seed = 1, 
+                                  n_sim = 50))
+  epi_snapshot_value(out, n = NULL)
+})
