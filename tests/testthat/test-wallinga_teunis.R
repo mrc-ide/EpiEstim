@@ -43,11 +43,7 @@ test_that(
       msg
     )
 
-  }
-)
-
-
-
+})
 
 test_that("wallinga_teunis(): results have the right shape/format", {
 
@@ -61,18 +57,13 @@ test_that("wallinga_teunis(): results have the right shape/format", {
                   n_sim = 50)
   )
   
-  expect_equal(class(res), "wallinga_teunis")
-  expect_true(is.list(res))
+  expect_s3_class(res, "wallinga_teunis")
+  expect_type(res, "list")
   exp_names <- c("R", "method", "si_distr", "SI.Moments", "dates", "I", "I_local", 
                  "I_imported")
-  expect_identical(names(res), exp_names)
+  expect_named(res, exp_names)
   expect_identical(dim(res$R), c(99L, 6L))
-  
-}
-)
-
-
-
+})
 
 
 test_that("wallinga_teunis() gives expected results with flat incidence", {
@@ -91,11 +82,7 @@ test_that("wallinga_teunis() gives expected results with flat incidence", {
   
   ### expect R estimates to be ~1 except very early and very late ones
   expect_equal(mean(res$R$`Mean(R)`[10:80]), 1)
-
 })
-
-
-
 
 
 test_that("wallinga_teunis() gives expected results with increasing incidence", {
@@ -124,13 +111,9 @@ test_that("wallinga_teunis() gives expected results with increasing incidence", 
                   n_sim = 50)
   )
   
-  expect_true(res_1$R$`Quantile.0.025(R)` > 1)
-  expect_true(res_2$R$`Quantile.0.025(R)` > res_1$R$`Quantile.0.975(R)`)
-
+  expect_gt(res_1$R$`Quantile.0.025(R)`, 1)
+  expect_gt(res_2$R$`Quantile.0.025(R)`, res_1$R$`Quantile.0.975(R)`)
 })
-
-
-
 
 
 test_that("wallinga_teunis() works with data.frame inputs", {
@@ -143,7 +126,8 @@ test_that("wallinga_teunis() works with data.frame inputs", {
   res_i <- wallinga_teunis(
     i,
     method = "non_parametric_si",
-    config = list(t_start = 10, t_end = 90,
+    config = list(t_start = 10, 
+                  t_end = 90,
                   si_distr = Flu2009$si_distr, 
                   seed = 1, 
                   n_sim = 50)
@@ -151,7 +135,8 @@ test_that("wallinga_teunis() works with data.frame inputs", {
   res_df <- wallinga_teunis(
     df,
     method = "non_parametric_si",
-    config = list(t_start = 10, t_end = 90,
+    config = list(t_start = 10, 
+                  t_end = 90,
                   si_distr = Flu2009$si_distr, 
                   seed = 1, 
                   n_sim = 50),
@@ -163,9 +148,6 @@ test_that("wallinga_teunis() works with data.frame inputs", {
   expect_equal(res_df$I, res_i$I)
 
 })
-
-
-
 
 
 test_that("wallinga_teunis() works with incidence inputs", {
@@ -198,11 +180,7 @@ test_that("wallinga_teunis() works with incidence inputs", {
   expect_equal(res_df$dates, df$dates)
   expect_equal(res_incid$I, res_df$I)
 
-}
-)
-
-
-
+})
 
 
 test_that("wallinga_teunis() works with incidence2 inputs", {
@@ -226,9 +204,9 @@ test_that("wallinga_teunis() works with incidence2 inputs", {
   res_df <- wallinga_teunis(
     df, "count",
     method = "non_parametric_si",
-    config = list(t_start = 10, t_end = 90,
+    config = list(t_start = 10,
+                  t_end = 90,
                   si_distr = Flu2009$si_distr, 
-                  seed = 1, 
                   n_sim = 50,
                   seed = 1)
   )
@@ -237,11 +215,7 @@ test_that("wallinga_teunis() works with incidence2 inputs", {
   expect_equal(res_incid$dates, res_df$dates)
   expect_equal(res_incid$I, res_df$I)
 
-}
-)
-
-
-
+})
 
 
 test_that(
@@ -292,8 +266,8 @@ test_that(
     expect_equal(out1$R$`Mean(R)`, out4$R$`Mean(R)`)
     expect_true(any(out1$R$`Quantile.0.025(R)` != out4$R$`Quantile.0.025(R)`))
     expect_true(any(out1$R$`Quantile.0.975(R)` != out4$R$`Quantile.0.975(R)`))
-  }
-)
+})
+
 
 test_that("Example 1 matches saved output", {
   data("Flu2009")
