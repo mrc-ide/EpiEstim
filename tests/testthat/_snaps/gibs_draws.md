@@ -1,3 +1,44 @@
+# process_I_multivariant()
+
+    {
+      "type": "list",
+      "attributes": {
+        "names": {
+          "type": "character",
+          "attributes": {},
+          "value": ["local", "imported"]
+        }
+      },
+      "value": [
+        {
+          "type": "double",
+          "attributes": {},
+          "value": [10, 10, 10, 10, 10]
+        },
+        {
+          "type": "double",
+          "attributes": {},
+          "value": [0, 0, 0, 0, 0]
+        }
+      ]
+    }
+
+# compute_lambda()
+
+    {
+      "type": "double",
+      "attributes": {},
+      "value": [10, 10, 10, 10, 10]
+    }
+
+# draw_R()
+
+    {
+      "type": "double",
+      "attributes": {},
+      "value": [1.34883043, 0.84282641, 0.79784422, 1.38220267, 0.78447105]
+    }
+
 # estimate_advantage()
 
     {
