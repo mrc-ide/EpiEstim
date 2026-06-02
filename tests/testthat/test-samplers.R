@@ -336,6 +336,7 @@ test_that("estimate_advantage produces expected results (2 variants 3 locations)
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 
+  expect_s3_class(x$diag[[1]], "gelman.diag")
   epi_snapshot_value(x)
 })
 
@@ -365,6 +366,7 @@ test_that("estimate_advantage produces expected results (2 variants 1 location)"
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 
+  expect_s3_class(x$diag[[1]], "gelman.diag")
   epi_snapshot_value(x)
 })
 
@@ -399,6 +401,7 @@ test_that("estimate_advantage produces expected results (>2 variants 4 locs)", {
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 
+  expect_s3_class(x$diag[[1]], "gelman.diag")
   epi_snapshot_value(x)
 })
 
@@ -430,6 +433,7 @@ test_that("estimate_advantage produces expected results (>2 variants 1 loc)", {
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 
+  expect_s3_class(x$diag[[1]], "gelman.diag")
   epi_snapshot_value(x)
 })
 
@@ -525,6 +529,7 @@ test_that("estimate_advantage produces expected results (>2var, 1loc, imports)",
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 
+  expect_s3_class(x$diag[[1]], "gelman.diag")
   epi_snapshot_value(x)
 })
 
@@ -565,6 +570,7 @@ test_that("estimate_advantage produces expected results (>2var, 4loc, imports)",
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 
+  expect_s3_class(x$diag[[1]], "gelman.diag")
   epi_snapshot_value(x)
 })
 
@@ -600,6 +606,7 @@ test_that("estimate_advantage produces expected results (2var, 1loc, imports)", 
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
 
+  expect_s3_class(x$diag[[1]], "gelman.diag")
   epi_snapshot_value(x)
 })
 
@@ -638,6 +645,7 @@ test_that("estimate_advantage produces expected results (2var, 4loc, imports)", 
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
   
+  expect_s3_class(x$diag[[1]], "gelman.diag")
   epi_snapshot_value(x)
 })
 
@@ -702,6 +710,7 @@ test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 
   expect_equal(mean(x$R[,1,], na.rm = TRUE), 1.1, tolerance = 0.5)
   expect_equal(mean(x$R[,2,], na.rm = TRUE), 1.5, tolerance = 0.5)
 
+  expect_s3_class(x$diag[[1]], "gelman.diag")
   epi_snapshot_value(x)
 })
 
@@ -987,6 +996,7 @@ test_that("estimate_advantage uses the correct t_min", {
   expect_true(all(is.na(x$R[seq(1, t_min - 1, 1), , ])))
   expect_false(anyNA(x$R[seq(t_min, dim(x$R)[1]), , ]))
 
+  expect_s3_class(x$diag[[1]], "gelman.diag")
   epi_snapshot_value(x)
 })
 
@@ -1015,6 +1025,7 @@ test_that("estimate_advantage convergence checks work with >2 variants", {
   expect_length(x$convergence, 2)
   expect_length(x$diag, 2)
 
+  expect_s3_class(x$diag[[1]], "gelman.diag")
   epi_snapshot_value(x)
 })
 

@@ -113,6 +113,8 @@ test_that("estimate_advantage()", {
   expect_message(
     est <- estimate_advantage(incid, si_distr, default_priors(), seed = 1)
   )
+
+  expect_s3_class(est$diag[[1]], "gelman.diag")
   epi_snapshot_value(est)
 })
 
