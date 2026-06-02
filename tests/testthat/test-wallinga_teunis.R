@@ -271,7 +271,7 @@ test_that(
 
 test_that("Example 1 matches saved output", {
   data("Flu2009")
-  
+  set.seed(1)
   out <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
                     config = list(t_start = 2:26, t_end = 8:32,
                                   si_distr = Flu2009$si_distr, 
