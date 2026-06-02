@@ -11,7 +11,6 @@ config_covid <- make_config(si_config)
 config_covid2 <- make_config(c(si_config, t_start=2, t_end=10))
 
 data("Flu2009")
-Flu2009$incidence
 config_flu <- make_config(list( mean_si = 2.6, std_si = 1.5))
 
 incid_constant <- rep(10, 20)
@@ -57,7 +56,7 @@ test_that("warnings and errors are working as expected", {
   )
   
   expect_warning(
-    estimate_R(incid = incid_covid, backimputation_window = 5, config = config_covid2),
+   estimate_R(incid = incid_covid, backimputation_window = 5, config = config_covid2),
     "Estimate of the growth rate is negative, consider removing backimputation, or extending the backimputation window"
   ) |> expect_warning("The backimputation window is short")
   

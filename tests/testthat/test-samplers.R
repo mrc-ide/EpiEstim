@@ -1,5 +1,3 @@
-context("Gibbs samplers")
-
 test_that("draw_epsilon produces expected results (2 variants, 4 locations)", {
   n_v <- 2 # 2 variants
   n_loc <- 4 # 4 locations

@@ -1,6 +1,3 @@
-# devtools::load_all()
-require(testthat)
-
 ################################
 ## Tests for compute_lambda() ##
 ################################
@@ -68,11 +65,7 @@ test_that("R is specified correctly",{
                "R must be >= 0")
 })
 
-  # seed test
-
-seed <- "a"
-
-test_that("seed is specified correctly",{
+test_that("draw_epsilon() seed is specified correctly",{
   expect_error(draw_epsilon(R=R, incid=incid, lambda=lambda, priors=priors,
                             t_min = 2L, t_max = nrow(incid),
                             seed = "a"),
@@ -112,25 +105,15 @@ test_that("tmin and tmax are specified correctly", {
                "t_min and t_max must be <= nrow(incid)", fixed=TRUE)
 })
 
-
-  # seed test
-
-seed <- "a"
-
-test_that("seed is specified correctly",{
+test_that("draw_R() seed is specified correctly",{
   expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
                             t_min = 2L, t_max = nrow(incid),
-                            seed = seed),
+                            seed = "a"),
                "seed must be numeric")
 })
 
-
-  # epsilon test
-
-epsilon <- -1
-
-test_that("epsilon is specified correctly",{
-  expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
+test_that("draw_R() epsilon is specified correctly",{
+  expect_error(draw_R(epsilon=-1, incid=incid, lambda=lambda, priors=priors,
                       t_min = 2L, t_max = nrow(incid),
                       seed = NULL),
                "epsilon must be > 0")
@@ -238,13 +221,11 @@ test_that("mcmc_control is specified correctly", {
 
   # seed test
 
-seed <- "a"
-
-test_that("seed is specified correctly",{
+test_that("estimate_advantage() seed is specified correctly",{
   expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
-                              seed = seed),
+                              seed = "a"),
                "seed must be numeric")
 })
 
@@ -292,10 +273,10 @@ test_that("convergence check returns TRUE for converging MCMC", {
 
   # use dummy incidence data based on Rt_ref = 1.6, epsilon = 2
 
-incid <- readRDS("../incidence_files/incid.rds")
+incid <- readRDS(testthat::test_path("../incidence_files/incid.rds"))
 incid <- as.array(incid[[1]])
 incid <- incid[[1]]
-si_for_est <- readRDS("../incidence_files/si_for_est.rds")
+si_for_est <- readRDS(testthat::test_path("../incidence_files/si_for_est.rds"))
 si_for_est <- si_for_est[[1]]
 priors <- default_priors()
 
@@ -304,7 +285,7 @@ test_that("estimate of epsilon is the same with or without incidence reordering"
   out <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
                             mcmc_control = default_mcmc_controls(),
                             t_min = 2L, t_max = nrow(incid),
-                            seed = NULL, reorder_incid = TRUE)
+                            seed = NULL, reorder_incid = TRUE) 
   
   out2 <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
                             mcmc_control = default_mcmc_controls(),
