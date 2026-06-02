@@ -1,3 +1,7 @@
+# EpiEstim 3.0.1
+
+* `estimate_R` now supports incidence2 input.
+
 # EpiEstim 3.0.0
 
 ## New features
