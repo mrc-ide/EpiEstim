@@ -272,7 +272,8 @@ test_that("convergence check returns FALSE for non-converging MCMC", {
   out <- estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                         mcmc_control = low_iter(),
                         t_min = 2L, t_max = nrow(incid),
-                        seed = NULL)
+                        seed = NULL) |>
+    suppressMessages()
 
   expect_false(out$convergence[1])
 })
@@ -308,7 +309,8 @@ test_that("estimate of epsilon is the same with or without incidence reordering"
   out2 <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
                             mcmc_control = default_mcmc_controls(),
                             t_min = 2L, t_max = nrow(incid),
-                            seed = NULL, reorder_incid = FALSE)
+                            seed = NULL, reorder_incid = FALSE)|>
+                              suppressMessages()
   
   expect_equal(mean(out$epsilon), mean(out2$epsilon), tolerance = 0.001)
 })
@@ -324,7 +326,8 @@ test_that("the Rt of the reference variant is returned both with and without inc
   out2 <- estimate_advantage(incid=incid, si_distr=si_for_est, priors=priors,
                              mcmc_control = default_mcmc_controls(),
                              t_min = 2L, t_max = nrow(incid),
-                             seed = NULL, reorder_incid = FALSE)
+                             seed = NULL, reorder_incid = FALSE) |>
+    suppressMessages()
   
   expect_equal(stats::median(out$R, na.rm = T), stats::median(out2$R, na.rm = T), tolerance = 0.001)
 })

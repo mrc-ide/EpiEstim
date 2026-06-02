@@ -28,7 +28,7 @@ test_that("plot.estimate_R doesn't have to include the legend", {
     "Flu2009-instantaneous-no-legend", 
     plot(R_i, legend = FALSE),
     variant = system
-  )
+  ) |> suppressWarnings() # TODO: Fix use of aes_string in incidence to avoid this warning
 })
 
 test_that("incidence can be plotted separately with imported cases", {
@@ -36,7 +36,7 @@ test_that("incidence can be plotted separately with imported cases", {
     "Flu2009-incidence-import", 
     plot(R_i, "incid", add_imported_cases=TRUE),
     variant = system
-  )
+  ) |> suppressMessages()
 })
 
 test_that("serial interval distribution can be plotted separately", {
@@ -59,3 +59,4 @@ test_that("Reproduction numbers can be plotted separately", {
     variant = system
   )
 })
+

@@ -9,9 +9,9 @@ dt <- 7L
 dt_vec <- c(2L,2L,3L)
 dt_vec_1 <- c(2L,1L,3L)
 
-weekly_inc <- aggregate_inc(incid, dt)
-agg_inc <- aggregate_inc(incid, dt_vec)
-agg_inc_1 <- aggregate_inc(incid, dt_vec_1)
+weekly_inc <- aggregate_inc(incid, dt) |> suppressMessages()
+agg_inc <- aggregate_inc(incid, dt_vec) |> suppressMessages()
+agg_inc_1 <- aggregate_inc(incid, dt_vec_1) |> suppressMessages()
 
 mean_si <- sum(SARS2003$si_distr * seq_along(SARS2003$si_distr))
 std_si <- 
@@ -34,11 +34,11 @@ test_that("function to aggregate incidence works", {
   expect_equal(
     aggregate_inc(SARS2003$incidence, 7L)[1],
     sum(SARS2003$incidence[1:7])
-  )
+  )  |> suppressMessages()
   expect_equal(
     sum(aggregate_inc(SARS2003$incidence, dt_vec)[1:3]),
     sum(SARS2003$incidence[1:7])
-  )
+  ) |> suppressMessages()
 })
 
 
@@ -55,36 +55,46 @@ test_that("estimate_R_agg works in parametric mode", {
                         iter = 10L,
                         config = config,
                         method = method,
-                        grid = list(precision = 0.001, min = -1, max = 1)))
+                        grid = list(precision = 0.001, min = -1, max = 1)))  |> 
+    suppressMessages()
   
-  res_agg1 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
+  res_agg1 <- estimate_R_agg(incid = agg_inc, 
                                               dt = dt_vec, 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
                                               method = method,
-                                              grid = list(precision = 0.001, min = -1, max = 1)))
+                                              grid = list(precision = 0.001, min = -1, max = 1)) |> 
+    suppressWarnings() |> 
+    suppressMessages()
   
-  res_agg2 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
+  res_agg2 <- estimate_R_agg(
+incid = agg_inc, 
                                               dt = rep_len(dt_vec, length(agg_inc)), 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
                                               method = method,
-                                              grid = list(precision = 0.001, min = -1, max = 1)))
+    grid = list(precision = 0.001, min = -1, max = 1)) |> 
+    suppressWarnings() |>
+    suppressMessages()
   
-  res_agg3 <- suppressWarnings(estimate_R_agg(incid = agg_inc_1, 
+  res_agg3 <- estimate_R_agg(
+    incid = agg_inc_1, 
                                               dt = dt_vec_1, 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
                                               method = method,
-                                              grid = list(precision = 0.001, min = -1, max = 1)))
+    grid = list(precision = 0.001, min = -1, max = 1)) |> 
+    suppressWarnings() |> 
+    suppressMessages()
   
   
   res_daily <- suppressWarnings(estimate_R(incid = incid, 
                                config = config,
-                               method = method))
+                               method = method)) |>
+    suppressMessages()
   
   ######################################################################
   ## test that the weekly incidence matches the aggregated daily one
@@ -148,7 +158,8 @@ test_that("estimate_R_agg works in parametric mode", {
   
   res_daily_reconstructed <- suppressWarnings(estimate_R(incid = res_weekly$I, 
                           config = config,
-                          method = method))
+                          method = method)) |>
+    suppressMessages()
   
   common_t_start <- intersect(res_daily_reconstructed$R$t_start, res_weekly$R$t_start)
   
@@ -172,41 +183,57 @@ test_that("estimate_R_agg works in non-parametric mode", {
   ## the reproduction number on sliding weekly windows     
   method <- "non_parametric_si"
   config <- make_config(list(si_distr = si_distr))
-  res_weekly <- suppressWarnings(estimate_R_agg(incid = weekly_inc, 
+  res_weekly <- estimate_R_agg(
+    incid = weekly_inc, 
                                dt = 7L, 
                                dt_out = 7L, 
                                iter = 10L,
                                config = config,
                                method = method,
-                               grid = list(precision = 0.001, min = -1, max = 1)))
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
-  res_agg1 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
+  res_agg1 <- estimate_R_agg(
+    incid = agg_inc, 
                                                 dt = dt_vec, 
                                                 dt_out = 7L, 
                                                 iter = 10L,
                                                 config = config,
                                                 method = method,
-                                                grid = list(precision = 0.001, min = -1, max = 1)))
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
-  res_agg2 <- suppressWarnings(estimate_R_agg(incid = agg_inc, 
+  res_agg2 <- estimate_R_agg(
+    incid = agg_inc,
                                               dt = rep_len(dt_vec, length(agg_inc)), 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
                                               method = method,
-                                              grid = list(precision = 0.001, min = -1, max = 1)))
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
-  res_agg3 <- suppressWarnings(estimate_R_agg(incid = agg_inc_1, 
+  res_agg3 <- estimate_R_agg(
+    incid = agg_inc_1,
                                               dt = dt_vec_1, 
                                               dt_out = 7L, 
                                               iter = 10L,
                                               config = config,
                                               method = method,
-                                              grid = list(precision = 0.001, min = -1, max = 1)))
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
-  res_daily <- suppressWarnings(estimate_R(incid = incid, 
-                          config = config,
-                          method = method))
+  res_daily <- estimate_R(incid = incid, config = config, method = method) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   ######################################################################
   ## test that aggregated incidence matches the aggregated daily one
@@ -268,9 +295,13 @@ test_that("estimate_R_agg works in non-parametric mode", {
   ## test that the weekly R estimates from weekly data match exactly the weekly
   ## R estimates from the daily reconstructed incidence
   
-  res_daily_reconstructed <- suppressWarnings(estimate_R(incid = res_weekly$I, 
+  res_daily_reconstructed <- estimate_R(
+    incid = res_weekly$I,
                                         config = config,
-                                        method = method))
+    method = method
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   common_t_start <- intersect(res_daily_reconstructed$R$t_start, res_weekly$R$t_start)
   
@@ -292,27 +323,35 @@ test_that("estimate_R works with aggregated data in parametric mode", {
   ## when not specifying t_start and t_end in config, they are set to estimate
   ## the reproduction number on sliding weekly windows      
   method <- "parametric_si"
-  config <- make_config(list(mean_si = mean_si,
-                             std_si = std_si))
-  res_weekly <- suppressWarnings(estimate_R(incid = weekly_inc, 
+  config <- make_config(list(mean_si = mean_si, std_si = std_si))
+
+  res_weekly <- estimate_R(
+    incid = weekly_inc,
                                dt = 7L, 
                                dt_out = 7L, 
                                iter = 10L,
                                config = config,
                                method = method,
-                               grid = list(precision = 0.001, min = -1, max = 1)))
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
-  res_weekly_agg <- suppressWarnings(estimate_R_agg(incid = weekly_inc, 
+  res_weekly_agg <- estimate_R_agg(
+    incid = weekly_inc,
                            dt = 7L, 
                            dt_out = 7L, 
                            iter = 10L,
                            config = config,
                            method = method,
-                           grid = list(precision = 0.001, min = -1, max = 1)))
-  
-  res_daily <- suppressWarnings(estimate_R(incid = incid, 
-                          config = config,
-                          method = method))
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
+
+  res_daily <- estimate_R(incid = incid, config = config, method = method) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   ######################################################################
   ## test that the weekly incidence matches the aggregated daily one
@@ -342,9 +381,13 @@ test_that("estimate_R works with aggregated data in parametric mode", {
   ## test that the weekly R estimates from weekly data match exactly the weekly
   ## R estimates from the daily reconstructed incidence
   
-  res_daily_reconstructed <- suppressWarnings(estimate_R(incid = res_weekly$I, 
+  res_daily_reconstructed <- estimate_R(
+    incid = res_weekly$I,
                                         config = config,
-                                        method = method))
+    method = method
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   common_t_start <- intersect(res_daily_reconstructed$R$t_start, res_weekly$R$t_start)
   
@@ -370,25 +413,34 @@ test_that("estimate_R works with aggregated data in non-parametric mode", {
   ## the reproduction number on sliding weekly windows      
   method <- "non_parametric_si"
   config <- make_config(list(si_distr = si_distr))
-  res_weekly <- suppressWarnings(estimate_R(incid = weekly_inc, 
+
+  res_weekly <- estimate_R(
+    incid = weekly_inc,
                            dt = 7L, 
                            dt_out = 7L, 
                            iter = 10L,
                            config = config,
                            method = method,
-                           grid = list(precision = 0.001, min = -1, max = 1)))
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
-  res_weekly_agg <- suppressWarnings(estimate_R_agg(incid = weekly_inc, 
+  res_weekly_agg <- estimate_R_agg(
+    incid = weekly_inc,
                                    dt = 7L, 
                                    dt_out = 7L, 
                                    iter = 10L,
                                    config = config,
                                    method = method,
-                                   grid = list(precision = 0.001, min = -1, max = 1)))
-  
-  res_daily <- suppressWarnings(estimate_R(incid = incid, 
-                          config = config,
-                          method = method))
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
+
+  res_daily <- estimate_R(incid = incid, config = config, method = method) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   ######################################################################
   ## test that the weekly incidence matches the aggregated daily one
@@ -418,9 +470,13 @@ test_that("estimate_R works with aggregated data in non-parametric mode", {
   ## test that the weekly R estimates from weekly data match exactly the weekly
   ## R estimates from the daily reconstructed incidence
   
-  res_daily_reconstructed <- suppressWarnings(estimate_R(incid = res_weekly$I, 
+  res_daily_reconstructed <- estimate_R(
+    incid = res_weekly$I,
                                         config = config,
-                                        method = method))
+    method = method
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   common_t_start <- intersect(res_daily_reconstructed$R$t_start, res_weekly$R$t_start)
   
@@ -441,42 +497,51 @@ test_that("estimate_R works with aggregated data in non-parametric mode", {
 
 test_that("aggregated reconstructed incidence matches original input", {
   method <- "parametric_si"
-  config <- make_config(list(mean_si = mean_si,
-                             std_si = std_si))
+  config <- make_config(list(mean_si = mean_si, std_si = std_si))
   
-  res_agg <- suppressWarnings(estimate_R(incid = agg_inc, 
+  res_agg <- estimate_R(
+    incid = agg_inc,
                                          dt = dt_vec, 
                                          dt_out = 7L, 
                                          iter = 10L,
                                          config = config,
                                          method = method,
-                                         grid = list(precision = 0.001, min = -1, max = 1)))
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
-  res_agg_1 <- suppressWarnings(estimate_R(incid = agg_inc_1, 
+  res_agg_1 <- estimate_R(
+    incid = agg_inc_1,
                                             dt = dt_vec_1, 
                                             dt_out = 7L, 
                                             iter = 10L,
                                             config = config,
                                             method = method,
-                                            grid = list(precision = 0.001, min = -1, max = 1)))
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
-  res_weekly <- suppressWarnings(estimate_R(incid = weekly_inc,
+  res_weekly <- estimate_R(
+    incid = weekly_inc,
                                             dt = 7L,
                                            config = config,
-                                           method = method))
-
+    method = method
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   ## Aggregating the reconstructed incidence matches original input
   
-  expect_equal(agg_inc, 
-               aggregate_inc(res_agg$I, dt_vec))  
+  expect_equal(agg_inc, aggregate_inc(res_agg$I, dt_vec)) |> 
+    suppressMessages()
   
-  expect_equal(agg_inc_1, 
-                 aggregate_inc(res_agg_1$I, dt_vec_1))
+  expect_equal(agg_inc_1, aggregate_inc(res_agg_1$I, dt_vec_1)) |>
+    suppressMessages()
   
-  expect_equal(weekly_inc,
-               aggregate_inc(res_weekly$I, 7L))
-  
+  expect_equal(weekly_inc, aggregate_inc(res_weekly$I, 7L)) |>
+    suppressMessages()
 })
   
 
@@ -489,20 +554,28 @@ test_that("r grid can be automatically updated with similar results", {
   config <- make_config(list(mean_si = mean_si,
                              std_si = std_si))
   
- res_weekly_small_grid <- suppressWarnings(estimate_R_agg(incid = weekly_inc, 
+ res_weekly_small_grid <- estimate_R_agg(
+  incid = weekly_inc,
                                dt = 7L, 
                                dt_out = 7L, 
                                iter = 10L,
                                config = config,
                                method = method,
-                               grid = list(precision = 0.001, min = 0.01, max = 0.012)))
+  grid = list(precision = 0.001, min = 0.01, max = 0.012)
+) |>
+  suppressWarnings() |>
+  suppressMessages()
  
- res_weekly_default_grid <- suppressWarnings(estimate_R_agg(incid = weekly_inc, 
+ res_weekly_default_grid <- estimate_R_agg(
+  incid = weekly_inc,
                                          dt = 7L, 
                                          dt_out = 7L, 
                                          iter = 10L,
                                          config = config,
-                                         method = method))
+  method = method
+) |>
+  suppressWarnings() |>
+  suppressMessages()
  
  expect_lt(max(abs(res_weekly_small_grid$R - res_weekly_default_grid$R)), 1e-9)
   
@@ -629,13 +702,17 @@ test_that("result of weekly version of estimate_R can be plotted without error",
   method <- "parametric_si"
   config <- make_config(list(mean_si = mean_si,
                              std_si = std_si))
-  res_weekly <- suppressWarnings(estimate_R_agg(incid = weekly_inc, 
+  res_weekly <- estimate_R_agg(
+    incid = weekly_inc,
                                                 dt = 7L, 
                                                 dt_out = 7L, 
                                                 iter = 10L,
                                                 config = config,
                                                 method = method,
-                                                grid = list(precision = 0.001, min = -1, max = 1)))
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   expect_error(suppressWarnings(plot(res_weekly)),NA)
   
@@ -643,39 +720,48 @@ test_that("result of weekly version of estimate_R can be plotted without error",
 
 
 test_that("method works with different single integers of dt", {
-
-  inc_three <- aggregate_inc(incid, 3L)
-  inc_ten <- aggregate_inc(incid, 10L)
+  inc_three <- aggregate_inc(incid, 3L) |> suppressMessages()
+  inc_ten <- aggregate_inc(incid, 10L) |> suppressMessages()
 
   method <- "parametric_si"
-  config <- make_config(list(mean_si = mean_si,
-                             std_si = std_si))
+  config <- make_config(list(mean_si = mean_si, std_si = std_si))
   
-  res_daily <- suppressWarnings(estimate_R(incid = incid,
-                                            config = config,
-                                            method = method))
+  res_daily <- estimate_R(incid = incid, config = config, method = method) |>
+    suppressWarnings() |>
+    suppressMessages()
 
-  
-  res_three <- suppressWarnings(estimate_R(incid = inc_three,
+  res_three <- estimate_R(
+    incid = inc_three,
                                                 dt = 3L,
                                                 dt_out = 7L,
                                                 iter = 10L,
                                                 config = config,
-                                                method = method))
+    method = method
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
-  res_weekly <- suppressWarnings(estimate_R(incid = weekly_inc, 
+  res_weekly <- estimate_R(
+    incid = weekly_inc,
                                                dt = 7L, 
                                                dt_out = 7L, 
                                                iter = 10L,
                                                config = config,
-                                               method = method))
+    method = method
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
-  res_ten <- suppressWarnings(estimate_R(incid = inc_ten, 
+  res_ten <- estimate_R(
+    incid = inc_ten,
                                                 dt = 10L, 
                                                 dt_out = 7L, 
                                                 iter = 10L,
                                                 config = config,
-                                                method = method))
+    method = method
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   ## test that the three and ten day incidence matches the aggregated daily one
   ## except for first time window where we impose I = 1 on first day
@@ -716,20 +802,28 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
                              std_si = std_si))
   
   # integer vector
-  res_int <- suppressWarnings(estimate_R(incid = weekly_inc,
+  res_int <- estimate_R(
+    incid = weekly_inc,
                                          dt = 7L,
                                          dt_out = 7L,
                                          iter = 10L,
                                          config = config,
-                                         method = method))
+    method = method
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   # numeric vector
-  res_numeric <- suppressWarnings(estimate_R(incid = as.numeric(weekly_inc),
+  res_numeric <- estimate_R(
+    incid = as.numeric(weekly_inc),
                                              dt = 7L,
                                              dt_out = 7L,
                                              iter = 10L,
                                              config = config,
-                                             method = method))
+    method = method
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   start_date <- as.Date("2020-01-01")
   
@@ -737,26 +831,35 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
   weekly_inc_df <- data.frame(I = weekly_inc,
                               dates = seq(start_date, by = "week",
                                           length.out = length(weekly_inc)))
-  res_df <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+  res_df <- estimate_R(
+    incid = weekly_inc_df,
                                         dt = 7L,
                                         dt_out = 7L,
                                         iter = 10L,
                                         config = config,
                                         method = method,
-                                        date_convention = "start"))
+    date_convention = "start"
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   # incidence object
   inc_obj <- incidence::as.incidence(weekly_inc,
                                      dates = seq(start_date, by = "week",
                                                  length.out = length(weekly_inc)),
                                      isoweeks = FALSE)
-  res_inc_obj <- suppressWarnings(estimate_R(incid = inc_obj,
+
+  res_inc_obj <- estimate_R(
+    incid = inc_obj,
                                              dt = 7L,
                                              dt_out = 7L,
                                              iter = 10L,
                                              config = config,
                                              method = method,
-                                             date_convention = "start"))
+    date_convention = "start"
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   # incidence2 object
   data <- data.frame(
@@ -766,24 +869,33 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
   inc2_obj <- incidence2::incidence(data, date_index = "dates",
                                     date_names_to = "dates", counts = "I",
                                     count_values_to = "I")
-  res_inc2_obj <- suppressWarnings(estimate_R(incid = inc2_obj,
+
+  res_inc2_obj <- estimate_R(
+    incid = inc2_obj,
                                               dt = 7L,
                                               dt_out = 7L,
                                               iter = 10L,
                                               config = config,
                                               method = method,
-                                              date_convention = "start"))
+    date_convention = "start"
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   ## check it works with incidence2 without naming
   inc2_obj2 <- incidence2::incidence(data, date_index = "dates",
                                          counts = "I")
-  res_inc2_obj2 <- suppressWarnings(estimate_R(incid = inc2_obj2,
+  res_inc2_obj2 <- estimate_R(
+    incid = inc2_obj2,
                                                dt = 7L,
                                                dt_out = 7L,
                                                iter = 10L,
                                                config = config,
                                                method = method,
-                                               date_convention = "start"))
+    date_convention = "start"
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
 
   # ignore date column
   drop_date_cols <- function(R) {
@@ -822,12 +934,17 @@ test_that("t_start and t_end work when dt is used without specifying dt_out", {
                              t_end = c(15, 30)))
   
   expect_no_error(
-    res <- suppressWarnings(estimate_R(incid = weekly_inc,
+    res <- estimate_R(
+      incid = weekly_inc,
                                        dt = 7L,
                                        iter = 10L,
                                        config = config,
-                                       method = method))
+      method = method
   )
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
+  
   
   # check that R is estimated for exactly the two specified windows
   expect_equal(res$R$t_start, c(8, 16))
@@ -847,13 +964,12 @@ test_that("date_convention can only be 'start' or 'end'", {
                              t_end = c(15, 30)))
   
   expect_error(
-    res <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+    res <- estimate_R(incid = weekly_inc_df,
                                        dt = 7L,
                                        iter = 10L,
                                        config = config,
                                        method = method,
                                        date_convention = "xyz"))
-  )
   
 })
 
@@ -868,21 +984,29 @@ test_that("date_convention works with 'start' and 'end'", {
                              t_start = c(8, 16),
                              t_end = c(15, 30)))
   
-  res_start <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+  res_start <- estimate_R(
+    incid = weekly_inc_df,
                                            dt = 7L,
                                            iter = 10L,
                                            config = config,
                                            method = method,
-                                           date_convention = "start"))
+    date_convention = "start"
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   expect_equal(res_start$dates, seq(start_date, by = "day", length.out = length(weekly_inc) * 7))
   
-  res_end <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+  res_end <- estimate_R(
+    incid = weekly_inc_df,
                                          dt = 7L,
                                          iter = 10L,
                                          config = config,
                                          method = method,
-                                         date_convention = "end"))
+    date_convention = "end"
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   expect_equal(res_end$dates, seq(start_date - 6, by = "day", length.out = length(weekly_inc) * 7))
   
@@ -899,11 +1023,15 @@ test_that("date_convention defaults to 'end'", {
                              t_start = c(8, 16),
                              t_end = c(15, 30)))
   
-  res_end <- suppressWarnings(estimate_R(incid = weekly_inc_df,
+  res_end <- estimate_R(
+    incid = weekly_inc_df,
                                          dt = 7L,
                                          iter = 10L,
                                          config = config,
-                                         method = method))
+    method = method
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   expect_equal(res_end$dates, seq(start_date - 6, by = "day", length.out = length(weekly_inc) * 7))
   
@@ -923,22 +1051,30 @@ test_that("date_convention works with irregular aggregations", {
   config <- make_config(list(mean_si = mean_si,
                              std_si = std_si))
   
-  res_start_irr <- suppressWarnings(estimate_R(incid = agg_inc_df,
+  res_start_irr <- estimate_R(
+    incid = agg_inc_df,
                                          dt = c(3L, 3L, 2L),
                                          iter = 10L,
                                          config = config,
                                          method = method,
-                                         date_convention = "start"))
+    date_convention = "start"
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   expect_equal(res_start_irr$dates, seq(start_date, by = "day",
                                         length.out = nrow(agg_inc_df)/3 * sum(pattern)))
   
-  res_end_irr <- suppressWarnings(estimate_R(incid = agg_inc_df,
+  res_end_irr <- estimate_R(
+    incid = agg_inc_df,
                                                dt = c(3L, 3L, 2L),
                                                iter = 10L,
                                                config = config,
                                                method = method,
-                                               date_convention = "end"))
+    date_convention = "end"
+  ) |>
+    suppressWarnings() |>
+    suppressMessages()
   
   expect_equal(res_end_irr$dates, seq(start_date - (pattern[1] - 1), by = "day",
                                       length.out = nrow(agg_inc_df)/3 * sum(pattern)))

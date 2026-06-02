@@ -420,7 +420,8 @@ test_that("estimate_advantage produces expected results (>2 variants 1 loc)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
 
-  x <- estimate_advantage(incid, si_distr, priors, seed = 1, t_min = 2L)
+  x <- estimate_advantage(incid, si_distr, priors, seed = 1, t_min = 2L) |> 
+    suppressMessages()
 
   ## epsilon should be approximately 1
   expect_equal(
@@ -516,7 +517,8 @@ test_that("estimate_advantage produces expected results (>2var, 1loc, imports)",
   si_distr <- cbind(w_v, w_v, w_v)
 
   x <- estimate_advantage(incid, si_distr, priors, seed = 1,
-                      incid_imported = incid_imported, t_min = 2L)
+                          incid_imported = incid_imported, t_min = 2L) |> 
+    suppressMessages()
 
   ## epsilon should be approximately 0
   expect_equal(
@@ -557,7 +559,7 @@ test_that("estimate_advantage produces expected results (>2var, 4loc, imports)",
     incid, si_distr, priors, seed = 1,
     incid_imported = incid_imported,
     mcmc_control = list(n_iter = 2000L, burnin = 100L, thin = 10L), t_min = 2L
-  )
+  ) |> suppressMessages()
 
   ## epsilon should be approximately 0
   expect_equal(
@@ -704,7 +706,7 @@ test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 
   priors <- default_priors()
   x <- estimate_advantage(
     incid, si_distr, priors, seed = 1, t_min = 2L
-  )
+  ) |> suppressMessages()
 
   ## R should be approx 1.1 for loc1 and 1.5 for loc2
   expect_equal(mean(x$R[,1,], na.rm = TRUE), 1.1, tolerance = 0.5)
@@ -992,7 +994,7 @@ test_that("estimate_advantage uses the correct t_min", {
   ## if t_min is NULL, t_min would be set to
   ## compute_t_min.
   t_min <- compute_t_min(incid, si_distr)
-  x <- estimate_advantage(incid, si_distr, priors, seed = 1)
+  x <- estimate_advantage(incid, si_distr, priors, seed = 1) |> suppressMessages()
   expect_true(all(is.na(x$R[seq(1, t_min - 1, 1), , ])))
   expect_false(anyNA(x$R[seq(t_min, dim(x$R)[1]), , ]))
 
@@ -1018,7 +1020,7 @@ test_that("estimate_advantage convergence checks work with >2 variants", {
   low_iter <- list(n_iter = 60L, burnin = 10L, thin = 1L)
   x <- estimate_advantage(
     incid, si_distr, priors, seed = 1, t_min = 2L, mcmc_control = low_iter
-  )
+  ) |> suppressMessages()
   ## convergence should be a list of length 2.
   ## not checking whether chains have converged or not.
   ## that is tested in a different set of tests.
