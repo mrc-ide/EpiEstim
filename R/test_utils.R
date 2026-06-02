@@ -48,16 +48,15 @@ epi_expect_doppelganger <- function(name, code, variant) {
 #'
 #' @noRd
 epi_snapshot_value <- function(x, style = "json2", n = 5) {
-  set.seed(1) # TODO: could use withr::with_seed()
 
   sample_x <- function(xx) {
     # Recurse if this is still a list
     if(is.list(xx)) return(lapply(xx, sample_x))
     
-    # Take random sample of points or max number
-    if(!is.null(n)) {
-      nn <- if(length(xx) < n) length(xx) else n
-      xx <- sample(xx, size = nn)
+    # Take random sample of points if less than n
+    if(!is.null(n) && length(xx) > n) {
+      set.seed(1) # TODO: could use withr::with_seed()
+      xx <- sample(xx, size = n)
     }
 
     # Round to avoid mismatches from truncated records
