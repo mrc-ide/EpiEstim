@@ -24,7 +24,7 @@ theme_epiestim <- function() {
       panel.border = element_blank(),
       axis.line = element_line(
         colour = "black",
-        size = 0.2
+        linewidth = 0.2
       ),
       plot.title = element_text(
         size = 12,

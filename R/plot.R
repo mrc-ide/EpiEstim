@@ -177,7 +177,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
           panel.border = element_blank(),
           axis.line = element_line(
             colour = "black",
-            size = 0.2
+            linewidth = 0.2
           ),
           plot.title = element_text(
             size = 12,
