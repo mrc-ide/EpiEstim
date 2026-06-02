@@ -652,6 +652,7 @@ test_that("estimate_advantage produces expected results (2var, 4loc, imports)", 
 
 test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 1.1, R_loc2 = 1.5)", {
   skip_if_not_installed("projections")
+  set.seed(1)
   n_v <- 2 # 2 variants
   n_loc <- 2 # 2 locations
   T <- 100 # 100 time steps
@@ -711,7 +712,7 @@ test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 
   expect_equal(mean(x$R[,2,], na.rm = TRUE), 1.5, tolerance = 0.5)
 
   expect_s3_class(x$diag[[1]], "gelman.diag")
-  epi_snapshot_value(x, digits = 6)
+  epi_snapshot_value(x)
 })
 
 test_that("estimate_advantage faster with precompute (2 variants 3 locations)", {
