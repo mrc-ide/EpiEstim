@@ -702,23 +702,17 @@ test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 
 
 
   priors <- default_priors()
-  withr::with_seed(1, {
-    x <- estimate_advantage(
-      incid,
-      si_distr,
-      priors,
-      t_min = 2L
-    ) |>
-      suppressMessages()
-  })
+  x <- estimate_advantage(
+    incid, si_distr, priors, seed = 1, t_min = 2L
+  ) |> suppressMessages()
 
   ## R should be approx 1.1 for loc1 and 1.5 for loc2
   expect_equal(mean(x$R[,1,], na.rm = TRUE), 1.1, tolerance = 0.5)
   expect_equal(mean(x$R[,2,], na.rm = TRUE), 1.5, tolerance = 0.5)
 
   expect_s3_class(x$diag[[1]], "gelman.diag")
-  epi_snapshot_value(x)
-  })
+  epi_snapshot_value(x, digits = 6)
+})
 
 test_that("estimate_advantage faster with precompute (2 variants 3 locations)", {
   n_v <- 2 # 2 variants

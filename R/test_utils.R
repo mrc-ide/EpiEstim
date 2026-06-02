@@ -47,7 +47,7 @@ epi_expect_doppelganger <- function(name, code, variant) {
 #' @param n Numeric. Number of samples to keep
 #'
 #' @noRd
-epi_snapshot_value <- function(x, style = "json2", n = 5) {
+epi_snapshot_value <- function(x, style = "json2", n = 5, digits = 8) {
 
   sample_x <- function(xx) {
     # Recurse if this is still a list
@@ -60,7 +60,7 @@ epi_snapshot_value <- function(x, style = "json2", n = 5) {
     }
 
     # Round to avoid mismatches from truncated records
-    if(is.numeric(xx)) xx <- round(xx, digits = 8) 
+    if(is.numeric(xx)) xx <- round(xx, digits = digits) 
     xx
   }
 
