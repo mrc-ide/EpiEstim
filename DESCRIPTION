@@ -53,8 +53,7 @@ Suggests:
     projections,
     dplyr,
     readxl,
-    gghighlight,
-    withr
+    gghighlight
 License: GPL (>=2)
 LazyLoad: yes
 Encoding: UTF-8
