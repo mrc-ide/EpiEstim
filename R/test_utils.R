@@ -16,10 +16,7 @@ epi_expect_doppelganger <- function(name, test, code, variant) {
 
   on_ci <- as.logical(Sys.getenv("CI", "false"))
   no_snap <- !file.exists(
-    testthat::test_path(
-      "_snaps",
-      variant, tests, 
-      paste0(name, ".svg")
+    testthat::test_path("_snaps", variant, test, paste0(name, ".svg")
     )
   )
   if (on_ci && no_snap) {
