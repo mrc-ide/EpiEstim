@@ -10,7 +10,7 @@
 #' 
 #' @noRd
 
-epi_expect_doppelganger <- function(name, code, variant) {
+epi_expect_doppelganger <- function(name, test, code, variant) {
 
   testthat::skip_if_not_installed("vdiffr")
 
@@ -18,7 +18,7 @@ epi_expect_doppelganger <- function(name, code, variant) {
   no_snap <- !file.exists(
     testthat::test_path(
       "_snaps",
-      variant,
+      variant, tests, 
       paste0(name, ".svg")
     )
   )
