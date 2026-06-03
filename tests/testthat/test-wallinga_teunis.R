@@ -271,6 +271,14 @@ test_that(
 
 test_that("Example 1 matches saved output", {
   skip_on_os(os = "mac") # Consistently different from the other OS
+  
+  skip_if(grepl("unstable", R.version$status)) # Skip on Devel
+  # NOTE: Expect this to fail on R-devel and therefore on next R release
+  # likely because of a change in rmultinom(), not a bug, but a difference in 
+  # randomization
+  # https://bugs.r-project.org/show_bug.cgi?id=18693&_ts=1780518376
+  #
+  # TODO: Update the snapshots on next release and skip on previous releases
 
   data("Flu2009")
   set.seed(1)
@@ -278,6 +286,7 @@ test_that("Example 1 matches saved output", {
     Flu2009$incidence,
     method = "non_parametric_si",
     config = list(
+      seed = 1,
       t_start = 2:26,
       t_end = 8:32,
       si_distr = Flu2009$si_distr,

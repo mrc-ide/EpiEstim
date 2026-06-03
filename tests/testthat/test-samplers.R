@@ -712,6 +712,8 @@ test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 
   expect_equal(mean(x$R[,2,], na.rm = TRUE), 1.5, tolerance = 0.5)
 
   expect_s3_class(x$diag[[1]], "gelman.diag")
+
+  skip_on_os("mac")   # Consistently different from the other OS in far decimals
   epi_snapshot_value(x)
 })
 
