@@ -34,6 +34,8 @@ The only exception for this is if complexity (computational or statistical) beco
 - Prefer `pkg::foo()` usage of dependencies, avoid full package imports
 - Write documentation with roxygen2 and markdown (https://roxygen2.r-lib.org/articles/rd-formatting.html)
 - Re-use documentation with `@inheritXXX` (https://roxygen2.r-lib.org/articles/reuse.html)
+- Otherwise, generally follow tidyverse style guide. Especially...
+  - `return()` for early returns otherwise last evaluated expression
 
 
 ## Testing
