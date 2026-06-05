@@ -30,13 +30,27 @@ test_that("plot.estimate_R doesn't have to include the legend", {
     plot(R_i, legend = FALSE),
     variant = system
   ) |> suppressWarnings() # TODO: Fix use of aes_string in incidence to avoid this warning
+
+  epi_expect_doppelganger(
+    "Flu2009-Rc-instantaneous-no-legend",
+    test = "plot",
+    plot(R_c, legend = FALSE),
+    variant = system
+  ) |> suppressWarnings() # TODO: Fix use of aes_string in incidence to avoid this warning
 })
 
 test_that("incidence can be plotted separately with imported cases", {
   epi_expect_doppelganger(
     "Flu2009-incidence-import", 
     test = "plot",
-    plot(R_i, "incid", add_imported_cases=TRUE),
+    plot(R_i, "incid", add_imported_cases = TRUE),
+    variant = system
+  ) |> suppressMessages()
+
+  epi_expect_doppelganger(
+    "Flu2009-Rc-incidence-import", 
+    test = "plot",
+    plot(R_c, "incid", add_imported_cases = TRUE),
     variant = system
   ) |> suppressMessages()
 })
@@ -46,6 +60,12 @@ test_that("serial interval distribution can be plotted separately", {
     "Flu2009-SI", 
     test = "plot",
     plot(R_i, "SI"),
+    variant = system
+  )
+  epi_expect_doppelganger(
+    "Flu2009-Rc-SI", 
+    test = "plot",
+    plot(R_c, "SI"),
     variant = system
   )
 })
