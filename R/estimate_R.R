@@ -361,6 +361,13 @@ estimate_R <- function(incid,
                        date_convention = NULL
                        ) {
   
+  if(inherits(incid, "incidence")) {
+    rlang::check_installed("incidence", "to work with incidence data")
+  }
+  if(inherits(incid, "incidence2")) {
+    rlang::check_installed("incidence2", "to work with incidence2 data")
+  }
+  
   if (is.data.frame(incid) && "dates" %in% names(incid)) {
     if (!all(diff(incid$dates) > 0)) {
       stop("dates in incid must be in ascending order", call. = FALSE)

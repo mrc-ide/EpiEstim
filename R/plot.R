@@ -264,6 +264,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
 
   what <- match.arg(what)
   if (what %in% c("incid", "all")) {
+    rlang::check_installed("incidence", "to plot incidence data")
     if (add_imported_cases) {
       p1 <- plot(
         incidence::as.incidence(incid,

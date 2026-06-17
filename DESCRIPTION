@@ -30,8 +30,6 @@ BugReports: https://github.com/mrc-ide/EpiEstim/issues
 Depends: R (>= 3.3.0)
 Imports:
     coarseDataTools (>= 0.6-4),
-    incidence (>= 1.7.0),
-    incidence2 (>= 2.6.4.9000),
     ggplot2,
     fitdistrplus,
     coda,
@@ -42,6 +40,8 @@ Imports:
     patchwork (>= 1.2.0),
     rlang
 Suggests:
+    incidence (>= 1.7.0),
+    incidence2 (>= 2.6.4.9000),
     testthat (>= 3.0.0),
     utils,
     vdiffr,
