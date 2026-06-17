@@ -9,6 +9,42 @@ test_that("There is an informative error if dates are not ascending", {
                "dates in incid must be in ascending order")
 })
 
+test_that("estimate_R() checks installed", {
+  local_mocked_bindings(
+    check_installed = function(pkg, reason) {
+      stop(pkg, " needed ", reason)
+    }, .package = "rlang")
+
+  
+  # No incidence data
+  expect_silent(
+    estimate_R(
+      Flu2009$incidence,
+      config = list(
+        t_start = 2:26,
+        t_end = 8:32,
+        si_distr = Flu2009$si_distr,
+        seed = 1
+      )
+    )
+  )
+
+  # incidence Data
+  data <- c(0, 1, 1, 2, 1, 3, 4, 5, 5, 5, 5, 4, 4, 26, 6, 7, 9)
+  location <- c("imported", "local", "imported", "imported", "local",
+                "imported", "imported", "imported", "imported",
+                "local", "local", "local", "imported", "local",
+                "imported", "local", "imported")
+  incid <- incidence::incidence(data, groups = location)
+  expect_error(estimate_R(incid), "incidence needed to work with incidence data")
+  
+  # incidence2 Data
+  i <- rpois(100, lambda = exp(0.0523 * 1:100))
+  onset <- rep(Sys.Date() + 1:100, i)
+  incid <- incidence2::incidence(data.frame(onset), "onset")
+  expect_error(estimate_R(incid), "incidence2 needed to work with incidence2 data")
+})
+
 
 # The following examples are from EpiEstim's documentation.
 

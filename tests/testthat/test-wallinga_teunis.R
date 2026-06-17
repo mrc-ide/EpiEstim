@@ -147,6 +147,23 @@ test_that("wallinga_teunis() works with data.frame inputs", {
   expect_equal(res_df$dates, df$dates)
   expect_equal(res_df$I, res_i$I)
 
+  # checks installed
+  local_mocked_bindings(
+    check_installed = function(pkg, reason) {
+      stop(pkg, " needed ", reason)
+    }, .package = "rlang")
+
+  expect_silent(
+    wallinga_teunis(
+      df,
+      method = "non_parametric_si",
+      config = list(t_start = 10, 
+                    t_end = 90,
+                    si_distr = Flu2009$si_distr, 
+                    seed = 1, 
+                    n_sim = 50),
+      count = "incid"
+    ))
 })
 
 
@@ -179,6 +196,23 @@ test_that("wallinga_teunis() works with incidence inputs", {
   expect_equal(res_incid$R, res_df$R)
   expect_equal(res_df$dates, df$dates)
   expect_equal(res_incid$I, res_df$I)
+
+  # checks installed
+  local_mocked_bindings(
+    check_installed = function(pkg, reason) {
+      stop(pkg, " needed ", reason)
+    }, .package = "rlang")
+
+  expect_error(
+    wallinga_teunis(
+      incid,
+      method = "non_parametric_si",
+      config = list(t_start = 10, t_end = 90,
+                    si_distr = Flu2009$si_distr, 
+                    seed = 1, 
+                    n_sim = 50)
+    ), "incidence needed to work with incidence data"
+  )
 
 })
 
@@ -215,6 +249,23 @@ test_that("wallinga_teunis() works with incidence2 inputs", {
   expect_equal(res_incid$dates, res_df$dates)
   expect_equal(res_incid$I, res_df$I)
 
+  # checks installed
+  local_mocked_bindings(
+    check_installed = function(pkg, reason) {
+      stop(pkg, " needed ", reason)
+    }, .package = "rlang")
+
+  expect_error(
+    wallinga_teunis(
+      incid,
+      method = "non_parametric_si",
+      config = list(t_start = 10, t_end = 90,
+                    si_distr = Flu2009$si_distr, 
+                    seed = 1, 
+                    n_sim = 50)
+      ), 
+    "incidence2 needed to work with incidence2 data"
+  )
 })
 
 
