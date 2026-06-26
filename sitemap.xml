@@ -1,5 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://mrc-ide.github.io/EpiEstim/404.html</loc></url>
+<url><loc>https://mrc-ide.github.io/EpiEstim/CODE-DESIGN.html</loc></url>
+<url><loc>https://mrc-ide.github.io/EpiEstim/CONTRIBUTING.html</loc></url>
 <url><loc>https://mrc-ide.github.io/EpiEstim/articles/EpiEstim_aggregated_data.html</loc></url>
 <url><loc>https://mrc-ide.github.io/EpiEstim/articles/EpiEstim_backimputation.html</loc></url>
 <url><loc>https://mrc-ide.github.io/EpiEstim/articles/MV_EpiEstim_vignette.html</loc></url>
