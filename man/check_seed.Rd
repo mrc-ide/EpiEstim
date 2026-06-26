@@ -18,3 +18,4 @@ Validate that the seed is not null and is numeric
 \author{
 Sangeeta Bhatia
 }
+\keyword{internal}

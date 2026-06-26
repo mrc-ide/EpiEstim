@@ -12,7 +12,10 @@ check_incidence <- function(incid) {
     stop("incid must be >=0")
   }
   if (!is.array(incid) || length(dim(incid)) != 3) {
-    stop("incid must be a 3-dimensional array with dimensions time, location, variant")
+    stop(
+      "incid must be a 3-dimensional array with dimensions time, location, variant",
+      .call = FALSE
+    )
   }
   invisible(TRUE)
 }
@@ -28,10 +31,14 @@ check_incidence <- function(incid) {
 #' @returns Silently returns TRUE if the checks are passed, otherwise throws an
 #' error.
 #' @author Sangeeta Bhatia
+#' @keywords internal
 check_priors <- function(priors) {
   
   if (!identical(priors, default_priors())) {
-    warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
+    warning(
+      "Priors where the mean of epsilon is different from 1 are not currently supported.",
+      .call = FALSE
+    )
   }
   invisible(TRUE)
 }
@@ -49,16 +56,16 @@ check_priors <- function(priors) {
 check_mcmc_control <- function(mcmc_control) {
 
   if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)) {
-    stop("n_iter in mcmc_control must be a positive integer")
+    stop("n_iter in mcmc_control must be a positive integer", .call = FALSE)
   }
   if (mcmc_control$burnin < 0 || !is.integer(mcmc_control$burnin)) {
-    stop("burnin in mcmc_control must be a positive integer")
+    stop("burnin in mcmc_control must be a positive integer", .call = FALSE)
   }
   if (mcmc_control$thin < 0 || !is.integer(mcmc_control$thin)) {
-    stop("thin in mcmc_control must be a positive integer")
+    stop("thin in mcmc_control must be a positive integer", .call = FALSE)
   }
   if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin) {
-    stop("In mcmc_control, n_iter must be greater than burnin + thin")
+    stop("In mcmc_control, n_iter must be greater than burnin + thin", .call = FALSE)
   }
   invisible(TRUE)
 }
@@ -75,16 +82,19 @@ check_mcmc_control <- function(mcmc_control) {
 #' @keywords internal
 check_t_min_t_max <- function(t_min, t_max, incid) {
     if (!is.integer(t_min) || !is.integer(t_max)) {
-      stop("t_min and t_max must be integers")
+      stop("t_min and t_max must be integers", .call = FALSE)
     }
     if (t_min < 2 || t_max < 2) {
-      stop("t_min and t_max must be >=2")
+      stop("t_min and t_max must be >=2", .call = FALSE)
     }
     if (t_min > nrow(incid) || t_max > nrow(incid)) {
-      stop("t_min and t_max must be <= nrow(incid)")
+      stop("t_min and t_max must be <= nrow(incid)", .call = FALSE)
     }
     if (t_min > t_max) {
-      stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
+      stop(
+        "t_min is greater than t_max. You can specify a smaller t_min or increase t_max.",
+        .call = FALSE
+      )
     }
     invisible(TRUE)
 }
@@ -97,9 +107,10 @@ check_t_min_t_max <- function(t_min, t_max, incid) {
 #' @inheritParams estimate_advantage
 #' @return Silently returns TRUE if the checks are passed, otherwise throws an error.
 #' @author Sangeeta Bhatia
+#' @keywords internal
 check_seed <- function(seed) {
   if (!is.null(seed) && !is.numeric(seed)) {
-    stop("supplied seed is not a valid integer")
+    stop("supplied seed is not a valid integer", .call = FALSE)
   }
   if (!is.null(seed)) set.seed(seed)
   invisible(TRUE)
