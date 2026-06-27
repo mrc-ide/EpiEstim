@@ -413,7 +413,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
   if (any(abs(colSums(si_distr) - 1) > 0.01)) {
-    warning("Input SI distributions should sum to 1. Normalising now")
+    warning("Input SI distributions should sum to 1. Normalising now", call. = FALSE)
     si_distr <- si_distr / colSums(si_distr)
   }
   cutoff <- 1 - miss_at_most
@@ -438,7 +438,6 @@ compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
 #' @author Sangeeta Bhatia
 #' 
 #' @export
-
 first_nonzero_incid <- function(incid) {
   t_min_incid <- apply(
     incid, c(2, 3),
@@ -470,45 +469,54 @@ first_nonzero_incid <- function(incid) {
 #' @author Sangeeta Bhatia
 #' 
 #' @export
-
 compute_t_min <- function(incid, si_distr, miss_at_most) {
   t_min_si <- compute_si_cutoff(si_distr, 0.05)
   t_min_incid <- first_nonzero_incid(incid)
   as.integer(t_min_incid + t_min_si)
 }
 
+#' Build a discrete serial interval matrix for [estimate_advantage()]
+#'
+#' @inheritParams estimate_advantage
+#' @inheritParams compute_t_min
+#' @param method the serial interval specification to use.
+#'
+#' @noRd
 build_advantage_si_distr <- function(method, si_distr = NULL, mean_si = NULL,
                                      std_si = NULL, n_v = NULL, T = NULL) {
   method <- match.arg(method, c("non_parametric_si", "parametric_si"))
 
   if (is.null(n_v) || is.null(T)) {
-    stop("n_v and T must be provided.")
+    stop("n_v and T must be provided.", call. = FALSE)
   }
 
   if (method == "non_parametric_si") {
     if (is.null(si_distr)) {
-      stop("si_distr must be supplied when method = 'non_parametric_si'.")
+      stop("si_distr must be supplied when method = 'non_parametric_si'.", call. = FALSE)
     }
     if (!is.matrix(si_distr)) {
-      si_distr <- as.matrix(si_distr)
+      stop(
+        "si_distr must be supplied as a matrix when method = 'non_parametric_si'.",
+        call. = FALSE
+      )
     }
     return(si_distr)
   }
 
   if (!is.null(si_distr)) {
-    stop("si_distr should not be supplied when method = 'parametric_si'.")
+    stop("si_distr should not be supplied when method = 'parametric_si'.", call. = FALSE)
   }
   if (is.null(mean_si)) {
-    stop("mean_si must be supplied when method = 'parametric_si'.")
+    stop("mean_si must be supplied when method = 'parametric_si'.", call. = FALSE)
   }
   if (is.null(std_si)) {
-    stop("std_si must be supplied when method = 'parametric_si'.")
+    stop("std_si must be supplied when method = 'parametric_si'.", call. = FALSE)
   }
   if (any(mean_si <= 1)) {
-    stop("All values in mean_si must be > 1.")
+    stop("All values in mean_si must be > 1.", call. = FALSE)
   }
   if (any(std_si <= 0)) {
-    stop("All values in std_si must be > 0.")
+    stop("All values in std_si must be > 0.", call. = FALSE)
   }
 
   if (length(mean_si) == 1L) {
@@ -518,14 +526,14 @@ build_advantage_si_distr <- function(method, si_distr = NULL, mean_si = NULL,
     std_si <- rep(std_si, n_v)
   }
   if (length(mean_si) != n_v || length(std_si) != n_v) {
-    stop("mean_si and std_si must each have length 1 or n_v.")
+    stop("mean_si and std_si must each have length 1 or n_v.", call. = FALSE)
   }
 
   si_mat <- matrix(NA_real_, nrow = T, ncol = n_v)
   for (k in seq_len(n_v)) {
-    col <- discr_si(seq(0, T - 1), mean_si[k], std_si[k])
-    col <- col / sum(col)
-    si_mat[, k] <- col
+    column <- discr_si(seq(0, T - 1), mean_si[k], std_si[k])
+    column <- column / sum(column)
+    si_mat[, k] <- column
   }
 
   si_mat
@@ -583,7 +591,7 @@ build_advantage_si_distr <- function(method, si_distr = NULL, mean_si = NULL,
 #'   is temporarily assigned to `[, , 1]` of the incidence array. We recommend the
 #'   default value of `TRUE` as we find this to stabilise inference.
 #'
-#' @param method one of `"non_parametric_si"` or `"parametric_si"`.
+#' @param method one of `"non_parametric_si"` or `"parametric_si"`. 
 #'
 #' @param mean_si mean serial interval(s) used when `method = "parametric_si"`.
 #'   May be a single value, recycled across all variants, or one value per
@@ -612,7 +620,15 @@ build_advantage_si_distr <- function(method, si_distr = NULL, mean_si = NULL,
 #'   is a named list of the point estimate and upper confidence limits. The
 #'   second element is `NULL` and can be ignored.
 #'
-#' @export
+#' @details
+#' The serial interval can be specified either parametrically or non-parametrically.
+#' - If `method = "non_parametric_si"`, the user specifies the serial interval
+#' distribution for each variant as a matrix where each column corresponds to a
+#' variant and each row corresponds to a day. The first row should be 0 (no
+#' probability mass on day 0) and each column should sum to 1.
+#' - If `method = "parametric_si"`, the user specifies the mean and sd of the
+#' serial interval for each variant. The parameters are used to build a matrix
+#' using the function [discr_si()] which is then used in the estimation.
 #'
 #' @examples
 #' n_v <- 2
@@ -644,7 +660,34 @@ build_advantage_si_distr <- function(method, si_distr = NULL, mean_si = NULL,
 #' abline(h = 1, col = "red")
 #' plot(x$R[30, 3, ], type = "l",
 #'      xlab = "Iteration", ylab = "R time 30 location 3")
-
+#'
+#' ## estimate using a parametric serial interval
+#' x_parametric <- estimate_advantage(
+#'   incid,
+#'   priors = priors,
+#'   method = "parametric_si",
+#'   mean_si = 2.6,
+#'   std_si = 1.5,
+#'   t_min = 2L,
+#'   mcmc_control = list(n_iter = 20L, burnin = 5L, thin = 5L)
+#' )
+#' 
+#' # Plotting to check outputs
+#' par(mfrow = c(2, 2))
+#' plot(x_parametric$epsilon, type = "l",
+#'      xlab = "Iteration", ylab = "epsilon")
+#' # Compare with what we expect with constant incidence in all locations
+#' abline(h = 1, col = "red")
+#' plot(x_parametric$R[10, 1, ], type = "l",
+#'      xlab = "Iteration", ylab = "R time 10 location 1")
+#' abline(h = 1, col = "red")
+#' plot(x_parametric$R[20, 2, ], type = "l",
+#'      xlab = "Iteration", ylab = "R time 20 location 2")
+#' abline(h = 1, col = "red")
+#' plot(x_parametric$R[30, 3, ], type = "l",
+#'      xlab = "Iteration", ylab = "R time 30 location 3")
+#'
+#' @export
 estimate_advantage <- function(incid, si_distr = NULL, priors = default_priors(),
                            mcmc_control = default_mcmc_controls(),
                            t_min = NULL, t_max = nrow(incid),

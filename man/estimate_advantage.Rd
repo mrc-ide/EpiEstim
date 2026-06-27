@@ -6,7 +6,7 @@
 \usage{
 estimate_advantage(
   incid,
-  si_distr,
+  si_distr = NULL,
   priors = default_priors(),
   mcmc_control = default_mcmc_controls(),
   t_min = NULL,
@@ -14,7 +14,10 @@ estimate_advantage(
   seed = NULL,
   incid_imported = NULL,
   precompute = TRUE,
-  reorder_incid = TRUE
+  reorder_incid = TRUE,
+  method = c("non_parametric_si", "parametric_si"),
+  mean_si = NULL,
+  std_si = NULL
 )
 }
 \arguments{
@@ -22,11 +25,11 @@ estimate_advantage(
 for each time step (1st dimension), location (2nd dimension) and
 pathogen/strain/variant (3rd dimension)}
 
-\item{si_distr}{a matrix with two columns, each containing the probability mass
-function for the discrete serial interval for each of the two
-pathogen/strain/variants, starting with the probability mass function
-for day 0 in the first row, which should be 0. Each column in the matrix
-should sum to 1.}
+\item{si_distr}{a matrix containing the probability mass function for the
+discrete serial interval for each pathogen/strain/variant, starting with
+the probability mass function for day 0 in the first row, which should be
+0. Each column in the matrix should sum to 1. Used when
+\code{method = "non_parametric_si"}.}
 
 \item{priors}{a list of prior parameters (shape and scale of a gamma
 distribution) for epsilon and R; can be obtained from the function
@@ -63,6 +66,16 @@ incidence array can be internally reordered during the estimation of the
 transmission advantage. If \code{TRUE}, the most transmissible pathogen/strain/variant
 is temporarily assigned to \verb{[, , 1]} of the incidence array. We recommend the
 default value of \code{TRUE} as we find this to stabilise inference.}
+
+\item{method}{one of \code{"non_parametric_si"} or \code{"parametric_si"}.}
+
+\item{mean_si}{mean serial interval(s) used when \code{method = "parametric_si"}.
+May be a single value, recycled across all variants, or one value per
+variant.}
+
+\item{std_si}{standard deviation(s) of the serial interval used when
+\code{method = "parametric_si"}. May be a single value, recycled across all
+variants, or one value per variant.}
 }
 \value{
 A list with the following elements:
@@ -90,6 +103,18 @@ second element is \code{NULL} and can be ignored.
 Jointly estimate the instantaneous reproduction number for a reference
 pathogen/strain/variant and the relative transmissibility of a "new"
 pathogen/strain/variant.
+}
+\details{
+The serial interval can be specified either parametrically or non-parametrically.
+\itemize{
+\item If \code{method = "non_parametric_si"}, the user specifies the serial interval
+distribution for each variant as a matrix where each column corresponds to a
+variant and each row corresponds to a day. The first row should be 0 (no
+probability mass on day 0) and each column should sum to 1.
+\item If \code{method = "parametric_si"}, the user specifies the mean and sd of the
+serial interval for each variant. The parameters are used to build a matrix
+using the function \code{\link[=discr_si]{discr_si()}} which is then used in the estimation.
+}
 }
 \examples{
 n_v <- 2
@@ -121,4 +146,31 @@ plot(x$R[20, 2, ], type = "l",
 abline(h = 1, col = "red")
 plot(x$R[30, 3, ], type = "l",
      xlab = "Iteration", ylab = "R time 30 location 3")
+
+## estimate using a parametric serial interval
+x_parametric <- estimate_advantage(
+  incid,
+  priors = priors,
+  method = "parametric_si",
+  mean_si = 2.6,
+  std_si = 1.5,
+  t_min = 2L,
+  mcmc_control = list(n_iter = 20L, burnin = 5L, thin = 5L)
+)
+
+# Plotting to check outputs
+par(mfrow = c(2, 2))
+plot(x_parametric$epsilon, type = "l",
+     xlab = "Iteration", ylab = "epsilon")
+# Compare with what we expect with constant incidence in all locations
+abline(h = 1, col = "red")
+plot(x_parametric$R[10, 1, ], type = "l",
+     xlab = "Iteration", ylab = "R time 10 location 1")
+abline(h = 1, col = "red")
+plot(x_parametric$R[20, 2, ], type = "l",
+     xlab = "Iteration", ylab = "R time 20 location 2")
+abline(h = 1, col = "red")
+plot(x_parametric$R[30, 3, ], type = "l",
+     xlab = "Iteration", ylab = "R time 30 location 3")
+
 }
