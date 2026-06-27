@@ -412,7 +412,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #' @export
 
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
-  if (any(colSums(si_distr) != 1)) {
+  if (any(abs(colSums(si_distr) - 1) > 0.01)) {
     warning("Input SI distributions should sum to 1. Normalising now")
     si_distr <- si_distr / colSums(si_distr)
   }
@@ -477,6 +477,60 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
   as.integer(t_min_incid + t_min_si)
 }
 
+build_advantage_si_distr <- function(method, si_distr = NULL, mean_si = NULL,
+                                     std_si = NULL, n_v = NULL, T = NULL) {
+  method <- match.arg(method, c("non_parametric_si", "parametric_si"))
+
+  if (is.null(n_v) || is.null(T)) {
+    stop("n_v and T must be provided.")
+  }
+
+  if (method == "non_parametric_si") {
+    if (is.null(si_distr)) {
+      stop("si_distr must be supplied when method = 'non_parametric_si'.")
+    }
+    if (!is.matrix(si_distr)) {
+      si_distr <- as.matrix(si_distr)
+    }
+    return(si_distr)
+  }
+
+  if (!is.null(si_distr)) {
+    stop("si_distr should not be supplied when method = 'parametric_si'.")
+  }
+  if (is.null(mean_si)) {
+    stop("mean_si must be supplied when method = 'parametric_si'.")
+  }
+  if (is.null(std_si)) {
+    stop("std_si must be supplied when method = 'parametric_si'.")
+  }
+  if (any(mean_si <= 1)) {
+    stop("All values in mean_si must be > 1.")
+  }
+  if (any(std_si <= 0)) {
+    stop("All values in std_si must be > 0.")
+  }
+
+  if (length(mean_si) == 1L) {
+    mean_si <- rep(mean_si, n_v)
+  }
+  if (length(std_si) == 1L) {
+    std_si <- rep(std_si, n_v)
+  }
+  if (length(mean_si) != n_v || length(std_si) != n_v) {
+    stop("mean_si and std_si must each have length 1 or n_v.")
+  }
+
+  si_mat <- matrix(NA_real_, nrow = T, ncol = n_v)
+  for (k in seq_len(n_v)) {
+    col <- discr_si(seq(0, T - 1), mean_si[k], std_si[k])
+    col <- col / sum(col)
+    si_mat[, k] <- col
+  }
+
+  si_mat
+}
+
 #' Estimate instantaneous reproduction number
 #' 
 #' Jointly estimate the instantaneous reproduction number for a reference
@@ -487,11 +541,11 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #'   for each time step (1st dimension), location (2nd dimension) and
 #'   pathogen/strain/variant (3rd dimension)
 #'
-#' @param si_distr a matrix with two columns, each containing the probability mass
-#'   function for the discrete serial interval for each of the two
-#'   pathogen/strain/variants, starting with the probability mass function
-#'   for day 0 in the first row, which should be 0. Each column in the matrix
-#'   should sum to 1.
+#' @param si_distr a matrix containing the probability mass function for the
+#'   discrete serial interval for each pathogen/strain/variant, starting with
+#'   the probability mass function for day 0 in the first row, which should be
+#'   0. Each column in the matrix should sum to 1. Used when
+#'   `method = "non_parametric_si"`.
 #'
 #' @param priors a list of prior parameters (shape and scale of a gamma
 #'   distribution) for epsilon and R; can be obtained from the function
@@ -528,6 +582,16 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #'   transmission advantage. If `TRUE`, the most transmissible pathogen/strain/variant
 #'   is temporarily assigned to `[, , 1]` of the incidence array. We recommend the
 #'   default value of `TRUE` as we find this to stabilise inference.
+#'
+#' @param method one of `"non_parametric_si"` or `"parametric_si"`.
+#'
+#' @param mean_si mean serial interval(s) used when `method = "parametric_si"`.
+#'   May be a single value, recycled across all variants, or one value per
+#'   variant.
+#'
+#' @param std_si standard deviation(s) of the serial interval used when
+#'   `method = "parametric_si"`. May be a single value, recycled across all
+#'   variants, or one value per variant.
 #'
 #' @return A list with the following elements:
 #' - `epsilon`: a matrix containing the MCMC chain (thinned and after burnin)
@@ -581,13 +645,29 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' plot(x$R[30, 3, ], type = "l",
 #'      xlab = "Iteration", ylab = "R time 30 location 3")
 
-estimate_advantage <- function(incid, si_distr, priors = default_priors(),
+estimate_advantage <- function(incid, si_distr = NULL, priors = default_priors(),
                            mcmc_control = default_mcmc_controls(),
                            t_min = NULL, t_max = nrow(incid),
                            seed = NULL,
                            incid_imported = NULL,
                            precompute = TRUE,
-                           reorder_incid = TRUE) {
+                           reorder_incid = TRUE,
+                           method = c("non_parametric_si", "parametric_si"),
+                           mean_si = NULL,
+                           std_si = NULL) {
+
+  method <- match.arg(method)
+  T <- nrow(incid)
+  n_v <- dim(incid)[3]
+
+  si_distr <- build_advantage_si_distr(
+    method = method,
+    si_distr = si_distr,
+    mean_si = mean_si,
+    std_si = std_si,
+    n_v = n_v,
+    T = T
+  )
 
   if (is.null(t_min)) {
     t_min <- compute_t_min(incid, si_distr)
@@ -822,4 +902,3 @@ process_I_multivariant <- function(incid, incid_imported = NULL) {
 
 ## TODO: check dimensions of objects is correct everywhere
 ## TODO: fix number of variants to be 2
-
