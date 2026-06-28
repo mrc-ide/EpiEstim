@@ -51,7 +51,11 @@ knitr::kables(list(kable(df, col.names = c(" ","Region_1","Region_2","Region_3")
 ```
 
 
-The **serial interval distributions** must be supplied as a matrix with the number of columns matching the number of variants being considered. Each column should contain the probability mass function (PMF) for the discrete serial interval of each variant, starting with the PMF for day zero in the first row (which should be 0) and each column should sum to 1, e.g.:
+The **serial interval distributions** may be supplied
+(1) non-parametrically, as a matrix with the number of columns matching the number of variants being considered, or
+(2) parametrically, by providing the mean and standard deviation for each variant.
+
+In the non-parametric case, each column should contain the probability mass function (PMF) for the discrete serial interval of each variant, starting with the PMF for day zero in the first row (which should be 0) and each column should sum to 1, e.g.:
 
 ```{r, echo=FALSE}
 t <- c("[1,]","[2,]","[3,]","[4,]","...")
@@ -63,12 +67,15 @@ df <- data.frame(t,Variant_1,Variant_2)
 knitr::kable(df, col.names = c(" ","Variant_1","Variant_2"))
 ```
 
+In the parametric case, EpiEstim will build the serial interval matrix using the function `discr_si`, which assumes that the serial interval is a shifted Gamma distribution with shift 1.
 
-##Estimate advantage
+
+
+## Estimate advantage
 
 To estimate the effective transmission advantage of new variants compared to a reference variant we use the `estimate_advantage()` function in `EpiEstim`.
 
-###`estimate_advantage()`
+### `estimate_advantage()`
 
 ```{r, eval=FALSE}
 estimate_advantage(incid = incidence_object, 
@@ -120,13 +127,11 @@ Let us say we have incidence data in the format below, where each row correspond
 head(incid)
 ```
 
-We also assume that the SI is the same for both variants, with a mean of 5.4 days and a standard deviation of 1.5 days (Rai, Shukla, and Dwivedi 2021) and produce a matrix of SI's with the number of columns equal to the number of variants:
+We also assume that the SI is the same for both variants, with a mean of 5.4 days and a standard deviation of 1.5 days (Rai, Shukla, and Dwivedi 2021) and use `parametric_si` to input these.
 
 ```{r}
 mean_SI <- 5.4
 sd_SI <- 1.5
-SI <- EpiEstim::discr_si(seq(0, 20), mean_SI, sd_SI)
-si_matrix <- cbind(SI,SI)
 ```
 
 ```{r}
@@ -139,9 +144,12 @@ Now that we have our incidence and SI distributions we can supply these to the `
 
 ```{r, message=FALSE, warning=FALSE}
 output <- EpiEstim::estimate_advantage(incid = incid,
-                             si_distr = si_matrix,
+                             si_distr = NULL,
                              priors = default_priors(),
-                             mcmc_control = default_mcmc_controls())
+                             mcmc_control = default_mcmc_controls(),
+                             method = "parametric_si",
+                             mean_si = mean_SI,
+                             std_si = sd_SI)
 ```
 
 The output is a list containing 4 elements:
