@@ -627,7 +627,9 @@ build_advantage_si_distr <- function(method, si_distr = NULL, mean_si = NULL,
 #' variant and each row corresponds to a day. The first row should be 0 (no
 #' probability mass on day 0) and each column should sum to 1.
 #' - If `method = "parametric_si"`, the user specifies the mean and sd of the
-#' serial interval for each variant. The parameters are used to build a matrix
+#' serial interval for each variant. If only one value is provided, it is
+#' recycled across all variants. 
+#' The parameters are used to build a matrix
 #' using the function [discr_si()] which is then used in the estimation.
 #'
 #' @examples
