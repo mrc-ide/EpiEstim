@@ -404,13 +404,17 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #' (across all columns) such that the cumulative probability mass before index is
 #' `1 - miss_at_most`.
 #'
-#' @inheritParams estimate_advantage
+#' @param si_distr a matrix of discretised probability distributions
+#' (each column sums to 1). This could be privided by the user if using
+#' non_parametric serial interval distributions, or could be generated internally
+#' by the function [estimate_advantage()] if using parametric serial interval
+#' distribution specification.
+#' 
 #' @param miss_at_most numeric. Probability mass in the tail of the SI distribution
 #' 
 #' @return integer
 #' @author Sangeeta Bhatia
 #' @export
-
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
   if (any(abs(colSums(si_distr) - 1) > 0.01)) {
     warning("Input SI distributions should sum to 1. Normalising now", call. = FALSE)
@@ -463,7 +467,7 @@ first_nonzero_incid <- function(incid) {
 #'   across all variants computed using [compute_si_cutoff()]
 #'
 #' @inheritParams compute_si_cutoff
-#' @inheritParams estimate_advantage
+#' @inheritParams estimate_advantage incid
 #' 
 #' @return integer
 #' @author Sangeeta Bhatia

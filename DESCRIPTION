@@ -1,5 +1,5 @@
 Package: EpiEstim
-Version: 3.0.0
+Version: 3.0.1
 Title: Estimate Time Varying Reproduction Numbers from Epidemic Curves
 Authors@R: c(person("Anne", "Cori", email = "a.cori@imperial.ac.uk", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-8443-9162")), 
   person("Simon", "Cauchemez", role = "ctb"),
@@ -58,6 +58,6 @@ License: GPL (>=2)
 LazyLoad: yes
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 VignetteBuilder: knitr
 Remotes: reconverse/incidence2/pkg
+Config/roxygen2/version: 8.0.0
