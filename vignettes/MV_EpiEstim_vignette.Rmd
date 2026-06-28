@@ -134,10 +134,6 @@ mean_SI <- 5.4
 sd_SI <- 1.5
 ```
 
-```{r}
-head(si_matrix)
-```
-
 **Estimate transmission advantage**
 
 Now that we have our incidence and SI distributions we can supply these to the `estimate_advantage()` function. We use the default priors and MCMC controls.
