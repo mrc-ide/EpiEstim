@@ -43,11 +43,7 @@ test_that(
       msg
     )
 
-  }
-)
-
-
-
+})
 
 test_that("wallinga_teunis(): results have the right shape/format", {
 
@@ -61,18 +57,13 @@ test_that("wallinga_teunis(): results have the right shape/format", {
                   n_sim = 50)
   )
   
-  expect_equal(class(res), "wallinga_teunis")
-  expect_true(is.list(res))
+  expect_s3_class(res, "wallinga_teunis")
+  expect_type(res, "list")
   exp_names <- c("R", "method", "si_distr", "SI.Moments", "dates", "I", "I_local", 
                  "I_imported")
-  expect_identical(names(res), exp_names)
+  expect_named(res, exp_names)
   expect_identical(dim(res$R), c(99L, 6L))
-  
-}
-)
-
-
-
+})
 
 
 test_that("wallinga_teunis() gives expected results with flat incidence", {
@@ -91,11 +82,7 @@ test_that("wallinga_teunis() gives expected results with flat incidence", {
   
   ### expect R estimates to be ~1 except very early and very late ones
   expect_equal(mean(res$R$`Mean(R)`[10:80]), 1)
-
 })
-
-
-
 
 
 test_that("wallinga_teunis() gives expected results with increasing incidence", {
@@ -124,13 +111,9 @@ test_that("wallinga_teunis() gives expected results with increasing incidence", 
                   n_sim = 50)
   )
   
-  expect_true(res_1$R$`Quantile.0.025(R)` > 1)
-  expect_true(res_2$R$`Quantile.0.025(R)` > res_1$R$`Quantile.0.975(R)`)
-
+  expect_gt(res_1$R$`Quantile.0.025(R)`, 1)
+  expect_gt(res_2$R$`Quantile.0.025(R)`, res_1$R$`Quantile.0.975(R)`)
 })
-
-
-
 
 
 test_that("wallinga_teunis() works with data.frame inputs", {
@@ -143,7 +126,8 @@ test_that("wallinga_teunis() works with data.frame inputs", {
   res_i <- wallinga_teunis(
     i,
     method = "non_parametric_si",
-    config = list(t_start = 10, t_end = 90,
+    config = list(t_start = 10, 
+                  t_end = 90,
                   si_distr = Flu2009$si_distr, 
                   seed = 1, 
                   n_sim = 50)
@@ -151,7 +135,8 @@ test_that("wallinga_teunis() works with data.frame inputs", {
   res_df <- wallinga_teunis(
     df,
     method = "non_parametric_si",
-    config = list(t_start = 10, t_end = 90,
+    config = list(t_start = 10, 
+                  t_end = 90,
                   si_distr = Flu2009$si_distr, 
                   seed = 1, 
                   n_sim = 50),
@@ -162,10 +147,24 @@ test_that("wallinga_teunis() works with data.frame inputs", {
   expect_equal(res_df$dates, df$dates)
   expect_equal(res_df$I, res_i$I)
 
+  # checks installed
+  local_mocked_bindings(
+    check_installed = function(pkg, reason) {
+      stop(pkg, " needed ", reason)
+    }, .package = "rlang")
+
+  expect_silent(
+    wallinga_teunis(
+      df,
+      method = "non_parametric_si",
+      config = list(t_start = 10, 
+                    t_end = 90,
+                    si_distr = Flu2009$si_distr, 
+                    seed = 1, 
+                    n_sim = 50),
+      count = "incid"
+    ))
 })
-
-
-
 
 
 test_that("wallinga_teunis() works with incidence inputs", {
@@ -198,11 +197,24 @@ test_that("wallinga_teunis() works with incidence inputs", {
   expect_equal(res_df$dates, df$dates)
   expect_equal(res_incid$I, res_df$I)
 
-}
-)
+  # checks installed
+  local_mocked_bindings(
+    check_installed = function(pkg, reason) {
+      stop(pkg, " needed ", reason)
+    }, .package = "rlang")
 
+  expect_error(
+    wallinga_teunis(
+      incid,
+      method = "non_parametric_si",
+      config = list(t_start = 10, t_end = 90,
+                    si_distr = Flu2009$si_distr, 
+                    seed = 1, 
+                    n_sim = 50)
+    ), "incidence needed to work with incidence data"
+  )
 
-
+})
 
 
 test_that("wallinga_teunis() works with incidence2 inputs", {
@@ -226,9 +238,9 @@ test_that("wallinga_teunis() works with incidence2 inputs", {
   res_df <- wallinga_teunis(
     df, "count",
     method = "non_parametric_si",
-    config = list(t_start = 10, t_end = 90,
+    config = list(t_start = 10,
+                  t_end = 90,
                   si_distr = Flu2009$si_distr, 
-                  seed = 1, 
                   n_sim = 50,
                   seed = 1)
   )
@@ -237,11 +249,24 @@ test_that("wallinga_teunis() works with incidence2 inputs", {
   expect_equal(res_incid$dates, res_df$dates)
   expect_equal(res_incid$I, res_df$I)
 
-}
-)
+  # checks installed
+  local_mocked_bindings(
+    check_installed = function(pkg, reason) {
+      stop(pkg, " needed ", reason)
+    }, .package = "rlang")
 
-
-
+  expect_error(
+    wallinga_teunis(
+      incid,
+      method = "non_parametric_si",
+      config = list(t_start = 10, t_end = 90,
+                    si_distr = Flu2009$si_distr, 
+                    seed = 1, 
+                    n_sim = 50)
+      ), 
+    "incidence2 needed to work with incidence2 data"
+  )
+})
 
 
 test_that(
@@ -292,18 +317,33 @@ test_that(
     expect_equal(out1$R$`Mean(R)`, out4$R$`Mean(R)`)
     expect_true(any(out1$R$`Quantile.0.025(R)` != out4$R$`Quantile.0.025(R)`))
     expect_true(any(out1$R$`Quantile.0.975(R)` != out4$R$`Quantile.0.975(R)`))
-  }
-)
+})
 
 
-## data("Flu2009")
+test_that("Example 1 matches saved output", {
+  skip_on_os(os = "mac") # Consistently different from the other OS
+  
+  skip_if(grepl("unstable", R.version$status)) # Skip on Devel
+  # NOTE: Expect this to fail on R-devel and therefore on next R release
+  # likely because of a change in rmultinom(), not a bug, but a difference in 
+  # randomization
+  # https://bugs.r-project.org/show_bug.cgi?id=18693&_ts=1780518376
+  #
+  # TODO: Update the snapshots on next release and skip on previous releases
 
-## test_that("Example 1 matches saved output", {
-##   out <- wallinga_teunis(Flu2009$incidence, method = "non_parametric_si",
-##                     config = list(t_start = 2:26, t_end = 8:32,
-##                                   si_distr = Flu2009$si_distr, 
-##                                   seed = 1, 
-##                                   n_sim = 50))
-##   ## TODO: save output (with fixed seed) into am rda as we did for estimate_T
-##   #expect_equal_to_reference(out, "../expected_output/Example1.rda", update = FALSE)
-## })
+  data("Flu2009")
+  set.seed(1)
+  out <- wallinga_teunis(
+    Flu2009$incidence,
+    method = "non_parametric_si",
+    config = list(
+      seed = 1,
+      t_start = 2:26,
+      t_end = 8:32,
+      si_distr = Flu2009$si_distr,
+      n_sim = 50
+    )
+  )
+
+  epi_snapshot_value(out, n = NULL)
+})

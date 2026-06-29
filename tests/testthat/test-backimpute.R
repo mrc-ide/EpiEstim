@@ -11,7 +11,6 @@ config_covid <- make_config(si_config)
 config_covid2 <- make_config(c(si_config, t_start=2, t_end=10))
 
 data("Flu2009")
-Flu2009$incidence
 config_flu <- make_config(list( mean_si = 2.6, std_si = 1.5))
 
 incid_constant <- rep(10, 20)
@@ -57,14 +56,15 @@ test_that("warnings and errors are working as expected", {
   )
   
   expect_warning(
-    estimate_R(incid = incid_covid, backimputation_window = 5, config = config_covid2),
+   estimate_R(incid = incid_covid, backimputation_window = 5, config = config_covid2),
     "Estimate of the growth rate is negative, consider removing backimputation, or extending the backimputation window"
-  )
+  ) |> expect_warning("The backimputation window is short")
   
   expect_warning(
     estimate_R(incid = incid_covid, backimputation_window = 3, config = config_covid),
     "The backimputation window is short and may lead to an inaccurate estimate of the growth rate."
-  )
+  ) |> expect_warning("Estimate of the growth rate") |>
+    suppressMessages()
   
 })
 
@@ -78,12 +78,14 @@ test_that("estimate_R outputs shouldn't depend on the format of the incidence da
   res_1 <- estimate_R(Flu2009$incidence,
                       method = "parametric_si",
                       backimputation_window = 6,
-                      config = config_flu)$R
+                      config = config_flu)$R |>
+    suppressMessages()
   
   res_2 <- estimate_R(Flu2009$incidence$I, 
                       method = "parametric_si",
                       backimputation_window = 6,
-                      config = config_flu)$R
+                      config = config_flu)$R |>
+                        suppressMessages()
   
   # all formats should produce identical R estimates
   expect_equal(drop_date_cols(res_1), drop_date_cols(res_2))
@@ -125,7 +127,7 @@ test_that("outputs are working as expected", {
   expect_equal(
     estimate_R(incid = incid_covid, backimputation_window = 0, config = config_covid),
     estimate_R(incid = incid_covid, config = config_covid)
-  )
+  ) |> suppressMessages()
   
   # check adjusted estimates are lower than original...
   expect_lt({
@@ -139,7 +141,7 @@ test_that("outputs are working as expected", {
     adjusted-original
   },
   0
-  )
+  ) |> suppressMessages()
   
   # ... even if growth rate is negative!
   suppressWarnings(
@@ -153,7 +155,7 @@ test_that("outputs are working as expected", {
         config = config_covid)$R[1, "Mean(R)"]
       adjusted-original
     }, 0)
-  )
+  ) |> suppressMessages()
   
   expect_lt({
     R_constant <- estimate_R(
@@ -162,7 +164,7 @@ test_that("outputs are working as expected", {
       config = config_constant,
       method = "parametric_si")
     diff(range(R_constant$R$`Mean(R)`)) 
-  }, 1e-6)
+  }, 1e-6) |> suppressMessages()
   
   # Check class(incid) == "data.frame" doesn't result in error
   expect_silent(
