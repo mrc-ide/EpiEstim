@@ -1,3 +1,15 @@
+test_that("check_config fills generic defaults", {
+  cfg <- EpiEstim:::check_config(
+    list(mean_si = 2.5, std_si = 1),
+    "parametric_si"
+  )
+
+  expect_equal(cfg$mean_prior, 5)
+  expect_equal(cfg$std_prior, 5)
+  expect_equal(cfg$cv_posterior, 0.3)
+  expect_s3_class(cfg$mcmc_control, "estimate_R_mcmc_control")
+})
+
 test_that("check_config validates parametric_si inputs", {
   expect_silent(
     EpiEstim:::check_config(

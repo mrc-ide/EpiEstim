@@ -218,7 +218,7 @@ wallinga_teunis.numeric <- function(incid,
     stop("config$n_sim must be a positive integer.", call. = FALSE)
   }
 
-  check_config(config, method, n_time_steps = T)
+  config <- check_config(config, method, n_time_steps = T)
   nb_time_periods <- length(config$t_start)
   
   if (method == "non_parametric_si") {

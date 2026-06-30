@@ -320,8 +320,7 @@ estimate_R_agg <- function(incid,
   # EM algorithm). These use a fixed window length matched to dt (aggregation window)
   # 'config_out' for the final estimated R using sliding windows (supplied by user)
   
-  config <- process_config(config)
-  check_config(config, method)
+  config <- check_config(config, method)
   config_out <- config 
   
   # config$t_start and config$t_end used for the reconstruction. 

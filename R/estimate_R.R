@@ -409,9 +409,8 @@ estimate_R <- function(incid,
   }
 
   config <- make_config(incid = incid, config = config)
-  config <- process_config(config)
   n_time_steps <- length(process_I_vector(incid))
-  check_config(config, method, n_time_steps = n_time_steps)
+  config <- check_config(config, method, n_time_steps = n_time_steps)
 
 
   # If the serial interval distribution is not provided, estimate it
