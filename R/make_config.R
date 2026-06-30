@@ -302,17 +302,17 @@ make_config <- function(..., incid = NULL) {
   if (!is.null(incid)) {
     incid <- process_I(incid)
     idx_raw_incid <- as.integer(rownames(incid)) > 0
-    T <- sum(idx_raw_incid)
+    n_time_steps <- sum(idx_raw_incid)
 
     ## filling in / checking t_start and t_end
     if (is.null(config$t_start) || is.null(config$t_end)) {
       msg <- "Default config will estimate R on weekly sliding windows.
     To change this change the t_start and t_end arguments. "
       message(msg)
-      config$t_start <- seq(2, T-6)
-      config$t_end <- seq(8, T)
+      config$t_start <- seq(2, n_time_steps - 6)
+      config$t_end <- seq(8, n_time_steps)
     } else {
-      check_times(config$t_start, config$t_end, T)
+      check_times(config$t_start, config$t_end, n_time_steps)
     }
   }
 
@@ -320,4 +320,3 @@ make_config <- function(..., incid = NULL) {
   return(config)
 
 }
-

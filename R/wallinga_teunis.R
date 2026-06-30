@@ -138,7 +138,7 @@ wallinga_teunis.default <- function(incid, ...) {
     "No `project()` method for object of the class: %s",
     paste(class(incid), collapse = ", ")
     )
-  stop(msg)
+  stop(msg, call. = FALSE)
 }
 
 
@@ -186,12 +186,13 @@ wallinga_teunis.numeric <- function(incid,
   if (!is.null(incid$dates)) {
     dates <- check_dates(incid)
     incid <- process_I_vector(rowSums(incid[, c("local", "imported")]))
-    T <- length(incid)
+    n_time_steps <- length(incid)
   } else {
     incid <- process_I_vector(rowSums(incid[, c("local", "imported")]))
-    T <- length(incid)
-    dates <- seq_len(T)
+    n_time_steps <- length(incid)
+    dates <- seq_len(n_time_steps)
   }
+  T <- n_time_steps
   
   
   ### Adjusting t_start and t_end so that at least an incident case has been
@@ -218,7 +219,7 @@ wallinga_teunis.numeric <- function(incid,
     stop("config$n_sim must be a positive integer.", call. = FALSE)
   }
 
-  config <- check_config(config, method, n_time_steps = T)
+  config <- check_config(config, method, n_time_steps = n_time_steps)
   nb_time_periods <- length(config$t_start)
   
   if (method == "non_parametric_si") {
@@ -406,7 +407,7 @@ wallinga_teunis.incidence <- function(incid,
       "daily incidence needed, but interval is %d days",
       as.integer(mean(incidence::get_interval(incid)))
     )
-    stop(msg)
+    stop(msg, call. = FALSE)
   }
 
   has_groups <- ncol(incidence::get_counts(incid)) > 1L
@@ -446,7 +447,7 @@ wallinga_teunis.incidence2 <- function(incid,
   interval <- incidence2::get_interval_duration(incid)
   if (any(interval != 1L)) {
     msg <- "daily incidence needed"
-    stop(msg)
+    stop(msg, call. = FALSE)
   }
 
   has_groups <- length(incidence2::get_groups(incid))
