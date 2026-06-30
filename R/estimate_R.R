@@ -409,7 +409,19 @@ estimate_R <- function(incid,
   }
 
   config <- make_config(incid = incid, config = config)
-  n_time_steps <- length(process_I_vector(incid))
+  if (is.data.frame(incid) && all(c("local", "imported") %in% names(incid))) {
+    n_time_steps <- nrow(incid)
+  } else if (is.data.frame(incid) && ncol(incid) == 1L) {
+    n_time_steps <- length(incid[[1L]])
+  } else if (is.data.frame(incid) && "I" %in% names(incid)) {
+    n_time_steps <- nrow(incid)
+  } else if (inherits(incid, "incidence")) {
+    n_time_steps <- nrow(incidence::get_counts(incid))
+  } else if (inherits(incid, "incidence2")) {
+    n_time_steps <- length(unique(incid[[incidence2::get_date_index_name(incid)]]))
+  } else {
+    n_time_steps <- length(incid)
+  }
   config <- check_config(config, method, n_time_steps = n_time_steps)
 
 
