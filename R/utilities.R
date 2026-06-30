@@ -463,7 +463,7 @@ check_config <- function(config, method, n_time_steps = NULL) {
     stop("config$cv_posterior must be >0.", call. = FALSE)
   }
 
-  return(config)
+  config
 }
 
 viapply <- function(X, FUN, ...) {
