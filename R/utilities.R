@@ -314,118 +314,143 @@ process_config_si_from_data <- function(config, si_data) {
   return(config)
 }
 
-check_config <- function(config, method) {
+check_config <- function(config, method, n_time_steps = NULL) {
   if (method == "non_parametric_si") {
     check_si_distr(config$si_distr, method = method)
   }
   if (method == "parametric_si") {
     if (is.null(config$mean_si)) {
-      stop("method parametric_si requires to specify the config$mean_si 
-           argument.")
+      stop("method parametric_si requires to specify the config$mean_si argument.",
+           call. = FALSE)
     }
     if (is.null(config$std_si)) {
-      stop("method parametric_si requires to specify the config$std_si 
-           argument.")
+      stop("method parametric_si requires to specify the config$std_si argument.",
+           call. = FALSE)
     }
     if (config$mean_si <= 1) {
-      stop("method parametric_si requires a value >1 for config$mean_si.")
+      stop("method parametric_si requires a value >1 for config$mean_si.",
+           call. = FALSE)
     }
     if (config$std_si <= 0) {
-      stop("method parametric_si requires a >0 value for config$std_si.")
+      stop("method parametric_si requires a >0 value for config$std_si.",
+           call. = FALSE)
     }
   }
   if (method == "uncertain_si") {
     if (is.null(config$mean_si)) {
-      stop("method uncertain_si requires to specify the config$mean_si 
-           argument.")
+      stop("method uncertain_si requires to specify the config$mean_si argument.",
+           call. = FALSE)
     }
     if (is.null(config$std_si)) {
-      stop("method uncertain_si requires to specify the config$std_si 
-           argument.")
+      stop("method uncertain_si requires to specify the config$std_si argument.",
+           call. = FALSE)
     }
     if (is.null(config$n1)) {
-      stop("method uncertain_si requires to specify the config$n1 argument.")
+      stop("method uncertain_si requires to specify the config$n1 argument.",
+           call. = FALSE)
     }
     if (is.null(config$n2)) {
-      stop("method uncertain_si requires to specify the config$n2 argument.")
+      stop("method uncertain_si requires to specify the config$n2 argument.",
+           call. = FALSE)
     }
     if (is.null(config$std_mean_si)) {
-      stop("method uncertain_si requires to specify the config$std_mean_si 
-           argument.")
+      stop("method uncertain_si requires to specify the config$std_mean_si argument.",
+           call. = FALSE)
     }
     if (is.null(config$min_mean_si)) {
-      stop("method uncertain_si requires to specify the config$min_mean_si 
-           argument.")
+      stop("method uncertain_si requires to specify the config$min_mean_si argument.",
+           call. = FALSE)
     }
     if (is.null(config$max_mean_si)) {
-      stop("method uncertain_si requires to specify the config$max_mean_si 
-           argument.")
+      stop("method uncertain_si requires to specify the config$max_mean_si argument.",
+           call. = FALSE)
     }
     if (is.null(config$std_std_si)) {
-      stop("method uncertain_si requires to specify the config$std_std_si 
-           argument.")
+      stop("method uncertain_si requires to specify the config$std_std_si argument.",
+           call. = FALSE)
     }
     if (is.null(config$min_std_si)) {
-      stop("method uncertain_si requires to specify the config$min_std_si 
-           argument.")
+      stop("method uncertain_si requires to specify the config$min_std_si argument.",
+           call. = FALSE)
     }
     if (is.null(config$max_std_si)) {
-      stop("method uncertain_si requires to specify the config$max_std_si 
-           argument.")
+      stop("method uncertain_si requires to specify the config$max_std_si argument.",
+           call. = FALSE)
     }
     if (config$mean_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$mean_si.")
+      stop("method uncertain_si requires a >0 value for config$mean_si.",
+           call. = FALSE)
     }
     if (config$std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_si.")
+      stop("method uncertain_si requires a >0 value for config$std_si.",
+           call. = FALSE)
     }
     if (config$n2 <= 0 || config$n2 %% 1 != 0) {
-      stop("method uncertain_si requires a >0 integer value for config$n2.")
+      stop("method uncertain_si requires a >0 integer value for config$n2.",
+           call. = FALSE)
     }
     if (config$n1 <= 0 || config$n1 %% 1 != 0) {
-      stop("method uncertain_si requires a >0 integer value for config$n1.")
+      stop("method uncertain_si requires a >0 integer value for config$n1.",
+           call. = FALSE)
     }
     if (config$std_mean_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_mean_si.")
+      stop("method uncertain_si requires a >0 value for config$std_mean_si.",
+           call. = FALSE)
     }
     if (config$min_mean_si < 1) {
-      stop("method uncertain_si requires a value >=1 for config$min_mean_si.")
+      stop("method uncertain_si requires a value >=1 for config$min_mean_si.",
+           call. = FALSE)
     }
     if (config$max_mean_si < config$mean_si) {
-      stop("method uncertain_si requires that config$max_mean_si >= 
-           config$mean_si.")
+      stop("method uncertain_si requires that config$max_mean_si >= config$mean_si.",
+           call. = FALSE)
     }
     if (config$mean_si < config$min_mean_si) {
-      stop("method uncertain_si requires that config$mean_si >= 
-           config$min_mean_si.")
+      stop("method uncertain_si requires that config$mean_si >= config$min_mean_si.",
+           call. = FALSE)
     }
     if (signif(config$max_mean_si - config$mean_si, 3) != signif(config$mean_si -
       config$min_mean_si, 3)) {
-      warning("The distribution you chose for the mean SI is not centered around
-              the mean.")
+      warning("The distribution you chose for the mean SI is not centered around the mean.",
+              call. = FALSE)
     }
     if (config$std_std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_std_si.")
+      stop("method uncertain_si requires a >0 value for config$std_std_si.",
+           call. = FALSE)
     }
     if (config$min_std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$min_std_si.")
+      stop("method uncertain_si requires a >0 value for config$min_std_si.",
+           call. = FALSE)
     }
     if (config$max_std_si < config$std_si) {
-      stop("method uncertain_si requires that config$max_std_si >= 
-           config$std_si.")
+      stop("method uncertain_si requires that config$max_std_si >= config$std_si.",
+           call. = FALSE)
     }
     if (config$std_si < config$min_std_si) {
-      stop("method uncertain_si requires that config$std_si >= 
-           config$min_std_si.")
+      stop("method uncertain_si requires that config$std_si >= config$min_std_si.",
+           call. = FALSE)
     }
     if (signif(config$max_std_si - config$std_si, 3) != signif(config$std_si -
       config$min_std_si, 3)) {
-      warning("The distribution you chose for the std of the SI is not centered 
-              around the mean.")
+      warning("The distribution you chose for the std of the SI is not centered around the mean.",
+              call. = FALSE)
     }
   }
-  if (config$cv_posterior < 0) {
-    stop("config$cv_posterior must be >0.")
+  if (method == "si_from_sample") {
+    if (is.null(config$n2)) {
+      stop("method si_from_sample requires to specify the config$n2 argument.",
+           call. = FALSE)
+    }
+    if (config$n2 <= 0 || config$n2 %% 1 != 0) {
+      stop("method si_from_sample requires a >0 integer value for config$n2.",
+           call. = FALSE)
+    }
+  }
+  if (!is.null(n_time_steps)) {
+    check_times(config$t_start, config$t_end, n_time_steps)
+  }
+  if (!is.null(config$cv_posterior) && config$cv_posterior < 0) {
+    stop("config$cv_posterior must be >0.", call. = FALSE)
   }
 }
 
@@ -517,4 +542,3 @@ si_from_data_valid_distrs <- function(dist) {
   }
   list(is_dist_valid = dist %in% valid_names, all_valid_distrs = valid_names)
 }
-

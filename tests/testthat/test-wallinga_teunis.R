@@ -3,8 +3,6 @@ data(Flu2009)
 test_that(
   "wallinga_teunis() outputs the right errors/warnings",
   {
-
-    msg <- "method non_parametric_si requires to specify the config\\$mean_si argument."
     expect_error(
       wallinga_teunis(
         1:10,
@@ -13,10 +11,9 @@ test_that(
                       t_end = 6,
                       n_sim = 10)
       ),
-      msg
+      "method parametric_si requires to specify the config\\$mean_si\\s+argument\\."
     )
 
-    msg <- "method non_parametric_si requires to specify the config\\$std_si argument."
     expect_error(
       wallinga_teunis(
         1:10,
@@ -26,10 +23,21 @@ test_that(
                       n_sim = 10,
                       mean_si = 3)
       ),
-      msg
+      "method parametric_si requires to specify the config\\$std_si\\s+argument\\."
     )
-    
-    msg <- "method parametric_si requires a value >1 for config\\$mean_si."
+
+    expect_error(
+      wallinga_teunis(
+        1:10,
+        method = "non_parametric_si",
+        config = list(t_start = 3,
+                      t_end = 6,
+                      n_sim = -1,
+                      si_distr = Flu2009$si_distr)
+      ),
+      "config\\$n_sim must be a positive integer."
+    )
+
     expect_error(
       wallinga_teunis(
         1:10,
@@ -40,7 +48,7 @@ test_that(
                       mean_si = -2,
                       std_si = 3)
       ),
-      msg
+      "method parametric_si requires a value >1 for config\\$mean_si."
     )
 
   }
