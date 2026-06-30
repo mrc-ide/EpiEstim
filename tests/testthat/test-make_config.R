@@ -7,6 +7,48 @@ test_that("make_config triggers error when given method argument", {
     msg)
 })
 
+test_that("make_config accepts valid direct arguments", {
+  expect_silent({
+    config <- make_config(
+      mean_si = 2.6,
+      std_si = 1.5,
+      n1 = 250,
+      n2 = 75,
+      mean_prior = 4,
+      std_prior = 6,
+      cv_posterior = 0.2
+    )
+  })
+
+  expect_s3_class(config, "estimate_R_config")
+  expect_equal(config$mean_si, 2.6)
+  expect_equal(config$std_si, 1.5)
+  expect_equal(config$n1, 250)
+  expect_equal(config$n2, 75)
+  expect_equal(config$mean_prior, 4)
+  expect_equal(config$std_prior, 6)
+  expect_equal(config$cv_posterior, 0.2)
+})
+
+test_that("make_config accepts valid incidence and time windows", {
+  incid <- data.frame(
+    local = c(0, 1, 2, 1, 0, 1, 2, 1),
+    imported = rep(0, 8)
+  )
+
+  expect_silent({
+    config <- make_config(
+      incid = incid,
+      t_start = c(2, 4),
+      t_end = c(5, 7)
+    )
+  })
+
+  expect_s3_class(config, "estimate_R_config")
+  expect_equal(config$t_start, c(2, 4))
+  expect_equal(config$t_end, c(5, 7))
+})
+
 test_that("make_config triggers process_I error for invalid incid columns", {
   incid <- data.frame(foo = 1:5, bar = 6:10)
   expect_error(
