@@ -1,5 +1,5 @@
 ---
-title: "EpiEstim Vignette"
+title: "Full EpiEstim vignette"
 author: "Rebecca Nash"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
