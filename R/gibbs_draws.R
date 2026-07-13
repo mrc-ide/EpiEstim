@@ -125,13 +125,7 @@ default_mcmc_controls <- function() {
 
 #' Compute the overall infectivity
 #'
-#' @inheritParams estimate_advantage incid
-#'
-#' @param si_distr a matrix where each column contains the probability mass
-#'   function for the discrete serial interval for each of the
-#'   pathogen/strain/variants, starting with the probability mass function
-#'   for day 0 in the first row, which should be 0. Each column in the matrix
-#'   should sum to 1
+#' @inheritParams estimate_advantage incid si_distr
 #'
 #' @return a multidimensional array containing values of the overall
 #'   infectivity for each time step (1st dimension), location (2nd dimension)
@@ -190,7 +184,7 @@ compute_lambda <- function(incid, si_distr) {
 #'   reproduction number for each time step (row) and location (column), for
 #'   the reference pathogen/strain/variant
 #'
-#' @inheritParams estimate_advantage incid
+#' @inheritParams estimate_advantage incid priors 
 #'
 #' @param lambda a multidimensional array containing values of the overall
 #'   infectivity for each time step (1st dimension), location (2nd dimension)
@@ -200,11 +194,6 @@ compute_lambda <- function(incid, si_distr) {
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. It can be calculated from the incidence `incid` and
 #'   the distribution of the serial interval using function [compute_lambda()]
-#'
-#' @param priors a list of prior parameters (shape and scale of a gamma
-#'   distribution) for epsilon and R; can be obtained from the function
-#'   [default_priors()]. The prior for R is assumed to be the same for all
-#'   time steps and all locations
 #'
 #' @param shape_epsilon a value or vector of values of the shape of the posterior
 #'   distribution of epsilon for each of the non-reference variants, as returned
