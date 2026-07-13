@@ -20,8 +20,7 @@ draw_epsilon(
 reproduction number for each time step (row) and location (column), for
 the reference pathogen/strain/variant}
 
-\item{incid}{a multidimensional array containing values of the (local)
-incidence
+\item{incid}{a multidimensional array containing values of the incidence
 for each time step (1st dimension), location (2nd dimension) and
 pathogen/strain/variant (3rd dimension)}
 

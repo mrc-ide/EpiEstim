@@ -7,8 +7,7 @@
 get_shape_epsilon(incid, lambda, priors, t_min = 2L, t_max = nrow(incid))
 }
 \arguments{
-\item{incid}{a multidimensional array containing values of the (local)
-incidence
+\item{incid}{a multidimensional array containing values of the incidence
 for each time step (1st dimension), location (2nd dimension) and
 pathogen/strain/variant (3rd dimension)}
 

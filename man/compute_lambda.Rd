@@ -7,9 +7,7 @@
 compute_lambda(incid, si_distr)
 }
 \arguments{
-\item{incid}{a list (as obtained from function \code{\link[=process_I_multivariant]{process_I_multivariant()}})
-of two multidimensional arrays (\code{local} and \code{imported}) containing values
-of the incidence
+\item{incid}{a multidimensional array containing values of the incidence
 for each time step (1st dimension), location (2nd dimension) and
 pathogen/strain/variant (3rd dimension)}
 

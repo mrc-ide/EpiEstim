@@ -7,14 +7,13 @@
 get_shape_R_flat(incid, priors, t_min = 2L, t_max = nrow(incid))
 }
 \arguments{
-\item{incid}{a multidimensional array containing values of the (local)
-incidence
+\item{incid}{a multidimensional array containing values of the incidence
 for each time step (1st dimension), location (2nd dimension) and
 pathogen/strain/variant (3rd dimension)}
 
 \item{priors}{a list of prior parameters (shape and scale of a gamma
 distribution) for epsilon and R; can be obtained from the function
-\code{default_priors}. The prior for R is assumed to be the same for all
+\code{\link[=default_priors]{default_priors()}}. The prior for R is assumed to be the same for all
 time steps and all locations}
 
 \item{t_min}{an integer > 1 giving the minimum time step to consider in the

@@ -1,14 +1,6 @@
 #' Precompute shape of posterior distribution for R
 #'
-#' @param incid a multidimensional array containing values of the (local)
-#'   incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
-#'
-#' @param priors a list of prior parameters (shape and scale of a gamma
-#'   distribution) for epsilon and R; can be obtained from the function
-#'   `default_priors`. The prior for R is assumed to be the same for all
-#'   time steps and all locations
+#' @inheritParams estimate_advantage incid priors
 #'
 #' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
@@ -40,10 +32,7 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 
 #' Precompute shape of posterior distribution for epsilon
 #'
-#' @param incid a multidimensional array containing values of the (local)
-#'   incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
+#' @inheritParams estimate_advantage incid priors
 #'
 #' @param lambda a multidimensional array containing values of the overall
 #'   infectivity for each time step (1st dimension), location (2nd dimension)
@@ -53,11 +42,6 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. It can be calculated from the incidence `incid` and
 #'   the distribution of the serial interval using function [compute_lambda()]
-#'
-#' @param priors a list of prior parameters (shape and scale of a gamma
-#'   distribution) for epsilon and R; can be obtained from the function
-#'   [default_priors()]. The prior for R is assumed to be the same for all
-#'   time steps and all locations
 #'
 #' @param t_min an integer > 1 giving the minimum time step to consider in the
 #'   estimation. Default value is 2 (as the estimation is conditional on
@@ -141,11 +125,7 @@ default_mcmc_controls <- function() {
 
 #' Compute the overall infectivity
 #'
-#' @param incid a list (as obtained from function [process_I_multivariant()])
-#'   of two multidimensional arrays (`local` and `imported`) containing values 
-#'   of the incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
+#' @inheritParams estimate_advantage incid
 #'
 #' @param si_distr a matrix where each column contains the probability mass
 #'   function for the discrete serial interval for each of the
@@ -210,10 +190,7 @@ compute_lambda <- function(incid, si_distr) {
 #'   reproduction number for each time step (row) and location (column), for
 #'   the reference pathogen/strain/variant
 #'
-#' @param incid a multidimensional array containing values of the (local)
-#'   incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
+#' @inheritParams estimate_advantage incid
 #'
 #' @param lambda a multidimensional array containing values of the overall
 #'   infectivity for each time step (1st dimension), location (2nd dimension)
@@ -300,10 +277,7 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   of the "new" pathogen/strain/variant(s) compared to the reference
 #'   pathogen/strain/variant
 #'
-#' @param incid a multidimensional array containing values of the (local)
-#'   incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
+#' @inheritParams estimate_advantage incid priors
 #'
 #' @param lambda a multidimensional array containing values of the overall
 #'   infectivity for each time step (1st dimension), location (2nd dimension)
@@ -313,11 +287,6 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. It can be calculated from the incidence `incid` and
 #'   the distribution of the serial interval using function [compute_lambda()]
-#'
-#' @param priors a list of prior parameters (shape and scale of a gamma
-#'   distribution) for epsilon and R; can be obtained from the function
-#'   [default_priors()]. The prior for R is assumed to be the same for all
-#'   time steps and all locations
 #'
 #' @param shape_R_flat a vector of the shape of the posterior distribution of R
 #'   for each time step t and each location l
@@ -775,9 +744,7 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 #' 
 #' Process incidence input for multivariant analyses with [estimate_advantage()]
 #'
-#' @param incid a multidimensional array containing values of the incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
+#' @inheritParams estimate_advantage 
 #'
 #' @param incid_imported an optional multidimensional array containing values
 #'   of the incidence of imported cases
