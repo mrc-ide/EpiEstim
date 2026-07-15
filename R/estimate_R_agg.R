@@ -44,15 +44,7 @@
 #' must also be specified. If \code{NULL} (default), no date information is 
 #' added to the output.
 #'
-#' @param date_convention One of `"start"` or `"end"`, specifying whether the 
-#' dates supplied in `incid$dates` correspond to the first or last day of each 
-#' aggregation window. Must be specified if incidence are temporally
-#' aggregated (`dt > 1`) and `incid$dates` is supplied.
-#' For example, for weekly epi-week data where the date label 
-#' corresponds to the first day of the week (e.g. Monday), use `"start"`. For 
-#' data reported multiple times per week where the date corresponds to the 
-#' reporting date (i.e. the last day of the accumulation window), use `"end"`.
-#' Ignored if no dates are supplied.
+#' @inheritParams estimate_R date_convention 
 #'
 #' @return 
 #' An object of class [estimate_R()], with components:
