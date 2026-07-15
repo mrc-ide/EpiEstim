@@ -38,14 +38,11 @@ distribution) for epsilon and R; can be obtained from the function
 \code{\link[=default_priors]{default_priors()}}. The prior for R is assumed to be the same for all
 time steps and all locations}
 
-\item{shape_R_flat}{a vector of the shape of the posterior distribution of R
-for each time step t and each location l
-(stored in element \code{(l-1)*(t_max - t_min + 1) + t} of the vector),
-as obtained from function \code{\link[=get_shape_R_flat]{get_shape_R_flat()}}.}
-
 \item{t_min}{an integer > 1 giving the minimum time step to consider in the
-estimation. Default value is 2 (as the estimation is conditional on
-observations at time step 1 and can therefore only start at time step 2).}
+estimation.
+If \code{NULL}, \code{t_min} is calculated using the function \code{\link[=compute_si_cutoff]{compute_si_cutoff()}}
+which gets the maximum (across all variants) of the 95th percentile of the
+SI distribution.}
 
 \item{t_max}{an integer > \code{t_min} and <= \code{nrow(incid)} giving the maximum time
 step to consider in the estimation. Default value is \code{nrow(incid)}.}

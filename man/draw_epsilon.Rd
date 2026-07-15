@@ -43,8 +43,10 @@ distribution of epsilon for each of the non-reference variants, as returned
 by function \code{\link[=get_shape_epsilon]{get_shape_epsilon()}}}
 
 \item{t_min}{an integer > 1 giving the minimum time step to consider in the
-estimation. Default value is 2 (as the estimation is conditional on
-observations at time step 1 and can therefore only start at time step 2).}
+estimation.
+If \code{NULL}, \code{t_min} is calculated using the function \code{\link[=compute_si_cutoff]{compute_si_cutoff()}}
+which gets the maximum (across all variants) of the 95th percentile of the
+SI distribution.}
 
 \item{t_max}{an integer > \code{t_min} and <= \code{nrow(incid)} giving the maximum time
 step to consider in the estimation. Default value is \code{nrow(incid)}.}
