@@ -8,14 +8,9 @@
 #'
 #' @export
 #'
+#' @example man/examples/multivariant_setup.R
 #' @examples
-#' n_v <- 2
-#' n_loc <- 3 # 3 locations
-#' T <- 100 # 100 time steps
-#' priors <- default_priors()
-#' # constant incidence 10 per day everywhere
-#' incid <- array(10, dim = c(T, n_loc, n_v))
-#' get_shape_R_flat(incid, priors)
+#' get_shape_R_flat(incid$local, priors)
 
 get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
@@ -33,18 +28,8 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 #'
 #' @export
 #'
+#' @example man/examples/multivariant_setup.R
 #' @examples
-#' n_loc <- 4 # 4 locations
-#' n_v <- 3 # 3 strains
-#' T <- 100 # 100 time steps
-#' priors <- default_priors()
-#' # constant incidence 10 per day everywhere
-#' incid <- array(10, dim = c(T, n_loc, n_v))
-#' incid <- process_I_multivariant(incid)
-#' # arbitrary serial interval, same for both variants
-#' w_v <- c(0, 0.2, 0.5, 0.3)
-#' si_distr <- cbind(w_v, w_v, w_v)
-#' lambda <- compute_lambda(incid, si_distr)
 #' get_shape_epsilon(incid$local, lambda, priors)
 
 get_shape_epsilon <- function(incid, lambda, priors,
@@ -116,18 +101,7 @@ default_mcmc_controls <- function() {
 #'
 #' @export
 #'
-#' @examples
-#' n_v <- 2
-#' n_loc <- 3 # 3 locations
-#' T <- 100 # 100 time steps
-#' priors <- default_priors()
-#' # constant incidence 10 per day everywhere
-#' incid <- array(10, dim = c(T, n_loc, n_v))
-#' incid <- process_I_multivariant(incid)
-#' # arbitrary serial interval, same for both variants
-#' w_v <- c(0, 0.2, 0.5, 0.3)
-#' si_distr <- cbind(w_v, w_v)
-#' lambda <- compute_lambda(incid, si_distr)
+#' @example man/examples/multivariant_setup.R
 
 compute_lambda <- function(incid, si_distr) {
   if (!inherits(incid, "incid_multivariant")) {
@@ -171,18 +145,8 @@ compute_lambda <- function(incid, si_distr) {
 #'
 #' @export
 #'
+#' @example man/examples/multivariant_setup.R
 #' @examples
-#' n_loc <- 4 # 4 locations
-#' n_v <- 3 # 3 strains
-#' T <- 100 # 100 time steps
-#' priors <- default_priors()
-#' # constant incidence 10 per day everywhere
-#' incid <- array(10, dim = c(T, n_loc, n_v))
-#' incid <- process_I_multivariant(incid)
-#' # arbitrary serial interval, same for both variants
-#' w_v <- c(0, 0.2, 0.5, 0.3)
-#' si_distr <- cbind(w_v, w_v, w_v)
-#' lambda <- compute_lambda(incid, si_distr)
 #' # Constant reproduction number of 1
 #' R <- matrix(1, nrow = T, ncol = n_loc)
 #' R[1, ] <- NA # no estimates of R on first time step
@@ -710,4 +674,3 @@ process_I_multivariant <- function(incid, incid_imported = NULL) {
 
 ## TODO: check dimensions of objects is correct everywhere
 ## TODO: fix number of variants to be 2
-
