@@ -8,11 +8,11 @@ mass is captured}
 compute_si_cutoff(si_distr, miss_at_most = 0.05)
 }
 \arguments{
-\item{si_distr}{a matrix with two columns, each containing the probability mass
-function for the discrete serial interval for each of the two
-pathogen/strain/variants, starting with the probability mass function
-for day 0 in the first row, which should be 0. Each column in the matrix
-should sum to 1.}
+\item{si_distr}{a matrix of discretised probability distributions
+(each column sums to 1). This could be privided by the user if using
+non_parametric serial interval distributions, or could be generated internally
+by the function \code{\link[=estimate_advantage]{estimate_advantage()}} if using parametric serial interval
+distribution specification.}
 
 \item{miss_at_most}{numeric. Probability mass in the tail of the SI distribution}
 }

@@ -856,6 +856,113 @@ test_that("estimate_advantage uses the correct t_min", {
   expect_false(anyNA(x$R[seq(t_min, dim(x$R)[1]), , ]))
 })
 
+test_that("estimate_advantage parametric_si matches an equivalent discrete SI matrix", {
+  n_v <- 2 # 2 variants
+  n_loc <- 2 # 2 locations
+  T <- 40 # 40 time steps
+
+  priors <- default_priors()
+  mcmc_control <- list(n_iter = 100L, burnin = 20L, thin = 5L)
+
+  incid <- array(10, dim = c(T, n_loc, n_v))
+  mean_si <- c(2.6, 3.1)
+  std_si <- c(1.5, 1.2)
+
+  si_parametric <- matrix(NA_real_, nrow = T, ncol = n_v)
+  for (k in seq_len(n_v)) {
+    col <- discr_si(seq(0, T - 1), mean_si[k], std_si[k])
+    si_parametric[, k] <- col / sum(col)
+  }
+
+  parametric_out <- estimate_advantage(
+    incid,
+    priors = priors,
+    mcmc_control = mcmc_control,
+    seed = 1,
+    t_min = 2L,
+    method = "parametric_si",
+    mean_si = mean_si,
+    std_si = std_si
+  )
+
+  discrete_out <- estimate_advantage(
+    incid,
+    si_parametric,
+    priors = priors,
+    mcmc_control = mcmc_control,
+    seed = 1,
+    t_min = 2L
+  )
+
+  expect_equal(parametric_out$epsilon, discrete_out$epsilon)
+  expect_equal(parametric_out$R, discrete_out$R)
+  expect_equal(parametric_out$convergence, discrete_out$convergence)
+  expect_equal(parametric_out$diag, discrete_out$diag)
+  expect_equal(parametric_out$si_distr, discrete_out$si_distr)
+  expect_equal(parametric_out$SI.Moments, discrete_out$SI.Moments)
+})
+
+test_that("estimate_advantage parametric_si validates SI inputs", {
+  incid <- array(10, dim = c(20, 2, 2))
+  priors <- default_priors()
+
+  expect_error(
+    estimate_advantage(incid, priors = priors, method = "parametric_si", std_si = 1.5),
+    "mean_si must be supplied"
+  )
+  expect_error(
+    estimate_advantage(incid, priors = priors, method = "parametric_si", mean_si = 2.6),
+    "std_si must be supplied"
+  )
+  expect_error(
+    estimate_advantage(incid, priors = priors, method = "parametric_si", mean_si = 1, std_si = 1.5),
+    "mean_si"
+  )
+  expect_error(
+    estimate_advantage(incid, priors = priors, method = "parametric_si", mean_si = 2.6, std_si = 0),
+    "std_si"
+  )
+  expect_error(
+    estimate_advantage(
+      incid,
+      priors = priors,
+      method = "parametric_si",
+      mean_si = c(2.6, 3.1, 3.4),
+      std_si = c(1.5, 1.2, 1.1)
+    ),
+    "length 1 or n_v"
+  )
+})
+
+test_that("estimate_advantage parametric_si uses the computed t_min when omitted", {
+  n_v <- 2
+  n_loc <- 2
+  T <- 50
+  incid <- array(10, dim = c(T, n_loc, n_v))
+  mean_si <- 2.6
+  std_si <- 1.5
+
+  si_parametric <- matrix(NA_real_, nrow = T, ncol = n_v)
+  for (k in seq_len(n_v)) {
+    col <- discr_si(seq(0, T - 1), mean_si, std_si)
+    si_parametric[, k] <- col / sum(col)
+  }
+  expected_t_min <- compute_t_min(incid, si_parametric)
+
+  out <- estimate_advantage(
+    incid,
+    priors = default_priors(),
+    mcmc_control = list(n_iter = 15L, burnin = 5L, thin = 5L),
+    seed = 1,
+    method = "parametric_si",
+    mean_si = mean_si,
+    std_si = std_si
+  )
+
+  expect_true(all(is.na(out$R[seq(1, expected_t_min - 1), , seq_len(dim(out$R)[3])])))
+  expect_false(anyNA(out$R[seq(expected_t_min, dim(out$R)[1]), , seq_len(dim(out$R)[3])]))
+})
+
 
 
 test_that("estimate_advantage convergence checks work with >2 variants", {

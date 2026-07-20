@@ -1,5 +1,9 @@
 # EpiEstim 3.0.0
 
+* `estimate_advantage` now supports parametric serial interval specification.
+
+# EpiEstim 3.0.0
+
 ## New features
 
 - `wallinga_teunis()` is now an S3 generic with methods for `integer`,
