@@ -1,0 +1,55 @@
+# Data on the 1972 smallpox epidemic in Kosovo
+
+This data set gives:
+
+1.  the daily incidence of onset of symptoms in Kosovo during the 1972
+    smallpox epidemic (see source and references),
+
+2.  the discrete daily distribution of the serial interval for smallpox,
+    assuming a shifted Gamma distribution with mean 22.4 days, standard
+    deviation 6.1 days and shift 1 day (see references).
+
+## Format
+
+A list of two elements:
+
+- **incidence**: a vector containing 57 days of observation,
+
+- **si_distr**: a vector containing a set of 46 probabilities.
+
+## Source
+
+Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World
+Health Organization.
+
+## References
+
+Fenner F. et al. (1988) Smallpox and its Eradication. Geneva, World
+Health Organization.
+
+Gani R. and S. Leach (2001) Transmission potential of smallpox in
+contemporary populations. Nature 414(6865): 748-751.
+
+Riley S. and N. M. Ferguson (2006) Smallpox transmission and control:
+spatial dynamics in Great Britain. Proc Natl Acad Sci U S A 103(33):
+12637-12642.
+
+## Examples
+
+``` r
+## load data on smallpox in Kosovo in 1972
+data("Smallpox1972")
+
+## estimate the reproduction number (method "non_parametric_si")
+res <- estimate_R(Smallpox1972$incidence, method="non_parametric_si",
+          config = make_config(list(
+                      t_start = seq(27, 51), 
+                      t_end = seq(33, 57),
+                      si_distr = Smallpox1972$si_distr)))
+
+plot(res)
+
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number
+## over the 7-day window finishing on that day.
+```

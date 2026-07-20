@@ -1,0 +1,55 @@
+# Mock data on a rotavirus epidemic.
+
+This data set gives:
+
+1.  the daily incidence of onset of symptoms in a mock outbreak of
+    rotavirus,
+
+2.  mock observations of symptom onset dates for 19 pairs of
+    infector/infected individuals.
+
+## Format
+
+A list of two elements:
+
+- **incidence**: a vector containing 53 days of observation,
+
+- **si_distr**: a dataframe containing a set of 19 observations; each
+  observation corresponds to a pair of infector/infected individuals. EL
+  and ER columns contain the lower an upper bounds of the dates of
+  symptoms onset in the infectors. SL and SR columns contain the lower
+  an upper bounds of the dates of symptoms onset in the infected
+  individuals. The type column has entries 0, 1, or 2, corresponding to
+  doubly interval-censored, single interval-censored or exact
+  observations, respectively, see Reich et al. Statist. Med. 2009
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+## Note the following example uses an MCMC routine
+## to estimate the serial interval distribution from data,
+## so may take a few minutes to run
+
+## load data
+data("MockRotavirus")
+
+## estimate the reproduction number (method "si_from_data")
+res <- estimate_R(
+  MockRotavirus$incidence,
+  method = "si_from_data",
+  si_data = MockRotavirus$si_data,
+  config = make_config(list(
+    si_parametric_distr = "G",
+    mcmc_control = make_mcmc_control(list(burnin = 3000, thin = 10)),
+    n1 = 500,
+    n2 = 50
+  ))
+)
+
+plot(res)
+## the second plot produced shows, at each each day,
+## the estimate of the reproduction number
+## over the 7-day window finishing on that day.
+} # }
+```

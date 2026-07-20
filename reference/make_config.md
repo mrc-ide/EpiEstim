@@ -1,0 +1,324 @@
+# Set and check parameter settings for [`estimate_R()`](https://mrc-ide.github.io/EpiEstim/reference/estimate_R.md)
+
+Define parameters settings for
+[`estimate_R()`](https://mrc-ide.github.io/EpiEstim/reference/estimate_R.md).
+It takes a list of named items as input, sets defaults where arguments
+are missing, and returns a list of settings.
+
+## Usage
+
+``` r
+make_config(..., incid = NULL)
+```
+
+## Arguments
+
+- ...:
+
+  Acceptable arguments for `...` are:
+
+  - `t_start`: Vector of positive integers giving the starting times of
+    each window over which the reproduction number will be estimated.
+    These must be in ascending order, and so that for all `i`,
+    `t_start[i] <= t_end[i]`. `t_start[1]` should be strictly after the
+    first day with non null incidence.
+
+  - `t_end`: Vector of positive integers giving the ending times of each
+    window over which the reproduction number will be estimated. These
+    must be in ascending order, and so that for all `i`,
+    `t_start[i] <= t_end[i]`.
+
+  - `n1`: For method "uncertain_si" and "si_from_data"; positive integer
+    giving the size of the sample of SI distributions to be drawn (see
+    details).
+
+  - `n2`: For methods "uncertain_si", "si_from_data" and
+    "si_from_sample"; positive integer giving the size of the sample
+    drawn from the posterior distribution of R for each serial interval
+    distribution considered (see details).
+
+  - `mean_si`: For method "parametric_si" and "uncertain_si"; positive
+    real giving the mean serial interval (method "parametric_si") or the
+    average mean serial interval (method "uncertain_si", see details).
+
+  - `std_si`: For method "parametric_si" and "uncertain_si"; non
+    negative real giving the standard deviation of the serial interval
+    (method "parametric_si") or the average standard deviation of the
+    serial interval (method "uncertain_si", see details).
+
+  - `std_mean_si`: For method "uncertain_si"; standard deviation of the
+    distribution from which mean serial intervals are drawn (see
+    details).
+
+  - `min_mean_si`: For method "uncertain_si"; lower bound of the
+    distribution from which mean serial intervals are drawn (see
+    details).
+
+  - `max_mean_si`: For method "uncertain_si"; upper bound of the
+    distribution from which mean serial intervals are drawn (see
+    details).
+
+  - `std_std_si`: For method "uncertain_si"; standard deviation of the
+    distribution from which standard deviations of the serial interval
+    are drawn (see details).
+
+  - `min_std_si`: For method "uncertain_si"; lower bound of the
+    distribution from which standard deviations of the serial interval
+    are drawn (see details).
+
+  - `max_std_si`: For method "uncertain_si"; upper bound of the
+    distribution from which standard deviations of the serial interval
+    are drawn (see details).
+
+  - `si_distr`: For method "non_parametric_si"; vector of probabilities
+    giving the discrete distribution of the serial interval, starting
+    with `si_distr[1]` (probability that the serial interval is zero),
+    which should be zero. Note that EpiEstim assumes that the serial
+    interval is always strictly positive.
+
+  - `si_parametric_distr`: For method "si_from_data"; the parametric
+    distribution to use when estimating the serial interval from data on
+    dates of symptoms of pairs of infector/infected individuals (see
+    details). Should be one of "G" (Gamma), "W" (Weibull), "L"
+    (Lognormal), "off1G" (Gamma shifted by 1), "off1W" (Weibull shifted
+    by 1), or "off1L" (Lognormal shifted by 1).
+
+  - `mcmc_control`: An object of class `estimate_R_mcmc_control`, as
+    returned by function `make_mcmc_control`.
+
+  - `mean_prior`: A positive number giving the mean of the common prior
+    distribution for all reproduction numbers (see details).
+
+  - `std_prior`: A positive number giving the standard deviation of the
+    common prior distribution for all reproduction numbers (see
+    details).
+
+  - `cv_posterior`: A positive number giving the aimed posterior
+    coefficient of variation (see details).
+
+- incid:
+
+  One of the following
+
+  - A vector (or a dataframe with a single column) of non-negative
+    integers containing the incidence time series; these can be
+    aggregated at any time unit as specified by argument `dt`
+
+  - A dataframe of non-negative integers with either i) `incid$I`
+    containing the total incidence, or ii) two columns, so that
+    `incid$local` contains the incidence of cases due to local
+    transmission and `incid$imported` contains the incidence of imported
+    cases (with `incid$local + incid$imported` the total incidence). If
+    the dataframe contains a column `incid$dates`, this is used for
+    plotting. `incid$dates` must contains only dates in a row.
+
+  - An object of class
+    [`incidence::incidence()`](https://www.repidemicsconsortium.org/incidence/reference/incidence.html)
+
+  Note that the cases from the first time step are always all assumed to
+  be imported cases.
+
+## Value
+
+An object of class `estimate_R_config` with components `t_start`,
+`t_end`, `n1`, `n2`, `mean_si`, `std_si`, `std_mean_si`, `min_mean_si`,
+`max_mean_si`, `std_std_si`, `min_std_si`, `max_std_si`, `si_distr`,
+`si_parametric_distr`, `mcmc_control`, `seed`, `mean_prior`,
+`std_prior`, `cv_posterior`, which can be used as an argument of
+function
+[`estimate_R()`](https://mrc-ide.github.io/EpiEstim/reference/estimate_R.md).
+
+## Details
+
+Analytical estimates of the reproduction number for an epidemic over
+predefined time windows can be obtained using function
+[`estimate_R()`](https://mrc-ide.github.io/EpiEstim/reference/estimate_R.md),
+for a given discrete distribution of the serial interval.
+`make_config()` generates configuration specifying the way the
+estimation will be performed.
+
+The more incident cases observed over a time window, the smallest the
+posterior coefficient of variation (CV, ratio of standard deviation over
+mean) of the reproduction number. An aimed CV can be specified in the
+argument `cv_posterior` (default is `0.3`), and a warning will be
+produced if the incidence within one of the time windows considered is
+too low to get this CV.
+
+### Methods
+
+The methods vary in the way the serial interval distribution is
+specified.
+
+In short there are five methods to specify the serial interval
+distribution (see below for details on each method). This is specified
+in the argument `method` of the
+[`estimate_R()`](https://mrc-ide.github.io/EpiEstim/reference/estimate_R.md)
+function. In the first two methods, a unique serial interval
+distribution is considered, whereas in the last three, a range of serial
+interval distributions are integrated over:
+
+- "non_parametric_si": the user specifies the discrete distribution of
+  the serial interval
+
+- "parametric_si": the user specifies the mean and sd of the serial
+  interval
+
+- "uncertain_si": the mean and sd of the serial interval are each drawn
+  from truncated normal distributions, with parameters specified by the
+  user
+
+- "si_from_data": the serial interval distribution is directly
+  estimated, using MCMC, from interval censored exposure data, with data
+  provided by the user together with a choice of parametric distribution
+  for the serial interval
+
+- "si_from_sample": the user directly provides the sample of serial
+  interval distribution to use for estimation of R. This can be a useful
+  alternative to the previous method, where the MCMC estimation of the
+  serial interval distribution could be run once, and the same estimated
+  SI distribution then used in
+  [`estimate_R()`](https://mrc-ide.github.io/EpiEstim/reference/estimate_R.md)
+  in different contexts, e.g. with different time windows, hence
+  avoiding having to rerun the MCMC every time
+  [`estimate_R()`](https://mrc-ide.github.io/EpiEstim/reference/estimate_R.md)
+  is called.
+
+#### `method = "non_parametric_si"`
+
+The discrete distribution of the serial interval is directly specified
+in the argument `si_distr`.
+
+#### `method = "parametric_si"`
+
+The mean and standard deviation of the continuous distribution of the
+serial interval are given in the arguments `mean_si` and `std_si`. The
+discrete distribution of the serial interval is derived automatically
+using
+[`discr_si()`](https://mrc-ide.github.io/EpiEstim/reference/discr_si.md).
+
+#### `method = "uncertain_si"`
+
+Method "uncertain_si" allows accounting for uncertainty on the serial
+interval distribution as described in Cori et al. AJE 2013. We allow the
+mean \\\mu\\ and standard deviation \\\sigma\\ of the serial interval to
+vary according to truncated normal distributions. We sample `n1` pairs
+of mean and standard deviations,
+\\(\mu^{(1)},\sigma^{(1)}),...,(\mu^{(n_1)},\sigma^{(n_1)})\\, by
+independently sampling the mean \\\mu^{(k)}\\ from its truncated normal
+distribution (with mean `mean_si`, standard deviation `std_mean_si`,
+minimum `min_mean_si` and maximum `max_mean_si`), and the standard
+deviation \\\sigma^{(k)}\\ from its truncated normal distribution (with
+mean `std_si`, standard deviation `std_std_si`, minimum `min_std_si` and
+maximum `max_std_si`). Warnings are produced when the truncated normal
+distributions are not symmetric around the mean. For each pair
+\\(\mu^{(k)},\sigma^{(k)})\\, we then draw a sample of size `n2` in the
+posterior distribution of the reproduction number over each time window,
+conditionally on this parametric serial interval distribution (using the
+`discr_si` function to generate the corresponding serial interval
+probability mass function). After pooling across the `n1` serial
+interval distributions, a sample of size \\\`n1\` \times \`n2\`\\ of the
+joint posterior distribution of the reproduction number over each time
+window is obtained. The posterior mean, standard deviation, and 0.025,
+0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction number
+for each time window are obtained from this sample.
+
+#### `method = "si_from_data"`
+
+Method "si_from_data" allows accounting for uncertainty on the serial
+interval distribution. Unlike method "uncertain_si", where we
+arbitrarily vary the mean and std of the SI in truncated normal
+distributions, here, the scope of serial interval distributions
+considered is directly informed by data on the (potentially censored)
+dates of symptoms of pairs of infector/infected individuals. This data,
+specified in argument `si_data`, should be a dataframe with 5 columns:
+
+- `EL`: the lower bound of the symptom onset date of the infector (given
+  as an integer)
+
+- `ER`: the upper bound of the symptom onset date of the infector (given
+  as an integer). Should be such that `ER >= EL`. If the dates are known
+  exactly use `ER = EL`
+
+- `SL`: the lower bound of the symptom onset date of the infected
+  individual (given as an integer)
+
+- `SR`: the upper bound of the symptom onset date of the infected
+  individual (given as an integer). Should be such that `SR >= SL`. If
+  the dates are known exactly use `SR = SL`
+
+- `type` (optional): can have entries 0, 1, or 2, corresponding to
+  doubly interval-censored, single interval-censored or exact
+  observations, respectively, see Reich et al. Statist. Med. 2009. If
+  not specified, this will be automatically computed from the dates
+
+Assuming a given parametric distribution for the serial interval
+distribution (specified in `si_parametric_distr`), the posterior
+distribution of the serial interval is estimated directly from these
+data using MCMC methods implemented in the package coarsedatatools. The
+argument `mcmc_control` is a list of characteristics which control the
+MCMC. The MCMC is run for a total number of iterations of
+`mcmc_control$burnin + n1*mcmc_control$thin`; but the output is only
+recorded after the burnin, and only 1 in every `mcmc_control$thin`
+iterations, so that the posterior sample size is `n1`. For each element
+in the posterior sample of serial interval distribution, we then draw a
+sample of size `n2` in the posterior distribution of the reproduction
+number over each time window, conditionally on this serial interval
+distribution. After pooling, a sample of size \\\`n1\` \times \`n2\`\\
+of the joint posterior distribution of the reproduction number over each
+time window is obtained. The posterior mean, standard deviation, and
+0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975 quantiles of the reproduction
+number for each time window are obtained from this sample.
+
+#### `method = "si_from_sample"`
+
+Method "si_from_sample" also allows accounting for uncertainty on the
+serial interval distribution. Unlike methods "uncertain_si" and
+"si_from_data", the user directly provides (in argument `si_sample`) a
+sample of serial interval distribution to be explored.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+## Note the following examples use an MCMC routine
+## to estimate the serial interval distribution from data,
+## so they may take a few minutes to run
+
+## load data on rotavirus
+data("MockRotavirus")
+
+## estimate the reproduction number (method "si_from_data")
+## we are not specifying the time windows, so by defaults this will estimate
+## R on sliding weekly windows
+incid <- MockRotavirus$incidence
+method <- "si_from_data"
+config <- make_config(incid = incid,
+                     list(si_parametric_distr = "G",
+                     mcmc_control = make_mcmc_control(burnin = 1000,
+                     thin = 10, seed = 1),
+                     n1 = 500,
+                     n2 = 50,
+                     seed = 2))
+
+R_si_from_data <- estimate_R(incid,
+                            method = method,
+                            si_data = MockRotavirus$si_data,
+                            config = config)
+plot(R_si_from_data)                     
+
+## you can also create the config straight within the estimate_R call,
+## in that case incid and method are automatically used from the estimate_R
+## arguments:
+R_si_from_data <- estimate_R(incid,
+                            method = method,
+                            si_data = MockRotavirus$si_data,
+                            config = make_config(
+                     list(si_parametric_distr = "G",
+                     mcmc_control = make_mcmc_control(burnin = 1000,
+                     thin = 10, seed = 1),
+                     n1 = 500,
+                     n2 = 50,
+                     seed = 2)))
+plot(R_si_from_data)
+} # }
+```
