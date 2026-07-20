@@ -19,11 +19,11 @@ sidistr_3=cbind(c(0,-0.1,0.7,0.4),c(0,0.2,0.5,0.3)) # negative value
 
 test_that("si_distr is specified correctly", {
   expect_error(compute_lambda(incid=incid_processed, si_distr=sidistr_1),
-               "Values in the first row of si_distr must be 0")
-  expect_error(compute_lambda(incid=incid_processed, si_distr=sidistr_2),
-               "The sum of each column in si_distr should be equal to 1")
+               "si_distr should be so that si_distr[1] = 0.", fixed = TRUE)
+  expect_warning(compute_lambda(incid=incid_processed, si_distr=sidistr_2),
+               "si_distr does not sum to 1.")
   expect_error(compute_lambda(incid=incid_processed, si_distr=sidistr_3),
-               "si_distr must be >=0")
+               "si_distr must be a positive vector.")
 })
 
 ##############################
@@ -45,15 +45,15 @@ tmin3 <- as.integer(nrow(incid)+1) # greater than nrow(incid)
 test_that("tmin and tmax are specified correctly", {
   expect_error(draw_epsilon(R=R, incid=incid, lambda=lambda, priors=priors,
                               t_min = tmin1, t_max = nrow(incid),
-                              seed = NULL),
+                              seed = NULL, validate_inputs = TRUE),
                "t_min and t_max must be integers")
   expect_error(draw_epsilon(R=R, incid=incid, lambda=lambda, priors=priors,
                             t_min = tmin2, t_max = nrow(incid),
-                            seed = NULL),
+                            seed = NULL, validate_inputs = TRUE),
                "t_min and t_max must be >=2")
   expect_error(draw_epsilon(R=R, incid=incid, lambda=lambda, priors=priors,
                             t_min = tmin3, t_max = nrow(incid),
-                            seed = NULL),
+                            seed = NULL, validate_inputs = TRUE),
                "t_min and t_max must be <= nrow(incid)", fixed=TRUE)
 })
 
@@ -64,7 +64,7 @@ test_that("R is specified correctly",{
   Rneg[1,1] <- -1
   expect_error(draw_epsilon(R=Rneg, incid=incid, lambda=lambda, priors=priors,
                             t_min = 2L, t_max = nrow(incid),
-                            seed = NULL),
+                            seed = NULL, validate_inputs = TRUE),
                "R must be >= 0")
 })
 
@@ -75,8 +75,8 @@ seed <- "a"
 test_that("seed is specified correctly",{
   expect_error(draw_epsilon(R=R, incid=incid, lambda=lambda, priors=priors,
                             t_min = 2L, t_max = nrow(incid),
-                            seed = "a"),
-               "seed must be numeric")
+                            seed = "a", validate_inputs = TRUE),
+               "supplied seed is not a valid integer")
 })
 
 ########################
@@ -100,15 +100,15 @@ tmin3 <- as.integer(nrow(incid)+1) # greater than nrow(incid)
 test_that("tmin and tmax are specified correctly", {
   expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
                             t_min = tmin1, t_max = nrow(incid),
-                            seed = NULL),
+                            seed = NULL, validate_inputs = TRUE),
                "t_min and t_max must be integers")
   expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
                             t_min = tmin2, t_max = nrow(incid),
-                            seed = NULL),
+                            seed = NULL, validate_inputs = TRUE),
                "t_min and t_max must be >=2")
   expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
                             t_min = tmin3, t_max = nrow(incid),
-                            seed = NULL),
+                            seed = NULL, validate_inputs = TRUE),
                "t_min and t_max must be <= nrow(incid)", fixed=TRUE)
 })
 
@@ -120,8 +120,8 @@ seed <- "a"
 test_that("seed is specified correctly",{
   expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
                             t_min = 2L, t_max = nrow(incid),
-                            seed = seed),
-               "seed must be numeric")
+                            seed = seed, validate_inputs = TRUE),
+               "supplied seed is not a valid integer")
 })
 
 
@@ -132,7 +132,7 @@ epsilon <- -1
 test_that("epsilon is specified correctly",{
   expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
                       t_min = 2L, t_max = nrow(incid),
-                      seed = NULL),
+                      seed = NULL, validate_inputs = TRUE),
                "epsilon must be > 0")
 })
 
@@ -183,17 +183,17 @@ test_that("si_distr is specified correctly", {
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "Values in the first row of si_distr must be 0")
-  expect_error(estimate_advantage(incid=incid, si_distr=sidistr_2, priors=priors,
+               "si_distr should be so that si_distr[1] = 0.", fixed=TRUE)
+  expect_warning(estimate_advantage(incid=incid, si_distr=sidistr_2, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "The sum of each column in si_distr should be equal to 1")
+               "Input SI distributions should sum to 1. Normalising now")
   expect_error(estimate_advantage(incid=incid, si_distr=sidistr_3, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "si_distr must be >=0")
+               "si_distr must be a positive vector.")
 })
 
 
@@ -245,7 +245,7 @@ test_that("seed is specified correctly",{
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = seed),
-               "seed must be numeric")
+               "supplied seed is not a valid integer")
 })
 
   # convergence check
@@ -328,3 +328,4 @@ test_that("the Rt of the reference variant is returned both with and without inc
   
   expect_equal(stats::median(out$R, na.rm = T), stats::median(out2$R, na.rm = T), tolerance = 0.001)
 })
+

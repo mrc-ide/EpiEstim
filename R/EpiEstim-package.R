@@ -8,10 +8,10 @@
 #' \code{system.file("epiestimpapers.bib", package = "EpiEstim")}.
 #'
 #' @importFrom ggplot2 last_plot ggplot aes geom_step ggtitle
-#'   geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
-#'   scale_colour_manual scale_fill_manual scale_linetype_manual lims theme
-#'   margin element_rect theme_light %+replace% element_blank element_line
-#'   element_text scale_y_continuous
+#' @importFrom ggplot2 geom_ribbon geom_line xlab ylab xlim geom_hline ylim geom_histogram
+#' @importFrom ggplot2 scale_colour_manual scale_fill_manual scale_linetype_manual lims theme
+#' @importFrom ggplot2 margin element_rect theme_light %+replace% element_blank element_line
+#' @importFrom ggplot2 element_text scale_y_continuous
 #' 
 #' @importFrom rlang .data
 #' 

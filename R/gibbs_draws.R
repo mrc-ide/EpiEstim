@@ -183,15 +183,6 @@ compute_lambda <- function(incid, si_distr) {
     msg2 <- "Use function 'process_I_multivariant' first"
     stop(msg1, msg2)
   }
-  if (any(si_distr[1,] != 0)){
-    stop("Values in the first row of si_distr must be 0")
-  }
-  if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
-    stop("The sum of each column in si_distr should be equal to 1")
-  }
-  if (any(si_distr < 0)){
-    stop("si_distr must be >=0")
-  }
   lambda <- array(NA, dim = dim(incid$local))
   for(l in seq_len(dim(incid$local)[2])) {
     for(v in seq_len(dim(incid$local)[3])) {
@@ -242,6 +233,11 @@ compute_lambda <- function(incid, si_distr) {
 #'
 #' @param seed a numeric value used to fix the random seed
 #'
+#' @param validate_inputs a boolean value indicating whether to validate the
+#' inputs; default value is FALSE as inputs are validated in
+#' \code{estimate_advantage()}, where this function is called. Can be set to TRUE
+#' if this function is called directly for debugging or testing.
+#'
 #' @return A value or vector of values for epsilon for each non reference
 #'   pathogen/strain/variant, drawn from the marginal posterior distribution
 #'
@@ -263,25 +259,16 @@ compute_lambda <- function(incid, si_distr) {
 #' R <- matrix(1, nrow = T, ncol = n_loc)
 #' R[1, ] <- NA # no estimates of R on first time step
 #' draw_epsilon(R, incid$local, lambda, priors, seed = 1)
-
 draw_epsilon <- function(R, incid, lambda, priors,
                          shape_epsilon = NULL,
                          t_min = 2L, t_max = nrow(incid),
-                         seed = NULL) {
-  if (!is.integer(t_min) || !is.integer(t_max)){
-    stop("t_min and t_max must be integers")
-  }
-  if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
-  }
-  if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
+                         seed = NULL, validate_inputs = FALSE) {
+  if (validate_inputs) {
+      eps_args <- as.list(environment())
+      do.call(check_estimate_advantage_inputs, args = eps_args)
   }
   if(any(R[!is.na(R)] < 0)) {
     stop("R must be >= 0")
-  }
-  if (!is.null(seed) && !is.numeric(seed)){
-    stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
@@ -333,6 +320,8 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'
 #' @param seed a numeric value used to fix the random seed
 #'
+#' @inheritParams draw_epsilon
+#' 
 #' @return a matrix of the instantaneous reproduction number R for the reference
 #'   pathogen/strain/variant for each time step (row) and each location (column)
 #'   drawn from the marginal posterior distribution
@@ -358,21 +347,14 @@ draw_epsilon <- function(R, incid, lambda, priors,
 draw_R <- function(epsilon, incid, lambda, priors,
                    shape_R_flat = NULL,
                    t_min = NULL, t_max = nrow(incid),
-                   seed = NULL) {
-  if (!is.integer(t_min) || !is.integer(t_max)){
-    stop("t_min and t_max must be integers")
+                   seed = NULL, validate_inputs = FALSE) {
+  if (validate_inputs) {
+    R_args <- as.list(environment())
+    do.call(check_estimate_advantage_inputs, args = R_args)
   }
-  if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
-  }
-  if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
-  }
+
   if (any(epsilon < 0)){
     stop("epsilon must be > 0")
-  }
-  if (!is.null(seed) && !is.numeric(seed)){
-    stop("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
@@ -412,10 +394,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #' @export
 
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
-  if (any(colSums(si_distr) != 1)) {
-    warning("Input SI distributions should sum to 1. Normalising now")
-    si_distr <- si_distr / colSums(si_distr)
-  }
+
   cutoff <- 1 - miss_at_most
   cdf <- apply(si_distr, 2, cumsum)
   idx <- apply(
@@ -529,6 +508,10 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #'   is temporarily assigned to `[, , 1]` of the incidence array. We recommend the
 #'   default value of `TRUE` as we find this to stabilise inference.
 #'
+#' @param validate_inputs a boolean (defaulting to `TRUE`) indicating whether to
+#' validate the inputs before running the estimation. We recommned that this
+#' is set to `TRUE` as it will ensure any mistmatches in inputs are caught early.
+#'
 #' @return A list with the following elements:
 #' - `epsilon`: a matrix containing the MCMC chain (thinned and after burnin)
 #'   for the relative transmissibility of the "new" pathogen/strain/variant(s)
@@ -580,61 +563,32 @@ compute_t_min <- function(incid, si_distr, miss_at_most) {
 #' abline(h = 1, col = "red")
 #' plot(x$R[30, 3, ], type = "l",
 #'      xlab = "Iteration", ylab = "R time 30 location 3")
-
 estimate_advantage <- function(incid, si_distr, priors = default_priors(),
                            mcmc_control = default_mcmc_controls(),
                            t_min = NULL, t_max = nrow(incid),
                            seed = NULL,
                            incid_imported = NULL,
                            precompute = TRUE,
-                           reorder_incid = TRUE) {
+                           reorder_incid = TRUE,
+                           validate_inputs = TRUE) {
 
+  if (any(colSums(si_distr) != 1)) {
+    warning(
+      "Input SI distributions should sum to 1. Normalising now", call. = FALSE
+    )
+    si_distr <- normalise_si_distr(si_distr)
+  }
+  
   if (is.null(t_min)) {
     t_min <- compute_t_min(incid, si_distr)
   }
-  if (!is.integer(t_min) || !is.integer(t_max)) {
-    stop("t_min and t_max must be integers")
-  }
-  if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
-  }
-  if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
-  }
-  if (any(si_distr[1,] != 0)){
-    stop("Values in the first row of si_distr must be 0")
-  }
-  if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
-    stop("The sum of each column in si_distr should be equal to 1")
-  }
-  if (any(si_distr < 0)){
-    stop("si_distr must be >=0")
-  }
-  if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)){
-    stop("n_iter in mcmc_control must be a positive integer")
-  }
-  if (mcmc_control$burnin < 0 || !is.integer(mcmc_control$burnin)){
-    stop("burnin in mcmc_control must be a positive integer")
-  }
-  if (mcmc_control$thin < 0 || !is.integer(mcmc_control$thin)){
-    stop("thin in mcmc_control must be a positive integer")
-  }
-  if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
-    stop("In mcmc_control, n_iter must be greater than burnin + thin")
-  }
-  if (!is.null(seed) && !is.numeric(seed)){
-    stop("seed must be numeric")
-  }
-  if (!is.null(seed)) set.seed(seed)
 
-  if (t_min > t_max) {
-    stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
+  estimate_advantage_args <- as.list(environment())
+  estimate_advantage_args$si_distr <- si_distr # normalized value
+  if (validate_inputs) {
+     do.call(check_estimate_advantage_inputs, args = estimate_advantage_args)
   }
   
-  if (!identical(priors, default_priors())) {
-    warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
-  }
-
   T <- nrow(incid)
   n_loc <- ncol(incid)
 
@@ -819,6 +773,8 @@ process_I_multivariant <- function(incid, incid_imported = NULL) {
   class(res) <- "incid_multivariant"
   res
 }
+
+
 
 ## TODO: check dimensions of objects is correct everywhere
 ## TODO: fix number of variants to be 2
