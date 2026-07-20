@@ -409,8 +409,16 @@ estimate_R <- function(incid,
   }
 
   config <- make_config(incid = incid, config = config)
-  config <- process_config(config)
-  check_config(config, method)
+  if (is.data.frame(incid)) {
+    n_time_steps <- nrow(incid)
+  } else if (inherits(incid, "incidence")) {
+    n_time_steps <- nrow(incidence::get_counts(incid))
+  } else if (inherits(incid, "incidence2")) {
+    n_time_steps <- length(unique(incid[[incidence2::get_date_index_name(incid)]]))
+  } else {
+    n_time_steps <- length(incid)
+  }
+  config <- check_config(config, method, n_time_steps = n_time_steps)
 
 
   # If the serial interval distribution is not provided, estimate it
@@ -592,8 +600,7 @@ estimate_R_func <- function(incid,
   idx_raw_incid <- as.integer(rownames(incid)) > 0
   T <- sum(idx_raw_incid) # nolint
   T_imputed <- nrow(incid) - T
-  
-  check_times(config$t_start, config$t_end, T)
+
   nb_time_periods <- length(config$t_start)
   t_start_imputed <- config$t_start + T_imputed
   t_end_imputed <- config$t_end + T_imputed
@@ -602,10 +609,6 @@ estimate_R_func <- function(incid,
   b_prior <- config$std_prior^2 / config$mean_prior
 
   if (method == "si_from_sample") {
-    if (is.null(config$n2)) {
-      stop("method si_from_sample requires to specify the config$n2 argument.",
-           call. = FALSE)
-    }
     si_sample <- process_si_sample(si_sample)
   }
 

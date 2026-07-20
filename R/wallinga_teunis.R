@@ -138,7 +138,7 @@ wallinga_teunis.default <- function(incid, ...) {
     "No `project()` method for object of the class: %s",
     paste(class(incid), collapse = ", ")
     )
-  stop(msg)
+  stop(msg, call. = FALSE)
 }
 
 
@@ -186,12 +186,13 @@ wallinga_teunis.numeric <- function(incid,
   if (!is.null(incid$dates)) {
     dates <- check_dates(incid)
     incid <- process_I_vector(rowSums(incid[, c("local", "imported")]))
-    T <- length(incid)
+    n_time_steps <- length(incid)
   } else {
     incid <- process_I_vector(rowSums(incid[, c("local", "imported")]))
-    T <- length(incid)
-    dates <- seq_len(T)
+    n_time_steps <- length(incid)
+    dates <- seq_len(n_time_steps)
   }
+  T <- n_time_steps
   
   
   ### Adjusting t_start and t_end so that at least an incident case has been
@@ -206,39 +207,23 @@ wallinga_teunis.numeric <- function(incid,
     config$t_end <- config$t_end[-temp]
   }
   
-  check_times(config$t_start, config$t_end, T)
-  nb_time_periods <- length(config$t_start)
-  
   if (is.null(config$n_sim)) {
     config$n_sim <- 10
-    warning("setting config$n_sim to 10 as config$n_sim was not specified.")
+    warning("setting config$n_sim to 10 as config$n_sim was not specified.",
+            call. = FALSE)
   }
-  
-  if (method == "non_parametric_si") {
-    check_si_distr(config$si_distr)
-    config$si_distr <- c(config$si_distr, 0)
-  }
-  
-  if (method == "parametric_si") {
-    if (is.null(config$mean_si)) {
-      stop("method non_parametric_si requires to specify the config$mean_si argument.")
-    }
-    if (is.null(config$std_si)) {
-      stop("method non_parametric_si requires to specify the config$std_si argument.")
-    }
-    if (config$mean_si < 1) {
-      stop("method parametric_si requires a value >1 for config$mean_si.")
-    }
-    if (config$std_si < 0) {
-      stop("method parametric_si requires a >0 value for config$std_si.")
-    }
-  }
-  
   if (!is.numeric(config$n_sim)) {
-    stop("config$n_sim must be a positive integer.")
+    stop("config$n_sim must be a positive integer.", call. = FALSE)
   }
   if (config$n_sim < 0) {
-    stop("config$n_sim must be a positive integer.")
+    stop("config$n_sim must be a positive integer.", call. = FALSE)
+  }
+
+  config <- check_config(config, method, n_time_steps = n_time_steps)
+  nb_time_periods <- length(config$t_start)
+  
+  if (method == "non_parametric_si") {
+    config$si_distr <- c(config$si_distr, 0)
   }
   
   ### What does each method do ###
@@ -422,7 +407,7 @@ wallinga_teunis.incidence <- function(incid,
       "daily incidence needed, but interval is %d days",
       as.integer(mean(incidence::get_interval(incid)))
     )
-    stop(msg)
+    stop(msg, call. = FALSE)
   }
 
   has_groups <- ncol(incidence::get_counts(incid)) > 1L
@@ -462,7 +447,7 @@ wallinga_teunis.incidence2 <- function(incid,
   interval <- incidence2::get_interval_duration(incid)
   if (any(interval != 1L)) {
     msg <- "daily incidence needed"
-    stop(msg)
+    stop(msg, call. = FALSE)
   }
 
   has_groups <- length(incidence2::get_groups(incid))
@@ -487,4 +472,3 @@ wallinga_teunis.incidence2 <- function(incid,
   out$dates <- incidence2::get_dates(incid)
   out
 }
-
