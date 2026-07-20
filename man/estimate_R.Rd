@@ -15,7 +15,7 @@ estimate_R(
   dt_out = 7L,
   recon_opt = "naive",
   iter = 10L,
-  tol = 1e-06,
+  tol = 0.000001,
   grid = list(precision = 0.001, min = -1, max = 1),
   backimputation_window = 0,
   date_convention = NULL
@@ -35,6 +35,7 @@ and \code{incid$imported} contains the incidence of imported cases (with
 contains a column \code{incid$dates}, this is used for plotting.
 \code{incid$dates} must contains only dates in a row.
 \item An object of class \code{\link[incidence:incidence]{incidence::incidence()}}
+\item An object of class \code{\link[incidence2:incidence]{incidence2::incidence()}}
 }
 
 Note that the cases from the first time step are always all assumed to be

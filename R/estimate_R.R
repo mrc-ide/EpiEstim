@@ -19,6 +19,8 @@
 #'
 #' - An object of class [incidence::incidence()]
 #'
+#' - An object of class [incidence2::incidence()]
+#'
 #' Note that the cases from the first time step are always all assumed to be
 #' imported cases.
 #'

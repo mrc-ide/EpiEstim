@@ -38,6 +38,37 @@ test_that("Example 2 matches saved output", {
   expect_snapshot(out)
 })
 
+
+test_that("Example 2 matches saved output with incidence2", {
+  testthat::local_edition(3)
+  incid <- data.frame(
+    incid = c(0, 1, 1, 2, 1, 3, 4, 5, 5, 5, 5, 4, 4, 26, 6, 7, 9),
+    location = c(
+    "imported", "local", "imported", "imported", "local",
+    "imported", "imported", "imported", "imported",
+    "local", "local", "local", "imported", "local",
+    "imported", "local", "imported"
+    ),
+    dates = seq.Date(as.Date("2020-01-01"), by = "days", length.out = 17)
+  )
+  
+  incid <-
+    incidence2::incidence(incid, date_index = 'dates', groups = 'location',
+                          counts = 'incid')
+  out <- estimate_R(incid,
+    method = "parametric_si",
+    config = list(
+      t_start = 2:11,
+      t_end = 8:17,
+      mean_si = 2.6,
+      std_si = 1.5,
+      seed = 1
+    )
+  )
+  expect_snapshot(out)
+})
+
+
 test_that("Example 3 matches saved output", {
   testthat::local_edition(3)
   out <- estimate_R(Flu2009$incidence, method = "parametric_si",
