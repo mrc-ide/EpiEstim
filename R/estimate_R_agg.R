@@ -1,18 +1,7 @@
 
 #' Estimate instantaneous reproduction number from coarsely aggregated data
 #'
-#' @param incid Aggregated incidence data, supplied as one of the following
-#' 
-#' - A vector (or a dataframe with a single column) of non-negative integers
-#' containing the incidence time series; these can be aggregated at any time
-#' unit as specified by argument `dt`
-#'
-#' - A dataframe of non-negative integers with `incid$I` containing the total
-#' incidence. If the dataframe contains a column `incid$dates`, this is used for
-#' plotting. `incid$dates` must contains only dates in a row.
-#'
-#' - An object of class [incidence::incidence()]
-#' - An object of class [incidence2::incidence()]
+#' @param incid `r param_incid_doc('Aggregated incidence data', '\n - An object of class incidence2::incidence()')`
 #' 
 #' @param dt length of temporal aggregations of the incidence data. This should 
 #' be an integer or vector of integers. If a vector, this will be recycled. For 

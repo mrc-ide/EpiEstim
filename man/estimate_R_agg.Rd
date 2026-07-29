@@ -9,7 +9,7 @@ estimate_R_agg(
   dt = 7L,
   dt_out = 7L,
   iter = 10L,
-  tol = 1e-06,
+  tol = 0.000001,
   recon_opt = "naive",
   config = make_config(),
   method = c("non_parametric_si", "parametric_si"),
@@ -19,17 +19,23 @@ estimate_R_agg(
 )
 }
 \arguments{
-\item{incid}{Aggregated incidence data, supplied as one of the following
+\item{incid}{Aggregated One of the following
 \itemize{
 \item A vector (or a dataframe with a single column) of non-negative integers
 containing the incidence time series; these can be aggregated at any time
 unit as specified by argument \code{dt}
-\item A dataframe of non-negative integers with \code{incid$I} containing the total
-incidence. If the dataframe contains a column \code{incid$dates}, this is used for
-plotting. \code{incid$dates} must contains only dates in a row.
+\item A dataframe of non-negative integers with either i) \code{incid$I}
+containing the total incidence, or ii) two columns, so that
+\code{incid$local} contains the incidence of cases due to local transmission
+and \code{incid$imported} contains the incidence of imported cases (with
+\code{incid$local + incid$imported} the total incidence). If the dataframe
+contains a column \code{incid$dates}, this is used for plotting.
+\code{incid$dates} must contains only dates in a row.
 \item An object of class \code{\link[incidence:incidence]{incidence::incidence()}}
-\item An object of class \code{\link[incidence2:incidence]{incidence2::incidence()}}
-}}
+}
+
+Note that the cases from the first time step are always all assumed to be
+imported cases.}
 
 \item{dt}{length of temporal aggregations of the incidence data. This should
 be an integer or vector of integers. If a vector, this will be recycled. For
