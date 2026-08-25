@@ -7,28 +7,16 @@
 #' standard deviation of the sample from which the parameters are to be 
 #' estimated.
 #' 
-#' @param si_data data on dates of symptoms of pairs of infector/infected
-#'   individuals to be used to estimate the serial interval distribution. This
-#'   should be a dataframe with 5 columns: 
-#'   \itemize{ 
-#'   \item{EL: the lower bound
-#'   of the symptom onset date of the infector (given as an integer)} 
-#'   \item{ER:
-#'   the upper bound of the symptom onset date of the infector (given as an
-#'   integer). Should be such that ER>=EL. If the dates are known exactly use
-#'   ER = EL} 
-#'   \item{SL: the lower bound of the
-#'   symptom onset date of the infected individual (given as an integer)} 
-#'   \item{SR: the upper bound of the symptom onset date of the infected
-#'   individual (given as an integer). Should be such that SR>=SL. If the dates 
-#'   are known exactly use SR = SL} 
-#'   \item{type
-#'   (optional): can have entries 0, 1, or 2, corresponding to doubly
-#'   interval-censored, single interval-censored or exact observations, 
-#'   respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-#'   will be automatically computed from the dates} 
-#'   }
-#' @inheritParams coarse2estim
+#' @inheritParams estimate_R si_data
+#' @param dist The parametric distribution used when estimating the serial
+#'   interval. Should be one of "gamma", "weibull", "lognormal",
+#'   "gamma_offset_1", "weibull_offset_1", or "lognormal_offset_1". Note the
+#'   different naming convention compared to
+#'   [coarseDataTools::dic.fit.mcmc()]. The distribution may also be specified
+#'   using the abbreviated forms "G", "W", "L", "off1G", "off1W", and
+#'   "off1L" as used in [coarseDataTools::dic.fit.mcmc()]. However, we
+#'   recommend using the full names to avoid confusion, and a warning will be
+#'   issued if the abbreviated forms are used.
 #' @return A vector containing the initial values for the two parameters of the
 #'   distribution of the serial interval. These are the shape and scale for all
 #'   but the lognormal distribution, for which it is the meanlog and sdlog.

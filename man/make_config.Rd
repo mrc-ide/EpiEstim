@@ -187,24 +187,8 @@ interval distribution. Unlike method "uncertain_si", where we arbitrarily
 vary the mean and std of the SI in truncated normal distributions, here, the
 scope of serial interval distributions considered is directly informed by
 data on the (potentially censored) dates of symptoms of pairs of
-infector/infected individuals. This data, specified in argument \code{si_data},
-should be a dataframe with 5 columns:
-\itemize{
-\item \code{EL}: the lower bound of the symptom onset date of the infector (given as
-an integer)
-\item \code{ER}: the upper bound of the symptom onset date of the infector (given as
-an integer). Should be such that \code{ER >= EL}. If the dates are known exactly
-use \code{ER = EL}
-\item \code{SL}: the lower bound of the symptom onset date of the infected individual
-(given as an integer)
-\item \code{SR}: the upper bound of the symptom onset date of the infected individual
-(given as an integer). Should be such that \code{SR >= SL}. If the dates are
-known exactly use \code{SR = SL}
-\item \code{type} (optional): can have entries 0, 1, or 2, corresponding to doubly
-interval-censored, single interval-censored or exact observations,
-respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-will be automatically computed from the dates
-}
+infector/infected individuals. See the \code{si_data} argument of \code{\link[=estimate_R]{estimate_R()}}
+for the required data format.
 
 Assuming a given parametric distribution for the serial interval distribution
 (specified in \code{si_parametric_distr}), the posterior distribution of the
