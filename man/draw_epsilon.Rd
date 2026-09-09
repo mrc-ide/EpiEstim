@@ -20,8 +20,7 @@ draw_epsilon(
 reproduction number for each time step (row) and location (column), for
 the reference pathogen/strain/variant}
 
-\item{incid}{a multidimensional array containing values of the (local)
-incidence
+\item{incid}{a multidimensional array containing values of the incidence
 for each time step (1st dimension), location (2nd dimension) and
 pathogen/strain/variant (3rd dimension)}
 
@@ -44,8 +43,10 @@ distribution of epsilon for each of the non-reference variants, as returned
 by function \code{\link[=get_shape_epsilon]{get_shape_epsilon()}}}
 
 \item{t_min}{an integer > 1 giving the minimum time step to consider in the
-estimation. Default value is 2 (as the estimation is conditional on
-observations at time step 1 and can therefore only start at time step 2).}
+estimation.
+If \code{NULL}, \code{t_min} is calculated using the function \code{\link[=compute_si_cutoff]{compute_si_cutoff()}}
+which gets the maximum (across all variants) of the 95th percentile of the
+SI distribution.}
 
 \item{t_max}{an integer > \code{t_min} and <= \code{nrow(incid)} giving the maximum time
 step to consider in the estimation. Default value is \code{nrow(incid)}.}
@@ -60,8 +61,8 @@ pathogen/strain/variant, drawn from the marginal posterior distribution
 Draw epsilon from marginal posterior distribution
 }
 \examples{
-n_loc <- 4 # 4 locations
-n_v <- 3 # 3 strains
+n_v <- 2
+n_loc <- 3 # 3 locations
 T <- 100 # 100 time steps
 priors <- default_priors()
 # constant incidence 10 per day everywhere
@@ -69,7 +70,7 @@ incid <- array(10, dim = c(T, n_loc, n_v))
 incid <- process_I_multivariant(incid)
 # arbitrary serial interval, same for both variants
 w_v <- c(0, 0.2, 0.5, 0.3)
-si_distr <- cbind(w_v, w_v, w_v)
+si_distr <- cbind(w_v, w_v)
 lambda <- compute_lambda(incid, si_distr)
 # Constant reproduction number of 1
 R <- matrix(1, nrow = T, ncol = n_loc)
