@@ -24,9 +24,13 @@
 
 aggregate_inc <- function(incid, dt = 7L)
 {
-  if(all(dt < 2)) {stop("at least one value of dt should be an integer >=2")}
-  if(!all(is.integer(dt))) {stop("dt should be an integer or vector of integers e.g. 2L or c(2L,2L,3L)")}
-  if(!is.vector(incid)) {stop("incid should be a vector of integer values")}
+  if(all(dt < 2)) {cli::cli_abort("at least one value of dt should be an integer >=2")}
+  if (!all(is.integer(dt))) {
+    cli::cli_abort("dt should be an integer or vector of integers e.g. 2L or c(2L,2L,3L)")
+  }
+  if (!is.vector(incid)) {
+    cli::cli_abort("incid should be a vector of integer values")
+  }
   
   ndays <- length(incid)
   
