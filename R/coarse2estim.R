@@ -73,13 +73,13 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
     rtn <- si_from_data_valid_distrs(dist)
 
     if (!rtn$is_dist_valid) {
-      stop("The supported distributions are 'gamma', 'weibull',
+      cli::cli_abort("The supported distributions are 'gamma', 'weibull',
            'lognormal', 'gamma_offset_1' (Gamma shifted by 1),
            'weibull_offset_1' (Weibull shifted by 1),
            or 'lognormal_offset_1' (Lognormal shifted by 1). ")
     }
     if (!is.data.frame(samples)) {
-      stop("samples should be a dataframe, e.g. as produced in x@samples,
+      cli::cli_abort("samples should be a dataframe, e.g. as produced in x@samples,
            where x is the output of coarseDataTools::dic.fit.mcmc.")
     }
   }

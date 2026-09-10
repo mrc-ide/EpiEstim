@@ -271,7 +271,7 @@ make_config <- function(..., incid = NULL) {
   if(!is.null(config$method)) {
     msg <- paste("`method` should be specified as an argument to",
                  "`estimate_R`, not `make_config`.")
-    stop(msg)
+    cli::cli_abort(msg)
   }
 
   ## SET DEFAULTS

@@ -28,12 +28,12 @@ backimpute_I <- function(incid, window_b) {
 
     if (inherits(incid, "incidence")) {
       msg <- "incidence objects are currently not supported by backimpute_I()."
-      stop(msg)
+      cli::cli_abort(msg)
     }
   
     if (window_b <= 5) {
         msg <- "The backimputation window is short and may lead to an inaccurate estimate of the growth rate."
-        warning(msg)
+        cli::cli_warn(msg)
     }
 
     # process observed incidence, and move the first imported cases to local
@@ -64,7 +64,7 @@ backimpute_I <- function(incid, window_b) {
 
     if (fit_backimpute$coefficients[2] < 0) {
         msg <- "Estimate of the growth rate is negative, consider removing backimputation, or extending the backimputation window"
-        warning(msg)
+        cli::cli_warn(msg)
     }
 
     predict_backimpute_log <- stats::predict.lm(fit_backimpute, newdata = list(t = imputed_t))

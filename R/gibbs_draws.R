@@ -181,16 +181,16 @@ compute_lambda <- function(incid, si_distr) {
   if (!inherits(incid, "incid_multivariant")) {
     msg1 <- "'incid 'should be an 'incid_multivariant' object. "
     msg2 <- "Use function 'process_I_multivariant' first"
-    stop(msg1, msg2)
+    cli::cli_abort(msg1, msg2)
   }
   if (any(si_distr[1,] != 0)){
-    stop("Values in the first row of si_distr must be 0")
+    cli::cli_abort("Values in the first row of si_distr must be 0")
   }
   if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
-    stop("The sum of each column in si_distr should be equal to 1")
+    cli::cli_abort("The sum of each column in si_distr should be equal to 1")
   }
   if (any(si_distr < 0)){
-    stop("si_distr must be >=0")
+    cli::cli_abort("si_distr must be >=0")
   }
   lambda <- array(NA, dim = dim(incid$local))
   for(l in seq_len(dim(incid$local)[2])) {
@@ -269,19 +269,19 @@ draw_epsilon <- function(R, incid, lambda, priors,
                          t_min = 2L, t_max = nrow(incid),
                          seed = NULL) {
   if (!is.integer(t_min) || !is.integer(t_max)){
-    stop("t_min and t_max must be integers")
+    cli::cli_abort("t_min and t_max must be integers")
   }
   if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
+    cli::cli_abort("t_min and t_max must be >=2")
   }
   if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
+    cli::cli_abort("t_min and t_max must be <= nrow(incid)")
   }
   if(any(R[!is.na(R)] < 0)) {
-    stop("R must be >= 0")
+    cli::cli_abort("R must be >= 0")
   }
   if (!is.null(seed) && !is.numeric(seed)){
-    stop("seed must be numeric")
+    cli::cli_abort("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
@@ -360,19 +360,19 @@ draw_R <- function(epsilon, incid, lambda, priors,
                    t_min = NULL, t_max = nrow(incid),
                    seed = NULL) {
   if (!is.integer(t_min) || !is.integer(t_max)){
-    stop("t_min and t_max must be integers")
+    cli::cli_abort("t_min and t_max must be integers")
   }
   if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
+    cli::cli_abort("t_min and t_max must be >=2")
   }
   if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
+    cli::cli_abort("t_min and t_max must be <= nrow(incid)")
   }
   if (any(epsilon < 0)){
-    stop("epsilon must be > 0")
+    cli::cli_abort("epsilon must be > 0")
   }
   if (!is.null(seed) && !is.numeric(seed)){
-    stop("seed must be numeric")
+    cli::cli_abort("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
   t <- seq(t_min, t_max, 1)
@@ -413,7 +413,7 @@ draw_R <- function(epsilon, incid, lambda, priors,
 
 compute_si_cutoff <- function(si_distr, miss_at_most = 0.05) {
   if (any(colSums(si_distr) != 1)) {
-    warning("Input SI distributions should sum to 1. Normalising now")
+    cli::cli_warn("Input SI distributions should sum to 1. Normalising now")
     si_distr <- si_distr / colSums(si_distr)
   }
   cutoff <- 1 - miss_at_most
@@ -445,7 +445,7 @@ first_nonzero_incid <- function(incid) {
     function(vec) Position(function(x) x > 0, vec)
   )
   if (anyNA(t_min_incid)) {
-    warning(
+    cli::cli_warn(
       "For some variants/locations, incidence is
        always zero. This will cause estimate_advantage to fail."
     )
@@ -593,46 +593,46 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
     t_min <- compute_t_min(incid, si_distr)
   }
   if (!is.integer(t_min) || !is.integer(t_max)) {
-    stop("t_min and t_max must be integers")
+    cli::cli_abort("t_min and t_max must be integers")
   }
   if (t_min < 2 || t_max < 2){
-    stop("t_min and t_max must be >=2")
+    cli::cli_abort("t_min and t_max must be >=2")
   }
   if(t_min > nrow(incid) || t_max > nrow(incid)){
-    stop("t_min and t_max must be <= nrow(incid)")
+    cli::cli_abort("t_min and t_max must be <= nrow(incid)")
   }
   if (any(si_distr[1,] != 0)){
-    stop("Values in the first row of si_distr must be 0")
+    cli::cli_abort("Values in the first row of si_distr must be 0")
   }
   if (any(abs(colSums(si_distr) - 1) > 0.01)) { # allow tolerance
-    stop("The sum of each column in si_distr should be equal to 1")
+    cli::cli_abort("The sum of each column in si_distr should be equal to 1")
   }
   if (any(si_distr < 0)){
-    stop("si_distr must be >=0")
+    cli::cli_abort("si_distr must be >=0")
   }
   if (mcmc_control$n_iter < 0 || !is.integer(mcmc_control$n_iter)){
-    stop("n_iter in mcmc_control must be a positive integer")
+    cli::cli_abort("n_iter in mcmc_control must be a positive integer")
   }
   if (mcmc_control$burnin < 0 || !is.integer(mcmc_control$burnin)){
-    stop("burnin in mcmc_control must be a positive integer")
+    cli::cli_abort("burnin in mcmc_control must be a positive integer")
   }
   if (mcmc_control$thin < 0 || !is.integer(mcmc_control$thin)){
-    stop("thin in mcmc_control must be a positive integer")
+    cli::cli_abort("thin in mcmc_control must be a positive integer")
   }
   if (mcmc_control$n_iter < mcmc_control$burnin + mcmc_control$thin){
-    stop("In mcmc_control, n_iter must be greater than burnin + thin")
+    cli::cli_abort("In mcmc_control, n_iter must be greater than burnin + thin")
   }
   if (!is.null(seed) && !is.numeric(seed)){
-    stop("seed must be numeric")
+    cli::cli_abort("seed must be numeric")
   }
   if (!is.null(seed)) set.seed(seed)
 
   if (t_min > t_max) {
-    stop("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
+    cli::cli_abort("t_min is greater than t_max. You can specify a smaller t_min or increase t_max.")
   }
   
   if (!identical(priors, default_priors())) {
-    warning("Priors where the mean of epsilon is different from 1 are not currently supported.")
+    cli::cli_warn("Priors where the mean of epsilon is different from 1 are not currently supported.")
   }
 
   T <- nrow(incid)
@@ -812,7 +812,7 @@ process_I_multivariant <- function(incid, incid_imported = NULL) {
   dim1 <- dim(incid)
   dim2 <- dim(incid_imported)
   if (length(dim1) != length(dim2) || !all(dim1 == dim2)) {
-    stop("'incid' and 'incid_imported' have incompatible dimensions")
+    cli::cli_abort("'incid' and 'incid_imported' have incompatible dimensions")
   }
   incid_local <- incid - incid_imported
   res <- list(local = incid_local, imported = incid_imported)

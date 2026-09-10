@@ -43,7 +43,7 @@ check_cdt_samples_convergence <- function(cdt_samples) {
   # (looking at the upper CI)?
   # If so this would suggest that the MCMC has not converged well.
   if (any(GRD$psrf[, "Upper C.I."] > 1.1)) {
-    warning("The Gelman-Rubin algorithm suggests the MCMC may not have converged
+    cli::cli_warn("The Gelman-Rubin algorithm suggests the MCMC may not have converged
 within the number of iterations (MCMC.burnin + n1) specified.
             You can visualise the full MCMC chain using: \n
             > par(mfrow=c(2,1))
