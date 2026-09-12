@@ -43,19 +43,19 @@ check_cdt_samples_convergence <- function(cdt_samples) {
   # (looking at the upper CI)?
   # If so this would suggest that the MCMC has not converged well.
   if (any(GRD$psrf[, "Upper C.I."] > 1.1)) {
-    cli::cli_warn("The Gelman-Rubin algorithm suggests the MCMC may not have converged
-within the number of iterations (MCMC.burnin + n1) specified.
-            You can visualise the full MCMC chain using: \n
-            > par(mfrow=c(2,1))
-            > plot(res$SI.Moments[,'Mean'], type='l', xlab='Iterations', 
-ylab='Mean SI')
-            > plot(res$SI.Moments[,'Std'], type='l', xlab='Iterations', 
-ylab='Std SI'),
-            where res is the output of estimate_R
-            and decide whether to rerun for longer.")
+  cli::cli_warn(c(
+    "The Gelman-Rubin algorithm suggests the MCMC may not have converged
+     within the number of iterations {.arg MCMC.burnin + n1} specified.",
+    "i" = "Visualise the full MCMC chain to inspect convergence:",
+    " " = "{.code par(mfrow=c(2,1))}",
+    " " = "{.code plot(res$SI.Moments[,'Mean'], type='l', xlab='Iterations', ylab='Mean SI')}",
+    " " = "{.code plot(res$SI.Moments[,'Std'],  type='l', xlab='Iterations', ylab='Std SI')}",
+    "i" = "Where {.arg res} is the output of {.fn estimate_R}.",
+    "i" = "Rerun with more iterations if the chain has not stabilised."
+  ))
     return(FALSE)
   } else {
-    cat("\nGelman-Rubin MCMC convergence diagnostic was successful.")
+    cli::cli_alert_success("\nGelman-Rubin MCMC convergence diagnostic was successful.")
     return(TRUE)
   }
 }
