@@ -79,8 +79,8 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
            or 'lognormal_offset_1' (Lognormal shifted by 1). ")
     }
     if (!is.data.frame(samples)) {
-      cli::cli_abort("samples should be a dataframe, e.g. as produced in x@samples,
-           where x is the output of coarseDataTools::dic.fit.mcmc.")
+      cli::cli_abort("{.var samples} should be a dataframe, e.g. as produced in x@samples,
+           where x is the output of {.code coarseDataTools::dic.fit.mcmc}.")
     }
   }
 
