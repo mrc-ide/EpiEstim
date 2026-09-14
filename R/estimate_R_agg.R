@@ -264,17 +264,16 @@ estimate_R_agg <- function(incid,
   method <- match.arg(method)
   
   if (!is.integer(dt)) {
-    cli::cli_abort("dt must be an integer or a vector of integers e.g. dt = 7L, dt = c(2L,2L,3L)")
+    cli::cli_abort("{.var dt} must be an integer or a vector of integers e.g. dt = 7L, dt = c(2L,2L,3L)")
   }
   if (!is.integer(dt_out)) {
-    cli::cli_abort("dt_out must be an integer e.g. dt_out = 7L", )
+    cli::cli_abort("{.var dt_out} must be an integer e.g. dt_out = 7L", )
   }
   if (!is.list(grid) || length(grid) != 3){
-    stop ("grid must be a list of 3 elements: precision, min, and max",
-          )
+    cli::cli_abort("{.var grid} must be a list of 3 elements: precision, min, and max")
   }
   if (!is.numeric(grid$precision) || !is.numeric(grid$min) || !is.numeric(grid$max)){
-    cli::cli_abort("grid precision, min, and max, must all be numeric")
+    cli::cli_abort("{.var precision}, {.var min}, and {.var max}, must all be numeric")
   }
   if (grid$max < grid$min){
     cli::cli_abort("grid max must be larger than grid min")
@@ -283,34 +282,30 @@ estimate_R_agg <- function(incid,
     cli::cli_abort("grid precision must be less than grid max - grid min")
   }
   if (!is.integer(iter)) {
-    cli::cli_abort("iter must be an integer e.g. 10L")
+    cli::cli_abort("{.var iter} must be an integer e.g. 10L")
   }
   if (iter < 2L) {
-    cli::cli_abort("iter must be at least 2L")
+    cli::cli_abort("{.var iter} must be at least 2L")
   }
   if (method == "parametric_si" && (is.null(config$mean_si) || is.null(config$std_si))) {
-    cli::cli_abort("'config$mean_si' and 'config$std_si' must be specified when using method 'parametric_si'",
-          )
+    cli::cli_abort("{.var config$mean_si} and {.var config$std_si} must be specified when using method 'parametric_si'")
   }
   if (method == "non_parametric_si" && is.null(config$si_distr)) {
-    cli::cli_abort("'config$si_distr' must be specified when using method 'non_parametric_si'",
-          )
+    cli::cli_abort("{.var config$si_distr} must be specified when using method 'non_parametric_si'")
   }
   if (!(recon_opt %in% c("naive", "match"))) {
-    cli::cli_abort("'recon_opt' should be one of 'naive' and 'match'")
+    cli::cli_abort("{.var recon_opt} should be one of 'naive' and 'match'")
   }
   if (dt_out < max(dt)) {
-    warning ("dt_out should be at least the length of the longest aggregation present in the data",
-             )
+    cli::cli_warn("{.var dt_out} should be at least the length of the longest aggregation present in the data")
   }
   if (!is.null(agg_dates) && is.null(date_convention)) {
-    warning("date_convention not specified. Defaulting to 'end', assuming dates 
-          correspond to the reporting date (last day of each aggregation window).",
-            )
+    cli::cli_warn("date_convention not specified. Defaulting to 'end', assuming dates 
+          correspond to the reporting date (last day of each aggregation window).")
     date_convention <- "end"
   }
   if (!is.null(date_convention) && !(date_convention %in% c("start", "end"))) {
-    cli::cli_abort("'date_convention' should be one of 'start' and 'end'")
+    cli::cli_abort("{.var date_convention} should be one of 'start' and 'end'")
   }
   
   
@@ -496,7 +491,7 @@ estimate_R_agg <- function(incid,
       ## first agg window or if incidence is too low), using the initial dis_inc
       sim_inc[,i] <- c(incid_not_to_reconstruct, est_inc)
       
-      message("Reconstructed incidence for iteration: ", i)
+      cli::cli_inform("Reconstructed incidence for iteration {i}")
       
       
     } else {
@@ -507,7 +502,7 @@ estimate_R_agg <- function(incid,
       # Re-Estimate R
       res_R <- estimate_R(new_inc, method = method, config = config)
       
-      message("Estimated R for iteration: ", i)
+      cli::cli_inform("Estimated R for iteration {i}")
       
       Mean_R <- res_R$R$`Mean(R)`
       
@@ -589,7 +584,7 @@ estimate_R_agg <- function(incid,
       sim_inc[,i] <- c(incid_not_to_reconstruct, est_inc)
       
       # monitor progress:
-      message("Reconstructed incidence for iteration: ", i)
+      cli::cli_inform("Reconstructed incidence for iteration {i}")
       
       # Final estimate R starting on the first aggregation window 
       # that incidence was able to be reconstructed over
@@ -604,7 +599,7 @@ estimate_R_agg <- function(incid,
       
       if (niter[i] == max(niter)){
         if (any(abs(sim_inc[,i] - sim_inc[,i-1]) > tol)){
-          message("Reconstructed incidence has not converged within the set
+          cli::cli_inform("Reconstructed incidence has not converged within the set
                   tolerance. Please run again with greater number of iterations.")
         }
         R_out <- estimate_R(sim_inc[,i],
