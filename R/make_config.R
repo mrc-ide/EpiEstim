@@ -269,8 +269,8 @@ make_config <- function(..., incid = NULL) {
   
   # catch if user (wrongly) specifies method
   if(!is.null(config$method)) {
-    msg <- paste("`method` should be specified as an argument to",
-                 "`estimate_R`, not `make_config`.")
+    msg <- c("{.var method} should be specified as an argument to",
+             "{.code estimate_R}, not {.code make_config}.")
     cli::cli_abort(msg)
   }
 

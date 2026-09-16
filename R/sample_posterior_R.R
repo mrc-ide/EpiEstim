@@ -44,7 +44,7 @@
 sample_posterior_R <- function(R, n = 1000, window = 1L) {
 
   if (!inherits(R, c("estimate_R", "wallinga_teunis"))) {
-    cli::cli_abort("input must be generated from the estimate_R() or wallinga_teunis().")
+    cli::cli_abort("{.var R} must be generated from the {.code estimate_R()} or {.code wallinga_teunis()}.")
   }
   mu    <- R$R$`Mean(R)`[window]
   sigma <- R$R$`Std(R)`[window]

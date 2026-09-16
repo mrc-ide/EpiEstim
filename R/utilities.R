@@ -1,36 +1,36 @@
 process_si_data <- function(si_data) {
   # NULL entries
   if (is.null(si_data)) {
-    cli::cli_abort("Method si_from_data requires non NULL argument si_data")
+    cli::cli_abort("Method si_from_data requires non NULL argument {.var si_data}")
   }
 
   # wrong number of columns
   si_data <- as.data.frame(si_data)
   num_cols <- dim(si_data)[2]
   if (num_cols < 4 || num_cols > 5) {
-    cli::cli_abort("si_data should have 4 or 5 columns")
+    cli::cli_abort("{.var si_data} should have 4 or 5 columns")
   }
 
   # entries with incorrect column names
   if (!all(c("EL", "ER", "SL", "SR") %in% names(si_data))) {
     names <- c("EL", "ER", "SL", "SR", "type")
     names(si_data) <- names[seq_len(num_cols)]
-    cli::cli_warn("column names for si_data were not as expected; they were 
+    cli::cli_warn("column names for {.var si_data} were not as expected; they were 
             automatically interpreted as 'EL', 'ER', 'SL', 'SR', and 'type' 
-            (the last one only if si_data had five columns). ")
+            (the last one only if {.var si_data} had five columns). ")
   }
 
   # non integer entries in date columns
   if (!all(vlapply(seq_len(4), function(e) is.integer(si_data[, e])))) {
-    cli::cli_abort("si_data has entries for which EL, ER, SL or SR are non integers.")
+    cli::cli_abort("{.var si_data} has entries for which EL, ER, SL or SR are non integers.")
   }
 
   # entries with wrong order in lower and upper bounds of dates
   if (any(si_data$ER - si_data$EL < 0)) {
-    cli::cli_abort("si_data has entries for which ER<EL.")
+    cli::cli_abort("{.var si_data} has entries for which ER<EL.")
   }
   if (any(si_data$SR - si_data$SL < 0)) {
-    cli::cli_abort("si_data has entries for which SR<SL.")
+    cli::cli_abort("{.var si_data} has entries for which SR<SL.")
   }
 
   # entries with negative serial interval
@@ -45,11 +45,11 @@ process_si_data <- function(si_data) {
   tmp_type <- 2 - rowSums(cbind(si_data$ER - si_data$EL != 0, 
                                 si_data$SR - si_data$SL != 0))
   if (!("type" %in% names(si_data))) {
-    cli::cli_warn("si_data contains no 'type' column. This is inferred automatically 
+    cli::cli_warn("{.var si_data} contains no 'type' column. This is inferred automatically 
             from the other columns.")
     si_data$type <- tmp_type
   } else if (anyNA(si_data$type) || !all(si_data$type == tmp_type)) {
-    cli::cli_warn("si_data contains unexpected entries in the 'type' column. This is 
+    cli::cli_warn("{.var si_data} contains unexpected entries in the 'type' column. This is 
             inferred automatically from the other columns.")
     si_data$type <- tmp_type
   }
@@ -87,7 +87,7 @@ process_I <- function(incid) {
     if (!is.data.frame(incid) || 
         (!("I" %in% names(incid)) &&
          !all(c("local", "imported") %in% names(incid)))) {
-      cli::cli_abort("incid must be a vector or a dataframe with either i) a column 
+      cli::cli_abort("{.var incid} must be a vector or a dataframe with either i) a column 
            called 'I', or ii) 2 columns called 'local' and 'imported'.")
     }
     if (("I" %in% names(incid)) && 
@@ -109,11 +109,11 @@ process_I <- function(incid) {
   date_col <- names(incid) == "dates"
   if (any(date_col)) {
     if (any(incid[, !date_col] < 0)) {
-      cli::cli_abort("incid must contain only non negative integer values.")
+      cli::cli_abort("{.var incid} must contain only non negative integer values.")
     }
   } else {
     if (any(incid < 0)) {
-      cli::cli_abort("incid must contain only non negative integer values.")
+      cli::cli_abort("{.var incid} must contain only non negative integer values.")
     }
   }
 
@@ -128,7 +128,7 @@ process_I_vector <- function(incid) {
     dates <- unique(incid[[date_col]])
     incid <- tapply(incid[[I_col]], incid[[date_col]], sum)[as.character(dates)]
     return(as.vector(incid))
-    }
+  }
   # incidence object, the incident counts are being forced into a vector
   if (inherits(incid, "incidence")) {
     incid <- rowSums(incidence::get_counts(incid))
@@ -140,11 +140,11 @@ process_I_vector <- function(incid) {
       } else if ("I" %in% names(incid)) {
         incid <- as.vector(incid$I)
       } else if (!all(c("local", "imported") %in% names(incid))) {
-        cli::cli_abort("incid must be a vector or a dataframe with at least a column named
+        cli::cli_abort("{.var incid} must be a vector or a dataframe with at least a column named
              'I' or two columns named 'local' and 'imported'.")
       }
     } else {
-      cli::cli_abort("incid must be a vector or a dataframe with at least a column named 
+      cli::cli_abort("{.var incid} must be a vector or a dataframe with at least a column named 
            'I' or two columns named 'local' and 'imported'.")
     }
   }
@@ -152,11 +152,11 @@ process_I_vector <- function(incid) {
   date_col <- names(incid) == "dates"
   if (any(date_col)) {
     if (any(incid[, !date_col] < 0)) {
-      cli::cli_abort("incid must contain only non negative integer values.")
+      cli::cli_abort("{.var incid} must contain only non negative integer values.")
     }
   } else {
     if (any(incid < 0)) {
-      cli::cli_abort("incid must contain only non negative integer values.")
+      cli::cli_abort("{.var incid} must contain only non negative integer values.")
     }
   }
 
@@ -165,7 +165,7 @@ process_I_vector <- function(incid) {
 
 process_si_sample <- function(si_sample) {
   if (is.null(si_sample)) {
-    cli::cli_abort("method si_from_sample requires to specify the si_sample argument.")
+    cli::cli_abort("method si_from_sample requires to specify the {.var si_sample} argument.")
   }
 
   si_sample <- as.matrix(si_sample)
@@ -174,11 +174,11 @@ process_si_sample <- function(si_sample) {
     cli::cli_abort("method si_from_sample requires that si_sample[1,] contains only 0.")
   }
   if (any(si_sample < 0)) {
-    cli::cli_abort("method si_from_sample requires that si_sample must contain only non 
+    cli::cli_abort("method si_from_sample requires that {.var si_sample} must contain only non 
          negtaive values.")
   }
   if (any(abs(colSums(si_sample) - 1) > 0.01)) {
-    cli::cli_abort("method si_from_sample requires the sum of each column in si_sample to 
+    cli::cli_abort("method si_from_sample requires the sum of each column in {.var si_sample} to 
          be 1.")
   }
 
@@ -189,23 +189,23 @@ check_times <- function(t_start, t_end, T)
  ## this only produces warnings and errors, does not return anything
 {
   if (!is.vector(t_start)) {
-    cli::cli_abort("t_start must be a vector.")
+    cli::cli_abort("{.var t_start} must be a vector.")
   }
   if (!is.vector(t_end)) {
-    cli::cli_abort("t_end must be a vector.")
+    cli::cli_abort("{.var t_end} must be a vector.")
   }
   if (length(t_start) != length(t_end)) {
-    cli::cli_abort("t_start and t_end must have the same length.")
+    cli::cli_abort("{.var t_start} and {.var t_end} must have the same length.")
   }
   if (any(t_start > t_end)) {
-    cli::cli_abort("t_start[i] must be <= t_end[i] for all i.")
+    cli::cli_abort("{.var t_start[i]} must be <= {.var t_end[i]} for all i.")
   }
   if (any(t_start < 2 | t_start > T | t_start %% 1 != 0)) {
-    cli::cli_abort("t_start must be a vector of integers between 2 and the number of 
+    cli::cli_abort("{.var t_start} must be a vector of integers between 2 and the number of 
          timesteps in incid.")
   }
   if (any(t_end < 2 | t_end > T | t_end %% 1 != 0)) {
-    cli::cli_abort("t_end must be a vector of integers between 2 and the number of 
+    cli::cli_abort("{.var t_end} must be a vector of integers between 2 and the number of 
          timesteps in incid.")
   }
 }
@@ -216,24 +216,23 @@ check_si_distr <- function(si_distr, sumToOne = c("error", "warning"),
 {
   sumToOne <- match.arg(sumToOne)
   if (is.null(si_distr)) {
-    cli::cli_abort("si_distr argument is missing but is required for method ",
-         method, ".")
+    cli::cli_abort("{.var si_distr} argument is missing but is required for method {.var method}.")
   }
   if (!is.vector(si_distr)) {
-    cli::cli_abort("si_distr must be a vector.")
+    cli::cli_abort("{.var si_distr} must be a vector.")
   }
   if (si_distr[1] != 0) {
-    cli::cli_abort("si_distr should be so that si_distr[1] = 0.")
+    cli::cli_abort("{.var si_distr} should be so that si_distr[1] = 0.")
   }
   if (any(si_distr < 0)) {
-    cli::cli_abort("si_distr must be a positive vector.")
+    cli::cli_abort("{.var si_distr} must be a positive vector.")
   }
   if (abs(sum(si_distr) - 1) > 0.01) {
     if (sumToOne == "error") {
-      cli::cli_abort("si_distr must sum to 1.")
+      cli::cli_abort("{.var si_distr} must sum to 1.")
     }
     else if (sumToOne == "warning") {
-      cli::cli_warn("si_distr does not sum to 1.")
+      cli::cli_warn("{.var si_distr} does not sum to 1.")
     }
   }
 }
@@ -241,10 +240,10 @@ check_si_distr <- function(si_distr, sumToOne = c("error", "warning"),
 check_dates <- function(incid) {
   dates <- incid$dates
   if (!inherits(dates, "Date") && !is.numeric(dates)) {
-    cli::cli_abort("incid$dates must be an object of class date or numeric.")
+    cli::cli_abort("{.var incid$dates} must be an object of class {.cls Date} or numeric.")
   } else {
     if (unique(diff(dates)) != 1) {
-      cli::cli_abort("incid$dates must contain dates which are all in a row.")
+      cli::cli_abort("{.var incid$dates} must contain dates which are all in a row.")
     } else {
       return(dates)
     }
@@ -261,10 +260,10 @@ process_config <- function(config) {
   }
 
   if (config$mean_prior <= 0) {
-    cli::cli_abort("config$mean_prior must be >0.")
+    cli::cli_abort("{.var config$mean_prior} must be >0.")
   }
   if (config$std_prior <= 0) {
-    cli::cli_abort("config$std_prior must be >0.")
+    cli::cli_abort("{.var config$std_prior} must be >0.")
   }
 
   if (!("cv_posterior" %in% names(config))) {
@@ -286,16 +285,16 @@ process_config_si_from_data <- function(config, si_data) {
     config$si_parametric_distr, valid_distrs    
   )
   if (is.null(config$n1)) {
-    cli::cli_abort("method si_from_data requires to specify the config$n1 argument.")
+    cli::cli_abort("method si_from_data requires to specify the {.var config$n1} argument.")
   }
   if (is.null(config$n2)) {
-    cli::cli_abort("method si_from_data requires to specify the config$n2 argument.")
+    cli::cli_abort("method si_from_data requires to specify the {.var config$n2} argument.")
   }
   if (config$n2 <= 0 || config$n2 %% 1 != 0) {
-    cli::cli_abort("method si_from_data requires a >0 integer value for config$n2.")
+    cli::cli_abort("method si_from_data requires a >0 integer value for {.var config$n2}.")
   }
   if (config$n1 <= 0 || config$n1 %% 1 != 0) {
-    cli::cli_abort("method si_from_data requires a >0 integer value for config$n1.")
+    cli::cli_abort("method si_from_data requires a >0 integer value for {.var config$n1}.")
   }
   if (is.null(config$mcmc_control$init_pars)) {
     config$mcmc_control$init_pars <-
@@ -480,7 +479,7 @@ convert_distr_name_for_mcmc <- function(distr) {
   } else if (distr %in% c("lognormal_offset_1") | distr %in% c("off1L")) {
     return("off1L")
   } else {
-    cli::cli_abort("Unsupported distribution name: ", distr)
+    cli::cli_abort("Unsupported distribution name {.var distr}")
   }
 }
 
