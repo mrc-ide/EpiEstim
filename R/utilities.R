@@ -319,84 +319,89 @@ check_config <- function(config, method) {
   }
   if (method == "parametric_si") {
     if (is.null(config$mean_si)) {
-      cli::cli_abort("method parametric_si requires to specify the config$mean_si 
-           argument.")
+      cli::cli_abort("method parametric_si requires to specify the
+                     {.var config$mean_si} argument.")
     }
     if (is.null(config$std_si)) {
-      cli::cli_abort("method parametric_si requires to specify the config$std_si 
+      cli::cli_abort(
+             "method parametric_si requires to specify the {.var config$std_si} 
            argument.")
     }
     if (config$mean_si <= 1) {
-      cli::cli_abort("method parametric_si requires a value >1 for config$mean_si.")
+      cli::cli_abort(
+             "method parametric_si requires a value >1 for {.var config$mean_si}."
+           )
     }
     if (config$std_si <= 0) {
-      cli::cli_abort("method parametric_si requires a >0 value for config$std_si.")
+      cli::cli_abort(
+             "method parametric_si requires a >0 value for {.var config$std_si}.")
     }
   }
   if (method == "uncertain_si") {
     if (is.null(config$mean_si)) {
-      cli::cli_abort("method uncertain_si requires to specify the config$mean_si 
+      cli::cli_abort("method uncertain_si requires to specify the {.var config$mean_si} 
            argument.")
     }
     if (is.null(config$std_si)) {
-      cli::cli_abort("method uncertain_si requires to specify the config$std_si 
+      cli::cli_abort("method uncertain_si requires to specify the {.var config$std_si} 
            argument.")
     }
     if (is.null(config$n1)) {
-      cli::cli_abort("method uncertain_si requires to specify the config$n1 argument.")
+      cli::cli_abort("method uncertain_si requires to specify the
+                      {.var config$n1} argument.")
     }
     if (is.null(config$n2)) {
-      cli::cli_abort("method uncertain_si requires to specify the config$n2 argument.")
+      cli::cli_abort("method uncertain_si requires to specify the {.var config$n2} argument.")
     }
     if (is.null(config$std_mean_si)) {
-      cli::cli_abort("method uncertain_si requires to specify the config$std_mean_si 
+      cli::cli_abort("method uncertain_si requires to specify the {.var config$std_mean_si} 
            argument.")
     }
     if (is.null(config$min_mean_si)) {
-      cli::cli_abort("method uncertain_si requires to specify the config$min_mean_si 
+      cli::cli_abort("method uncertain_si requires to specify the {.var config$min_mean_si} 
            argument.")
     }
     if (is.null(config$max_mean_si)) {
-      cli::cli_abort("method uncertain_si requires to specify the config$max_mean_si 
+      cli::cli_abort("method uncertain_si requires to specify the {.var config$max_mean_si}
            argument.")
     }
     if (is.null(config$std_std_si)) {
-      cli::cli_abort("method uncertain_si requires to specify the config$std_std_si 
+      cli::cli_abort("method uncertain_si requires to specify the {.var config$std_std_si} 
            argument.")
     }
     if (is.null(config$min_std_si)) {
-      cli::cli_abort("method uncertain_si requires to specify the config$min_std_si 
+      cli::cli_abort("method uncertain_si requires to specify the {.var config$min_std_si} 
            argument.")
     }
     if (is.null(config$max_std_si)) {
-      cli::cli_abort("method uncertain_si requires to specify the config$max_std_si 
+      cli::cli_abort("method uncertain_si requires to specify the {.var config$max_std_si} 
            argument.")
     }
     if (config$mean_si <= 0) {
-      cli::cli_abort("method uncertain_si requires a >0 value for config$mean_si.")
+      cli::cli_abort("method uncertain_si requires a >0 value for {.var config$mean_si}.")
     }
     if (config$std_si <= 0) {
-      cli::cli_abort("method uncertain_si requires a >0 value for config$std_si.")
+      cli::cli_abort("method uncertain_si requires a >0 value for {.var config$std_si}.")
     }
     if (config$n2 <= 0 || config$n2 %% 1 != 0) {
-      cli::cli_abort("method uncertain_si requires a >0 integer value for config$n2.")
+      cli::cli_abort("method uncertain_si requires a >0 integer value for {.var config$n2}.")
     }
     if (config$n1 <= 0 || config$n1 %% 1 != 0) {
-      cli::cli_abort("method uncertain_si requires a >0 integer value for config$n1.")
+      cli::cli_abort("method uncertain_si requires a >0 integer value for {.var config$n1}.")
     }
     if (config$std_mean_si <= 0) {
-      cli::cli_abort("method uncertain_si requires a >0 value for config$std_mean_si.")
+      cli::cli_abort("method uncertain_si requires a >0 value for {.var config$std_mean_si}.")
     }
     if (config$min_mean_si < 1) {
-      cli::cli_abort("method uncertain_si requires a value >=1 for config$min_mean_si.")
+      cli::cli_abort("method uncertain_si requires a value >=1 for {.var config$min_mean_si}.")
     }
     if (config$max_mean_si < config$mean_si) {
-      cli::cli_abort("method uncertain_si requires that config$max_mean_si >= 
-           config$mean_si.")
+      cli::cli_abort("method uncertain_si requires that {.var config$max_mean_si} >= 
+           {.var config$mean_si}.")
     }
     if (config$mean_si < config$min_mean_si) {
-      cli::cli_abort("method uncertain_si requires that config$mean_si >= 
-           config$min_mean_si.")
+      cli::cli_abort("method uncertain_si requires that {.var config$mean_si} >= 
+           {.var config$min_mean_si}.")
     }
     if (signif(config$max_mean_si - config$mean_si, 3) != signif(config$mean_si -
       config$min_mean_si, 3)) {
@@ -404,18 +409,18 @@ check_config <- function(config, method) {
               the mean.")
     }
     if (config$std_std_si <= 0) {
-      cli::cli_abort("method uncertain_si requires a >0 value for config$std_std_si.")
+      cli::cli_abort("method uncertain_si requires a >0 value for {.var config$std_std_si}.")
     }
     if (config$min_std_si <= 0) {
-      cli::cli_abort("method uncertain_si requires a >0 value for config$min_std_si.")
+      cli::cli_abort("method uncertain_si requires a >0 value for {.var config$min_std_si}.")
     }
     if (config$max_std_si < config$std_si) {
-      cli::cli_abort("method uncertain_si requires that config$max_std_si >= 
-           config$std_si.")
+      cli::cli_abort("method uncertain_si requires that {.var config$max_std_si} >= 
+           {.var config$std_si}.")
     }
     if (config$std_si < config$min_std_si) {
-      cli::cli_abort("method uncertain_si requires that config$std_si >= 
-           config$min_std_si.")
+      cli::cli_abort("method uncertain_si requires that {.var config$std_si} >= 
+           {.var config$min_std_si}.")
     }
     if (signif(config$max_std_si - config$std_si, 3) != signif(config$std_si -
       config$min_std_si, 3)) {
@@ -424,7 +429,7 @@ check_config <- function(config, method) {
     }
   }
   if (config$cv_posterior < 0) {
-    cli::cli_abort("config$cv_posterior must be >0.")
+    cli::cli_abort("{.var config$cv_posterior} must be >0.")
   }
 }
 
@@ -451,7 +456,7 @@ vcapply <- function(X, FUN, ...) {
 modify_defaults <- function(defaults, x, strict = TRUE) {
   extra <- setdiff(names(x), names(defaults))
   if (strict && (length(extra) > 0L)) {
-    cli::cli_abort("Additional invalid options: ", toString(extra))
+    cli::cli_abort("Additional invalid options: {toString(extra)}")
   }
   utils::modifyList(defaults, x, keep.null = TRUE) # keep.null is needed here
 }
@@ -507,11 +512,11 @@ si_from_data_valid_distrs <- function(dist) {
   valid_names <- c(old_names, new_names)
   if (dist %in% old_names) {
     cli::cli_warn(
-      paste(
+      
         "The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and
-            'off1L' are deprecated. Please use the more descriptive names",
-        new_names, "instead."
-      )
+            'off1L' are deprecated. Please use the more descriptive names
+        {new_names} instead."
+      
     )
   }
   list(is_dist_valid = dist %in% valid_names, all_valid_distrs = valid_names)
