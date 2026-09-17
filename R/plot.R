@@ -229,7 +229,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
     x_list <- x
     x <- x_list[[1]]
     if (length(x_list) > length(col)) {
-      warnings("color vector too short, recycling colors.")
+      cli::cli_alert_warning("color vector too short, recycling colors.")
       options_R$col <- rep(
         options_R$col,
         ceiling(length(x_list) / length(options_R$col))
