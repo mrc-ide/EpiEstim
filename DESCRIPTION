@@ -42,7 +42,7 @@ Imports:
 Suggests:
     incidence (>= 1.7.0),
     incidence2 (>= 2.6.4.9000),
-    testthat (>= 3.0.0),
+    testthat (>= 3.3.0),
     utils,
     vdiffr,
     covr,
