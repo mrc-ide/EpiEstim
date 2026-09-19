@@ -4,7 +4,7 @@ test_that(
   "wallinga_teunis() outputs the right errors/warnings",
   {
 
-    msg <- "method non_parametric_si requires to specify the config\\$mean_si argument."
+    msg <- "method non_parametric_si requires to specify the `?config\\$mean_si`? argument\\."
     expect_error(
       wallinga_teunis(
         1:10,
@@ -16,7 +16,7 @@ test_that(
       msg
     )
 
-    msg <- "method non_parametric_si requires to specify the config\\$std_si argument."
+    msg <- "method non_parametric_si requires to specify the `?config\\$std_si`? argument\\."
     expect_error(
       wallinga_teunis(
         1:10,
@@ -29,7 +29,7 @@ test_that(
       msg
     )
     
-    msg <- "method parametric_si requires a value >1 for config\\$mean_si."
+    msg <- "method parametric_si requires a value >1 for `?config\\$mean_si`?\\."
     expect_error(
       wallinga_teunis(
         1:10,
