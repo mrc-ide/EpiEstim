@@ -365,7 +365,7 @@ test_that("process_I_multivariant rejects wrong inputs", {
   incid_imported <- array(1, dim = c(T, n_loc, n_v))
 
   expect_error(process_I_multivariant(incid, incid_imported[-1, , ]),
-               "'incid' and 'incid_imported' have incompatible dimensions")
+               "`?incid`? and `?incid_imported`? have incompatible dimensions")
 })
 
 
@@ -405,7 +405,7 @@ test_that("compute_lambda rejects invalid incid inputs", {
   incid <- array(10, dim = c(T, n_loc, n_v))
 
   expect_error(compute_lambda(incid, si_distr),
-      "'incid 'should be an 'incid_multivariant' object.")
+      "`?incid`? should be an <?incid_multivariant>? object\\.")
 })
 
 
@@ -899,7 +899,7 @@ test_that("estimate_advantage produces expected warning message", {
 
   expect_warning(
     estimate_advantage(incid, si_distr, priors, seed = 1, t_min = 2L),
-    "Priors where the mean of epsilon is different from 1 are not currently supported."
+    "Priors where the mean of epsilon is different from 1 are not currently supported\\."
   )
 
 })
