@@ -19,11 +19,11 @@ sidistr_3=cbind(c(0,-0.1,0.7,0.4),c(0,0.2,0.5,0.3)) # negative value
 
 test_that("si_distr is specified correctly", {
   expect_error(compute_lambda(incid=incid_processed, si_distr=sidistr_1),
-               "Values in the first row of si_distr must be 0")
+               "Values in the first row of `?si_distr`? must be 0")
   expect_error(compute_lambda(incid=incid_processed, si_distr=sidistr_2),
-               "The sum of each column in si_distr should be equal to 1")
+               "The sum of each column in `?si_distr`? should be equal to 1")
   expect_error(compute_lambda(incid=incid_processed, si_distr=sidistr_3),
-               "si_distr must be >=0")
+               "`?si_distr`? must be >=0")
 })
 
 ##############################
@@ -46,15 +46,15 @@ test_that("tmin and tmax are specified correctly", {
   expect_error(draw_epsilon(R=R, incid=incid, lambda=lambda, priors=priors,
                               t_min = tmin1, t_max = nrow(incid),
                               seed = NULL),
-               "t_min and t_max must be integers")
+               "`?t_min`? and `?t_max`? must be integers")
   expect_error(draw_epsilon(R=R, incid=incid, lambda=lambda, priors=priors,
                             t_min = tmin2, t_max = nrow(incid),
                             seed = NULL),
-               "t_min and t_max must be >=2")
+               "`?t_min`? and `?t_max`? must be >=2")
   expect_error(draw_epsilon(R=R, incid=incid, lambda=lambda, priors=priors,
                             t_min = tmin3, t_max = nrow(incid),
                             seed = NULL),
-               "t_min and t_max must be <= nrow(incid)", fixed=TRUE)
+               "`?t_min`? and `?t_max`? must be <= 100 \\(`?nrow\\(incid\\)`?\\)")
 })
 
   # R test
@@ -65,7 +65,7 @@ test_that("R is specified correctly",{
   expect_error(draw_epsilon(R=Rneg, incid=incid, lambda=lambda, priors=priors,
                             t_min = 2L, t_max = nrow(incid),
                             seed = NULL),
-               "R must be >= 0")
+               "`?R`? must be >= 0")
 })
 
   # seed test
@@ -76,7 +76,7 @@ test_that("seed is specified correctly",{
   expect_error(draw_epsilon(R=R, incid=incid, lambda=lambda, priors=priors,
                             t_min = 2L, t_max = nrow(incid),
                             seed = "a"),
-               "seed must be numeric")
+               "`?seed`? must be numeric")
 })
 
 ########################
@@ -101,15 +101,15 @@ test_that("tmin and tmax are specified correctly", {
   expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
                             t_min = tmin1, t_max = nrow(incid),
                             seed = NULL),
-               "t_min and t_max must be integers")
+               "`?t_min`? and `?t_max`? must be integers")
   expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
                             t_min = tmin2, t_max = nrow(incid),
                             seed = NULL),
-               "t_min and t_max must be >=2")
+               "`?t_min`? and `?t_max`? must be >=2")
   expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
                             t_min = tmin3, t_max = nrow(incid),
                             seed = NULL),
-               "t_min and t_max must be <= nrow(incid)", fixed=TRUE)
+               "`?t_min`? and `?t_max`? must be <= 100 \\(`?nrow\\(incid\\)`?\\)")
 })
 
 
@@ -121,7 +121,7 @@ test_that("seed is specified correctly",{
   expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
                             t_min = 2L, t_max = nrow(incid),
                             seed = seed),
-               "seed must be numeric")
+               "`?seed`? must be numeric")
 })
 
 
@@ -133,7 +133,7 @@ test_that("epsilon is specified correctly",{
   expect_error(draw_R(epsilon=epsilon, incid=incid, lambda=lambda, priors=priors,
                       t_min = 2L, t_max = nrow(incid),
                       seed = NULL),
-               "epsilon must be > 0")
+               "`?epsilon`? must be > 0")
 })
 
 
@@ -158,17 +158,17 @@ test_that("tmin and tmax are specified correctly", {
                               mcmc_control = default_mcmc_controls(),
                               t_min = tmin1, t_max = nrow(incid),
                               seed = NULL),
-               "t_min and t_max must be integers")
+               "`?t_min`? and `?t_max`? must be integers")
   expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = tmin2, t_max = nrow(incid),
                               seed = NULL),
-               "t_min and t_max must be >=2")
+               "`?t_min`? and `?t_max`? must be >=2")
   expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = tmin3, t_max = nrow(incid),
                               seed = NULL),
-               "t_min and t_max must be <= nrow(incid)", fixed=TRUE)
+               "`?t_min`? and `?t_max`? must be <= 100 \\(`?nrow\\(incid\\)`?\\)")
 })
 
 
@@ -183,17 +183,17 @@ test_that("si_distr is specified correctly", {
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "Values in the first row of si_distr must be 0")
+               "Values in the first row of `?si_distr`? must be 0")
   expect_error(estimate_advantage(incid=incid, si_distr=sidistr_2, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "The sum of each column in si_distr should be equal to 1")
+               "The sum of each column in `?si_distr`? should be equal to 1")
   expect_error(estimate_advantage(incid=incid, si_distr=sidistr_3, priors=priors,
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "si_distr must be >=0")
+               "`?si_distr`? must be >=0")
 })
 
 
@@ -222,17 +222,17 @@ test_that("mcmc_control is specified correctly", {
                               mcmc_control = mcmc_control1(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "n_iter in mcmc_control must be a positive integer")
+               "`?n_iter`? in `?mcmc_control`? must be a positive integer")
   expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = mcmc_control2(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "burnin in mcmc_control must be a positive integer")
+               "burnin in `?mcmc_control`? must be a positive integer")
   expect_error(estimate_advantage(incid=incid, si_distr=si_distr, priors=priors,
                               mcmc_control = mcmc_control3(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = NULL),
-               "thin in mcmc_control must be a positive integer")
+               "thin in `?mcmc_control`? must be a positive integer")
 })
 
 
@@ -245,7 +245,7 @@ test_that("seed is specified correctly",{
                               mcmc_control = default_mcmc_controls(),
                               t_min = 2L, t_max = nrow(incid),
                               seed = seed),
-               "seed must be numeric")
+               "`?seed`? must be numeric")
 })
 
   # convergence check
