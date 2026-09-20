@@ -196,6 +196,10 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. It can be calculated from the incidence `incid` and
 #'   the distribution of the serial interval using function [compute_lambda()]
+#' @param shape_R_flat a vector of the shape of the posterior distribution of R
+#'   for each time step t and each location l
+#'   (stored in element `(l-1)*(t_max - t_min + 1) + t` of the vector),
+#'   as obtained from function [get_shape_R_flat()].
 #'
 #' @return a matrix of the instantaneous reproduction number R for the reference
 #'   pathogen/strain/variant for each time step (row) and each location (column)
