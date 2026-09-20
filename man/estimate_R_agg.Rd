@@ -19,7 +19,7 @@ estimate_R_agg(
 )
 }
 \arguments{
-\item{incid}{Aggregated One of the following
+\item{incid}{Aggregated incidence data One of the following
 \itemize{
 \item A vector (or a dataframe with a single column) of non-negative integers
 containing the incidence time series; these can be aggregated at any time
@@ -35,7 +35,10 @@ contains a column \code{incid$dates}, this is used for plotting.
 }
 
 Note that the cases from the first time step are always all assumed to be
-imported cases.}
+imported cases.
+\itemize{
+\item An object of class incidence2::incidence()
+}}
 
 \item{dt}{length of temporal aggregations of the incidence data. This should
 be an integer or vector of integers. If a vector, this will be recycled. For
