@@ -1,3 +1,9 @@
+# EpiEstim 3.0.1
+
+## New features
+
+* Errors and warnings are now generated using {cli}
+
 # EpiEstim 3.0.0
 
 ## New features
