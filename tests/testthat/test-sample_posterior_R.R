@@ -11,7 +11,7 @@ res <- estimate_R(incid = Flu2009$incidence,
 
 test_that("only estimate_R or wallinga_teunis objects are accepted", {
 
-  msg <- "input must be generated from the estimate_R\\(\\) or wallinga_teunis\\(\\)."
+  msg <- "`?R`? must be generated from the `?estimate_R\\(\\)`? or `?wallinga_teunis\\(\\)`?\\."
   expect_error(sample_posterior_R(res$R), msg)
 
 })

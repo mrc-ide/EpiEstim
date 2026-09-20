@@ -77,10 +77,14 @@ init_mcmc_params <- function(si_data, dist) {
   
   rtn <- si_from_data_valid_distrs(dist)
   if (!rtn$is_dist_valid) {
-    stop("The supported distributions are 'gamma', 'weibull',
-           'lognormal', 'gamma_offset_1' (Gamma shifted by 1),
-           'weibull_offset_1' (Weibull shifted by 1),
-           or 'lognormal_offset_1' (Lognormal shifted by 1). ")
+    cli::cli_abort(c("The supported distributions are:",
+                     " " = "gamma",
+                     " " = "weibull",
+                     " " = "lognormal",
+                     " " = "gamma_offset_1 (Gamma shifted by 1)",
+                     " " = "weibull_offset_1 (Weibull shifted by 1)",
+                     " " = "lognormal_offset_1 (Lognormal shifted by 1)"
+                     ))
   }
   naive_SI_obs <- (si_data$SR + si_data$SL) / 2 - (si_data$ER + si_data$EL) / 2
   mu <- mean(naive_SI_obs)
@@ -142,7 +146,7 @@ init_mcmc_params <- function(si_data, dist) {
   }
   
   if (anyNA(param)) {
-    stop("NA result. Check that si_data is in the right format. ")
+    cli::cli_abort("NA result. Check that si_data is in the right format. ")
   }
   return(param)
 }

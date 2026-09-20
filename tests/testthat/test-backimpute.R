@@ -28,27 +28,27 @@ test_that("warnings and errors are working as expected", {
   
   expect_error(
     suppressWarnings(estimate_R(incid = incid_covid, backimputation_window = 1)),
-    "Backimputation window needs to contain at least 2 timepoints"
+    "Backimputation window `?window_b`? needs to contain at least 2 timepoints"
   )
   
   expect_error(
     estimate_R(incid = incid_covid, backimputation_window = 10.4),
-    "Backimputation window needs to have integer length"
+    "Backimputation window `?window_b`? needs to have integer length"
   )
   
   expect_error(
     estimate_R(incid = incid_covid[1:10], backimputation_window = 100L),
-    "Backimputation window should be shorter than observed incidence"
+    "Backimputation window `?window_b`? should be shorter than observed incidence"
   )
   
   expect_error(
     estimate_R(incid = incid_covid[1:10], backimputation_window = 100L),
-    "Backimputation window should be shorter than observed incidence"
+    "Backimputation window `?window_b`? should be shorter than observed incidence"
   )
   
   expect_error(
     estimate_R(incid = incid_imported, backimputation_window = 7L),
-    "incidence objects are currently not supported by backimpute_I()."
+    "<?incidence>? objects are currently not supported by `?backimpute_I(\\(\\)){1,2}`?\\."
   )
   
   expect_error(
@@ -63,7 +63,7 @@ test_that("warnings and errors are working as expected", {
   
   expect_warning(
     estimate_R(incid = incid_covid, backimputation_window = 3, config = config_covid),
-    "The backimputation window is short and may lead to an inaccurate estimate of the growth rate."
+    "The backimputation window is short and may lead to an inaccurate estimate of the growth rate\\."
   )
   
 })

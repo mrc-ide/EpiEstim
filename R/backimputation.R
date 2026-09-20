@@ -27,26 +27,30 @@
 backimpute_I <- function(incid, window_b) {
 
     if (inherits(incid, "incidence")) {
-      msg <- "incidence objects are currently not supported by backimpute_I()."
-      stop(msg)
+      msg <- "{.cls {class(incid)}} objects are currently not supported by {.fn backimpute_I()}."
+      cli::cli_abort(msg)
     }
-  
+    if (window_b %% 1 != 0) {
+      msg <- "Backimputation window {.var window_b} needs to have integer length"
+      cli::cli_abort(msg)
+    }
+    if (window_b < 2) {
+      msg <- "Backimputation window {.var window_b} needs to contain at least 2 timepoints"
+      cli::cli_abort(msg)
+    }    
     if (window_b <= 5) {
         msg <- "The backimputation window is short and may lead to an inaccurate estimate of the growth rate."
-        warning(msg)
+        cli::cli_warn(msg)
     }
 
     # process observed incidence, and move the first imported cases to local
     incid_processed <- process_I(incid)
     incid_processed$local[1] <- with(incid_processed, imported[1] + local[1])
     incid_processed$imported[1] <- 0
-
-    stopifnot("Backimputation window needs to contain at least 2 timepoints" =
-        window_b >= 2)
-    stopifnot("Backimputation window needs to have integer length" =
-        window_b %% 1 == 0)
-    stopifnot("Backimputation window should be shorter than observed incidence" =
-        nrow(incid_processed) >= window_b)
+    if (nrow(incid_processed) < window_b) {
+      msg <- "Backimputation window {.var window_b} should be shorter than observed incidence"
+      cli::cli_abort(msg)
+    }
     
     # incid could be a data.frame. Better to work with a vector of integers
     local_incidence <- incid_processed$local
@@ -64,7 +68,7 @@ backimpute_I <- function(incid, window_b) {
 
     if (fit_backimpute$coefficients[2] < 0) {
         msg <- "Estimate of the growth rate is negative, consider removing backimputation, or extending the backimputation window"
-        warning(msg)
+        cli::cli_warn(msg)
     }
 
     predict_backimpute_log <- stats::predict.lm(fit_backimpute, newdata = list(t = imputed_t))

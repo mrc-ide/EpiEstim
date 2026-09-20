@@ -363,16 +363,16 @@ estimate_R <- function(incid,
   
   if (is.data.frame(incid) && "dates" %in% names(incid)) {
     if (!all(diff(incid$dates) > 0)) {
-      stop("dates in incid must be in ascending order", call. = FALSE)
+      cli::cli_abort("dates in incid must be in ascending order")
     }
   } else if (inherits(incid, "incidence")) {
     if (!all(diff(incid$dates) > 0)) {
-      stop("dates in incid must be in ascending order", call. = FALSE)
+      cli::cli_abort("dates in incid must be in ascending order")
     }
   } else if (inherits(incid, "incidence2")) {
     dates <- unique(incid[[incidence2::get_date_index_name(incid)]])
     if (!all(diff(dates) > 0)) {
-      stop("dates in incid must be in ascending order", call. = FALSE)
+      cli::cli_abort("dates in incid must be in ascending order")
     }
   }
 
@@ -383,7 +383,7 @@ estimate_R <- function(incid,
   if(any(dt >= 2)) {
     
     msg <- "backimputation_window is currently not supported when dt > 1"
-    if(backimputation_window > 0) stop(msg)
+    if (backimputation_window > 0) cli::cli_abort(msg)
     
     # extract dates before stripping to vector
     agg_dates <- NULL
@@ -447,7 +447,7 @@ estimate_R <- function(incid,
       "outbreak. See Charniga et al. (PLoS Comp Biol, 2024) and consider using",
       "the R package primarycensored for real-time serial interval estimation."
     )
-    warning(wrn)
+    cli::cli_warn(wrn)
 
     ## check convergence of the MCMC and print warning if not converged
     MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
@@ -616,7 +616,7 @@ estimate_R_func <- function(incid,
     t_end_imputed
   )
   if (incidence_per_time_step[1] < min_nb_cases_per_time_period) {
-    warning("You're estimating R too early in the epidemic to get the desired
+    cli::cli_warn("You're estimating R too early in the epidemic to get the desired
             posterior CV.", call. = FALSE)
   }
 

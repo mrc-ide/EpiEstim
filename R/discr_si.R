@@ -52,13 +52,13 @@
 discr_si <- function(k, mu, sigma) 
 {
   if (sigma < 0) {
-    stop("sigma must be >=0.")
+    cli::cli_abort("{.var sigma} must be >=0.")
   }
   if (mu <= 1) {
-    stop("mu must be >1")
+    cli::cli_abort("{.var mu} must be >1")
   }
   if (any(k < 0)) {
-    stop("all values in k must be >=0.")
+    cli::cli_abort("all values in {.var} must be >=0.")
   }
 
   a <- ((mu - 1) / sigma)^2

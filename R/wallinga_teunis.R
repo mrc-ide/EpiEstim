@@ -134,11 +134,9 @@ wallinga_teunis <- function(incid, ...) {
 #' @rdname wallinga_teunis
 #' @export
 wallinga_teunis.default <- function(incid, ...) {
-  msg <- sprintf(
-    "No `project()` method for object of the class: %s",
-    paste(class(incid), collapse = ", ")
-    )
-  stop(msg)
+
+  cli::cli_abort("No {.code project()} method for object of the class: {.cls {class(incid)}}")
+
 }
 
 
@@ -211,7 +209,7 @@ wallinga_teunis.numeric <- function(incid,
   
   if (is.null(config$n_sim)) {
     config$n_sim <- 10
-    warning("setting config$n_sim to 10 as config$n_sim was not specified.")
+    cli::cli_warn("setting {.var config$n_sim} to 10 as {.var config$n_sim} was not specified.")
   }
   
   if (method == "non_parametric_si") {
@@ -221,24 +219,24 @@ wallinga_teunis.numeric <- function(incid,
   
   if (method == "parametric_si") {
     if (is.null(config$mean_si)) {
-      stop("method non_parametric_si requires to specify the config$mean_si argument.")
+      cli::cli_abort("method non_parametric_si requires to specify the {.var config$mean_si} argument.")
     }
     if (is.null(config$std_si)) {
-      stop("method non_parametric_si requires to specify the config$std_si argument.")
+      cli::cli_abort("method non_parametric_si requires to specify the {.var config$std_si} argument.")
     }
     if (config$mean_si < 1) {
-      stop("method parametric_si requires a value >1 for config$mean_si.")
+      cli::cli_abort("method parametric_si requires a value >1 for {.var config$mean_si}.")
     }
     if (config$std_si < 0) {
-      stop("method parametric_si requires a >0 value for config$std_si.")
+      cli::cli_abort("method parametric_si requires a >0 value for {.var config$std_si}.")
     }
   }
   
   if (!is.numeric(config$n_sim)) {
-    stop("config$n_sim must be a positive integer.")
+    cli::cli_abort("{.var config$n_sim} must be a positive integer.")
   }
   if (config$n_sim < 0) {
-    stop("config$n_sim must be a positive integer.")
+    cli::cli_abort("{.var config$n_sim} must be a positive integer.")
   }
   
   ### What does each method do ###
@@ -417,18 +415,14 @@ wallinga_teunis.incidence <- function(incid,
                                       ...) {
 
   ## checks specific to incidence objects
-  if (as.integer(mean(incidence::get_interval(incid))) != 1L) {
-    msg <- sprintf(
-      "daily incidence needed, but interval is %d days",
-      as.integer(mean(incidence::get_interval(incid)))
-    )
-    stop(msg)
+  interval <- as.integer(mean(incidence::get_interval(incid)))
+  if (interval != 1L) {
+    cli::cli_abort("daily incidence needed, but interval is {interval} days")
   }
 
   has_groups <- ncol(incidence::get_counts(incid)) > 1L
   if (has_groups) {
-    msg <- sprintf("stratification in incidence object will be ignored")
-    if (!quiet) warning(msg)
+    if (!quiet) cli::cli_warn("stratification in incidence object will be ignored")
     incid <- incidence::pool(incid)
   }
 
@@ -462,13 +456,13 @@ wallinga_teunis.incidence2 <- function(incid,
   interval <- incidence2::get_interval_duration(incid)
   if (any(interval != 1L)) {
     msg <- "daily incidence needed"
-    stop(msg)
+    cli::cli_abort("{msg} but interval is {interval} days")
   }
 
   has_groups <- length(incidence2::get_groups(incid))
   if (has_groups) {
     msg <- sprintf("stratification in incidence2 object will be ignored")
-    if (!quiet) warning(msg)
+    if (!quiet) cli::cli_warn(msg)
     incid <- incidence2::regroup(incid)
   }
 

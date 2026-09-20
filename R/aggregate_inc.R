@@ -24,9 +24,13 @@
 
 aggregate_inc <- function(incid, dt = 7L)
 {
-  if(all(dt < 2)) {stop("at least one value of dt should be an integer >=2")}
-  if(!all(is.integer(dt))) {stop("dt should be an integer or vector of integers e.g. 2L or c(2L,2L,3L)")}
-  if(!is.vector(incid)) {stop("incid should be a vector of integer values")}
+  if(all(dt < 2)) {cli::cli_abort("at least one value of {.var n} should be an integer >=2")}
+  if (!all(is.integer(dt))) {
+    cli::cli_abort("{.var dt} should be an integer or vector of integers e.g. 2L or c(2L,2L,3L)")
+  }
+  if (!is.vector(incid)) {
+    cli::cli_abort("{.var incid} should be a vector of integer values")
+  }
   
   ndays <- length(incid)
   
@@ -42,7 +46,7 @@ aggregate_inc <- function(incid, dt = 7L)
     }
   }
   
-  message("Incidence aggregated up to day ", end[length(end)], " of ", ndays)
+  cli::cli_alert_success("Incidence aggregated up to day {end[length(end)]} of {ndays}")
   
   agg_inc <- numeric(length = length(start))
   
@@ -51,5 +55,6 @@ aggregate_inc <- function(incid, dt = 7L)
   }
   
   agg_inc <- as.integer(paste(agg_inc))
+
   agg_inc
 }

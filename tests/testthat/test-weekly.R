@@ -22,15 +22,14 @@ si_distr <- SARS2003$si_distr
 
 test_that("function to aggregate incidence works", {
   expect_error(aggregate_inc(Flu2009$incidence, 7L),
-               "incid should be a vector of integer values")
+               "`?incid`? should be a vector of integer values")
   expect_error(
     aggregate_inc(SARS2003$incidence, 7),
-    "dt should be an integer or vector of integers e.g. 2L or c(2L,2L,3L)", 
-    fixed=TRUE)
+    "`?dt`? should be an integer or vector of integers")
   expect_error(aggregate_inc(SARS2003$incidence, 1L),
-               "at least one value of dt should be an integer >=2")
+               "should be an integer >=2")
   expect_error(aggregate_inc(SARS2003$incidence, -1L),
-               "at least one value of dt should be an integer >=2")
+               "should be an integer >=2")
   expect_equal(
     aggregate_inc(SARS2003$incidence, 7L)[1],
     sum(SARS2003$incidence[1:7])
@@ -521,8 +520,7 @@ test_that("dt and dt_out in estimate_R_agg are in the correct format", {
                                                iter = 10L,
                                                config = config,
                                                method = method)),
-               "dt must be an integer or a vector of integers e.g. dt = 7L, dt = c(2L,2L,3L)",
-               fixed = TRUE) 
+               "`?dt`? must be an integer or a vector of integers")
   
   expect_error(suppressWarnings(estimate_R_agg(incid = weekly_inc, 
                                                dt = 7L, 
@@ -530,8 +528,7 @@ test_that("dt and dt_out in estimate_R_agg are in the correct format", {
                                                iter = 10L,
                                                config = config,
                                                method = method)),
-               "dt_out must be an integer e.g. dt_out = 7L",
-               fixed = TRUE)  
+               "`?dt_out`? must be an integer")
   
 })
 
@@ -548,7 +545,7 @@ test_that("iter in estimate_R_agg is in the correct format", {
                                                iter = 10.5,
                                                config = config,
                                                method = method)),
-               "iter must be an integer e.g. 10L") 
+               "`?iter`? must be an integer")
   
 })
 
@@ -565,7 +562,7 @@ test_that("grid in estimate_R_agg is in the correct format", {
                                                config = config,
                                                method = method,
                                                grid = c(precision = 0.001, min = -1, max=1))),
-               "grid must be a list of 3 elements: precision, min, and max")
+               "`?grid`? must be a list of 3 elements")
   
   expect_error(suppressWarnings(estimate_R_agg(incid = weekly_inc, 
                                                dt = 7L, 
@@ -574,7 +571,7 @@ test_that("grid in estimate_R_agg is in the correct format", {
                                                config = config,
                                                method = method,
                                                grid = list(precision = 0.001, min = -1))),
-               "grid must be a list of 3 elements: precision, min, and max")
+               "`?grid`? must be a list of 3 elements")
   
   expect_error(suppressWarnings(estimate_R_agg(incid = weekly_inc, 
                                                dt = 7L, 
@@ -583,7 +580,7 @@ test_that("grid in estimate_R_agg is in the correct format", {
                                                config = config,
                                                method = method,
                                                grid = list(precision = 0.001, min = -1, max = -2))),
-               "grid max must be larger than grid min") 
+               "grid max must be larger than grid min")
   
   expect_error(suppressWarnings(estimate_R_agg(incid = weekly_inc, 
                                                dt = 7L, 
@@ -601,7 +598,7 @@ test_that("grid in estimate_R_agg is in the correct format", {
                                                config = config,
                                                method = method,
                                                grid = list(precision = "0.001", min = -1, max = 1))),
-               "grid precision, min, and max, must all be numeric") 
+               "`?precision`?, `?min`?, and `?max`?, must all be numeric")
   
 })
 
@@ -774,6 +771,7 @@ test_that("estimate_R_agg handles different incid input formats consistently", {
                                               config = config,
                                               method = method,
                                               date_convention = "start"))
+
   
   ## check it works with incidence2 without naming
   inc2_obj2 <- incidence2::incidence(data, date_index = "dates",
