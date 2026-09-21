@@ -131,7 +131,7 @@ compute_lambda <- function(incid, si_distr) {
 
 
 #' Draw epsilon from marginal posterior distribution
-#' @inheritParams draw_R
+#' 
 #' @param R a matrix with dimensions containing values of the instantaneous
 #'   reproduction number for each time step (row) and location (column), for
 #'   the reference pathogen/strain/variant
@@ -140,6 +140,8 @@ compute_lambda <- function(incid, si_distr) {
 #'   distribution of epsilon for each of the non-reference variants, as returned
 #'   by function [get_shape_epsilon()]
 #'
+#' @inheritParams draw_R
+#' 
 #' @return A value or vector of values for epsilon for each non reference
 #'   pathogen/strain/variant, drawn from the marginal posterior distribution
 #'
@@ -261,9 +263,10 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #' (see [estimate_advantage()]) this function returns the largest index
 #' (across all columns) such that the cumulative probability mass before index is
 #' `1 - miss_at_most`.
-#'
-#' @inheritParams estimate_advantage
+#'#' 
 #' @param miss_at_most numeric. Probability mass in the tail of the SI distribution
+#' 
+#' @inheritParams estimate_advantage
 #' 
 #' @return integer
 #' @author Sangeeta Bhatia
@@ -633,8 +636,6 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 #' 
 #' Process incidence input for multivariant analyses with [estimate_advantage()]
 #'
-#' @inheritParams estimate_advantage 
-#'
 #' @param incid_imported an optional multidimensional array containing values
 #'   of the incidence of imported cases
 #'   for each time step (1st dimension), location (2nd dimension) and
@@ -644,6 +645,8 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 #'   known imported cases and all cases other than on those from the first
 #'   time step will be considered locally infected.
 #'
+#' @inheritParams estimate_advantage
+#' 
 #' @return a list with two multidimensional elements each with three dimensions:
 #'  timestep, location and pathogen/strain/variant:
 #' - `local`: an array of the incidence of locally infected cases

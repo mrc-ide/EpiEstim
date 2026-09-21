@@ -7,7 +7,7 @@
 #' standard deviation of the sample from which the parameters are to be 
 #' estimated.
 #' 
-#' @inheritParams estimate_R si_data
+#' 
 #' @param dist The parametric distribution used when estimating the serial
 #'   interval. Should be one of "gamma", "weibull", "lognormal",
 #'   "gamma_offset_1", "weibull_offset_1", or "lognormal_offset_1". Note the
@@ -17,6 +17,9 @@
 #'   "off1L" as used in [coarseDataTools::dic.fit.mcmc()]. However, we
 #'   recommend using the full names to avoid confusion, and a warning will be
 #'   issued if the abbreviated forms are used.
+#' 
+#' @inheritParams estimate_R si_data
+#' 
 #' @return A vector containing the initial values for the two parameters of the
 #'   distribution of the serial interval. These are the shape and scale for all
 #'   but the lognormal distribution, for which it is the meanlog and sdlog.
