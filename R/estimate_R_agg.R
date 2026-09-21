@@ -1,18 +1,7 @@
 
 #' Estimate instantaneous reproduction number from coarsely aggregated data
 #'
-#' @param incid Aggregated incidence data, supplied as one of the following
-#' 
-#' - A vector (or a dataframe with a single column) of non-negative integers
-#' containing the incidence time series; these can be aggregated at any time
-#' unit as specified by argument `dt`
-#'
-#' - A dataframe of non-negative integers with `incid$I` containing the total
-#' incidence. If the dataframe contains a column `incid$dates`, this is used for
-#' plotting. `incid$dates` must contains only dates in a row.
-#'
-#' - An object of class [incidence::incidence()]
-#' - An object of class [incidence2::incidence()]
+#' @param incid `r param_incid_doc('Aggregated incidence data', '\n - An object of class incidence2::incidence()')`
 #' 
 #' @param dt length of temporal aggregations of the incidence data. This should 
 #' be an integer or vector of integers. If a vector, this will be recycled. For 
@@ -44,15 +33,7 @@
 #' must also be specified. If \code{NULL} (default), no date information is 
 #' added to the output.
 #'
-#' @param date_convention One of `"start"` or `"end"`, specifying whether the 
-#' dates supplied in `incid$dates` correspond to the first or last day of each 
-#' aggregation window. Must be specified if incidence are temporally
-#' aggregated (`dt > 1`) and `incid$dates` is supplied.
-#' For example, for weekly epi-week data where the date label 
-#' corresponds to the first day of the week (e.g. Monday), use `"start"`. For 
-#' data reported multiple times per week where the date corresponds to the 
-#' reporting date (i.e. the last day of the accumulation window), use `"end"`.
-#' Ignored if no dates are supplied.
+#' @inheritParams estimate_R date_convention 
 #'
 #' @return 
 #' An object of class [estimate_R()], with components:

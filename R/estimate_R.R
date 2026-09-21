@@ -3,24 +3,7 @@
 #' Estimate the instantaneous reproduction number of an epidemic, given the
 #' incidence time series and the serial interval distribution.
 #'
-#' @param incid One of the following
-#' 
-#' - A vector (or a dataframe with a single column) of non-negative integers
-#'   containing the incidence time series; these can be aggregated at any time
-#'   unit as specified by argument `dt`
-#'
-#' - A dataframe of non-negative integers with either i) `incid$I`
-#'   containing the total incidence, or ii) two columns, so that
-#'   `incid$local` contains the incidence of cases due to local transmission
-#'   and `incid$imported` contains the incidence of imported cases (with
-#'   `incid$local + incid$imported` the total incidence). If the dataframe
-#'   contains a column `incid$dates`, this is used for plotting.
-#'   `incid$dates` must contains only dates in a row.
-#'
-#' - An object of class [incidence::incidence()]
-#'
-#' Note that the cases from the first time step are always all assumed to be
-#' imported cases.
+#' @param incid `r param_incid_doc()`
 #'
 #' @param method One of "non_parametric_si", "parametric_si", "uncertain_si",
 #'   "si_from_data" or "si_from_sample" (see details).

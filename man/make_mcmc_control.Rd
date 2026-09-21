@@ -40,28 +40,6 @@ Creates a list of MCMC control parameters to be used in
 estimate the serial interval within \code{\link[=estimate_R]{estimate_R()}} (with method
 "si_from_data").
 }
-\details{
-The argument \code{si_data}, should be a dataframe with 5 columns:
-\itemize{
-\item \code{EL}: the lower bound of the symptom onset date of the infector (given as
-an integer)
-\item \code{ER}: the upper bound of the symptom onset date of the infector (given as
-an integer). Should be such that \code{ER >= EL}
-\item \code{SL}: the lower bound of the symptom onset date of the infected
-individual (given as an integer)
-\item \code{SR}: the upper bound of the symptom onset date of the infected
-individual (given as an integer). Should be such that \code{SR >= SL}
-\item \code{type} (optional): can have entries 0, 1, or 2, corresponding to doubly
-interval-censored, single interval-censored or exact observations,
-respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-will be automatically computed from the dates
-}
-
-Assuming a given parametric distribution for the serial interval distribution
-(specified in \code{si_parametric_distr}),
-the posterior distribution of the serial interval is estimated directly from
-these data using MCMC methods implemented in the package
-}
 \examples{
 \dontrun{
 ## Note the following examples use an MCMC routine

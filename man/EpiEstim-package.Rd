@@ -26,6 +26,11 @@ Useful links:
 \author{
 \strong{Maintainer}: Anne Cori \email{a.cori@imperial.ac.uk} (\href{https://orcid.org/0000-0002-8443-9162}{ORCID})
 
+Authors:
+\itemize{
+  \item Anne Cori \email{a.cori@imperial.ac.uk} (\href{https://orcid.org/0000-0002-8443-9162}{ORCID})
+}
+
 Other contributors:
 \itemize{
   \item Simon Cauchemez [contributor]

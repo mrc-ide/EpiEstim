@@ -1,21 +1,6 @@
 #' Precompute shape of posterior distribution for R
 #'
-#' @param incid a multidimensional array containing values of the (local)
-#'   incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
-#'
-#' @param priors a list of prior parameters (shape and scale of a gamma
-#'   distribution) for epsilon and R; can be obtained from the function
-#'   `default_priors`. The prior for R is assumed to be the same for all
-#'   time steps and all locations
-#'
-#' @param t_min an integer > 1 giving the minimum time step to consider in the
-#'   estimation. Default value is 2 (as the estimation is conditional on
-#'   observations at time step 1 and can therefore only start at time step 2).
-#'
-#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
-#'   step to consider in the estimation. Default value is `nrow(incid)`.
+#' @inheritParams draw_R
 #'
 #' @return a vector of the shape of the posterior distribution of R for
 #'   each time step t and each location l
@@ -23,14 +8,9 @@
 #'
 #' @export
 #'
+#' @example man/examples/multivariant_setup.R
 #' @examples
-#' n_v <- 2
-#' n_loc <- 3 # 3 locations
-#' T <- 100 # 100 time steps
-#' priors <- default_priors()
-#' # constant incidence 10 per day everywhere
-#' incid <- array(10, dim = c(T, n_loc, n_v))
-#' get_shape_R_flat(incid, priors)
+#' get_shape_R_flat(incid$local, priors)
 
 get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
   t <- seq(t_min, t_max, 1)
@@ -40,49 +20,16 @@ get_shape_R_flat <- function(incid, priors, t_min = 2L, t_max = nrow(incid)) {
 
 #' Precompute shape of posterior distribution for epsilon
 #'
-#' @param incid a multidimensional array containing values of the (local)
-#'   incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
-#'
-#' @param lambda a multidimensional array containing values of the overall
-#'   infectivity for each time step (1st dimension), location (2nd dimension)
-#'   and pathogen/strain/variant (3rd dimension). The overall infectivity for
-#'   a given location and pathogen/strain/variant represents the sum of
-#'   the incidence for that location and that pathogen/strain/variant at all
-#'   previous time steps, weighted by the current infectivity of those
-#'   past incident cases. It can be calculated from the incidence `incid` and
-#'   the distribution of the serial interval using function [compute_lambda()]
-#'
-#' @param priors a list of prior parameters (shape and scale of a gamma
-#'   distribution) for epsilon and R; can be obtained from the function
-#'   [default_priors()]. The prior for R is assumed to be the same for all
-#'   time steps and all locations
-#'
-#' @param t_min an integer > 1 giving the minimum time step to consider in the
-#'   estimation. Default value is 2 (as the estimation is conditional on
-#'   observations at time step 1 and can therefore only start at time step 2).
-#'
-#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
-#'   step to consider in the estimation. Default value is `nrow(incid)`.
+#' 
+#' @inheritParams draw_R 
 #'
 #' @return a value or vector of values of the shape of the posterior
 #'   distribution of epsilon for each of the non-reference variants
 #'
 #' @export
 #'
+#' @example man/examples/multivariant_setup.R
 #' @examples
-#' n_loc <- 4 # 4 locations
-#' n_v <- 3 # 3 strains
-#' T <- 100 # 100 time steps
-#' priors <- default_priors()
-#' # constant incidence 10 per day everywhere
-#' incid <- array(10, dim = c(T, n_loc, n_v))
-#' incid <- process_I_multivariant(incid)
-#' # arbitrary serial interval, same for both variants
-#' w_v <- c(0, 0.2, 0.5, 0.3)
-#' si_distr <- cbind(w_v, w_v, w_v)
-#' lambda <- compute_lambda(incid, si_distr)
 #' get_shape_epsilon(incid$local, lambda, priors)
 
 get_shape_epsilon <- function(incid, lambda, priors,
@@ -141,17 +88,7 @@ default_mcmc_controls <- function() {
 
 #' Compute the overall infectivity
 #'
-#' @param incid a list (as obtained from function [process_I_multivariant()])
-#'   of two multidimensional arrays (`local` and `imported`) containing values 
-#'   of the incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
-#'
-#' @param si_distr a matrix where each column contains the probability mass
-#'   function for the discrete serial interval for each of the
-#'   pathogen/strain/variants, starting with the probability mass function
-#'   for day 0 in the first row, which should be 0. Each column in the matrix
-#'   should sum to 1
+#' @inheritParams estimate_advantage 
 #'
 #' @return a multidimensional array containing values of the overall
 #'   infectivity for each time step (1st dimension), location (2nd dimension)
@@ -164,18 +101,7 @@ default_mcmc_controls <- function() {
 #'
 #' @export
 #'
-#' @examples
-#' n_v <- 2
-#' n_loc <- 3 # 3 locations
-#' T <- 100 # 100 time steps
-#' priors <- default_priors()
-#' # constant incidence 10 per day everywhere
-#' incid <- array(10, dim = c(T, n_loc, n_v))
-#' incid <- process_I_multivariant(incid)
-#' # arbitrary serial interval, same for both variants
-#' w_v <- c(0, 0.2, 0.5, 0.3)
-#' si_distr <- cbind(w_v, w_v)
-#' lambda <- compute_lambda(incid, si_distr)
+#' @example man/examples/multivariant_setup.R
 
 compute_lambda <- function(incid, si_distr) {
   if (!inherits(incid, "incid_multivariant")) {
@@ -205,60 +131,24 @@ compute_lambda <- function(incid, si_distr) {
 
 
 #' Draw epsilon from marginal posterior distribution
-#'
+#' 
 #' @param R a matrix with dimensions containing values of the instantaneous
 #'   reproduction number for each time step (row) and location (column), for
 #'   the reference pathogen/strain/variant
-#'
-#' @param incid a multidimensional array containing values of the (local)
-#'   incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
-#'
-#' @param lambda a multidimensional array containing values of the overall
-#'   infectivity for each time step (1st dimension), location (2nd dimension)
-#'   and pathogen/strain/variant (3rd dimension). The overall infectivity for
-#'   a given location and pathogen/strain/variant represents the sum of
-#'   the incidence for that location and that pathogen/strain/variant at all
-#'   previous time steps, weighted by the current infectivity of those
-#'   past incident cases. It can be calculated from the incidence `incid` and
-#'   the distribution of the serial interval using function [compute_lambda()]
-#'
-#' @param priors a list of prior parameters (shape and scale of a gamma
-#'   distribution) for epsilon and R; can be obtained from the function
-#'   [default_priors()]. The prior for R is assumed to be the same for all
-#'   time steps and all locations
-#'
+#' 
 #' @param shape_epsilon a value or vector of values of the shape of the posterior
 #'   distribution of epsilon for each of the non-reference variants, as returned
 #'   by function [get_shape_epsilon()]
 #'
-#' @param t_min an integer > 1 giving the minimum time step to consider in the
-#'   estimation. Default value is 2 (as the estimation is conditional on
-#'   observations at time step 1 and can therefore only start at time step 2).
-#'
-#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
-#'   step to consider in the estimation. Default value is `nrow(incid)`.
-#'
-#' @param seed a numeric value used to fix the random seed
-#'
+#' @inheritParams draw_R
+#' 
 #' @return A value or vector of values for epsilon for each non reference
 #'   pathogen/strain/variant, drawn from the marginal posterior distribution
 #'
 #' @export
 #'
+#' @example man/examples/multivariant_setup.R
 #' @examples
-#' n_loc <- 4 # 4 locations
-#' n_v <- 3 # 3 strains
-#' T <- 100 # 100 time steps
-#' priors <- default_priors()
-#' # constant incidence 10 per day everywhere
-#' incid <- array(10, dim = c(T, n_loc, n_v))
-#' incid <- process_I_multivariant(incid)
-#' # arbitrary serial interval, same for both variants
-#' w_v <- c(0, 0.2, 0.5, 0.3)
-#' si_distr <- cbind(w_v, w_v, w_v)
-#' lambda <- compute_lambda(incid, si_distr)
 #' # Constant reproduction number of 1
 #' R <- matrix(1, nrow = T, ncol = n_loc)
 #' R[1, ] <- NA # no estimates of R on first time step
@@ -295,16 +185,11 @@ draw_epsilon <- function(R, incid, lambda, priors,
 }
 
 #' Draw R from marginal posterior distribution
+#' @inheritParams estimate_advantage 
 #'
 #' @param epsilon a value or vector of values for the relative transmissibility
 #'   of the "new" pathogen/strain/variant(s) compared to the reference
 #'   pathogen/strain/variant
-#'
-#' @param incid a multidimensional array containing values of the (local)
-#'   incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
-#'
 #' @param lambda a multidimensional array containing values of the overall
 #'   infectivity for each time step (1st dimension), location (2nd dimension)
 #'   and pathogen/strain/variant (3rd dimension). The overall infectivity for
@@ -313,25 +198,10 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'   previous time steps, weighted by the current infectivity of those
 #'   past incident cases. It can be calculated from the incidence `incid` and
 #'   the distribution of the serial interval using function [compute_lambda()]
-#'
-#' @param priors a list of prior parameters (shape and scale of a gamma
-#'   distribution) for epsilon and R; can be obtained from the function
-#'   [default_priors()]. The prior for R is assumed to be the same for all
-#'   time steps and all locations
-#'
 #' @param shape_R_flat a vector of the shape of the posterior distribution of R
 #'   for each time step t and each location l
 #'   (stored in element `(l-1)*(t_max - t_min + 1) + t` of the vector),
 #'   as obtained from function [get_shape_R_flat()].
-#'
-#' @param t_min an integer > 1 giving the minimum time step to consider in the
-#'   estimation. Default value is 2 (as the estimation is conditional on
-#'   observations at time step 1 and can therefore only start at time step 2).
-#'
-#' @param t_max an integer > `t_min` and <= `nrow(incid)` giving the maximum time
-#'   step to consider in the estimation. Default value is `nrow(incid)`.
-#'
-#' @param seed a numeric value used to fix the random seed
 #'
 #' @return a matrix of the instantaneous reproduction number R for the reference
 #'   pathogen/strain/variant for each time step (row) and each location (column)
@@ -339,18 +209,8 @@ draw_epsilon <- function(R, incid, lambda, priors,
 #'
 #' @export
 #'
+#' @example man/examples/multivariant_setup.R
 #' @examples
-#' n_v <- 2
-#' n_loc <- 3 # 3 locations
-#' T <- 100 # 100 time steps
-#' priors <- default_priors()
-#' # constant incidence 10 per day everywhere
-#' incid <- array(10, dim = c(T, n_loc, n_v))
-#' incid <- process_I_multivariant(incid)
-#' # arbitrary serial interval, same for both variants
-#' w_v <- c(0, 0.2, 0.5, 0.3)
-#' si_distr <- cbind(w_v, w_v)
-#' lambda <- compute_lambda(incid, si_distr)
 #' # Epsilon = 1 i.e. no transmission advantage
 #' epsilon <- 1
 #' draw_R(epsilon, incid$local, lambda, priors, seed = 1, t_min = 2L)
@@ -403,9 +263,10 @@ draw_R <- function(epsilon, incid, lambda, priors,
 #' (see [estimate_advantage()]) this function returns the largest index
 #' (across all columns) such that the cumulative probability mass before index is
 #' `1 - miss_at_most`.
-#'
-#' @inheritParams estimate_advantage
+#'#' 
 #' @param miss_at_most numeric. Probability mass in the tail of the SI distribution
+#' 
+#' @inheritParams estimate_advantage
 #' 
 #' @return integer
 #' @author Sangeeta Bhatia
@@ -775,10 +636,6 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 #' 
 #' Process incidence input for multivariant analyses with [estimate_advantage()]
 #'
-#' @param incid a multidimensional array containing values of the incidence
-#'   for each time step (1st dimension), location (2nd dimension) and
-#'   pathogen/strain/variant (3rd dimension)
-#'
 #' @param incid_imported an optional multidimensional array containing values
 #'   of the incidence of imported cases
 #'   for each time step (1st dimension), location (2nd dimension) and
@@ -788,6 +645,8 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
 #'   known imported cases and all cases other than on those from the first
 #'   time step will be considered locally infected.
 #'
+#' @inheritParams estimate_advantage
+#' 
 #' @return a list with two multidimensional elements each with three dimensions:
 #'  timestep, location and pathogen/strain/variant:
 #' - `local`: an array of the incidence of locally infected cases
@@ -822,4 +681,3 @@ process_I_multivariant <- function(incid, incid_imported = NULL) {
 
 ## TODO: check dimensions of objects is correct everywhere
 ## TODO: fix number of variants to be 2
-

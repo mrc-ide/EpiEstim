@@ -169,22 +169,8 @@
 #' vary the mean and std of the SI in truncated normal distributions, here, the
 #' scope of serial interval distributions considered is directly informed by
 #' data on the (potentially censored) dates of symptoms of pairs of
-#' infector/infected individuals. This data, specified in argument `si_data`,
-#' should be a dataframe with 5 columns:
-#' - `EL`: the lower bound of the symptom onset date of the infector (given as
-#'   an integer)
-#' - `ER`: the upper bound of the symptom onset date of the infector (given as
-#'   an integer). Should be such that `ER >= EL`. If the dates are known exactly
-#'   use `ER = EL`
-#' - `SL`: the lower bound of the symptom onset date of the infected individual
-#'   (given as an integer)
-#' - `SR`: the upper bound of the symptom onset date of the infected individual
-#'   (given as an integer). Should be such that `SR >= SL`. If the dates are
-#'   known exactly use `SR = SL`
-#' - `type` (optional): can have entries 0, 1, or 2, corresponding to doubly
-#'   interval-censored, single interval-censored or exact observations,
-#'   respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-#'   will be automatically computed from the dates
+#' infector/infected individuals. See the `si_data` argument of [estimate_R()]
+#' for the required data format.
 #'
 #' Assuming a given parametric distribution for the serial interval distribution
 #' (specified in `si_parametric_distr`), the posterior distribution of the
@@ -320,4 +306,3 @@ make_config <- function(..., incid = NULL) {
   return(config)
 
 }
-
