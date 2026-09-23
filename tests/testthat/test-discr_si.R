@@ -49,9 +49,10 @@ test_that("DiscrSI still returns discr_si output", {
 test_that("discr_si preserves the mean for all named distributions", {
   # With a uniform primary event over one day, the discretised delay has the
   # same mean as the continuous delay.
-  k <- seq(0, 200)
+  # A long support is needed for the long tailed case
+  k <- seq(0, 2000)
   for (dist in c("gamma", "lognormal", "weibull")) {
-    for (x in si_cases[1:5]) {
+    for (x in si_cases) {
       w <- discr_si(k, x[1], x[2], dist = dist)
       expect_equal(sum(w), 1, tolerance = 1e-6)
       expect_equal(pmf_mean(k, w), x[1], tolerance = 1e-4)

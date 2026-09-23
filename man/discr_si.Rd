@@ -83,9 +83,10 @@ where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma
 distribution with mean \eqn{\mu} and standard deviation \eqn{\sigma}.
 
 This is the probability that a continuous delay, starting at a time
-uniformly distributed within a day and shifted by one day, ends on day
-\eqn{k}. It is computed using the primarycensored package (Abbott et al.),
-which also allows other delay distributions (\code{dist}), a different
+uniformly distributed within a day and shifted by \code{shift} days (one by
+default), ends on day \eqn{k}. It is computed using the primarycensored
+package (Abbott et al.), which also allows other delay distributions
+(\code{dist}), a different
 \code{shift}, other distributions of the primary event time within the day
 (\code{dprimary}), and truncation of the serial interval below \code{L} and at or
 above \code{D}. When \code{L} or \code{D} are finite, \eqn{w_k} is normalised over

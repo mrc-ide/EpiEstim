@@ -22,9 +22,10 @@
 #' distribution with mean \eqn{\mu} and standard deviation \eqn{\sigma}.
 #'
 #' This is the probability that a continuous delay, starting at a time
-#' uniformly distributed within a day and shifted by one day, ends on day
-#' \eqn{k}. It is computed using the primarycensored package (Abbott et al.),
-#' which also allows other delay distributions (`dist`), a different
+#' uniformly distributed within a day and shifted by `shift` days (one by
+#' default), ends on day \eqn{k}. It is computed using the primarycensored
+#' package (Abbott et al.), which also allows other delay distributions
+#' (`dist`), a different
 #' `shift`, other distributions of the primary event time within the day
 #' (`dprimary`), and truncation of the serial interval below `L` and at or
 #' above `D`. When `L` or `D` are finite, \eqn{w_k} is normalised over

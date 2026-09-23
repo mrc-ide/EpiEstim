@@ -10,8 +10,8 @@ DiscrSI(k, mu, sigma)
 \item{k}{Positive integer, or vector of positive integers for which the
 discrete distribution is desired.}
 
-\item{mu}{A positive real giving the mean of the Gamma distribution.
-Must be greater than \code{shift} (1 by default).}
+\item{mu}{A positive real giving the mean of the Gamma distribution. Must be
+greater than 1.}
 
 \item{sigma}{A non-negative real giving the standard deviation of the Gamma
 distribution.}
