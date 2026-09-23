@@ -87,6 +87,8 @@ test_that("process_si_data accepts an observation time column", {
   expect_identical(processed$OT, si_data$OT)
   si_data$OT <- si_data$SL - 1L
   expect_error(process_si_data(si_data), "SL > OT")
+  si_data$OT <- 30
+  expect_error(process_si_data(si_data), "OT is non integer")
 })
 
 test_that("process_si_data accepts an all NA OT column", {
@@ -196,6 +198,17 @@ test_that("si_from_data supports other primary event distributions", {
   ))
   expect_false(isTRUE(all.equal(growth$si_distr, uniform$si_distr)))
   expect_equal(rowSums(growth$si_distr), rep(1, 100), tolerance = 1e-8)
+})
+
+test_that("si_from_data uses L and D from si_discr_args", {
+  config <- quiet_config(
+    si_parametric_distr = "gamma", si_discr_args = list(L = 2, D = 5)
+  )
+  res <- suppressWarnings(run_si_from_data(MockRotavirus$si_data, config))
+  k <- seq_len(ncol(res$si_distr)) - 1
+  expect_true(all(res$si_distr[, k < 2 | k >= 5] == 0))
+  expect_true(all(res$si_distr[, k == 2] > 0))
+  expect_equal(rowSums(res$si_distr), rep(1, 100), tolerance = 1e-8)
 })
 
 test_that("si_from_data errors if si_discr_args conflicts with the fit", {
