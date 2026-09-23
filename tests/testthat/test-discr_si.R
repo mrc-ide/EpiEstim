@@ -46,12 +46,12 @@ test_that("DiscrSI still returns discr_si output", {
   )
 })
 
-test_that("discr_si preserves the mean for all named distributions", {
+test_that("discr_si preserves the mean for Gamma and Lognormal mu and sigma", {
   # With a uniform primary event over one day, the discretised delay has the
   # same mean as the continuous delay.
   # A long support is needed for the long tailed case
   k <- seq(0, 2000)
-  for (dist in c("gamma", "lognormal", "weibull")) {
+  for (dist in list(stats::pgamma, stats::plnorm)) {
     for (x in si_cases) {
       w <- discr_si(k, x[1], x[2], dist = dist)
       expect_equal(sum(w), 1, tolerance = 1e-6)
@@ -124,12 +124,20 @@ test_that("discr_si accepts a CDF function with its own parameters", {
 test_that("discr_si errors when both mu/sigma and a CDF function are given", {
   expect_error(
     discr_si(0:5, 2, 1, dist = stats::pgamma, shape = 2, scale = 1),
-    "mu and sigma"
+    "not both"
   )
 })
 
-test_that("discr_si errors for an unknown named distribution", {
-  expect_error(discr_si(0:5, 2, 1, dist = "cauchy"), "dist")
+test_that("discr_si only takes mu and sigma for Gamma and Lognormal", {
+  expect_error(discr_si(0:5, 2, 1, dist = stats::pweibull), "mu and sigma")
+  expect_error(discr_si(0:5, 2, 1, dist = "gamma"), "dist")
+})
+
+test_that("discr_si passes native parameters to other distributions", {
+  k <- seq(0, 200)
+  w <- discr_si(k, dist = stats::pweibull, shape = 1.5, scale = 4)
+  expect_equal(sum(w), 1, tolerance = 1e-6)
+  expect_equal(pmf_mean(k, w), 1 + 4 * gamma(1 + 1 / 1.5), tolerance = 1e-4)
 })
 
 test_that("discr_si supports other primary event distributions", {
@@ -162,7 +170,7 @@ test_that("discr_si agrees with Monte Carlo simulation", {
   k <- seq(0, 60)
   empirical <- tabulate(samples + 1, nbins = length(k)) / n
   w <- discr_si(
-    k, mu, sigma, dist = "lognormal",
+    k, mu, sigma, dist = stats::plnorm,
     dprimary = primarycensored::dexpgrowth, primary_args = list(r = 0.2)
   )
   expect_lt(max(abs(w - empirical)), 0.005)

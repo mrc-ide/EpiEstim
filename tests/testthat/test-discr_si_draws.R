@@ -20,8 +20,8 @@ test_that("discr_si_draws matches discr_si for each draw by default", {
   expect_draws_match(seq(0, 40))
 })
 
-test_that("discr_si_draws matches discr_si for all named distributions", {
-  for (dist in c("gamma", "lognormal", "weibull")) {
+test_that("discr_si_draws matches discr_si for Gamma and Lognormal", {
+  for (dist in list(stats::pgamma, stats::plnorm)) {
     expect_draws_match(seq(0, 40), list(dist = dist))
   }
 })

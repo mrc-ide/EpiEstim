@@ -1,8 +1,8 @@
 data("Flu2009")
 
 flu_t <- nrow(Flu2009$incidence)
-lnorm_args <- list(dist = "lognormal")
-lnorm_si <- discr_si(seq(0, flu_t - 1), 2.6, 1.5, dist = "lognormal")
+lnorm_args <- list(dist = stats::plnorm)
+lnorm_si <- discr_si(seq(0, flu_t - 1), 2.6, 1.5, dist = stats::plnorm)
 
 test_that("make_config defaults si_discr_args to an empty list", {
   expect_identical(make_config()$si_discr_args, list())
@@ -101,7 +101,8 @@ test_that("si_discr_args is validated", {
   }
   expect_error(run(list(mu = 3)), "si_discr_args")
   expect_error(run(list(foo = 1)), "si_discr_args")
-  expect_error(run(list(dist = stats::pgamma)), "si_discr_args")
+  expect_error(run(list(dist = stats::pweibull)), "si_discr_args")
+  expect_error(run(list(dist = "lognormal")), "si_discr_args")
   expect_error(run("lognormal"), "si_discr_args")
   expect_error(run(list(shift = 0)), "serial interval of zero")
   expect_no_error(run(list(shift = 0, L = 1)))
