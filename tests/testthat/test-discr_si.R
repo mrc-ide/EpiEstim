@@ -38,6 +38,8 @@ test_that("discr_si keeps the original input checks", {
   expect_error(discr_si(0:5, 2, -1), "sigma must be >=0")
   expect_error(discr_si(0:5, 1, 1), "mu must be >1")
   expect_error(discr_si(-1:5, 2, 1), "all values in k must be >=0")
+  expect_error(discr_si(0:5, 4.7, 2.9, shift = -1), "shift must be >=0")
+  expect_error(discr_si(0:5, 4.7, 2.9, L = 5, D = 2), "L must be smaller than D")
 })
 
 test_that("DiscrSI still returns discr_si output", {
