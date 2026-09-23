@@ -232,7 +232,7 @@ al., \doi{10.5281/zenodo.13632839}). A sample of \code{n1} serial interval
 distributions is then drawn from the asymptotic normal distribution of the
 parameter estimates. The argument \code{mcmc_control} sets the seed used for
 this sample and the starting values of the estimation (\code{burnin} and \code{thin}
-are no longer used).
+are not used).
 For each element in the sample of serial interval distributions, we
 then draw a sample of size \code{n2} in the posterior distribution of the
 reproduction number over each time window, conditionally on this serial

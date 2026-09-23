@@ -12,11 +12,9 @@ make_mcmc_control(
 )
 }
 \arguments{
-\item{burnin}{No longer used. A positive integer which gave the burnin used
-in the MCMC when estimating the serial interval distribution.}
+\item{burnin}{Not used. Kept so that existing code runs.}
 
-\item{thin}{No longer used. A positive integer which gave the thinning
-parameter of the MCMC.}
+\item{thin}{Not used. Kept so that existing code runs.}
 
 \item{seed}{An integer used as the seed for the random number generator
 when drawing the sample of serial interval distributions; useful to get
@@ -37,9 +35,9 @@ Creates a list of control parameters to be used in
 \code{config$mcmc_control}, where \code{config} is an argument of the
 \code{\link[=estimate_R]{estimate_R()}} function. This is used to configure the estimation of the
 serial interval within \code{\link[=estimate_R]{estimate_R()}} (with method "si_from_data").
-The serial interval is now estimated by maximum likelihood rather than MCMC,
-so \code{burnin} and \code{thin} are ignored, with a warning if they are changed from
-their defaults.
+The serial interval is estimated by maximum likelihood, so \code{burnin} and
+\code{thin} are not used, and a warning is given if they differ from their
+defaults.
 }
 \details{
 The argument \code{si_data}, should be a dataframe with 5 columns:

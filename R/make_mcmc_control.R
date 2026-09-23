@@ -4,14 +4,12 @@
 #' `config$mcmc_control`, where `config` is an argument of the 
 #' [estimate_R()] function. This is used to configure the estimation of the
 #' serial interval within [estimate_R()] (with method "si_from_data").
-#' The serial interval is now estimated by maximum likelihood rather than MCMC,
-#' so `burnin` and `thin` are ignored, with a warning if they are changed from
-#' their defaults.
+#' The serial interval is estimated by maximum likelihood, so `burnin` and
+#' `thin` are not used, and a warning is given if they differ from their
+#' defaults.
 #'
-#' @param burnin No longer used. A positive integer which gave the burnin used
-#'   in the MCMC when estimating the serial interval distribution.
-#' @param thin No longer used. A positive integer which gave the thinning
-#'   parameter of the MCMC.
+#' @param burnin Not used. Kept so that existing code runs.
+#' @param thin Not used. Kept so that existing code runs.
 #' @param seed An integer used as the seed for the random number generator
 #'   when drawing the sample of serial interval distributions; useful to get
 #'   reproducible results.

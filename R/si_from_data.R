@@ -177,9 +177,8 @@ si_sample_from_data <- function(si_data, config) {
   default_control <- make_mcmc_control()
   if (!identical(mcmc_control$burnin, default_control$burnin) ||
       !identical(mcmc_control$thin, default_control$thin)) {
-    warning("burnin and thin in mcmc_control are ignored. The serial ",
-            "interval is now estimated by maximum likelihood rather than ",
-            "MCMC.", call. = FALSE)
+    warning("burnin and thin in mcmc_control are ignored as the serial ",
+            "interval is estimated by maximum likelihood.", call. = FALSE)
   }
 
   censdata <- si_data_to_censdata(si_data, fit_distr$shift)

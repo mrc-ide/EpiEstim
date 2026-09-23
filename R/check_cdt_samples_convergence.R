@@ -1,7 +1,8 @@
 #' Check MCMC chain convergence using the Gelman-Rubin algorithm
 #' 
-#' This function is deprecated as [estimate_R()] no longer uses
-#' coarseDataTools to estimate the serial interval.
+#' This function is deprecated as [estimate_R()] estimates the serial interval
+#' by maximum likelihood with
+#' [primarycensored][primarycensored::primarycensored-package].
 #' 
 #' This function splits an MCMC chain in two halves and uses the Gelman-Rubin 
 #' algorithm to assess convergence of the chain by comparing its two halves.
@@ -38,8 +39,8 @@
 
 check_cdt_samples_convergence <- function(cdt_samples) {
   .Deprecated(msg = paste(
-    "check_cdt_samples_convergence() is deprecated as estimate_R() no",
-    "longer uses coarseDataTools to estimate the serial interval."
+    "check_cdt_samples_convergence() is deprecated as estimate_R()",
+    "estimates the serial interval by maximum likelihood."
   ))
   ## checking convergence of the MCMC by using the Gelman-Rubin algorithm 
   ## between the first and second half of the MCMC sample

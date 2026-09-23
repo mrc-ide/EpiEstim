@@ -18,7 +18,7 @@ test_that("si_from_data keeps the output structure", {
   expect_true(res$MCMC_converged)
 })
 
-test_that("si_from_data is close to the previous coarseDataTools results", {
+test_that("si_from_data is close to coarseDataTools MCMC results", {
   # Reference medians across the sample of serial interval distributions from
   # EpiEstim 3.0.0 using coarseDataTools::dic.fit.mcmc with
   # make_mcmc_control(burnin = 1000, thin = 10, seed = 1), n1 = 500, n2 = 50

@@ -327,7 +327,7 @@ estimate_R(incid = incid,
 <div style="margin-top:30px;">
 **From data** - `"si_from_data"` allows you to estimate the SI by maximum likelihood from infector-infected data, using `primarycensored::fitdistdoublecens()`. The user has the choice of which parametric distribution the SI will take, either: Gamma `"G"`, Weibull `"W"`, Lognormal `"L"`, or shifted by 1: Gamma `"off1G"`, Weibull `"off1W"`, Lognormal `"off1L"` 
 
-`mcmc_control` is where you set the seed, e.g. `seed = 1`, which acts as the starting point for the random number generator used to draw the sample of SI distributions. Setting the seed allows you to obtain reproducible results as you will get the same result each time you run the same process. The `burnin` and `thin` arguments are no longer used as the SI is no longer estimated by MCMC.
+`mcmc_control` is where you set the seed, e.g. `seed = 1`, which acts as the starting point for the random number generator used to draw the sample of SI distributions. Setting the seed allows you to obtain reproducible results as you will get the same result each time you run the same process. The `burnin` and `thin` arguments are not used as the SI is estimated by maximum likelihood.
 </div>
 
 ```{r, eval=FALSE}

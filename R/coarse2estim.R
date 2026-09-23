@@ -1,8 +1,9 @@
 #' Link coarseDataTools and EpiEstim
 #'
-#' This function is deprecated as [estimate_R()] no longer uses
-#' coarseDataTools. The serial interval distributions are now discretised
-#' exactly using [discr_si()].
+#' This function is deprecated as [estimate_R()] estimates the serial interval
+#' by maximum likelihood with
+#' [primarycensored][primarycensored::primarycensored-package]. The serial
+#' interval distributions are discretised exactly using [discr_si()].
 #'
 #' \code{\link{coarse2estim}} Transforms outputs of
 #' \code{\link[coarseDataTools]{dic.fit.mcmc}} to right format for input into
@@ -73,8 +74,8 @@
 coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
                          thin = 10) {
   .Deprecated(msg = paste(
-    "coarse2estim() is deprecated as estimate_R() no longer uses",
-    "coarseDataTools. Use estimate_R() with method 'si_from_data' instead."
+    "coarse2estim() is deprecated. Use estimate_R() with method",
+    "'si_from_data' to estimate the serial interval from data."
   ))
   if (is.null(x)) # then check that dist and samples are what we expect
   {

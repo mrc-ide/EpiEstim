@@ -39,9 +39,10 @@ the serial interval stored in x.
 }
 }
 \description{
-This function is deprecated as \code{\link[=estimate_R]{estimate_R()}} no longer uses
-coarseDataTools. The serial interval distributions are now discretised
-exactly using \code{\link[=discr_si]{discr_si()}}.
+This function is deprecated as \code{\link[=estimate_R]{estimate_R()}} estimates the serial interval
+by maximum likelihood with
+\link[primarycensored:primarycensored-package]{primarycensored}. The serial
+interval distributions are discretised exactly using \code{\link[=discr_si]{discr_si()}}.
 }
 \details{
 \code{\link{coarse2estim}} Transforms outputs of
