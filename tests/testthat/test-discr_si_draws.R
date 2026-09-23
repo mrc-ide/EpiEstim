@@ -56,3 +56,18 @@ test_that("discr_si_draws checks its inputs", {
     discr_si_draws(0:5, 2, 1, list(foo = 1)), "si_discr_args"
   )
 })
+
+test_that("discr_si_param_draws matches discr_si for native parameters", {
+  k <- seq(0, 30)
+  params <- list(list(shape = 1.5, scale = 3), list(shape = 3, scale = 2))
+  si_args <- si_discr_defaults(list(dist = stats::pweibull, D = 20))
+  draws <- discr_si_param_draws(k, params, si_args)
+  expected <- t(vapply(
+    params,
+    function(p) {
+      do.call(discr_si, c(list(k = k, dist = stats::pweibull, D = 20), p))
+    },
+    numeric(length(k))
+  ))
+  expect_equal(draws, expected, tolerance = 1e-12)
+})

@@ -142,58 +142,58 @@ discr_si_config <- function(k, mu, sigma, si_discr_args = NULL) {
 }
 
 ## Discretise the serial interval for several draws of its mean and standard
-## deviation. Gives the same result as calling discr_si for each draw but
-## builds the primarycensored object once and only updates its parameters.
+## deviation. Gives the same result as calling discr_si for each draw.
 ## Returns a matrix with one row per draw.
 discr_si_draws <- function(k, mu, sigma, si_discr_args = NULL) {
   if (is.null(si_discr_args)) {
     si_discr_args <- list()
   }
   check_si_discr_args(si_discr_args)
-  si_args <- utils::modifyList(
-    list(
-      dist = stats::pgamma, shift = 1, L = -Inf, D = Inf,
-      dprimary = stats::dunif, primary_args = list()
-    ),
-    si_discr_args
-  )
+  si_args <- si_discr_defaults(si_discr_args)
   check_si_moments(mu, sigma, si_args$shift)
-  check_si_support(k, si_args$shift, si_args$L, si_args$D)
+  params <- lapply(seq_along(mu), function(i) {
+    si_dist_args(si_args$dist, mu[i] - si_args$shift, sigma[i])
+  })
+  discr_si_param_draws(k, params, si_args)
+}
 
-  ## work on the delay scale, i.e. the serial interval minus the shift
-  delay_L <- si_args$L - si_args$shift
-  delay_D <- si_args$D - si_args$shift
+## Defaults of the extra arguments of discr_si
+si_discr_defaults <- function(si_discr_args = list()) {
+  defaults <- lapply(
+    formals(discr_si)[c("dist", "shift", "L", "D", "dprimary", "primary_args")],
+    eval
+  )
+  utils::modifyList(defaults, si_discr_args)
+}
+
+## Discretise the serial interval for several draws of the parameters of
+## si_args$dist. params is a list with one named list of parameters per draw
+## and si_args a complete list of the extra arguments of discr_si (see
+## si_discr_defaults). The primarycensored object is built once and its
+## parameters updated for each draw. Returns a matrix with one row per draw.
+discr_si_param_draws <- function(k, params, si_args) {
+  check_si_support(k, si_args$shift, si_args$L, si_args$D)
+  res <- matrix(0, nrow = length(params), ncol = length(k))
   in_support <- k >= si_args$L & k < si_args$D
-  lower <- k[in_support] - si_args$shift
-  upper <- pmin(lower + 1, delay_D)
-  cdf_points <- sort(unique(c(
-    lower, upper, delay_L[is.finite(delay_L)], delay_D[is.finite(delay_D)]
-  )))
-  pos_cdf_points <- cdf_points[cdf_points > 0 & is.finite(cdf_points)]
+  if (!any(in_support) || length(params) == 0) {
+    return(res)
+  }
 
   pcens <- do.call(
     primarycensored::new_pcens,
     c(
       list(pdist = si_args$dist, dprimary = si_args$dprimary,
            primary_args = si_args$primary_args),
-      si_dist_args(si_args$dist, mu[1] - si_args$shift, sigma[1])
+      params[[1]]
     )
   )
-
-  res <- matrix(0, nrow = length(mu), ncol = length(k))
-  for (i in seq_along(mu)) {
-    pcens$args <- si_dist_args(si_args$dist, mu[i] - si_args$shift, sigma[i])
-    ## the delay is non-negative so the censored CDF is 0 at and below 0
-    cdf <- numeric(length(cdf_points))
-    cdf[cdf_points == Inf] <- 1
-    if (length(pos_cdf_points) > 0) {
-      cdf[cdf_points > 0 & is.finite(cdf_points)] <-
-        primarycensored::pcens_cdf(pcens, pos_cdf_points, pwindow = 1)
-    }
-    cdf_L <- if (is.finite(delay_L)) cdf[match(delay_L, cdf_points)] else 0
-    cdf_D <- if (is.finite(delay_D)) cdf[match(delay_D, cdf_points)] else 1
-    pmf <- (cdf[match(upper, cdf_points)] - cdf[match(lower, cdf_points)]) /
-      (cdf_D - cdf_L)
+  x <- k[in_support] - si_args$shift
+  for (i in seq_along(params)) {
+    pcens <- do.call(stats::update, c(list(pcens), params[[i]]))
+    pmf <- primarycensored::pcens_pmf(
+      pcens, x, pwindow = 1,
+      L = si_args$L - si_args$shift, D = si_args$D - si_args$shift
+    )
     res[i, in_support] <- pmax(pmf, 0)
   }
 
