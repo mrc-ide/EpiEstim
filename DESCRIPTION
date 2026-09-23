@@ -41,6 +41,7 @@ Imports:
     reshape2,
     epitrix,
     patchwork (>= 1.2.0),
+    primarycensored (>= 1.5.2),
     rlang
 Suggests:
     testthat,

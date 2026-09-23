@@ -8,6 +8,13 @@
 - `wallinga_teunis()` now returns an S3 object with class "wallinga_teunis"
   (used to be "estimate_R")
 
+- `discr_si()` now uses the primarycensored package to discretise the serial 
+  interval. The default output is unchanged. New arguments allow Lognormal 
+  and Weibull serial intervals, or any cumulative distribution function 
+  (`dist`), a different `shift`, left (`L`) and right (`D`) truncation, and 
+  other distributions of the primary event time within the day (`dprimary`, 
+  `primary_args`). primarycensored is a new dependency.
+
 ## Bug fixes
 * Superfluous argument "method" removed from `make_config()` function
 

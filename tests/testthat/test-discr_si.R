@@ -139,8 +139,9 @@ test_that("discr_si supports other primary event distributions", {
     dprimary = primarycensored::dexpgrowth, primary_args = list(r = 0.5)
   )
   expect_equal(sum(w_growth), 1, tolerance = 1e-6)
-  # Growth puts more primary events late in the window so delays are shorter
-  expect_lt(pmf_mean(k, w_growth), pmf_mean(k, w_unif))
+  # Growth puts more primary events late in the day, so secondary events
+  # fall on later days
+  expect_gt(pmf_mean(k, w_growth), pmf_mean(k, w_unif))
 })
 
 test_that("discr_si agrees with Monte Carlo simulation", {
