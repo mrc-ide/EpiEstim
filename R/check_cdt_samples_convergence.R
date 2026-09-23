@@ -1,5 +1,8 @@
 #' Check MCMC chain convergence using the Gelman-Rubin algorithm
 #' 
+#' This function is deprecated as [estimate_R()] no longer uses
+#' coarseDataTools to estimate the serial interval.
+#' 
 #' This function splits an MCMC chain in two halves and uses the Gelman-Rubin 
 #' algorithm to assess convergence of the chain by comparing its two halves.
 #'

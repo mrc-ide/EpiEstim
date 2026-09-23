@@ -1,4 +1,4 @@
-#' Find clever starting points for MCMC estimation
+#' Find clever starting points for the estimation of the serial interval
 #' 
 #' Finds values of the serial interval distribution 
 #' parameters, used to initialise the MCMC estimation of the serial interval 

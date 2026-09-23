@@ -15,6 +15,10 @@ TRUE if the Gelman Rubin test for convergence was successful, FALSE
 otherwise
 }
 \description{
+This function is deprecated as \code{\link[=estimate_R]{estimate_R()}} no longer uses
+coarseDataTools to estimate the serial interval.
+}
+\details{
 This function splits an MCMC chain in two halves and uses the Gelman-Rubin
 algorithm to assess convergence of the chain by comparing its two halves.
 }

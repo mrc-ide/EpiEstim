@@ -1,5 +1,9 @@
 #' Link coarseDataTools and EpiEstim
 #'
+#' This function is deprecated as [estimate_R()] no longer uses
+#' coarseDataTools. The serial interval distributions are now discretised
+#' exactly using [discr_si()].
+#'
 #' \code{\link{coarse2estim}} Transforms outputs of
 #' \code{\link[coarseDataTools]{dic.fit.mcmc}} to right format for input into
 #' \code{\link{estimate_R}}

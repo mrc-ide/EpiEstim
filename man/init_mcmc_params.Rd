@@ -2,7 +2,7 @@
 % Please edit documentation in R/init_mcmc_params.R
 \name{init_mcmc_params}
 \alias{init_mcmc_params}
-\title{Find clever starting points for MCMC estimation}
+\title{Find clever starting points for the estimation of the serial interval}
 \usage{
 init_mcmc_params(si_data, dist)
 }

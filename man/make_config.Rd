@@ -56,13 +56,16 @@ of symptoms of pairs of infector/infected individuals (see details). Should
 be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
 shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
 shifted by 1).
-\item \code{si_discr_args}: For methods "parametric_si" and "uncertain_si"; a named
+\item \code{si_discr_args}: For methods "parametric_si", "uncertain_si" and
+"si_from_data"; a named
 list of additional arguments passed to \code{\link[=discr_si]{discr_si()}} when discretising the
 serial interval, e.g. \code{list(dist = stats::plnorm)}. Can contain \code{dist}
 (\code{\link[stats:pgamma]{stats::pgamma()}} or \code{\link[stats:plnorm]{stats::plnorm()}}), \code{shift}, \code{L}, \code{D}, \code{dprimary}
 and \code{primary_args}. The resulting distribution must give zero
 probability to a serial interval of zero. Defaults to an empty list, which
-uses the defaults of \code{\link[=discr_si]{discr_si()}}.
+uses the defaults of \code{\link[=discr_si]{discr_si()}}. For method "si_from_data", \code{dprimary}
+and \code{primary_args} are also used when estimating the serial interval,
+and \code{dist} and \code{shift} are set by \code{si_parametric_distr}.
 \item \code{mcmc_control}: An object of class \code{estimate_R_mcmc_control}, as
 returned by function \code{make_mcmc_control}.
 \item \code{mean_prior}: A positive number giving the mean of the common prior
@@ -133,15 +136,15 @@ interval
 drawn from truncated normal distributions, with parameters specified by the
 user
 \item "si_from_data": the serial interval distribution is directly
-estimated, using MCMC, from interval censored exposure data, with data
+estimated, by maximum likelihood, from interval censored exposure data, with data
 provided by the user together with a choice of parametric distribution for
 the serial interval
 \item "si_from_sample": the user directly provides the sample of serial
 interval distribution to use for estimation of R. This can be a useful
-alternative to the previous method, where the MCMC estimation of the serial
+alternative to the previous method, where the estimation of the serial
 interval distribution could be run once, and the same estimated SI
 distribution then used in \code{\link[=estimate_R]{estimate_R()}} in different contexts, e.g. with
-different time windows, hence avoiding having to rerun the MCMC every time
+different time windows, hence avoiding having to rerun the estimation every time
 \code{\link[=estimate_R]{estimate_R()}} is called.
 }
 \subsection{\code{method = "non_parametric_si"}}{
@@ -211,17 +214,23 @@ known exactly use \code{SR = SL}
 interval-censored, single interval-censored or exact observations,
 respectively, see Reich et al. Statist. Med. 2009. If not specified, this
 will be automatically computed from the dates
+\item \code{OT} (optional): the last day (given as an integer) on which the symptom
+onset of the infected individual could have been observed. If given, the
+estimation accounts for right truncation (see Charniga et al. PLoS Comp
+Biol 2024). Entries may be \code{NA} for no truncation.
 }
 
+As dates are daily, dates known exactly are treated as one day intervals.
 Assuming a given parametric distribution for the serial interval distribution
-(specified in \code{si_parametric_distr}), the posterior distribution of the
-serial interval is estimated directly from these data using MCMC methods
-implemented in the package coarsedatatools. The argument \code{mcmc_control} is a
-list of characteristics which control the MCMC. The MCMC is run for a total
-number of iterations of \code{mcmc_control$burnin + n1*mcmc_control$thin}; but the
-output is only recorded after the burnin, and only 1 in every
-\code{mcmc_control$thin} iterations, so that the posterior sample size is \code{n1}.
-For each element in the posterior sample of serial interval distribution, we
+(specified in \code{si_parametric_distr}), the serial interval is estimated
+directly from these data by maximum likelihood, accounting for double
+interval censoring, using the primarycensored package (Abbott et al.,
+\doi{10.5281/zenodo.13632839}). A sample of \code{n1} serial interval
+distributions is then drawn from the asymptotic normal distribution of the
+parameter estimates. The argument \code{mcmc_control} sets the seed used for
+this sample and the starting values of the estimation (\code{burnin} and \code{thin}
+are no longer used).
+For each element in the sample of serial interval distributions, we
 then draw a sample of size \code{n2} in the posterior distribution of the
 reproduction number over each time window, conditionally on this serial
 interval distribution. After pooling, a sample of size \eqn{`n1` \times `n2`}
@@ -257,8 +266,7 @@ incid <- MockRotavirus$incidence
 method <- "si_from_data"
 config <- make_config(incid = incid,
                      list(si_parametric_distr = "G",
-                     mcmc_control = make_mcmc_control(burnin = 1000,
-                     thin = 10, seed = 1),
+                     mcmc_control = make_mcmc_control(seed = 1),
                      n1 = 500,
                      n2 = 50,
                      seed = 2))
@@ -277,8 +285,7 @@ R_si_from_data <- estimate_R(incid,
                             si_data = MockRotavirus$si_data,
                             config = make_config(
                      list(si_parametric_distr = "G",
-                     mcmc_control = make_mcmc_control(burnin = 1000,
-                     thin = 10, seed = 1),
+                     mcmc_control = make_mcmc_control(seed = 1),
                      n1 = 500,
                      n2 = 50,
                      seed = 2)))

@@ -21,10 +21,44 @@
   `discr_si()` for parametric serial intervals. It defaults to an empty list, 
   which leaves results unchanged.
 
+- `estimate_R()` with method "si_from_data" now estimates the serial 
+  interval by maximum likelihood using the primarycensored package instead of 
+  coarseDataTools. This is faster. An optional `OT` column in `si_data` gives 
+  the last day on which the infected onset could be observed, and the 
+  estimation then accounts for right truncation (see Charniga et al., PLoS 
+  Comp Biol 2024). `dprimary` and `primary_args` in `si_discr_args` set the 
+  distribution of the primary event time for both the estimation and the 
+  discretisation.
+
 ## Bug fixes
 * Superfluous argument "method" removed from `make_config()` function
 
+* `coarse2estim()` now discretises the serial interval exactly using 
+  `discr_si()` rather than with a midpoint approximation (#192).
+
 ## Backward compatibility
+
+* Method "si_from_data" no longer uses MCMC. The sample of `n1` serial 
+  interval distributions is drawn from the asymptotic normal distribution of 
+  the maximum likelihood estimates, so results differ from previous versions. 
+  `burnin` and `thin` in `make_mcmc_control()` are ignored, with a warning if 
+  they are changed from their defaults. `seed` and `init_pars` are still 
+  used. `MCMC_converged` in the output now reports whether the maximum 
+  likelihood estimation converged.
+
+* In `si_data`, dates known exactly (`EL = ER` or `SL = SR`, types 1 and 2) 
+  are now treated as one day intervals, as dates are daily. Previously they 
+  were treated as exact times. This changes results for data with such 
+  entries and a message is shown when they are present.
+
+* The support of the serial interval distributions used by "si_from_data" is 
+  set from the 0.999 quantile of the primary censored distribution and each 
+  distribution is right truncated at the end of this support, following the 
+  distspec package. Previously the midpoint discretisation was renormalised 
+  after truncation.
+
+* `coarse2estim()` and `check_cdt_samples_convergence()` are deprecated. 
+  coarseDataTools is now only suggested.
 
 
 # EpiEstim 2.5.1

@@ -39,6 +39,11 @@ the serial interval stored in x.
 }
 }
 \description{
+This function is deprecated as \code{\link[=estimate_R]{estimate_R()}} no longer uses
+coarseDataTools. The serial interval distributions are now discretised
+exactly using \code{\link[=discr_si]{discr_si()}}.
+}
+\details{
 \code{\link{coarse2estim}} Transforms outputs of
 \code{\link[coarseDataTools]{dic.fit.mcmc}} to right format for input into
 \code{\link{estimate_R}}

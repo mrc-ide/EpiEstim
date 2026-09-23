@@ -325,15 +325,13 @@ estimate_R(incid = incid,
   Please note that `n1 = 5` is very low and chosen purely for illustrative purposes. The default values for n1 and n2 are `n1 = 500` and `n2 = 50`, which can be modified based on the users preference. If the default values are used, a sample of size 25,000 (`n1` x `n2`) of the joint posterior distribution of R~t~ will be obtained over each time window. Bear in mind that the larger these values, the longer the `estimate_R()` function will take to run.
 
 <div style="margin-top:30px;">
-**From data** - `"si_from_data"` allows you to estimate the SI by Markov chain Monte Carlo (MCMC) from infector-infected data. The user has the choice of which parametric distribution the SI will take, either: Gamma `"G"`, Weibull `"W"`, Lognormal `"L"`, or shifted by 1: Gamma `"off1G"`, Weibull `"off1W"`, Lognormal `"off1L"` 
+**From data** - `"si_from_data"` allows you to estimate the SI by maximum likelihood from infector-infected data, using the primarycensored package. The user has the choice of which parametric distribution the SI will take, either: Gamma `"G"`, Weibull `"W"`, Lognormal `"L"`, or shifted by 1: Gamma `"off1G"`, Weibull `"off1W"`, Lognormal `"off1L"` 
 
-`mcmc_control` is where you define the properties of the MCMC, i.e. the burn-in and the thinning of MCMC chains. Burn-in is the number of iterations to be discarded as "warm-up", for instance, if `burnin = 1000` the output is only recorded *after* 1000 iterations have run. Thinning determines how much the MCMC chains should be thinned out, if `thin = 10` then 1 in every 10 iterations will be kept. The seed, e.g. `seed = 1`, acts as the starting point for the random number generator of the MCMC estimation. Setting the seed allows you to obtain reproducible results as you will get the same result each time you run the same process.
+`mcmc_control` is where you set the seed, e.g. `seed = 1`, which acts as the starting point for the random number generator used to draw the sample of SI distributions. Setting the seed allows you to obtain reproducible results as you will get the same result each time you run the same process. The `burnin` and `thin` arguments are no longer used as the SI is no longer estimated by MCMC.
 </div>
 
 ```{r, eval=FALSE}
-mcmc_control <- make_mcmc_control(burnin = burnin, # number of iterations to be discarded as burn-in 
-                                  thin = thin, # defining how much the MCMC chains should be thinned
-                                  seed = mcmc_seed) # set the seed for reproducibility
+mcmc_control <- make_mcmc_control(seed = mcmc_seed) # set the seed for reproducibility
 ```
 
 This then feeds into the `config` argument of `estimate_R()`:
@@ -410,19 +408,19 @@ si_data
 **From sample** - (`"si_from_sample"`) allows you to input the posterior sample from a previously estimated SI distribution. This means that you don't have to re-estimate the SI every time you run `estimate_R()` if you don't want to, and you can also estimate the SI elsewhere and put that into EpiEstim. Ex. The user would need to supply `si_sample` with a matrix where each column corresponds to one SI distribution to be explored. This would look something like this:
 </div>
 
-```{r, messages=FALSE, results=FALSE, echo=FALSE}
+```{r, messages=FALSE, results=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
 data("MockRotavirus")
 MCMC_seed <- 1
 overall_seed <- 2
-SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-                                        dist = "G",
-                                        init.pars = init_mcmc_params(
-                                          MockRotavirus$si_data, "gamma"),
-                                        thin = 10,
-                                        burnin = 1000,
-                                        n.samples = 5000,
-                                        seed = MCMC_seed)
-si_sample <- coarse2estim(SI.fit)$si_sample
+SI.fit <- estimate_R(incid = MockRotavirus$incidence,
+                     method = "si_from_data",
+                     si_data = MockRotavirus$si_data,
+                     config = make_config(
+                       si_parametric_distr = "gamma",
+                       mcmc_control = make_mcmc_control(seed = MCMC_seed),
+                       n1 = 500,
+                       seed = overall_seed))
+si_sample <- t(SI.fit$si_distr)
 ```
 
 ```{r}
@@ -709,15 +707,13 @@ data("MockRotavirus") # example dataset within EpiEstim
 head(MockRotavirus$si_data)
 ```
 
-Here EL/ER are the lower/upper bounds for the day of symptom onset for the infector and SL/SR are the lower/upper bounds of the day of symptom onset for the infected individual. The last column "type" is optional and corresponds to whether the data is doubly interval-censored (0), single interval-censored (1) or exact observations (2), but if this is not supplied it will automatically be computed from the dates. 
+Here EL/ER are the lower/upper bounds for the day of symptom onset for the infector and SL/SR are the lower/upper bounds of the day of symptom onset for the infected individual. The last column "type" is optional and corresponds to whether the data is doubly interval-censored (0), single interval-censored (1) or exact observations (2), but if this is not supplied it will automatically be computed from the dates. An optional column "OT" can give the last day on which the symptom onset of the infected individual could have been observed. The estimation then accounts for right truncation, which matters for pairs observed during an ongoing outbreak (Charniga et al. PLoS Comp Biol 2024). 
 
-This can be used to estimate the SI distribution using MCMC:
+This can be used to estimate the SI distribution by maximum likelihood:
 
 ```{r, results='hide', warning=FALSE, message=FALSE, fig.height=7,fig.width=5}
-# Configure the MCMC chain used to estimate the SI
-mcmc_control <- make_mcmc_control(burnin = 1000, # first 1000 iterations discarded as burn-in
-                                  thin = 10, # every 10th iteration will be kept, the rest discarded
-                                  seed = 1) # set the seed to make the process reproducible
+# Set the seed used to draw the sample of SI distributions
+mcmc_control <- make_mcmc_control(seed = 1) # set the seed to make the process reproducible
 
 R_si_from_data <- estimate_R(incid = MockRotavirus$incidence, 
                              method = "si_from_data",

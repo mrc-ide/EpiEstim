@@ -195,9 +195,10 @@ outbreak which could inform the
 serial interval distribution. 
 
 In `estimate_R`, we now allow the serial interval distribution to be directly
-estimated, using MCMC, from interval censored exposure data. The reproduction 
-number is then estimated using the posterior distribution of the SI, hence 
-accounting for the uncertainty associated with this estimate. 
+estimated, by maximum likelihood using the primarycensored package, from 
+interval censored exposure data. The reproduction number is then estimated 
+using a sample of SI distributions drawn from the uncertainty in this 
+estimate, hence accounting for the uncertainty associated with this estimate. 
 
 As the epidemic progresses, newly collected exposure data can be incorporated
 to update the serial interval estimate. 
@@ -226,8 +227,7 @@ of the reproduction number based on the full SI posterior distribution:
 ## fixing the random seeds
 MCMC_seed <- 1
 overall_seed <- 2
-mcmc_control <- make_mcmc_control(seed = MCMC_seed, 
-                                  burnin = 1000)
+mcmc_control <- make_mcmc_control(seed = MCMC_seed)
 dist <- "G" # fitting a Gamma dsitribution for the SI
 config <- make_config(list(si_parametric_distr = dist,
                            mcmc_control = mcmc_control,
