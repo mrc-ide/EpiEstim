@@ -102,6 +102,9 @@ discr_si <- function(k, mu, sigma, dist = stats::pgamma, shift = 1, L = -Inf,
   }
   dist_args <- list(...)
   if (!missing(mu) || !missing(sigma)) {
+    if (missing(mu) || missing(sigma)) {
+      stop("Both mu and sigma must be given together.", call. = FALSE)
+    }
     if (length(dist_args) > 0) {
       stop("Specify either mu and sigma or the parameters of dist, ",
            "not both.", call. = FALSE)
