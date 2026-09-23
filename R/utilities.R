@@ -32,8 +32,9 @@ process_si_data <- function(si_data) {
     stop("si_data has entries for which EL, ER, SL or SR are non integers.")
   }
   if ("OT" %in% names(si_data)) {
-    if (!is.numeric(si_data$OT) ||
-        any(si_data$OT %% 1 != 0, na.rm = TRUE)) {
+    if (!all(is.na(si_data$OT)) &&
+          (!is.numeric(si_data$OT) ||
+             any(si_data$OT %% 1 != 0, na.rm = TRUE))) {
       stop("si_data has entries for which OT is non integer.",
            call. = FALSE)
     }
@@ -314,10 +315,6 @@ process_config_si_from_data <- function(config, si_data) {
   if (config$n1 <= 0 || config$n1 %% 1 != 0) {
     stop("method si_from_data requires a >0 integer value for config$n1.")
   }
-  if (is.null(config$mcmc_control$init_pars)) {
-    config$mcmc_control$init_pars <-
-      init_mcmc_params(si_data, config$si_parametric_distr)
-  }
   if ((config$si_parametric_distr == "gamma_offset_1" ||
     config$si_parametric_distr == "weibull_offset_1" ||
     config$si_parametric_distr == "lognormal_offset_1") &&
@@ -327,6 +324,10 @@ process_config_si_from_data <- function(config, si_data) {
       "dataset, because for some data points the maximum serial ",
       "interval is <=1.\nChoose a different distribution"
     )
+  }
+  if (is.null(config$mcmc_control$init_pars)) {
+    config$mcmc_control$init_pars <-
+      init_mcmc_params(si_data, config$si_parametric_distr)
   }
   return(config)
 }
