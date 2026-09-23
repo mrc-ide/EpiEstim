@@ -58,8 +58,8 @@
 #'
 #' @return Gives the discrete probability \eqn{w_k} that the serial interval is
 #' equal to \eqn{k}. This is not normalised over `k`, so it sums to less than 1
-#' if `k` does not cover the support of the distribution. Use `D` to truncate
-#' and normalise the distribution.
+#' if `k` does not cover the support of the distribution. Use `L` and `D` to
+#' truncate and normalise the distribution.
 #'
 #' @seealso [overall_infectivity()], [estimate_R()],
 #' [primarycensored::dprimarycensored()]
@@ -204,7 +204,8 @@ discr_si_draws <- function(k, mu, sigma, si_discr_args = NULL) {
 check_si_discr_args <- function(si_discr_args) {
   allowed <- c("dist", "shift", "L", "D", "dprimary", "primary_args")
   if (!is.list(si_discr_args) ||
-        (length(si_discr_args) > 0 && is.null(names(si_discr_args)))) {
+        (length(si_discr_args) > 0 &&
+           (is.null(names(si_discr_args)) || any(names(si_discr_args) == "")))) {
     stop("si_discr_args must be a named list.", call. = FALSE)
   }
   unknown <- setdiff(names(si_discr_args), allowed)

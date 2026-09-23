@@ -130,3 +130,8 @@ test_that("estimate_R_agg truncates the serial interval at the series end", {
   ))
   expect_identical(captured$D, 29)
 })
+
+test_that("si_discr_args with an unnamed element is rejected", {
+  # make_config drops unnamed elements, but wallinga_teunis takes a plain list
+  expect_error(check_si_discr_args(list(shift = 1, 5)), "named list")
+})
