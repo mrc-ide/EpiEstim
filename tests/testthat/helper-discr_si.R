@@ -30,3 +30,12 @@ old_discr_si <- function(k, mu, sigma) {
 
 # Mean of a discrete distribution on k
 pmf_mean <- function(k, w) sum(k * w)
+
+# Original discr_si applied to several draws, with the interface of the
+# internal discr_si_draws
+old_discr_si_draws <- function(k, mu, sigma, si_discr_args = NULL) {
+  t(vapply(
+    seq_along(mu), function(i) old_discr_si(k, mu[i], sigma[i]),
+    numeric(length(k))
+  ))
+}

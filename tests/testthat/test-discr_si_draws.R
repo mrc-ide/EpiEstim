@@ -2,7 +2,7 @@ draw_mu <- c(2.6, 4.7, 8.4, 3)
 draw_sigma <- c(1.5, 2.9, 3.8, 6)
 
 expect_draws_match <- function(k, si_discr_args = list()) {
-  draws <- EpiEstim:::discr_si_draws(k, draw_mu, draw_sigma, si_discr_args)
+  draws <- discr_si_draws(k, draw_mu, draw_sigma, si_discr_args)
   expected <- t(vapply(
     seq_along(draw_mu),
     function(i) {
@@ -13,7 +13,7 @@ expect_draws_match <- function(k, si_discr_args = list()) {
     },
     numeric(length(k))
   ))
-  expect_equal(draws, expected, tolerance = 1e-12)
+  testthat::expect_equal(draws, expected, tolerance = 1e-12)
 }
 
 test_that("discr_si_draws matches discr_si for each draw by default", {
@@ -41,18 +41,18 @@ test_that("discr_si_draws matches discr_si with other primary distributions", {
 })
 
 test_that("discr_si_draws returns one row per draw", {
-  draws <- EpiEstim:::discr_si_draws(seq(0, 10), draw_mu, draw_sigma)
+  draws <- discr_si_draws(seq(0, 10), draw_mu, draw_sigma)
   expect_identical(dim(draws), c(length(draw_mu), 11L))
 })
 
 test_that("discr_si_draws checks its inputs", {
   expect_error(
-    EpiEstim:::discr_si_draws(0:5, c(2, 1), c(1, 1)), "mu must be >1"
+    discr_si_draws(0:5, c(2, 1), c(1, 1)), "mu must be >1"
   )
   expect_error(
-    EpiEstim:::discr_si_draws(0:5, c(2, 3), c(1, -1)), "sigma must be >=0"
+    discr_si_draws(0:5, c(2, 3), c(1, -1)), "sigma must be >=0"
   )
   expect_error(
-    EpiEstim:::discr_si_draws(0:5, 2, 1, list(foo = 1)), "si_discr_args"
+    discr_si_draws(0:5, 2, 1, list(foo = 1)), "si_discr_args"
   )
 })
