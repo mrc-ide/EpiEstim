@@ -184,7 +184,8 @@
 #' Reich, N.G. et al. Estimating incubation period distributions with coarse
 #' data (Statis. Med. 2009)
 #' 
-#' Abbott, S. et al. primarycensored: Primary Event Censored Distributions.
+#' Abbott, S. et al. [primarycensored][primarycensored::primarycensored-package]:
+#' Primary Event Censored Distributions.
 #' \doi{10.5281/zenodo.13632839}
 #' 
 #' Charniga, K. et al. Best practices for estimating and reporting

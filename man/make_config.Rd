@@ -224,8 +224,8 @@ As dates are daily, dates known exactly are treated as one day intervals.
 Assuming a given parametric distribution for the serial interval distribution
 (specified in \code{si_parametric_distr}), the serial interval is estimated
 directly from these data by maximum likelihood, accounting for double
-interval censoring, using the primarycensored package (Abbott et al.,
-\doi{10.5281/zenodo.13632839}). A sample of \code{n1} serial interval
+interval censoring, using \code{\link[primarycensored:fitdistdoublecens]{primarycensored::fitdistdoublecens()}} (Abbott et
+al., \doi{10.5281/zenodo.13632839}). A sample of \code{n1} serial interval
 distributions is then drawn from the asymptotic normal distribution of the
 parameter estimates. The argument \code{mcmc_control} sets the seed used for
 this sample and the starting values of the estimation (\code{burnin} and \code{thin}

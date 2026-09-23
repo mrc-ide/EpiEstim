@@ -325,7 +325,7 @@ estimate_R(incid = incid,
   Please note that `n1 = 5` is very low and chosen purely for illustrative purposes. The default values for n1 and n2 are `n1 = 500` and `n2 = 50`, which can be modified based on the users preference. If the default values are used, a sample of size 25,000 (`n1` x `n2`) of the joint posterior distribution of R~t~ will be obtained over each time window. Bear in mind that the larger these values, the longer the `estimate_R()` function will take to run.
 
 <div style="margin-top:30px;">
-**From data** - `"si_from_data"` allows you to estimate the SI by maximum likelihood from infector-infected data, using the primarycensored package. The user has the choice of which parametric distribution the SI will take, either: Gamma `"G"`, Weibull `"W"`, Lognormal `"L"`, or shifted by 1: Gamma `"off1G"`, Weibull `"off1W"`, Lognormal `"off1L"` 
+**From data** - `"si_from_data"` allows you to estimate the SI by maximum likelihood from infector-infected data, using `primarycensored::fitdistdoublecens()`. The user has the choice of which parametric distribution the SI will take, either: Gamma `"G"`, Weibull `"W"`, Lognormal `"L"`, or shifted by 1: Gamma `"off1G"`, Weibull `"off1W"`, Lognormal `"off1L"` 
 
 `mcmc_control` is where you set the seed, e.g. `seed = 1`, which acts as the starting point for the random number generator used to draw the sample of SI distributions. Setting the seed allows you to obtain reproducible results as you will get the same result each time you run the same process. The `burnin` and `thin` arguments are no longer used as the SI is no longer estimated by MCMC.
 </div>

@@ -347,7 +347,8 @@ respiratory syndrome reveal similar impacts of control measures (AJE 2004).
 Reich, N.G. et al. Estimating incubation period distributions with coarse
 data (Statis. Med. 2009)
 
-Abbott, S. et al. primarycensored: Primary Event Censored Distributions.
+Abbott, S. et al. \link[primarycensored:primarycensored-package]{primarycensored}:
+Primary Event Censored Distributions.
 \doi{10.5281/zenodo.13632839}
 
 Charniga, K. et al. Best practices for estimating and reporting

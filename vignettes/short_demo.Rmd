@@ -195,8 +195,8 @@ outbreak which could inform the
 serial interval distribution. 
 
 In `estimate_R`, we now allow the serial interval distribution to be directly
-estimated, by maximum likelihood using the primarycensored package, from 
-interval censored exposure data. The reproduction number is then estimated 
+estimated, by maximum likelihood using `primarycensored::fitdistdoublecens()`, 
+from interval censored exposure data. The reproduction number is then estimated 
 using a sample of SI distributions drawn from the uncertainty in this 
 estimate, hence accounting for the uncertainty associated with this estimate. 
 

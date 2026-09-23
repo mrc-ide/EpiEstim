@@ -38,7 +38,7 @@
 #' Assuming a given parametric distribution for the serial interval distribution
 #' (specified in `si_parametric_distr`),
 #' the serial interval is estimated directly from these data by maximum
-#' likelihood using the primarycensored package.
+#' likelihood using [primarycensored::fitdistdoublecens()].
 #' 
 #' @return An object of class `estimate_R_mcmc_control` with components 
 #' `burnin`, `thin`, `seed`, `init_pars`. This can be 

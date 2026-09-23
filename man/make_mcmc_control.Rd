@@ -61,7 +61,7 @@ will be automatically computed from the dates
 Assuming a given parametric distribution for the serial interval distribution
 (specified in \code{si_parametric_distr}),
 the serial interval is estimated directly from these data by maximum
-likelihood using the primarycensored package.
+likelihood using \code{\link[primarycensored:fitdistdoublecens]{primarycensored::fitdistdoublecens()}}.
 }
 \examples{
 \dontrun{

@@ -206,8 +206,8 @@
 #' Assuming a given parametric distribution for the serial interval distribution
 #' (specified in `si_parametric_distr`), the serial interval is estimated
 #' directly from these data by maximum likelihood, accounting for double
-#' interval censoring, using the primarycensored package (Abbott et al.,
-#' \doi{10.5281/zenodo.13632839}). A sample of `n1` serial interval
+#' interval censoring, using [primarycensored::fitdistdoublecens()] (Abbott et
+#' al., \doi{10.5281/zenodo.13632839}). A sample of `n1` serial interval
 #' distributions is then drawn from the asymptotic normal distribution of the
 #' parameter estimates. The argument `mcmc_control` sets the seed used for
 #' this sample and the starting values of the estimation (`burnin` and `thin`
