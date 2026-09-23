@@ -115,17 +115,10 @@ test_that("si_from_data corrects for right truncation with an OT column", {
     si_from_data_config(incid, si_parametric_distr = "gamma")
   )
   truth <- discr_mean(mu, sigma)
-  rlang::local_options(rlib_warning_verbosity = "verbose")
 
-  warns <- collect_warnings(
-    naive <- run_si_from_data(si_data, config, incid)
-  )
-  expect_true(any(grepl("right truncation", warns, fixed = TRUE)))
+  naive <- suppressWarnings(run_si_from_data(si_data, config, incid))
   si_data$OT <- 40L
-  warns <- collect_warnings(
-    truncated <- run_si_from_data(si_data, config, incid)
-  )
-  expect_false(any(grepl("right truncation", warns, fixed = TRUE)))
+  truncated <- suppressWarnings(run_si_from_data(si_data, config, incid))
   naive_bias <- mean(naive$SI.Moments$Mean) - truth
   truncated_bias <- mean(truncated$SI.Moments$Mean) - truth
   expect_lt(naive_bias, -0.5)
@@ -230,16 +223,10 @@ test_that("check_cdt_samples_convergence is deprecated", {
   )
 })
 
-test_that("the right truncation warning is shown once per session", {
+test_that("si_from_data does not warn about right truncation", {
   config <- quiet_config(si_parametric_distr = "gamma")
-  rlang::reset_warning_verbosity("epiestim_si_from_data_truncation")
-  first <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
-  second <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
-  expect_true(any(grepl("right truncation", first, fixed = TRUE)))
-  expect_false(any(grepl("right truncation", second, fixed = TRUE)))
-  rlang::local_options(rlib_warning_verbosity = "verbose")
-  third <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
-  expect_true(any(grepl("right truncation", third, fixed = TRUE)))
+  warns <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
+  expect_false(any(grepl("truncation", warns, fixed = TRUE)))
 })
 
 test_that("a non positive definite covariance gives an informative error", {
