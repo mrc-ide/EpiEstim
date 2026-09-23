@@ -66,11 +66,11 @@ test_that("si_from_data is reproducible with the mcmc_control seed", {
 test_that("si_from_data warns that burnin and thin are ignored", {
   config <- quiet_config(si_parametric_distr = "gamma")
   config$mcmc_control <- make_mcmc_control(burnin = 1000, thin = 5, seed = 1)
-  warnings <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
-  expect_true(any(grepl("burnin and thin", warnings)))
+  warns <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
+  expect_true(any(grepl("burnin and thin", warns, fixed = TRUE)))
   config$mcmc_control <- make_mcmc_control(seed = 1)
-  warnings <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
-  expect_false(any(grepl("burnin and thin", warnings)))
+  warns <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
+  expect_false(any(grepl("burnin and thin", warns, fixed = TRUE)))
 })
 
 test_that("si_from_data uses init_pars as starting values", {
@@ -116,15 +116,15 @@ test_that("si_from_data corrects for right truncation with an OT column", {
   )
   truth <- discr_mean(mu, sigma)
 
-  warnings <- collect_warnings(
+  warns <- collect_warnings(
     naive <- run_si_from_data(si_data, config, incid)
   )
-  expect_true(any(grepl("right truncation", warnings)))
+  expect_true(any(grepl("right truncation", warns, fixed = TRUE)))
   si_data$OT <- 40L
-  warnings <- collect_warnings(
+  warns <- collect_warnings(
     truncated <- run_si_from_data(si_data, config, incid)
   )
-  expect_false(any(grepl("right truncation", warnings)))
+  expect_false(any(grepl("right truncation", warns, fixed = TRUE)))
   naive_bias <- mean(naive$SI.Moments$Mean) - truth
   truncated_bias <- mean(truncated$SI.Moments$Mean) - truth
   expect_lt(naive_bias, -0.5)

@@ -287,9 +287,8 @@
 #' ## used, even though the difference is marginal in this case.
 #'
 #' \dontrun{
-#' ## Note the following examples use an MCMC routine
-#' ## to estimate the serial interval distribution from data,
-#' ## so they may take a few minutes to run
+#' ## Note the following examples estimate the serial interval
+#' ## distribution from data, so they may take a few seconds to run
 #'
 #' ## load data on rotavirus
 #' data("MockRotavirus")

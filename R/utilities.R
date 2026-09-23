@@ -8,13 +8,18 @@ process_si_data <- function(si_data) {
   si_data <- as.data.frame(si_data)
   num_cols <- dim(si_data)[2]
   if (num_cols < 4 || num_cols > 6) {
-    stop("si_data should have 4, 5 or 6 columns")
+    stop("si_data should have 4, 5 or 6 columns", call. = FALSE)
   }
 
   # entries with incorrect column names
   if (!all(c("EL", "ER", "SL", "SR") %in% names(si_data))) {
-    names <- c("EL", "ER", "SL", "SR", "type", "OT")
-    names(si_data) <- names[seq_len(num_cols)]
+    default_names <- c("EL", "ER", "SL", "SR", "type", "OT")
+    names(si_data) <- default_names[seq_len(num_cols)]
+    if (num_cols >= 5 && !all(si_data$type %in% c(0, 1, 2))) {
+      stop("The fifth column of si_data is not a valid type column. ",
+           "If si_data has an OT column, name the columns EL, ER, SL, SR ",
+           "and OT.", call. = FALSE)
+    }
     warning("column names for si_data were not as expected; they were 
             automatically interpreted as 'EL', 'ER', 'SL', 'SR', 'type' 
             and 'OT' (the last two only if si_data had five or six 
@@ -29,10 +34,11 @@ process_si_data <- function(si_data) {
   if ("OT" %in% names(si_data)) {
     if (!is.numeric(si_data$OT) ||
         any(si_data$OT %% 1 != 0, na.rm = TRUE)) {
-      stop("si_data has entries for which OT is non integer.")
+      stop("si_data has entries for which OT is non integer.",
+           call. = FALSE)
     }
     if (any(si_data$SL > si_data$OT, na.rm = TRUE)) {
-      stop("si_data has entries for which SL > OT.")
+      stop("si_data has entries for which SL > OT.", call. = FALSE)
     }
   }
 

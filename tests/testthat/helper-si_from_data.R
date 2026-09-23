@@ -51,13 +51,14 @@ discr_mean <- function(mu, sigma, shift = 0, L = 1) {
 
 # Evaluate expr and return the messages of all warnings raised
 collect_warnings <- function(expr) {
-  warnings <- character()
+  seen <- new.env()
+  seen$messages <- character()
   withCallingHandlers(
     suppressMessages(expr),
     warning = function(w) {
-      warnings <<- c(warnings, conditionMessage(w))
+      seen$messages <- c(seen$messages, conditionMessage(w))
       invokeRestart("muffleWarning")
     }
   )
-  warnings
+  seen$messages
 }
