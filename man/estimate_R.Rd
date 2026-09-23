@@ -52,7 +52,7 @@ interval distribution should be a dataframe with 5 or 6 columns:
 \item SL: the lower bound of the symptom onset date of the infected individual (given as an integer)
 \item SR: the upper bound of the symptom onset date of the infected individual (given as an integer). Should be such that SR >= SL. If the dates are known exactly use SR = SL
 \item type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates
-\item OT (optional): the last day (given as an integer) on which the symptom onset of the infected individual could have been observed, e.g. the date of data collection. If given, the estimation of the serial interval accounts for right truncation (see Charniga et al. PLoS Comp Biol 2024). Should be such that OT >= SL. Entries may be \code{NA} for no truncation
+\item OT (optional): the last day (given as an integer) on which the symptom onset of the infected individual could have been observed, e.g. the date of data collection. If given, the estimation of the serial interval accounts for right truncation using \link[primarycensored:primarycensored-package]{primarycensored}. When pairs of infector/infected individuals are observed during an ongoing outbreak, OT should be given, as otherwise the serial interval may be underestimated (see Charniga et al. PLoS Comp Biol 2024). Should be such that OT >= SL. If not given, or for entries that are \code{NA}, no right truncation is assumed
 }
 
 As dates are daily, dates known exactly (ER = EL or SR = SL) are treated as one day intervals.}

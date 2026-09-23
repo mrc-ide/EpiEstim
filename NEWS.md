@@ -28,9 +28,8 @@
   estimation then accounts for right truncation (see Charniga et al., PLoS 
   Comp Biol 2024). `dprimary` and `primary_args` in `si_discr_args` set the 
   distribution of the primary event time for both the estimation and the 
-  discretisation. The warning that the estimation is not corrected for 
-  right truncation is now shown once per session and only when there is no 
-  `OT` column.
+  discretisation. Without an `OT` column no right truncation is assumed, 
+  and the warning about right truncation added in EpiEstim 2.5 is removed.
 
 ## Bug fixes
 * Superfluous argument "method" removed from `make_config()` function

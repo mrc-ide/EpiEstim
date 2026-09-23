@@ -216,8 +216,11 @@ respectively, see Reich et al. Statist. Med. 2009. If not specified, this
 will be automatically computed from the dates
 \item \code{OT} (optional): the last day (given as an integer) on which the symptom
 onset of the infected individual could have been observed. If given, the
-estimation accounts for right truncation (see Charniga et al. PLoS Comp
-Biol 2024). Entries may be \code{NA} for no truncation.
+estimation accounts for right truncation. When pairs of infector/infected
+individuals are observed during an ongoing outbreak, \code{OT} should be
+given, as otherwise the serial interval may be underestimated (see
+Charniga et al. PLoS Comp Biol 2024). If not given, or for entries that
+are \code{NA}, no right truncation is assumed.
 }
 
 As dates are daily, dates known exactly are treated as one day intervals.

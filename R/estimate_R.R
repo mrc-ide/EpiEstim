@@ -37,7 +37,7 @@
 #' - SL: the lower bound of the symptom onset date of the infected individual (given as an integer)
 #' - SR: the upper bound of the symptom onset date of the infected individual (given as an integer). Should be such that SR >= SL. If the dates are known exactly use SR = SL
 #' - type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates
-#' - OT (optional): the last day (given as an integer) on which the symptom onset of the infected individual could have been observed, e.g. the date of data collection. If given, the estimation of the serial interval accounts for right truncation (see Charniga et al. PLoS Comp Biol 2024). Should be such that OT >= SL. Entries may be `NA` for no truncation
+#' - OT (optional): the last day (given as an integer) on which the symptom onset of the infected individual could have been observed, e.g. the date of data collection. If given, the estimation of the serial interval accounts for right truncation using [primarycensored][primarycensored::primarycensored-package]. When pairs of infector/infected individuals are observed during an ongoing outbreak, OT should be given, as otherwise the serial interval may be underestimated (see Charniga et al. PLoS Comp Biol 2024). Should be such that OT >= SL. If not given, or for entries that are `NA`, no right truncation is assumed
 #'
 #' As dates are daily, dates known exactly (ER = EL or SR = SL) are treated as one day intervals.
 #'
@@ -429,22 +429,6 @@ estimate_R <- function(incid,
     ## estimate serial interval from serial interval data first
     fit <- si_sample_from_data(si_data, config)
     MCMC_conv <- fit$converged
-
-    ## add a warning, once per session, about real-time estimation
-    ## potentially being biased
-    if (!("OT" %in% names(si_data))) {
-      wrn <- paste(
-        "Serial interval estimation is not corrected for right truncation",
-        "as si_data has no OT column. It may yield biased results when",
-        "applied to infector/infected pairs observed during an ongoing",
-        "outbreak. See Charniga et al. (PLoS Comp Biol, 2024)."
-      )
-      rlang::warn(
-        wrn,
-        .frequency = "once",
-        .frequency_id = "epiestim_si_from_data_truncation"
-      )
-    }
 
     cat(paste(
       "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
