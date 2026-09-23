@@ -105,8 +105,11 @@ draw_si_params <- function(estimate, vcov, n, positive) {
   if (anyNA(eigen_values) ||
         min(eigen_values) <= sqrt(.Machine$double.eps)) {
     stop("The uncertainty in the serial interval parameters could not be ",
-         "estimated from si_data. Try a different si_parametric_distr.",
-         call. = FALSE)
+         "estimated from si_data, so no sample of serial interval ",
+         "distributions can be drawn. The fitted distribution may be a poor ",
+         "fit to the data. Try different starting values with ",
+         "make_mcmc_control(init_pars = ...) or a different ",
+         "si_parametric_distr.", call. = FALSE)
   }
   z <- matrix(stats::rnorm(n * length(mu)), nrow = n)
   draws <- sweep(z %*% chol(vcov_log), 2, mu, "+")

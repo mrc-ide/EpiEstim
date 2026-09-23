@@ -430,7 +430,8 @@ estimate_R <- function(incid,
     fit <- si_sample_from_data(si_data, config)
     MCMC_conv <- fit$converged
 
-    ## add a warning about real-time estimation potentially being biased
+    ## add a warning, once per session, about real-time estimation
+    ## potentially being biased
     if (!("OT" %in% names(si_data))) {
       wrn <- paste(
         "Serial interval estimation is not corrected for right truncation",
@@ -438,7 +439,11 @@ estimate_R <- function(incid,
         "applied to infector/infected pairs observed during an ongoing",
         "outbreak. See Charniga et al. (PLoS Comp Biol, 2024)."
       )
-      warning(wrn)
+      rlang::warn(
+        wrn,
+        .frequency = "once",
+        .frequency_id = "epiestim_si_from_data_truncation"
+      )
     }
 
     cat(paste(
