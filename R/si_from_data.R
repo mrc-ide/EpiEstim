@@ -15,9 +15,6 @@ si_fit_distr <- function(distr) {
     name = distr,
     shift = as.numeric(startsWith(distr, "off1")),
     distr = switch(fam, G = "gamma", W = "weibull", L = "lnorm"),
-    discr_name = switch(fam,
-      G = "gamma", W = "weibull", L = "lognormal"
-    ),
     pdist = switch(fam,
       G = stats::pgamma, W = stats::pweibull, L = stats::plnorm
     ),
@@ -38,20 +35,20 @@ si_from_data_discr_args <- function(config, fit_distr) {
   if (is.null(discr_args)) {
     discr_args <- list()
   }
-  ## shift and the lower bound of L are set by si_parametric_distr below
+  ## dist, shift and the lower bound of L are set by si_parametric_distr
   check_si_discr_args(
-    discr_args[setdiff(names(discr_args), c("shift", "L"))]
+    discr_args[setdiff(names(discr_args), c("dist", "shift", "L"))]
   )
   if (!is.null(discr_args$dist) &&
-      !identical(discr_args$dist, fit_distr$discr_name)) {
+        !identical(discr_args$dist, fit_distr$pdist)) {
     stop("si_discr_args$dist conflicts with si_parametric_distr. ",
          "For method si_from_data the distribution is set by ",
-         "si_parametric_distr.")
+         "si_parametric_distr.", call. = FALSE)
   }
   if (!is.null(discr_args$shift) && discr_args$shift != fit_distr$shift) {
     stop("si_discr_args$shift conflicts with si_parametric_distr. ",
          "For method si_from_data the shift is set by si_parametric_distr ",
-         "(1 for the offset distributions, 0 otherwise).")
+         "(1 for the offset distributions, 0 otherwise).", call. = FALSE)
   }
   discr_args$dist <- NULL
   discr_args$shift <- NULL
@@ -105,9 +102,11 @@ draw_si_params <- function(estimate, vcov, n, positive) {
     eigen(vcov_log, symmetric = TRUE, only.values = TRUE)$values,
     error = function(e) NA
   )
-  if (anyNA(eigen_values) || min(eigen_values) <= sqrt(.Machine$double.eps)) {
+  if (anyNA(eigen_values) ||
+        min(eigen_values) <= sqrt(.Machine$double.eps)) {
     stop("The uncertainty in the serial interval parameters could not be ",
-         "estimated from si_data. Try a different si_parametric_distr.")
+         "estimated from si_data. Try a different si_parametric_distr.",
+         call. = FALSE)
   }
   z <- matrix(stats::rnorm(n * length(mu)), nrow = n)
   draws <- sweep(z %*% chol(vcov_log), 2, mu, "+")
@@ -127,6 +126,9 @@ draw_si_params <- function(estimate, vcov, n, positive) {
 si_sample_from_params <- function(fit_distr, samples, discr_args = list()) {
   if (is.null(discr_args$dprimary)) {
     discr_args$dprimary <- stats::dunif
+  }
+  if (is.null(discr_args$primary_args)) {
+    discr_args$primary_args <- list()
   }
   params <- lapply(seq_len(nrow(samples)), function(i) {
     stats::setNames(as.list(unlist(samples[i, ])), fit_distr$params)
@@ -155,19 +157,11 @@ si_sample_from_params <- function(fit_distr, samples, discr_args = list()) {
   if (!is.null(discr_args$D)) {
     upper <- min(upper, discr_args$D)
   }
-  discr_args$L <- NULL
-  discr_args$D <- NULL
-  vapply(params, function(p) {
-    do.call(
-      discr_si,
-      c(
-        list(k = k, dist = fit_distr$pdist, shift = fit_distr$shift,
-             L = lower, D = upper),
-        discr_args,
-        p
-      )
-    )
-  }, numeric(length(k)))
+  si_args <- si_discr_defaults(list(
+    dist = fit_distr$pdist, shift = fit_distr$shift, L = lower, D = upper,
+    dprimary = discr_args$dprimary, primary_args = discr_args$primary_args
+  ))
+  t(discr_si_param_draws(k, params, si_args))
 }
 
 ## Estimate the serial interval from si_data and return a sample of discrete
@@ -182,7 +176,7 @@ si_sample_from_data <- function(si_data, config) {
       !identical(mcmc_control$thin, default_control$thin)) {
     warning("burnin and thin in mcmc_control are ignored. The serial ",
             "interval is now estimated by maximum likelihood rather than ",
-            "MCMC.")
+            "MCMC.", call. = FALSE)
   }
 
   censdata <- si_data_to_censdata(si_data, fit_distr$shift)
@@ -199,7 +193,7 @@ si_sample_from_data <- function(si_data, config) {
   converged <- fit$convergence == 0
   if (!converged) {
     warning("The maximum likelihood estimation of the serial interval ",
-            "did not converge.")
+            "did not converge.", call. = FALSE)
   }
 
   if (!is.null(mcmc_control$seed)) {
