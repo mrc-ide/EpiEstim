@@ -97,29 +97,16 @@ discr_si <- function(k, mu, sigma, dist = "gamma", shift = 1, L = -Inf,
   if (is.function(dist)) {
     if (!missing(mu) || !missing(sigma)) {
       stop("mu and sigma should not be specified when dist is a function; ",
-           "pass the parameters of dist through ... instead.")
+           "pass the parameters of dist through ... instead.", call. = FALSE)
     }
     pdist <- dist
     dist_args <- list(...)
   } else {
-    if (sigma < 0) {
-      stop("sigma must be >=0.")
-    }
-    if (mu <= shift) {
-      stop("mu must be >", shift)
-    }
+    check_si_moments(mu, sigma, shift)
     pdist <- si_pdist(dist)
     dist_args <- si_dist_args(dist, mu - shift, sigma)
   }
-  if (any(k < 0)) {
-    stop("all values in k must be >=0.")
-  }
-  if (shift < 0) {
-    stop("shift must be >=0.")
-  }
-  if (L >= D) {
-    stop("L must be smaller than D.")
-  }
+  check_si_support(k, shift, L, D)
 
   res <- numeric(length(k))
   in_support <- k >= L & k < D
@@ -151,41 +138,126 @@ discr_si_config <- function(k, mu, sigma, si_discr_args = NULL) {
   do.call(discr_si, c(list(k = k, mu = mu, sigma = sigma), si_discr_args))
 }
 
+## Discretise the serial interval for several draws of its mean and standard
+## deviation. Gives the same result as calling discr_si for each draw but
+## builds the primarycensored object once and only updates its parameters.
+## Returns a matrix with one row per draw.
+discr_si_draws <- function(k, mu, sigma, si_discr_args = NULL) {
+  if (is.null(si_discr_args)) {
+    si_discr_args <- list()
+  }
+  check_si_discr_args(si_discr_args)
+  si_args <- utils::modifyList(
+    list(
+      dist = "gamma", shift = 1, L = -Inf, D = Inf, dprimary = stats::dunif,
+      primary_args = list()
+    ),
+    si_discr_args
+  )
+  check_si_moments(mu, sigma, si_args$shift)
+  check_si_support(k, si_args$shift, si_args$L, si_args$D)
+
+  ## work on the delay scale, i.e. the serial interval minus the shift
+  delay_L <- si_args$L - si_args$shift
+  delay_D <- si_args$D - si_args$shift
+  in_support <- k >= si_args$L & k < si_args$D
+  lower <- k[in_support] - si_args$shift
+  upper <- pmin(lower + 1, delay_D)
+  cdf_points <- sort(unique(c(
+    lower, upper, delay_L[is.finite(delay_L)], delay_D[is.finite(delay_D)]
+  )))
+  pos_cdf_points <- cdf_points[cdf_points > 0 & is.finite(cdf_points)]
+
+  pdist <- si_pdist(si_args$dist)
+  pcens <- do.call(
+    primarycensored::new_pcens,
+    c(
+      list(pdist = pdist, dprimary = si_args$dprimary,
+           primary_args = si_args$primary_args),
+      si_dist_args(si_args$dist, mu[1] - si_args$shift, sigma[1])
+    )
+  )
+
+  res <- matrix(0, nrow = length(mu), ncol = length(k))
+  for (i in seq_along(mu)) {
+    pcens$args <- si_dist_args(si_args$dist, mu[i] - si_args$shift, sigma[i])
+    ## the delay is non-negative so the censored CDF is 0 at and below 0
+    cdf <- numeric(length(cdf_points))
+    cdf[cdf_points == Inf] <- 1
+    if (length(pos_cdf_points) > 0) {
+      cdf[cdf_points > 0 & is.finite(cdf_points)] <-
+        primarycensored::pcens_cdf(pcens, pos_cdf_points, pwindow = 1)
+    }
+    cdf_L <- if (is.finite(delay_L)) cdf[match(delay_L, cdf_points)] else 0
+    cdf_D <- if (is.finite(delay_D)) cdf[match(delay_D, cdf_points)] else 1
+    pmf <- (cdf[match(upper, cdf_points)] - cdf[match(lower, cdf_points)]) /
+      (cdf_D - cdf_L)
+    res[i, in_support] <- pmax(pmf, 0)
+  }
+
+  return(res)
+}
+
 ## Check the extra arguments to discr_si given in config$si_discr_args
 check_si_discr_args <- function(si_discr_args) {
   allowed <- c("dist", "shift", "L", "D", "dprimary", "primary_args")
   if (!is.list(si_discr_args) ||
         (length(si_discr_args) > 0 && is.null(names(si_discr_args)))) {
-    stop("si_discr_args must be a named list.")
+    stop("si_discr_args must be a named list.", call. = FALSE)
   }
   unknown <- setdiff(names(si_discr_args), allowed)
   if (length(unknown) > 0) {
     stop("si_discr_args contains unsupported arguments: ",
          toString(unknown), ". Supported arguments are: ",
-         toString(allowed), ".")
+         toString(allowed), ".", call. = FALSE)
   }
   if (!is.null(si_discr_args$dist) && !is.character(si_discr_args$dist)) {
     stop("si_discr_args$dist must be one of 'gamma', 'lognormal' or ",
-         "'weibull'.")
+         "'weibull'.", call. = FALSE)
   }
   support <- utils::modifyList(list(shift = 1, L = -Inf), si_discr_args)
   if (support$shift < 1 && support$L < 1) {
     stop("si_discr_args gives a non-zero probability of a serial interval ",
-         "of zero, which EpiEstim does not allow. Use shift >= 1 or L >= 1.")
+         "of zero, which EpiEstim does not allow. Use shift >= 1 or L >= 1.", call. = FALSE)
   }
   invisible(NULL)
 }
 
 ## Cumulative distribution function for a named serial interval distribution
 si_pdist <- function(dist) {
-  switch(
-    dist,
-    gamma = stats::pgamma,
-    lognormal = stats::plnorm,
-    weibull = stats::pweibull,
-    stop("dist must be one of 'gamma', 'lognormal' or 'weibull', ",
-         "or a cumulative distribution function.")
+  pdists <- list(
+    gamma = stats::pgamma, lognormal = stats::plnorm, weibull = stats::pweibull
   )
+  if (!is.character(dist) || length(dist) != 1 || !dist %in% names(pdists)) {
+    stop("dist must be one of 'gamma', 'lognormal' or 'weibull', ",
+         "or a cumulative distribution function.", call. = FALSE)
+  }
+  pdists[[dist]]
+}
+
+## Check the mean and standard deviation of the serial interval
+check_si_moments <- function(mu, sigma, shift) {
+  if (any(sigma < 0)) {
+    stop("sigma must be >=0.", call. = FALSE)
+  }
+  if (any(mu <= shift)) {
+    stop("mu must be >", shift, call. = FALSE)
+  }
+  invisible(NULL)
+}
+
+## Check the values, shift and truncation of the serial interval
+check_si_support <- function(k, shift, L, D) {
+  if (any(k < 0)) {
+    stop("all values in k must be >=0.", call. = FALSE)
+  }
+  if (shift < 0) {
+    stop("shift must be >=0.", call. = FALSE)
+  }
+  if (L >= D) {
+    stop("L must be smaller than D.", call. = FALSE)
+  }
+  invisible(NULL)
 }
 
 ## Parameters of a named distribution with mean mu and standard deviation sigma

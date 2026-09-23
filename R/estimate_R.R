@@ -656,9 +656,12 @@ estimate_R_func <- function(incid,
                                     sd = config$std_std_si)
         }
       }
+      si_draws <- discr_si_draws(
+        seq(0, T - 1), mean_si_sample, std_si_sample, config$si_discr_args
+      )
       temp <- lapply(seq_len(config$n1), function(k) { sample_from_posterior(config$n2,
                                                                            incid, mean_si_sample[k], std_si_sample[k],
-                                                                           si_distr = NULL, a_prior,
+                                                                           si_distr = si_draws[k, ], a_prior,
                                                                            b_prior, t_start_imputed, t_end_imputed
       )})
       config$si_distr <- cbind(

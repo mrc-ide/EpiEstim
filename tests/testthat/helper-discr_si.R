@@ -1,6 +1,7 @@
 # Frozen copy of the discr_si() implementation from EpiEstim <= 3.0.0.
 # Used to check that the primarycensored based implementation reproduces
 # the original closed form solution for the shifted Gamma.
+# nolint start: condition_call_linter. Kept as in EpiEstim <= 3.0.0.
 old_discr_si <- function(k, mu, sigma) {
   if (sigma < 0) {
     stop("sigma must be >=0.")
@@ -25,6 +26,7 @@ old_discr_si <- function(k, mu, sigma) {
 
   return(res)
 }
+# nolint end
 
 # Mean of a discrete distribution on k
 pmf_mean <- function(k, w) sum(k * w)
