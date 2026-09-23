@@ -551,7 +551,9 @@ estimate_R_func <- function(incid,
     nb_time_periods <- length(t_start)
 
     if (is.null(si_distr)) {
-      si_distr <- discr_si(seq(0, T - 1), mean_si, std_si)
+      si_distr <- discr_si_config(
+        seq(0, T - 1), mean_si, std_si, config$si_discr_args
+      )
     }
 
     final_mean_si <- sum(si_distr * (seq(0, length(si_distr) -
@@ -754,7 +756,9 @@ estimate_R_func <- function(incid,
   } else {
     # CertainSI
     if (parametric_si == "Y") {
-      config$si_distr <- discr_si(seq(0,T - 1), config$mean_si, config$std_si)
+      config$si_distr <- discr_si_config(
+        seq(0, T - 1), config$mean_si, config$std_si, config$si_discr_args
+      )
     }
     if (length(config$si_distr) < T + 1) {
       config$si_distr[seq(length(config$si_distr) + 1,T + 1)] <- 0

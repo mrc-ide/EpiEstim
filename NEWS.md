@@ -15,6 +15,11 @@
   other distributions of the primary event time within the day (`dprimary`, 
   `primary_args`). primarycensored is a new dependency.
 
+- `make_config()` gains `si_discr_args`, a list of these additional arguments 
+  that `estimate_R()`, `wallinga_teunis()` and `estimate_R_agg()` pass to 
+  `discr_si()` for parametric serial intervals. It defaults to an empty list, 
+  which leaves results unchanged.
+
 ## Bug fixes
 * Superfluous argument "method" removed from `make_config()` function
 

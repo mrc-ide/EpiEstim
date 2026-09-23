@@ -251,7 +251,9 @@ wallinga_teunis.numeric <- function(incid,
   }
   
   if (parametric_si == "Y") {
-    config$si_distr <- discr_si(seq(0,T - 1), config$mean_si, config$std_si)
+    config$si_distr <- discr_si_config(
+      seq(0, T - 1), config$mean_si, config$std_si, config$si_discr_args
+    )
   }
   if (length(config$si_distr) < T + 1) {
     config$si_distr[seq(length(config$si_distr) + 1, T + 1)] <- 0

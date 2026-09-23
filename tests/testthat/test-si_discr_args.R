@@ -39,7 +39,7 @@ test_that("estimate_R parametric_si passes si_discr_args to discr_si", {
 test_that("estimate_R uncertain_si passes si_discr_args to discr_si", {
   config <- list(
     t_start = 2:26, t_end = 8:32,
-    mean_si = 2.6, std_mean_si = 1, min_mean_si = 1.5, max_mean_si = 4.2,
+    mean_si = 2.6, std_mean_si = 1, min_mean_si = 1, max_mean_si = 4.2,
     std_si = 1.5, std_std_si = 0.5, min_std_si = 0.5, max_std_si = 2.5,
     n1 = 20, n2 = 20, seed = 1
   )

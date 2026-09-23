@@ -413,7 +413,10 @@ estimate_R_agg <- function(incid,
                                grid) {
         r_grid <- seq(grid$min, grid$max, grid$precision)
         if (is.null(si_distr)) {
-          si_distr <- discr_si(seq(0, total_t), mu = si_mean, sigma = si_sd)
+          si_distr <- discr_si_config(
+            seq(0, total_t), mu = si_mean, sigma = si_sd,
+            si_discr_args = config$si_discr_args
+          )
           # remove tail
           threshold <- 1e-6
           si_distr <- si_distr[c(TRUE, si_distr[-1] >= threshold)]

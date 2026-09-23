@@ -57,7 +57,9 @@
 #' @param ... Parameters of `dist` when `dist` is a function.
 #'
 #' @return Gives the discrete probability \eqn{w_k} that the serial interval is
-#' equal to \eqn{k}.
+#' equal to \eqn{k}. This is not normalised over `k`, so it sums to less than 1
+#' if `k` does not cover the support of the distribution. Use `D` to truncate
+#' and normalise the distribution.
 #'
 #' @seealso [overall_infectivity()], [estimate_R()],
 #' [primarycensored::dprimarycensored()]
@@ -136,6 +138,40 @@ discr_si <- function(k, mu, sigma, dist = "gamma", shift = 1, L = -Inf,
   res <- vnapply(res, function(e) max(0, e))
 
   return(res)
+}
+
+## Call discr_si with the extra arguments given in config$si_discr_args
+discr_si_config <- function(k, mu, sigma, si_discr_args = NULL) {
+  if (is.null(si_discr_args)) {
+    si_discr_args <- list()
+  }
+  check_si_discr_args(si_discr_args)
+  do.call(discr_si, c(list(k = k, mu = mu, sigma = sigma), si_discr_args))
+}
+
+## Check the extra arguments to discr_si given in config$si_discr_args
+check_si_discr_args <- function(si_discr_args) {
+  allowed <- c("dist", "shift", "L", "D", "dprimary", "primary_args")
+  if (!is.list(si_discr_args) ||
+        (length(si_discr_args) > 0 && is.null(names(si_discr_args)))) {
+    stop("si_discr_args must be a named list.")
+  }
+  unknown <- setdiff(names(si_discr_args), allowed)
+  if (length(unknown) > 0) {
+    stop("si_discr_args contains unsupported arguments: ",
+         toString(unknown), ". Supported arguments are: ",
+         toString(allowed), ".")
+  }
+  if (!is.null(si_discr_args$dist) && !is.character(si_discr_args$dist)) {
+    stop("si_discr_args$dist must be one of 'gamma', 'lognormal' or ",
+         "'weibull'.")
+  }
+  support <- utils::modifyList(list(shift = 1, L = -Inf), si_discr_args)
+  if (support$shift < 1 && support$L < 1) {
+    stop("si_discr_args gives a non-zero probability of a serial interval ",
+         "of zero, which EpiEstim does not allow. Use shift >= 1 or L >= 1.")
+  }
+  invisible(NULL)
 }
 
 ## Cumulative distribution function for a named serial interval distribution

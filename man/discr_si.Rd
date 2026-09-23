@@ -55,7 +55,9 @@ primary event within the day. Defaults to \code{\link[stats:dunif]{stats::dunif(
 }
 \value{
 Gives the discrete probability \eqn{w_k} that the serial interval is
-equal to \eqn{k}.
+equal to \eqn{k}. This is not normalised over \code{k}, so it sums to less than 1
+if \code{k} does not cover the support of the distribution. Use \code{D} to truncate
+and normalise the distribution.
 }
 \description{
 Compute the discrete distribution of the serial interval,
