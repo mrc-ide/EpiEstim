@@ -93,6 +93,17 @@ test_that("process_si_data accepts an observation time column", {
   expect_error(process_si_data(si_data), "SL > OT")
 })
 
+test_that("process_si_data does not read an unnamed OT column as type", {
+  si_data <- MockRotavirus$si_data[, c("EL", "ER", "SL", "SR")]
+  si_data$OT <- 30L
+  names(si_data) <- NULL
+  si_data <- as.data.frame(si_data)
+  expect_error(
+    suppressWarnings(process_si_data(si_data)),
+    "OT"
+  )
+})
+
 test_that("si_from_data corrects for right truncation with an OT column", {
   mu <- 8
   sigma <- 4
@@ -160,7 +171,7 @@ test_that("si_from_data supports other primary event distributions", {
 })
 
 test_that("si_from_data errors if si_discr_args conflicts with the fit", {
-  for (args in list(list(dist = "lognormal"), list(shift = 1))) {
+  for (args in list(list(dist = stats::plnorm), list(shift = 1))) {
     config <- quiet_config(
       si_parametric_distr = "gamma", si_discr_args = args
     )
