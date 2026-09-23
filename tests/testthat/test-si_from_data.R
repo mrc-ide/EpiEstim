@@ -115,6 +115,7 @@ test_that("si_from_data corrects for right truncation with an OT column", {
     si_from_data_config(incid, si_parametric_distr = "gamma")
   )
   truth <- discr_mean(mu, sigma)
+  rlang::local_options(rlib_warning_verbosity = "verbose")
 
   warns <- collect_warnings(
     naive <- run_si_from_data(si_data, config, incid)
@@ -226,5 +227,32 @@ test_that("check_cdt_samples_convergence is deprecated", {
   expect_warning(
     utils::capture.output(check_cdt_samples_convergence(samples)),
     "deprecated"
+  )
+})
+
+test_that("the right truncation warning is shown once per session", {
+  config <- quiet_config(si_parametric_distr = "gamma")
+  rlang::reset_warning_verbosity("epiestim_si_from_data_truncation")
+  first <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
+  second <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
+  expect_true(any(grepl("right truncation", first, fixed = TRUE)))
+  expect_false(any(grepl("right truncation", second, fixed = TRUE)))
+  rlang::local_options(rlib_warning_verbosity = "verbose")
+  third <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
+  expect_true(any(grepl("right truncation", third, fixed = TRUE)))
+})
+
+test_that("a non positive definite covariance gives an informative error", {
+  expect_error(
+    draw_si_params(
+      c(shape = 2, scale = 1), matrix(0, 2, 2), 10, c(TRUE, TRUE)
+    ),
+    "init_pars"
+  )
+  expect_error(
+    draw_si_params(
+      c(shape = 2, scale = 1), matrix(NA_real_, 2, 2), 10, c(TRUE, TRUE)
+    ),
+    "poor fit"
   )
 })
