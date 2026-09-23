@@ -16,8 +16,11 @@ process_si_data <- function(si_data) {
   if (!all(c("EL", "ER", "SL", "SR") %in% names(si_data))) {
     default_names <- c("EL", "ER", "SL", "SR", "type", "OT")
     names(si_data) <- default_names[seq_len(num_cols)]
-    if (num_cols >= 5 && !all(si_data$type %in% c(0, 1, 2))) {
-      stop("The fifth column of si_data is not a valid type column. ",
+    inferred_type <- 2 - rowSums(cbind(si_data$ER - si_data$EL != 0,
+                                       si_data$SR - si_data$SL != 0))
+    if (num_cols >= 5 && !isTRUE(all(si_data$type == inferred_type))) {
+      stop("The fifth column of si_data does not match the type implied ",
+           "by EL, ER, SL and SR, so it is not read as a type column. ",
            "If si_data has an OT column, name the columns EL, ER, SL, SR ",
            "and OT.", call. = FALSE)
     }
