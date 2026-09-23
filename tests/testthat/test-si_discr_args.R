@@ -107,3 +107,26 @@ test_that("si_discr_args is validated", {
   expect_error(run(list(shift = 0)), "serial interval of zero")
   expect_no_error(run(list(shift = 0, L = 1)))
 })
+
+test_that("estimate_R_agg truncates the serial interval at the series end", {
+  captured <- NULL
+  local_mocked_bindings(
+    discr_si_config = function(k, mu, sigma, si_discr_args = NULL) {
+      # estimate_R_agg discretises over the whole series, 0 to 28 days
+      if (length(k) == 29) {
+        captured <<- si_discr_args
+      }
+      discr_si(k, mu, sigma)
+    }
+  )
+  weekly_inc <- c(20, 40, 80, 60)
+  suppressWarnings(estimate_R_agg(
+    incid = weekly_inc, dt = 7L, dt_out = 7L, iter = 2L,
+    config = make_config(list(
+      mean_si = 2.6, std_si = 1.5, si_discr_args = list(D = 100)
+    )),
+    method = "parametric_si",
+    grid = list(precision = 0.001, min = -1, max = 1)
+  ))
+  expect_identical(captured$D, 29)
+})

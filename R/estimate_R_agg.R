@@ -349,17 +349,19 @@ estimate_R_agg <- function(incid,
   }
   
   # A parametric serial interval is the same in every iteration, so
-  # discretise it once
+  # discretise it once, truncated at the end of the series so that it is
+  # normalised
   si_distr_r <- config$si_distr
   if (is.null(si_distr_r)) {
+    si_discr_args <- config$si_discr_args
+    if (is.null(si_discr_args)) {
+      si_discr_args <- list()
+    }
+    si_discr_args$D <- min(si_discr_args$D, total_t + 1)
     si_distr_r <- discr_si_config(
       seq(0, total_t), mu = config$mean_si, sigma = config$std_si,
-      si_discr_args = config$si_discr_args
+      si_discr_args = si_discr_args
     )
-    # remove tail
-    threshold <- 1e-6
-    si_distr_r <- si_distr_r[c(TRUE, si_distr_r[-1] >= threshold)]
-    si_distr_r <- si_distr_r / sum(si_distr_r)
   }
 
   niter <- seq(1, iter, 1) 
