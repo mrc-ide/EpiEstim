@@ -48,3 +48,16 @@ discr_mean <- function(mu, sigma, shift = 0, L = 1) {
   k <- seq(0, 200)
   sum(k * discr_si(k, mu, sigma, shift = shift, L = L))
 }
+
+# Evaluate expr and return the messages of all warnings raised
+collect_warnings <- function(expr) {
+  warnings <- character()
+  withCallingHandlers(
+    suppressMessages(expr),
+    warning = function(w) {
+      warnings <<- c(warnings, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+  warnings
+}

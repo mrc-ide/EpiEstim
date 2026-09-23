@@ -34,6 +34,10 @@
 #' }
 
 check_cdt_samples_convergence <- function(cdt_samples) {
+  .Deprecated(msg = paste(
+    "check_cdt_samples_convergence() is deprecated as estimate_R() no",
+    "longer uses coarseDataTools to estimate the serial interval."
+  ))
   ## checking convergence of the MCMC by using the Gelman-Rubin algorithm 
   ## between the first and second half of the MCMC sample
   spl1 <- cdt_samples[seq_len(floor(nrow(cdt_samples) / 2)), ]

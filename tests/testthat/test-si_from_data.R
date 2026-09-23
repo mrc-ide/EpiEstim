@@ -23,13 +23,16 @@ test_that("si_from_data keeps the output structure", {
 })
 
 test_that("si_from_data is close to the previous coarseDataTools results", {
-  # Reference values from EpiEstim 3.0.0 using coarseDataTools::dic.fit.mcmc
-  # with make_mcmc_control(burnin = 1000, thin = 10, seed = 1), n1 = 500,
-  # n2 = 50 and seed = 2 on MockRotavirus.
+  # Reference medians across the sample of serial interval distributions from
+  # EpiEstim 3.0.0 using coarseDataTools::dic.fit.mcmc with
+  # make_mcmc_control(burnin = 1000, thin = 10, seed = 1), n1 = 500, n2 = 50
+  # and seed = 2 on MockRotavirus. Medians are compared because the MCMC
+  # posterior for the lognormal has a heavier upper tail than the normal
+  # approximation used now.
   reference <- list(
-    gamma = c(mean = 2.089, sd = 1.495),
-    weibull = c(mean = 2.220, sd = 1.752),
-    lognormal = c(mean = 2.847, sd = NA)
+    gamma = c(mean = 2.020, sd = 1.377),
+    weibull = c(mean = 2.065, sd = 1.435),
+    lognormal = c(mean = 2.332, sd = 2.628)
   )
   for (dist in names(reference)) {
     res <- suppressWarnings(run_si_from_data(
@@ -37,13 +40,13 @@ test_that("si_from_data is close to the previous coarseDataTools results", {
       quiet_config(si_parametric_distr = dist, n1 = 500)
     ))
     expect_equal(
-      mean(res$SI.Moments$Mean), reference[[dist]][["mean"]],
+      median(res$SI.Moments$Mean), reference[[dist]][["mean"]],
       tolerance = 0.3, scale = 1
     )
-    if (!is.na(reference[[dist]][["sd"]])) {
+    if (dist != "lognormal") {
       expect_equal(
-        mean(res$SI.Moments$Std), reference[[dist]][["sd"]],
-        tolerance = 0.4, scale = 1
+        median(res$SI.Moments$Std), reference[[dist]][["sd"]],
+        tolerance = 0.3, scale = 1
       )
     }
     expect_equal(res$R$`Mean(R)`[10], 1.03, tolerance = 0.05, scale = 1)
@@ -63,15 +66,11 @@ test_that("si_from_data is reproducible with the mcmc_control seed", {
 test_that("si_from_data warns that burnin and thin are ignored", {
   config <- quiet_config(si_parametric_distr = "gamma")
   config$mcmc_control <- make_mcmc_control(burnin = 1000, thin = 5, seed = 1)
-  expect_warning(
-    run_si_from_data(MockRotavirus$si_data, config),
-    "burnin and thin"
-  )
+  warnings <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
+  expect_true(any(grepl("burnin and thin", warnings)))
   config$mcmc_control <- make_mcmc_control(seed = 1)
-  expect_no_warning(
-    suppressMessages(run_si_from_data(MockRotavirus$si_data, config)),
-    message = "burnin and thin"
-  )
+  warnings <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
+  expect_false(any(grepl("burnin and thin", warnings)))
 })
 
 test_that("si_from_data uses init_pars as starting values", {
@@ -98,7 +97,7 @@ test_that("si_from_data corrects for right truncation with an OT column", {
   mu <- 8
   sigma <- 4
   si_data <- simulate_si_data(
-    400, mu, sigma, obs_time = 40, growth = 0.15, seed = 12
+    1000, mu, sigma, obs_time = 40, growth = 0.15, seed = 12
   )
   incid <- MockRotavirus$incidence
   config <- suppressMessages(
@@ -106,15 +105,15 @@ test_that("si_from_data corrects for right truncation with an OT column", {
   )
   truth <- discr_mean(mu, sigma)
 
-  expect_warning(
-    naive <- run_si_from_data(si_data, config, incid),
-    "right"
+  warnings <- collect_warnings(
+    naive <- run_si_from_data(si_data, config, incid)
   )
+  expect_true(any(grepl("right truncation", warnings)))
   si_data$OT <- 40L
-  expect_no_warning(
-    truncated <- suppressMessages(run_si_from_data(si_data, config, incid)),
-    message = "right"
+  warnings <- collect_warnings(
+    truncated <- run_si_from_data(si_data, config, incid)
   )
+  expect_false(any(grepl("right truncation", warnings)))
   naive_bias <- mean(naive$SI.Moments$Mean) - truth
   truncated_bias <- mean(truncated$SI.Moments$Mean) - truth
   expect_lt(naive_bias, -0.5)

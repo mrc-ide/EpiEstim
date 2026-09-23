@@ -418,43 +418,20 @@ estimate_R <- function(incid,
     ## Warning if the expected set of parameters is not adequate
     si_data <- process_si_data(si_data)
     config <- process_config_si_from_data(config, si_data)
-    si_parametric_distr <- convert_distr_name_for_mcmc(config$si_parametric_distr)
     ## estimate serial interval from serial interval data first
-    if (!is.null(config$mcmc_control$seed)) {
-      cdt <- coarseDataTools::dic.fit.mcmc(
-        dat = si_data,
-        dist = si_parametric_distr,
-        burnin = config$mcmc_control$burnin,
-        n.samples = config$n1 * config$mcmc_control$thin,
-        init.pars = config$mcmc_control$init_pars,
-        seed = config$mcmc_control$seed
-      )
-    } else {
-      cdt <- coarseDataTools::dic.fit.mcmc(
-        dat = si_data,
-        dist = si_parametric_distr,
-        burnin = config$mcmc_control$burnin,
-        n.samples = config$n1 * config$mcmc_control$thin,
-        init.pars = config$mcmc_control$init_pars
-      )
-    }
-    
+    fit <- si_sample_from_data(si_data, config)
+    MCMC_conv <- fit$converged
+
     ## add a warning about real-time estimation potentially being biased
-    wrn <- paste(
-      "Our serial interval estimation method does not correct for right",
-      "censoring. It may yield biased results when applied to right-censored",
-      "infector/infected pairs, such as those observed during an ongoing",
-      "outbreak. See Charniga et al. (PLoS Comp Biol, 2024) and consider using",
-      "the R package primarycensored for real-time serial interval estimation."
-    )
-    warning(wrn)
-
-    ## check convergence of the MCMC and print warning if not converged
-    MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
-
-    ## thin the chain, and turn the two parameters of the SI distribution into a
-    ## whole discrete distribution
-    c2e <- coarse2estim(cdt, thin = config$mcmc_control$thin)
+    if (!("OT" %in% names(si_data))) {
+      wrn <- paste(
+        "Serial interval estimation is not corrected for right truncation",
+        "as si_data has no OT column. It may yield biased results when",
+        "applied to infector/infected pairs observed during an ongoing",
+        "outbreak. See Charniga et al. (PLoS Comp Biol, 2024)."
+      )
+      warning(wrn)
+    }
 
     cat(paste(
       "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
@@ -462,7 +439,7 @@ estimate_R <- function(incid,
       "estimates...\n",
       "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     ))
-    si_sample <- c2e$si_sample
+    si_sample <- fit$si_sample
   }
 
   ## estimate R whether or not si_sample is simulated

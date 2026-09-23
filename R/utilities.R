@@ -7,22 +7,33 @@ process_si_data <- function(si_data) {
   # wrong number of columns
   si_data <- as.data.frame(si_data)
   num_cols <- dim(si_data)[2]
-  if (num_cols < 4 || num_cols > 5) {
-    stop("si_data should have 4 or 5 columns")
+  if (num_cols < 4 || num_cols > 6) {
+    stop("si_data should have 4, 5 or 6 columns")
   }
 
   # entries with incorrect column names
   if (!all(c("EL", "ER", "SL", "SR") %in% names(si_data))) {
-    names <- c("EL", "ER", "SL", "SR", "type")
+    names <- c("EL", "ER", "SL", "SR", "type", "OT")
     names(si_data) <- names[seq_len(num_cols)]
     warning("column names for si_data were not as expected; they were 
-            automatically interpreted as 'EL', 'ER', 'SL', 'SR', and 'type' 
-            (the last one only if si_data had five columns). ")
+            automatically interpreted as 'EL', 'ER', 'SL', 'SR', 'type' 
+            and 'OT' (the last two only if si_data had five or six 
+            columns). ")
   }
 
   # non integer entries in date columns
-  if (!all(vlapply(seq_len(4), function(e) is.integer(si_data[, e])))) {
+  date_cols <- c("EL", "ER", "SL", "SR")
+  if (!all(vlapply(date_cols, function(e) is.integer(si_data[[e]])))) {
     stop("si_data has entries for which EL, ER, SL or SR are non integers.")
+  }
+  if ("OT" %in% names(si_data)) {
+    if (!is.numeric(si_data$OT) ||
+        any(si_data$OT %% 1 != 0, na.rm = TRUE)) {
+      stop("si_data has entries for which OT is non integer.")
+    }
+    if (any(si_data$SL > si_data$OT, na.rm = TRUE)) {
+      stop("si_data has entries for which SL > OT.")
+    }
   }
 
   # entries with wrong order in lower and upper bounds of dates

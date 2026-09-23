@@ -68,6 +68,10 @@
 #'
 coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
                          thin = 10) {
+  .Deprecated(msg = paste(
+    "coarse2estim() is deprecated as estimate_R() no longer uses",
+    "coarseDataTools. Use estimate_R() with method 'si_from_data' instead."
+  ))
   if (is.null(x)) # then check that dist and samples are what we expect
   {
     rtn <- si_from_data_valid_distrs(dist)
@@ -88,67 +92,9 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
     index <- seq(1, nrow(samples), thin)
     samples <- samples[index, ]
   }
-  n_samples <- nrow(samples)
 
-  ##  Probability matrix that will be used in EpiEstim based on which
-  ## distribution is specified by the user
-  if (dist == "gamma"| dist == "G") {
-    ## For each input parameter set, find the 99th percentile, and take the
-    ## maximum of these as the maximum
-    ## serial interval that we need to consider
-    maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(stats::qgamma(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
-    max_interval <- seq_len(maxValue)
-    prob_matrix <- apply(samples, 1, function(x) 
-      stats::pgamma(max_interval + 0.5, shape = x[1], scale = x[2]) - 
-        stats::pgamma(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "weibull"| dist == "W") {
-    maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(stats::qweibull(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
-    max_interval <- seq_len(maxValue)
-    prob_matrix <- apply(samples, 1, function(x) 
-      stats::pweibull(max_interval + 0.5, shape = x[1], scale = x[2]) - 
-        stats::pweibull(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "lognormal"| dist == "L") {
-    maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(stats::qlnorm(0.999, meanlog = samples[i, 1], sdlog = samples[i, 2]))))
-    max_interval <- seq_len(maxValue)
-    prob_matrix <- apply(samples, 1, function(x) 
-      stats::plnorm(max_interval + 0.5, meanlog = x[1], sdlog = x[2]) - 
-        stats::plnorm(max_interval - 0.5, meanlog = x[1], sdlog = x[2]))
-  } else if (dist == "gamma_offset_1"| dist == "off1G") {
-    ## offset gamma distribution with shifted min and max value of max
-    ## serial interval
-    maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(stats::qgamma(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
-    max_interval <- seq(0, maxValue)
-    prob_matrix <- apply(samples, 1, function(x) 
-      stats::pgamma(max_interval + 0.5, shape = x[1], scale = x[2]) - 
-        stats::pgamma(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "weibull_offset_1"| dist == "off1W") {
-    ## offset weibull distribution with shifted min and max value of max
-    ## serial interval
-    maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(stats::qweibull(0.999, shape = samples[i, 1], scale = samples[i, 2]))))
-    max_interval <- seq(0, maxValue)
-    prob_matrix <- apply(samples, 1, function(x) 
-      stats::pweibull(max_interval + 0.5, shape = x[1], scale = x[2]) - 
-        stats::pweibull(max_interval - 0.5, shape = x[1], scale = x[2]))
-  } else if (dist == "lognormal_offset_1"| dist == "off1L") {
-    ## offset lognormal distribution with shifted min and max value of max
-    ## serial interval
-    maxValue <- max(vnapply(seq_len(n_samples), function(i) 
-      ceiling(stats::qlnorm(0.999, meanlog = samples[i, 1], sdlog = samples[i, 2]))))
-    max_interval <- seq(0, maxValue)
-    prob_matrix <- apply(samples, 1, function(x) 
-      stats::plnorm(max_interval + 0.5, meanlog = x[1], sdlog = x[2]) - 
-        stats::plnorm(max_interval - 0.5, meanlog = x[1], sdlog = x[2]))
-  }
-  
-  # adding initial 0 for P(SI=0)
-  prob_matrix <- rbind(rep(0, n_samples), prob_matrix)
-  # renormalising
-  prob_matrix <- apply(prob_matrix, 2, function(x) x / sum(x))
+  ## Discretise each serial interval distribution in the sample
+  prob_matrix <- si_sample_from_params(si_fit_distr(dist), samples)
 
   out <- list(si_sample = prob_matrix, si_parametric_distr = dist)
 
