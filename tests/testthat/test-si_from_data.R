@@ -114,6 +114,19 @@ test_that("offset distributions give the offset error before fitting", {
   }
 })
 
+test_that("process_si_data checks an unnamed fifth column against type", {
+  si_data <- MockRotavirus$si_data[, c("EL", "ER", "SL", "SR")]
+  si_data$OT <- rep_len(0:2, nrow(si_data))
+  names(si_data) <- NULL
+  si_data <- as.data.frame(si_data)
+  expect_error(suppressWarnings(process_si_data(si_data)), "OT")
+  typed <- MockRotavirus$si_data[, c("EL", "ER", "SL", "SR", "type")]
+  names(typed) <- NULL
+  typed <- as.data.frame(typed)
+  expect_warning(processed <- process_si_data(typed), "column names")
+  expect_identical(processed$type, MockRotavirus$si_data$type)
+})
+
 test_that("process_si_data does not read an unnamed OT column as type", {
   si_data <- MockRotavirus$si_data[, c("EL", "ER", "SL", "SR")]
   si_data$OT <- 30L
@@ -248,6 +261,20 @@ test_that("si_from_data does not warn about right truncation", {
   config <- quiet_config(si_parametric_distr = "gamma")
   warns <- collect_warnings(run_si_from_data(MockRotavirus$si_data, config))
   expect_false(any(grepl("truncation", warns, fixed = TRUE)))
+})
+
+test_that("a missing covariance gives an informative error", {
+  testthat::local_mocked_bindings(
+    fitdistdoublecens = function(...) {
+      list(estimate = c(shape = 2, scale = 1), vcov = NULL, convergence = 0)
+    },
+    .package = "primarycensored"
+  )
+  config <- quiet_config(si_parametric_distr = "gamma")
+  expect_error(
+    suppressWarnings(run_si_from_data(MockRotavirus$si_data, config)),
+    "poor fit"
+  )
 })
 
 test_that("a non positive definite covariance gives an informative error", {
