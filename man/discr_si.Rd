@@ -8,7 +8,7 @@ discr_si(
   k,
   mu,
   sigma,
-  dist = "gamma",
+  dist = stats::pgamma,
   shift = 1,
   L = -Inf,
   D = Inf,
@@ -27,12 +27,11 @@ Must be greater than \code{shift} (1 by default).}
 \item{sigma}{A non-negative real giving the standard deviation of the Gamma
 distribution.}
 
-\item{dist}{The distribution of the serial interval. Either one of
-"gamma" (the default), "lognormal" or "weibull", parameterised by \code{mu} and
-\code{sigma}, or a cumulative distribution function (e.g. \code{\link[stats:pgamma]{stats::pgamma()}})
-whose parameters are passed through \code{...}. In the latter case \code{mu} and
-\code{sigma} should not be specified, and the distribution applies to the
-serial interval minus \code{shift}.}
+\item{dist}{The cumulative distribution function of the serial interval
+minus \code{shift}. Defaults to \code{\link[stats:pgamma]{stats::pgamma()}}. With \code{\link[stats:pgamma]{stats::pgamma()}} or
+\code{\link[stats:plnorm]{stats::plnorm()}} the distribution can be given by \code{mu} and \code{sigma}.
+Otherwise, or instead, pass the parameters of \code{dist} through \code{...}, e.g.
+\verb{dist = stats::pweibull, shape = 2, scale = 3}.}
 
 \item{shift}{A non-negative real giving the shift of the serial interval
 distribution. The default of 1 means that the serial interval is at
@@ -51,7 +50,7 @@ primary event within the day. Defaults to \code{\link[stats:dunif]{stats::dunif(
 
 \item{primary_args}{A list of additional arguments passed to \code{dprimary}.}
 
-\item{...}{Parameters of \code{dist} when \code{dist} is a function.}
+\item{...}{Parameters of \code{dist}, used when \code{mu} and \code{sigma} are not given.}
 }
 \value{
 Gives the discrete probability \eqn{w_k} that the serial interval is
@@ -102,8 +101,11 @@ plot(seq(0, 20), dicrete_si_distr, type = "h",
 title(main = "Discrete distribution of the serial interval of influenza")
 
 ## Using a lognormal serial interval with no shift, truncated below 1
-discr_si(seq(0, 20), mean_flu_si, sd_flu_si, dist = "lognormal",
+discr_si(seq(0, 20), mean_flu_si, sd_flu_si, dist = stats::plnorm,
          shift = 0, L = 1)
+
+## Using a Weibull serial interval given by its shape and scale
+discr_si(seq(0, 20), dist = stats::pweibull, shape = 1.5, scale = 2)
 }
 \references{
 Cori, A. et al. A new framework and software to estimate time-varying

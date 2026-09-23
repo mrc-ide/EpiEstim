@@ -58,11 +58,11 @@ shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
 shifted by 1).
 \item \code{si_discr_args}: For methods "parametric_si" and "uncertain_si"; a named
 list of additional arguments passed to \code{\link[=discr_si]{discr_si()}} when discretising the
-serial interval, e.g. \code{list(dist = "lognormal")}. Can contain \code{dist} (one
-of "gamma", "lognormal" or "weibull"), \code{shift}, \code{L}, \code{D}, \code{dprimary} and
-\code{primary_args}. The resulting distribution must give zero probability to
-a serial interval of zero. Defaults to an empty list, which uses the
-defaults of \code{\link[=discr_si]{discr_si()}}.
+serial interval, e.g. \code{list(dist = stats::plnorm)}. Can contain \code{dist}
+(\code{\link[stats:pgamma]{stats::pgamma()}} or \code{\link[stats:plnorm]{stats::plnorm()}}), \code{shift}, \code{L}, \code{D}, \code{dprimary}
+and \code{primary_args}. The resulting distribution must give zero
+probability to a serial interval of zero. Defaults to an empty list, which
+uses the defaults of \code{\link[=discr_si]{discr_si()}}.
 \item \code{mcmc_control}: An object of class \code{estimate_R_mcmc_control}, as
 returned by function \code{make_mcmc_control}.
 \item \code{mean_prior}: A positive number giving the mean of the common prior

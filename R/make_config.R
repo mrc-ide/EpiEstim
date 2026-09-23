@@ -69,11 +69,11 @@
 #'
 #' - `si_discr_args`: For methods "parametric_si" and "uncertain_si"; a named
 #'   list of additional arguments passed to [discr_si()] when discretising the
-#'   serial interval, e.g. `list(dist = "lognormal")`. Can contain `dist` (one
-#'   of "gamma", "lognormal" or "weibull"), `shift`, `L`, `D`, `dprimary` and
-#'   `primary_args`. The resulting distribution must give zero probability to
-#'   a serial interval of zero. Defaults to an empty list, which uses the
-#'   defaults of [discr_si()].
+#'   serial interval, e.g. `list(dist = stats::plnorm)`. Can contain `dist`
+#'   ([stats::pgamma()] or [stats::plnorm()]), `shift`, `L`, `D`, `dprimary`
+#'   and `primary_args`. The resulting distribution must give zero
+#'   probability to a serial interval of zero. Defaults to an empty list, which
+#'   uses the defaults of [discr_si()].
 #'
 #' - `mcmc_control`: An object of class \code{estimate_R_mcmc_control}, as 
 #' returned by function \code{make_mcmc_control}. 

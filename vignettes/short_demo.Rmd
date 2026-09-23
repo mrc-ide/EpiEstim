@@ -145,7 +145,7 @@ by default a Gamma distributed serial interval shifted by one day, and accounts
 for the fact that the serial interval is double-censored, i.e. 
 the time of symptom onset in both the primary and secondary cases are
 discrete (typically with a daily interval).
-`discr_si` uses `primarycensored::dprimarycensored()` for this, and also supports other
+`discr_si` uses `primarycensored::dprimarycensored()` for this, which also supports other
 distributions, shifts and truncation of the serial interval (see `?discr_si`).
 
 ```{r discr_si}

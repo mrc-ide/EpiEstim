@@ -37,12 +37,11 @@
 #' Must be greater than `shift` (1 by default).
 #' @param sigma A non-negative real giving the standard deviation of the Gamma
 #' distribution.
-#' @param dist The distribution of the serial interval. Either one of
-#' "gamma" (the default), "lognormal" or "weibull", parameterised by `mu` and
-#' `sigma`, or a cumulative distribution function (e.g. [stats::pgamma()])
-#' whose parameters are passed through `...`. In the latter case `mu` and
-#' `sigma` should not be specified, and the distribution applies to the
-#' serial interval minus `shift`.
+#' @param dist The cumulative distribution function of the serial interval
+#' minus `shift`. Defaults to [stats::pgamma()]. With [stats::pgamma()] or
+#' [stats::plnorm()] the distribution can be given by `mu` and `sigma`.
+#' Otherwise, or instead, pass the parameters of `dist` through `...`, e.g.
+#' `dist = stats::pweibull, shape = 2, scale = 3`.
 #' @param shift A non-negative real giving the shift of the serial interval
 #' distribution. The default of 1 means that the serial interval is at
 #' least one day.
@@ -55,7 +54,7 @@
 #' [primarycensored::dprimarycensored()] for other options, such as
 #' [primarycensored::dexpgrowth()].
 #' @param primary_args A list of additional arguments passed to `dprimary`.
-#' @param ... Parameters of `dist` when `dist` is a function.
+#' @param ... Parameters of `dist`, used when `mu` and `sigma` are not given.
 #'
 #' @return Gives the discrete probability \eqn{w_k} that the serial interval is
 #' equal to \eqn{k}. This is not normalised over `k`, so it sums to less than 1
@@ -87,23 +86,27 @@
 #' title(main = "Discrete distribution of the serial interval of influenza")
 #'
 #' ## Using a lognormal serial interval with no shift, truncated below 1
-#' discr_si(seq(0, 20), mean_flu_si, sd_flu_si, dist = "lognormal",
+#' discr_si(seq(0, 20), mean_flu_si, sd_flu_si, dist = stats::plnorm,
 #'          shift = 0, L = 1)
+#'
+#' ## Using a Weibull serial interval given by its shape and scale
+#' discr_si(seq(0, 20), dist = stats::pweibull, shape = 1.5, scale = 2)
 
-discr_si <- function(k, mu, sigma, dist = "gamma", shift = 1, L = -Inf,
+discr_si <- function(k, mu, sigma, dist = stats::pgamma, shift = 1, L = -Inf,
                      D = Inf, dprimary = stats::dunif, primary_args = list(),
                      ...)
 {
-  if (is.function(dist)) {
-    if (!missing(mu) || !missing(sigma)) {
-      stop("mu and sigma should not be specified when dist is a function; ",
-           "pass the parameters of dist through ... instead.", call. = FALSE)
+  if (!is.function(dist)) {
+    stop("dist must be a cumulative distribution function, e.g. ",
+         "stats::pgamma.", call. = FALSE)
+  }
+  dist_args <- list(...)
+  if (!missing(mu) || !missing(sigma)) {
+    if (length(dist_args) > 0) {
+      stop("Specify either mu and sigma or the parameters of dist, ",
+           "not both.", call. = FALSE)
     }
-    pdist <- dist
-    dist_args <- list(...)
-  } else {
     check_si_moments(mu, sigma, shift)
-    pdist <- si_pdist(dist)
     dist_args <- si_dist_args(dist, mu - shift, sigma)
   }
   check_si_support(k, shift, L, D)
@@ -115,7 +118,7 @@ discr_si <- function(k, mu, sigma, dist = "gamma", shift = 1, L = -Inf,
       primarycensored::dprimarycensored,
       c(
         list(
-          x = k[in_support] - shift, pdist = pdist, pwindow = 1,
+          x = k[in_support] - shift, pdist = dist, pwindow = 1,
           L = L - shift, D = D - shift, dprimary = dprimary,
           primary_args = primary_args
         ),
@@ -149,8 +152,8 @@ discr_si_draws <- function(k, mu, sigma, si_discr_args = NULL) {
   check_si_discr_args(si_discr_args)
   si_args <- utils::modifyList(
     list(
-      dist = "gamma", shift = 1, L = -Inf, D = Inf, dprimary = stats::dunif,
-      primary_args = list()
+      dist = stats::pgamma, shift = 1, L = -Inf, D = Inf,
+      dprimary = stats::dunif, primary_args = list()
     ),
     si_discr_args
   )
@@ -168,11 +171,10 @@ discr_si_draws <- function(k, mu, sigma, si_discr_args = NULL) {
   )))
   pos_cdf_points <- cdf_points[cdf_points > 0 & is.finite(cdf_points)]
 
-  pdist <- si_pdist(si_args$dist)
   pcens <- do.call(
     primarycensored::new_pcens,
     c(
-      list(pdist = pdist, dprimary = si_args$dprimary,
+      list(pdist = si_args$dist, dprimary = si_args$dprimary,
            primary_args = si_args$primary_args),
       si_dist_args(si_args$dist, mu[1] - si_args$shift, sigma[1])
     )
@@ -211,28 +213,19 @@ check_si_discr_args <- function(si_discr_args) {
          toString(unknown), ". Supported arguments are: ",
          toString(allowed), ".", call. = FALSE)
   }
-  if (!is.null(si_discr_args$dist) && !is.character(si_discr_args$dist)) {
-    stop("si_discr_args$dist must be one of 'gamma', 'lognormal' or ",
-         "'weibull'.", call. = FALSE)
+  if (!is.null(si_discr_args$dist) &&
+        is.na(si_moment_dist(si_discr_args$dist))) {
+    stop("si_discr_args$dist must be stats::pgamma or stats::plnorm, as the ",
+         "serial interval is given by its mean and standard deviation.",
+         call. = FALSE)
   }
   support <- utils::modifyList(list(shift = 1, L = -Inf), si_discr_args)
   if (support$shift < 1 && support$L < 1) {
     stop("si_discr_args gives a non-zero probability of a serial interval ",
-         "of zero, which EpiEstim does not allow. Use shift >= 1 or L >= 1.", call. = FALSE)
+         "of zero, which EpiEstim does not allow. Use shift >= 1 or L >= 1.",
+         call. = FALSE)
   }
   invisible(NULL)
-}
-
-## Cumulative distribution function for a named serial interval distribution
-si_pdist <- function(dist) {
-  pdists <- list(
-    gamma = stats::pgamma, lognormal = stats::plnorm, weibull = stats::pweibull
-  )
-  if (!is.character(dist) || length(dist) != 1 || !dist %in% names(pdists)) {
-    stop("dist must be one of 'gamma', 'lognormal' or 'weibull', ",
-         "or a cumulative distribution function.", call. = FALSE)
-  }
-  pdists[[dist]]
 }
 
 ## Check the mean and standard deviation of the serial interval
@@ -260,25 +253,29 @@ check_si_support <- function(k, shift, L, D) {
   invisible(NULL)
 }
 
-## Parameters of a named distribution with mean mu and standard deviation sigma
+## Name of a distribution that can be given by its mean and standard
+## deviation, or NA
+si_moment_dist <- function(dist) {
+  if (identical(dist, stats::pgamma)) {
+    "gamma"
+  } else if (identical(dist, stats::plnorm)) {
+    "lognormal"
+  } else {
+    NA_character_
+  }
+}
+
+## Parameters of dist with mean mu and standard deviation sigma
 si_dist_args <- function(dist, mu, sigma) {
-  switch(
-    dist,
-    gamma = list(shape = (mu / sigma)^2, scale = sigma^2 / mu),
-    lognormal = {
-      sdlog <- sqrt(log(sigma^2 / mu^2 + 1))
-      list(meanlog = log(mu) - sdlog^2 / 2, sdlog = sdlog)
-    },
-    weibull = {
-      cv2 <- (sigma / mu)^2
-      shape <- exp(stats::uniroot(
-        function(log_shape) {
-          shape <- exp(log_shape)
-          exp(lgamma(1 + 2 / shape) - 2 * lgamma(1 + 1 / shape)) - 1 - cv2
-        },
-        interval = c(-5, 7), tol = 1e-12
-      )$root)
-      list(shape = shape, scale = mu / gamma(1 + 1 / shape))
-    }
-  )
+  moment_dist <- si_moment_dist(dist)
+  if (is.na(moment_dist)) {
+    stop("mu and sigma can only be used with dist = stats::pgamma or ",
+         "stats::plnorm. For other distributions pass the parameters of ",
+         "dist through ... instead.", call. = FALSE)
+  }
+  if (moment_dist == "gamma") {
+    return(list(shape = (mu / sigma)^2, scale = sigma^2 / mu))
+  }
+  sdlog <- sqrt(log(sigma^2 / mu^2 + 1))
+  list(meanlog = log(mu) - sdlog^2 / 2, sdlog = sdlog)
 }
