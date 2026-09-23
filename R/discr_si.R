@@ -205,7 +205,7 @@ check_si_discr_args <- function(si_discr_args) {
   allowed <- c("dist", "shift", "L", "D", "dprimary", "primary_args")
   if (!is.list(si_discr_args) ||
         (length(si_discr_args) > 0 &&
-           (is.null(names(si_discr_args)) || any(names(si_discr_args) == "")))) {
+           (is.null(names(si_discr_args)) || !all(nzchar(names(si_discr_args)))))) {
     stop("si_discr_args must be a named list.", call. = FALSE)
   }
   unknown <- setdiff(names(si_discr_args), allowed)
