@@ -40,21 +40,7 @@ The serial interval is estimated by maximum likelihood, so \code{burnin} and
 defaults.
 }
 \details{
-The argument \code{si_data}, should be a dataframe with 5 columns:
-\itemize{
-\item \code{EL}: the lower bound of the symptom onset date of the infector (given as
-an integer)
-\item \code{ER}: the upper bound of the symptom onset date of the infector (given as
-an integer). Should be such that \code{ER >= EL}
-\item \code{SL}: the lower bound of the symptom onset date of the infected
-individual (given as an integer)
-\item \code{SR}: the upper bound of the symptom onset date of the infected
-individual (given as an integer). Should be such that \code{SR >= SL}
-\item \code{type} (optional): can have entries 0, 1, or 2, corresponding to doubly
-interval-censored, single interval-censored or exact observations,
-respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-will be automatically computed from the dates
-}
+The format of \code{si_data} is described in \code{\link[=estimate_R]{estimate_R()}}.
 
 Assuming a given parametric distribution for the serial interval distribution
 (specified in \code{si_parametric_distr}),

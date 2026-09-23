@@ -19,19 +19,7 @@
 #'   sdlog. 
 #'
 #' @details
-#' The argument `si_data`, should be a dataframe with 5 columns:
-#' - `EL`: the lower bound of the symptom onset date of the infector (given as
-#'   an integer)
-#' - `ER`: the upper bound of the symptom onset date of the infector (given as
-#'   an integer). Should be such that `ER >= EL`
-#' - `SL`: the lower bound of the symptom onset date of the infected
-#'   individual (given as an integer)
-#' - `SR`: the upper bound of the symptom onset date of the infected
-#'   individual (given as an integer). Should be such that `SR >= SL`
-#' - `type` (optional): can have entries 0, 1, or 2, corresponding to doubly
-#'   interval-censored, single interval-censored or exact observations,
-#'   respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-#'   will be automatically computed from the dates
+#' The format of `si_data` is described in [estimate_R()].
 #'
 #' Assuming a given parametric distribution for the serial interval distribution
 #' (specified in `si_parametric_distr`),

@@ -13,12 +13,19 @@ process_si_data <- function(si_data) {
   }
 
   # entries with incorrect column names
-  if (!all(c("EL", "ER", "SL", "SR") %in% names(si_data))) {
+  auto_named <- !all(c("EL", "ER", "SL", "SR") %in% names(si_data))
+  if (auto_named) {
     default_names <- c("EL", "ER", "SL", "SR", "type", "OT")
     names(si_data) <- default_names[seq_len(num_cols)]
-    inferred_type <- 2 - rowSums(cbind(si_data$ER - si_data$EL != 0,
-                                       si_data$SR - si_data$SL != 0))
-    if (num_cols >= 5 && !isTRUE(all(si_data$type == inferred_type))) {
+  }
+
+  ## the types [0: double censored, 1: single censored, 2: exact
+  ## observation] implied by the dates
+  tmp_type <- 2 - rowSums(cbind(si_data$ER - si_data$EL != 0,
+                                si_data$SR - si_data$SL != 0))
+
+  if (auto_named) {
+    if (num_cols >= 5 && !isTRUE(all(si_data$type == tmp_type))) {
       stop("The fifth column of si_data does not match the type implied ",
            "by EL, ER, SL and SR, so it is not read as a type column. ",
            "If si_data has an OT column, name the columns EL, ER, SL, SR ",
@@ -37,9 +44,7 @@ process_si_data <- function(si_data) {
          call. = FALSE)
   }
   if ("OT" %in% names(si_data)) {
-    if (!all(is.na(si_data$OT)) &&
-          (!is.numeric(si_data$OT) ||
-             any(si_data$OT %% 1 != 0, na.rm = TRUE))) {
+    if (!all(is.na(si_data$OT)) && !is.integer(si_data$OT)) {
       stop("si_data has entries for which OT is non integer.",
            call. = FALSE)
     }
@@ -63,11 +68,8 @@ process_si_data <- function(si_data) {
          call. = FALSE)
   }
 
-  ## check that the types [0: double censored, 1; single censored, 
-  ## 2: exact observation] are correctly specified, and if not present 
-  ## put them in.
-  tmp_type <- 2 - rowSums(cbind(si_data$ER - si_data$EL != 0, 
-                                si_data$SR - si_data$SL != 0))
+  ## check that the types are correctly specified, and if not present put
+  ## them in.
   if (!("type" %in% names(si_data))) {
     warning("si_data contains no 'type' column. This is inferred automatically 
             from the other columns.", call. = FALSE)
