@@ -23,11 +23,11 @@
 #'
 #' This is the probability that a continuous delay, starting at a time
 #' uniformly distributed within a day and shifted by `shift` days (one by
-#' default), ends on day \eqn{k}. It is computed using the primarycensored
-#' package (Abbott et al.), which also allows other delay distributions
-#' (`dist`), a different
-#' `shift`, other distributions of the primary event time within the day
-#' (`dprimary`), and truncation of the serial interval below `L` and at or
+#' default), ends on day \eqn{k}. It is computed using the
+#' [primarycensored][primarycensored::primarycensored-package] package
+#' (Abbott et al.), which also allows other delay distributions (`dist`), a
+#' different `shift`, other distributions of the primary event time within
+#' the day (`dprimary`), and truncation of the serial interval below `L` and at or
 #' above `D`. When `L` or `D` are finite, \eqn{w_k} is normalised over
 #' \eqn{L \le k < D}.
 #'
@@ -71,7 +71,8 @@
 #' Cori, A. et al. A new framework and software to estimate time-varying
 #' reproduction numbers during epidemics (AJE 2013).
 #'
-#' Abbott, S. et al. primarycensored: Primary Event Censored Distributions.
+#' Abbott, S. et al. [primarycensored][primarycensored::primarycensored-package]:
+#' Primary Event Censored Distributions.
 #' \doi{10.5281/zenodo.13632839}
 #'
 #' @export
