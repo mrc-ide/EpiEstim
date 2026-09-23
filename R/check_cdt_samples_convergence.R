@@ -59,7 +59,7 @@ ylab='Mean SI')
             > plot(res$SI.Moments[,'Std'], type='l', xlab='Iterations', 
 ylab='Std SI'),
             where res is the output of estimate_R
-            and decide whether to rerun for longer.")
+            and decide whether to rerun for longer.", call. = FALSE)
     return(FALSE)
   } else {
     cat("\nGelman-Rubin MCMC convergence diagnostic was successful.")

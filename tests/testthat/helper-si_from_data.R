@@ -29,11 +29,22 @@ si_from_data_config <- function(incid, ...) {
   ))
 }
 
+# The MockRotavirus dataset
+mock_rotavirus <- function() {
+  env <- new.env()
+  utils::data("MockRotavirus", package = "EpiEstim", envir = env)
+  env$MockRotavirus
+}
+
+# si_from_data_config for the MockRotavirus incidence without messages
+quiet_config <- function(...) {
+  suppressMessages(si_from_data_config(mock_rotavirus()$incidence, ...))
+}
+
 # Run estimate_R with method "si_from_data" quietly, keeping warnings
 run_si_from_data <- function(si_data, config, incid = NULL) {
   if (is.null(incid)) {
-    utils::data("MockRotavirus", package = "EpiEstim", envir = environment())
-    incid <- MockRotavirus$incidence
+    incid <- mock_rotavirus()$incidence
   }
   utils::capture.output(
     res <- estimate_R(

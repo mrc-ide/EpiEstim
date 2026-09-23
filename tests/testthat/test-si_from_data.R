@@ -1,8 +1,4 @@
-data("MockRotavirus")
-
-quiet_config <- function(...) {
-  suppressMessages(si_from_data_config(MockRotavirus$incidence, ...))
-}
+MockRotavirus <- mock_rotavirus()
 
 test_that("si_from_data keeps the output structure", {
   res <- suppressWarnings(run_si_from_data(
