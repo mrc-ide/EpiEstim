@@ -93,6 +93,31 @@ test_that("process_si_data accepts an observation time column", {
   expect_error(process_si_data(si_data), "SL > OT")
 })
 
+test_that("process_si_data accepts an all NA OT column", {
+  si_data <- MockRotavirus$si_data
+  si_data$OT <- NA
+  expect_identical(process_si_data(si_data)$OT, si_data$OT)
+  config <- quiet_config(si_parametric_distr = "gamma")
+  with_na <- suppressWarnings(run_si_from_data(si_data, config))
+  without <- suppressWarnings(
+    run_si_from_data(MockRotavirus$si_data, config)
+  )
+  expect_identical(with_na$si_distr, without$si_distr)
+})
+
+test_that("offset distributions give the offset error before fitting", {
+  si_data <- MockRotavirus$si_data
+  si_data$SL[1] <- si_data$EL[1]
+  si_data$SR[1] <- si_data$EL[1] + 1L
+  for (dist in c("gamma_offset_1", "weibull_offset_1", "lognormal_offset_1")) {
+    config <- quiet_config(si_parametric_distr = dist)
+    expect_error(
+      suppressWarnings(run_si_from_data(si_data, config)),
+      "offset 1"
+    )
+  }
+})
+
 test_that("process_si_data does not read an unnamed OT column as type", {
   si_data <- MockRotavirus$si_data[, c("EL", "ER", "SL", "SR")]
   si_data$OT <- 30L
