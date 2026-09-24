@@ -3,7 +3,9 @@
 #' This function is deprecated as [estimate_R()] estimates the serial interval
 #' by maximum likelihood with
 #' [primarycensored][primarycensored::primarycensored-package]. The serial
-#' interval distributions are discretised exactly using [discr_si()].
+#' interval distributions are discretised exactly using [discr_si()]. Use
+#' [primary2estim()] to turn a primarycensored fit into a sample of serial
+#' interval distributions.
 #'
 #' \code{\link{coarse2estim}} Transforms outputs of
 #' \code{\link[coarseDataTools]{dic.fit.mcmc}} to right format for input into
@@ -74,8 +76,8 @@
 coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
                          thin = 10) {
   .Deprecated(msg = paste(
-    "coarse2estim() is deprecated. Use estimate_R() with method",
-    "'si_from_data' to estimate the serial interval from data."
+    "coarse2estim() is deprecated. Use primary2estim() with a fit from",
+    "primarycensored instead."
   ))
   if (is.null(x)) # then check that dist and samples are what we expect
   {

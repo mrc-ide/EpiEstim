@@ -31,6 +31,13 @@
   discretisation. Without an `OT` column no right truncation is assumed, 
   and the warning about right truncation added in EpiEstim 2.5 is removed.
 
+- New function `primary2estim()` turns a serial interval estimated with 
+  primarycensored into a sample of serial interval distributions for 
+  `estimate_R()` with method "si_from_sample". It accepts a maximum 
+  likelihood fit from `primarycensored::fitdistdoublecens()`, a Bayesian fit 
+  from `primarycensored::pcd_cmdstan_model()`, or a data frame of parameter 
+  draws. It replaces `coarse2estim()`.
+
 ## Bug fixes
 * Superfluous argument "method" removed from `make_config()` function
 
@@ -59,7 +66,8 @@
   after truncation.
 
 * `coarse2estim()` and `check_cdt_samples_convergence()` are deprecated. 
-  coarseDataTools is now only suggested.
+  Use `primary2estim()` with a primarycensored fit instead. coarseDataTools 
+  is now only suggested.
 
 
 # EpiEstim 2.5.1

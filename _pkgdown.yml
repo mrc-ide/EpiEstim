@@ -50,6 +50,7 @@ reference:
     - WT
   - subtitle: External package compatibility functions
     contents:
+    - primary2estim
     - coarse2estim
   - title: Datasets
     contents:

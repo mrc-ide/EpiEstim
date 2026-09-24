@@ -42,7 +42,9 @@ the serial interval stored in x.
 This function is deprecated as \code{\link[=estimate_R]{estimate_R()}} estimates the serial interval
 by maximum likelihood with
 \link[primarycensored:primarycensored-package]{primarycensored}. The serial
-interval distributions are discretised exactly using \code{\link[=discr_si]{discr_si()}}.
+interval distributions are discretised exactly using \code{\link[=discr_si]{discr_si()}}. Use
+\code{\link[=primary2estim]{primary2estim()}} to turn a primarycensored fit into a sample of serial
+interval distributions.
 }
 \details{
 \code{\link{coarse2estim}} Transforms outputs of

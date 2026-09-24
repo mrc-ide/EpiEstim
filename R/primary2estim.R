@@ -13,8 +13,9 @@
 #'   approach used by [estimate_R()] with method "si_from_data".
 #' - A Bayesian fit from the model returned by
 #'   [primarycensored::pcd_cmdstan_model()] (a `CmdStanMCMC` object). `n`
-#'   evenly spaced posterior draws of the delay parameters are used. This
-#'   requires the cmdstanr package.
+#'   evenly spaced posterior draws of the delay parameters are used, so this
+#'   is the way to use a Bayesian fit of the serial interval. This requires
+#'   the cmdstanr package.
 #' - A data frame of parameter draws, with one row per draw and one column per
 #'   parameter of `dist`, named as the arguments of `dist` (e.g. `shape` and
 #'   `scale` for [stats::pgamma()]).
@@ -112,15 +113,15 @@ primary2estim.fitdist <- function(x, dist, n = 1000, shift = 0,
          ") do not match those of dist (", toString(fit_cdf$params), ").",
          call. = FALSE)
   }
-  vcov <- x$vcov
-  if (!is.null(vcov)) {
-    vcov <- vcov[fit_cdf$params, fit_cdf$params, drop = FALSE]
+  fit_vcov <- x$vcov
+  if (!is.null(fit_vcov)) {
+    fit_vcov <- fit_vcov[fit_cdf$params, fit_cdf$params, drop = FALSE]
   }
   if (!is.null(seed)) {
     set.seed(seed)
   }
   samples <- draw_si_params(
-    x$estimate[fit_cdf$params], vcov, n, fit_cdf$positive
+    x$estimate[fit_cdf$params], fit_vcov, n, fit_cdf$positive
   )
   primary2estim(
     samples, dist = dist, shift = shift, si_discr_args = si_discr_args

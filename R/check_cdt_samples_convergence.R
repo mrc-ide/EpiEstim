@@ -40,7 +40,8 @@
 check_cdt_samples_convergence <- function(cdt_samples) {
   .Deprecated(msg = paste(
     "check_cdt_samples_convergence() is deprecated as estimate_R()",
-    "estimates the serial interval by maximum likelihood."
+    "estimates the serial interval by maximum likelihood. See",
+    "primary2estim() for using primarycensored fits."
   ))
   ## checking convergence of the MCMC by using the Gelman-Rubin algorithm 
   ## between the first and second half of the MCMC sample

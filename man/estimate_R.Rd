@@ -317,13 +317,21 @@ p_uncertainty + p_no_uncertainty
 ## estimate the reproduction number (method "si_from_sample")
 MCMC_seed <- 1
 overall_seed <- 2
-SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-                 dist = "G",
-                 init.pars = init_mcmc_params(MockRotavirus$si_data, "G"),
-                 burnin = 1000,
-                 n.samples = 5000,
-                 seed = MCMC_seed)
-si_sample <- coarse2estim(SI.fit, thin = 10)$si_sample
+## first estimate the SI distribution with primarycensored, accounting for
+## double interval censoring, using the same starting values as
+## method "si_from_data"
+si_data <- MockRotavirus$si_data
+censdata <- data.frame(left = si_data$SL - si_data$EL,
+                       right = si_data$SR - si_data$EL,
+                       pwindow = si_data$ER - si_data$EL,
+                       D = Inf)
+start <- init_mcmc_params(si_data, "gamma")
+SI.fit <- primarycensored::fitdistdoublecens(
+  censdata, distr = "gamma", start = list(shape = start[1], scale = start[2])
+)
+## turn this into a sample of SI distributions
+si_sample <- primary2estim(SI.fit, dist = stats::pgamma, n = 500,
+                           seed = MCMC_seed)$si_sample
 R_si_from_sample <- estimate_R(MockRotavirus$incidence,
                                method = "si_from_sample",
                                si_sample = si_sample,
@@ -332,8 +340,8 @@ R_si_from_sample <- estimate_R(MockRotavirus$incidence,
 plot(R_si_from_sample)
 
 ## check that R_si_from_sample is the same as R_si_from_data
-## since they were generated using the same MCMC algorithm to generate the SI
-## sample (either internally to EpiEstim or externally)
+## since they were generated using the same estimation of the SI
+## (either internally to EpiEstim or externally)
 all(R_si_from_sample$R$`Mean(R)` == R_si_from_data$R$`Mean(R)`)
 }
 }
