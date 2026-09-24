@@ -62,5 +62,5 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 Remotes: reconverse/incidence2/pkg,
-    epinowcast/primarycensored#350
+    epinowcast/primarycensored
 Config/roxygen2/version: 8.0.0
