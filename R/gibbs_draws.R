@@ -766,8 +766,14 @@ estimate_advantage <- function(incid, si_distr, priors = default_priors(),
   )
   conv_check <- unlist(conv_check)
 
-  list(epsilon = epsilon_out, R = R_out, convergence = conv_check, diag = diag #, max_transmiss = max_transmiss
-       ) 
+  out <- list(
+    epsilon = epsilon_out,
+    R = R_out,
+    convergence = conv_check,
+    diag = diag #, max_transmiss = max_transmiss
+  )
+  class(out) <- "estimate_advantage"
+  out
   
 }
 
