@@ -24,9 +24,6 @@ reference:
     - process_I_multivariant
     - wallinga_teunis
   - title: Post-processing
-  - subtitle: MCMC diagnostics
-    contents:
-      - check_cdt_samples_convergence
   - subtitle: Draw from posterior
     contents:
     - starts_with("draw_")
@@ -35,9 +32,8 @@ reference:
   - subtitle: Default settings
     contents:
     - starts_with("default_")
-    - init_mcmc_params
     - make_config
-    - make_mcmc_control
+    - si_start_values
   - subtitle: Plotting functions
     contents:
     - plot.estimate_R
@@ -50,7 +46,13 @@ reference:
     - WT
   - subtitle: External package compatibility functions
     contents:
+    - primary2estim
+  - subtitle: Deprecated functions
+    contents:
     - coarse2estim
+    - check_cdt_samples_convergence
+    - init_mcmc_params
+    - make_mcmc_control
   - title: Datasets
     contents:
     - Flu1918

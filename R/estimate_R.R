@@ -30,13 +30,16 @@
 #'
 #' @param si_data For method "si_from_data"; the data on dates of symptoms of
 #'   pairs of infector/infected individuals to be used to estimate the serial
-#'   interval distribution should be a dataframe with 5 columns:
+#'   interval distribution should be a dataframe with 5 or 6 columns:
 #' 
 #' - EL: the lower bound of the symptom onset date of the infector (given as an integer)
 #' - ER: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that ER>=EL. If the dates are known exactly use ER = EL
 #' - SL: the lower bound of the symptom onset date of the infected individual (given as an integer)
 #' - SR: the upper bound of the symptom onset date of the infected individual (given as an integer). Should be such that SR >= SL. If the dates are known exactly use SR = SL
 #' - type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates
+#' - OT (optional): the time (given as an integer) up to which symptom onsets of infected individuals are observed, e.g. the time of data collection. Like SR it is a continuous bound, so with daily data a pair observed up to and including day d has OT = d + 1. If given, the estimation of the serial interval accounts for right truncation using [primarycensored][primarycensored::primarycensored-package]. When pairs of infector/infected individuals are observed during an ongoing outbreak, OT should be given, as otherwise the serial interval may be underestimated (see Charniga et al. PLoS Comp Biol 2024). Should be such that OT > SL. If not given, or for entries that are `NA`, no right truncation is assumed
+#'
+#' As in coarseDataTools, EL, ER, SL and SR are continuous bounds, so a symptom onset known to the day d is given as EL = d and ER = d + 1 (as in the `MockRotavirus` data), and ER = EL means the onset time is known exactly.
 #'
 #' @param config An object of class `estimate_R_config`, as returned by
 #' [make_config()].
@@ -112,9 +115,12 @@
 #'
 #' - `dates`: a vector of dates corresponding to the incidence time series
 #'
-#' - `MCMC_converged` (only for method `si_from_data`): a boolean showing 
-#'    whether the Gelman-Rubin MCMC convergence diagnostic was successful 
-#'    (`TRUE`) or not (`FALSE`)
+#' - `si_fit_converged` (only for method `si_from_data`): a boolean showing 
+#'    whether the maximum likelihood estimation of the serial interval 
+#'    converged (`TRUE`) or not (`FALSE`)
+#'
+#' - `MCMC_converged` (only for method `si_from_data`): deprecated, the same as
+#'    `si_fit_converged`
 #'
 #' @details
 #' Analytical estimates of the reproduction number for an epidemic over
@@ -140,17 +146,22 @@
 #'   the user
 #' 
 #' - In method "si_from_data", the serial interval distribution is directly
-#'   estimated, using MCMC, from interval censored exposure data, with data
+#'   estimated, by maximum likelihood, from interval censored exposure data, with data
 #'   provided by the user together with a choice of parametric distribution for
 #'   the serial interval
 #' 
 #' - In method "si_from_sample", the user directly provides the sample of
 #'   serial interval distribution to use for estimation of R. This can be a useful
-#'   alternative to the previous method, where the MCMC estimation of the serial
+#'   alternative to the previous method, where the estimation of the serial
 #'   interval distribution could be run once, and the same estimated SI
 #'   distribution then used in estimate_R in different contexts, e.g. with
-#'   different time windows, hence avoiding to rerun the MCMC every time
-#'   estimate_R is called.
+#'   different time windows, hence avoiding to rerun the estimation every time
+#'   estimate_R is called. [primary2estim()] gives such a sample from a
+#'   serial interval estimated with
+#'   [primarycensored][primarycensored::primarycensored-package]. For a
+#'   Bayesian estimate of the serial interval, fit it with
+#'   [primarycensored::pcd_cmdstan_model()] and pass the fit to
+#'   [primary2estim()].
 #'
 #' R is estimated within a Bayesian framework, using a Gamma distributed prior,
 #' with mean and standard deviation which can be set using the `mean_prior`
@@ -180,6 +191,14 @@
 #' respiratory syndrome reveal similar impacts of control measures (AJE 2004).
 #' Reich, N.G. et al. Estimating incubation period distributions with coarse
 #' data (Statis. Med. 2009)
+#' 
+#' Abbott, S. et al. [primarycensored][primarycensored::primarycensored-package]:
+#' Primary Event Censored Distributions.
+#' \doi{10.5281/zenodo.13632839}
+#' 
+#' Charniga, K. et al. Best practices for estimating and reporting
+#' epidemiological delay distributions of infectious diseases
+#' (PLoS Comp Biol 2024)
 #' 
 #' @export
 #' @examples
@@ -276,30 +295,19 @@
 #' ## used, even though the difference is marginal in this case.
 #'
 #' \dontrun{
-#' ## Note the following examples use an MCMC routine
-#' ## to estimate the serial interval distribution from data,
-#' ## so they may take a few minutes to run
-#'
 #' ## load data on rotavirus
 #' data("MockRotavirus")
-#'
-#' mcmc_control <- make_mcmc_control(
-#'   burnin = 1000, # first 1000 iterations discarded as burn-in
-#'   thin = 10, # every 10th iteration will be kept, the rest discarded
-#'   seed = 1 # set the seed to make the process reproducible
-#' )
 #'
 #' R_si_from_data <- estimate_R(
 #'   incid = MockRotavirus$incidence,
 #'   method = "si_from_data",
 #'   si_data = MockRotavirus$si_data, # symptom onset data
 #'   config = make_config(
-#'     si_parametric_distr = "G", # gamma dist. for SI
-#'     mcmc_control = mcmc_control,
-#'     n1 = 500, # number of posterior samples of SI dist.
-#'     n2 = 50, # number of posterior samples of Rt dist.
-#'     seed = 2
-#'   ) # set seed for reproducibility
+#'     si_parametric_distr = "gamma", # gamma dist. for SI
+#'     n1 = 500, # number of SI distributions drawn
+#'     n2 = 50, # number of posterior samples of Rt for each SI distribution
+#'     seed = 2 # set seed for reproducibility
+#'   )
 #' )
 #'
 #' ## compare with version with no uncertainty
@@ -320,25 +328,30 @@
 #' ## distribution.
 #'
 #' ## estimate the reproduction number (method "si_from_sample")
-#' MCMC_seed <- 1
-#' overall_seed <- 2
-#' SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-#'                  dist = "G",
-#'                  init.pars = init_mcmc_params(MockRotavirus$si_data, "G"),
-#'                  burnin = 1000,
-#'                  n.samples = 5000,
-#'                  seed = MCMC_seed)
-#' si_sample <- coarse2estim(SI.fit, thin = 10)$si_sample
+#' ## first estimate the SI distribution with primarycensored, accounting for
+#' ## double interval censoring, using the same starting values as
+#' ## method "si_from_data"
+#' si_data <- MockRotavirus$si_data
+#' censdata <- data.frame(left = si_data$SL - si_data$EL,
+#'                        right = si_data$SR - si_data$EL,
+#'                        pwindow = si_data$ER - si_data$EL,
+#'                        D = Inf)
+#' SI.fit <- primarycensored::fitdistdoublecens(
+#'   censdata, distr = "gamma", start = si_start_values(si_data, "gamma")
+#' )
+#' ## turn this into a sample of SI distributions
+#' si_sample <- primary2estim(SI.fit, dist = stats::pgamma, n = 500,
+#'                            seed = 2)$si_sample
 #' R_si_from_sample <- estimate_R(MockRotavirus$incidence,
 #'                                method = "si_from_sample",
 #'                                si_sample = si_sample,
 #'                                config = make_config(list(n2 = 50,
-#'                                seed = overall_seed)))
+#'                                seed = 2)))
 #' plot(R_si_from_sample)
 #'
 #' ## check that R_si_from_sample is the same as R_si_from_data
-#' ## since they were generated using the same MCMC algorithm to generate the SI
-#' ## sample (either internally to EpiEstim or externally)
+#' ## since they were generated using the same estimation of the SI
+#' ## (either internally to EpiEstim or externally)
 #' all(R_si_from_sample$R$`Mean(R)` == R_si_from_data$R$`Mean(R)`)
 #' }
 
@@ -418,43 +431,9 @@ estimate_R <- function(incid,
     ## Warning if the expected set of parameters is not adequate
     si_data <- process_si_data(si_data)
     config <- process_config_si_from_data(config, si_data)
-    si_parametric_distr <- convert_distr_name_for_mcmc(config$si_parametric_distr)
     ## estimate serial interval from serial interval data first
-    if (!is.null(config$mcmc_control$seed)) {
-      cdt <- coarseDataTools::dic.fit.mcmc(
-        dat = si_data,
-        dist = si_parametric_distr,
-        burnin = config$mcmc_control$burnin,
-        n.samples = config$n1 * config$mcmc_control$thin,
-        init.pars = config$mcmc_control$init_pars,
-        seed = config$mcmc_control$seed
-      )
-    } else {
-      cdt <- coarseDataTools::dic.fit.mcmc(
-        dat = si_data,
-        dist = si_parametric_distr,
-        burnin = config$mcmc_control$burnin,
-        n.samples = config$n1 * config$mcmc_control$thin,
-        init.pars = config$mcmc_control$init_pars
-      )
-    }
-    
-    ## add a warning about real-time estimation potentially being biased
-    wrn <- paste(
-      "Our serial interval estimation method does not correct for right",
-      "censoring. It may yield biased results when applied to right-censored",
-      "infector/infected pairs, such as those observed during an ongoing",
-      "outbreak. See Charniga et al. (PLoS Comp Biol, 2024) and consider using",
-      "the R package primarycensored for real-time serial interval estimation."
-    )
-    warning(wrn)
-
-    ## check convergence of the MCMC and print warning if not converged
-    MCMC_conv <- check_cdt_samples_convergence(cdt@samples)
-
-    ## thin the chain, and turn the two parameters of the SI distribution into a
-    ## whole discrete distribution
-    c2e <- coarse2estim(cdt, thin = config$mcmc_control$thin)
+    fit <- si_sample_from_data(si_data, config)
+    si_fit_converged <- fit$converged
 
     cat(paste(
       "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
@@ -462,7 +441,7 @@ estimate_R <- function(incid,
       "estimates...\n",
       "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     ))
-    si_sample <- c2e$si_sample
+    si_sample <- fit$si_sample
   }
 
   ## estimate R whether or not si_sample is simulated
@@ -478,7 +457,9 @@ estimate_R <- function(incid,
   
   # Add extra fields based on method
   if(method == "si_from_data"){
-    out[["MCMC_converged"]] <- MCMC_conv
+    out[["si_fit_converged"]] <- si_fit_converged
+    ## deprecated name of si_fit_converged
+    out[["MCMC_converged"]] <- si_fit_converged
   }
 
   return(out)
@@ -551,7 +532,9 @@ estimate_R_func <- function(incid,
     nb_time_periods <- length(t_start)
 
     if (is.null(si_distr)) {
-      si_distr <- discr_si(seq(0, T - 1), mean_si, std_si)
+      si_distr <- discr_si_config(
+        seq(0, T - 1), mean_si, std_si, config$si_discr_args
+      )
     }
 
     final_mean_si <- sum(si_distr * (seq(0, length(si_distr) -
@@ -654,9 +637,12 @@ estimate_R_func <- function(incid,
                                     sd = config$std_std_si)
         }
       }
+      si_draws <- discr_si_draws(
+        seq(0, T - 1), mean_si_sample, std_si_sample, config$si_discr_args
+      )
       temp <- lapply(seq_len(config$n1), function(k) { sample_from_posterior(config$n2,
                                                                            incid, mean_si_sample[k], std_si_sample[k],
-                                                                           si_distr = NULL, a_prior,
+                                                                           si_distr = si_draws[k, ], a_prior,
                                                                            b_prior, t_start_imputed, t_end_imputed
       )})
       config$si_distr <- cbind(
@@ -754,7 +740,9 @@ estimate_R_func <- function(incid,
   } else {
     # CertainSI
     if (parametric_si == "Y") {
-      config$si_distr <- discr_si(seq(0,T - 1), config$mean_si, config$std_si)
+      config$si_distr <- discr_si_config(
+        seq(0, T - 1), config$mean_si, config$std_si, config$si_discr_args
+      )
     }
     if (length(config$si_distr) < T + 1) {
       config$si_distr[seq(length(config$si_distr) + 1,T + 1)] <- 0

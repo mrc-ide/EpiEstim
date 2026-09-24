@@ -12,21 +12,15 @@ make_mcmc_control(
 )
 }
 \arguments{
-\item{burnin}{A positive integer giving the burnin used in the MCMC when
-estimating the serial interval distribution.}
+\item{burnin}{Not used.}
 
-\item{thin}{A positive integer corresponding to thinning parameter; the MCMC
-will be run for \code{burnin + n1*thin} iterations; 1 in \code{thin}
-iterations will be recorded, after the burnin phase, so the posterior
-sample size is \code{n1}.}
+\item{thin}{Not used.}
 
-\item{seed}{An integer used as the seed for the random number generator at
-the start of the MCMC estimation; useful to get reproducible results.}
+\item{seed}{An integer used as the seed for the random number generator
+when drawing the sample of serial interval distributions.}
 
-\item{init_pars}{vector of size 2 corresponding to the initial values of
-parameters to use for the SI distribution. This is the shape and scale for
-all but the lognormal distribution, for which it is the meanlog and
-sdlog.}
+\item{init_pars}{Starting values for the parameters of the serial interval
+distribution, as given by \code{\link[=si_start_values]{si_start_values()}}.}
 }
 \value{
 An object of class \code{estimate_R_mcmc_control} with components
@@ -34,63 +28,12 @@ An object of class \code{estimate_R_mcmc_control} with components
 used as an argument of function \code{\link[=make_config]{make_config()}}.
 }
 \description{
-Creates a list of MCMC control parameters to be used in
-\code{config$mcmc_control}, where \code{config} is an argument of the
-\code{\link[=estimate_R]{estimate_R()}} function. This is used to configure the MCMC chain used to
-estimate the serial interval within \code{\link[=estimate_R]{estimate_R()}} (with method
-"si_from_data").
+This function is deprecated. The serial interval is estimated by maximum
+likelihood in \code{\link[=estimate_R]{estimate_R()}} with method "si_from_data", so \code{burnin} and
+\code{thin} are not used, and a warning is given if they differ from their
+defaults. Use \code{seed} in \code{\link[=make_config]{make_config()}} to make the sample of serial
+interval distributions reproducible.
 }
-\details{
-The argument \code{si_data}, should be a dataframe with 5 columns:
-\itemize{
-\item \code{EL}: the lower bound of the symptom onset date of the infector (given as
-an integer)
-\item \code{ER}: the upper bound of the symptom onset date of the infector (given as
-an integer). Should be such that \code{ER >= EL}
-\item \code{SL}: the lower bound of the symptom onset date of the infected
-individual (given as an integer)
-\item \code{SR}: the upper bound of the symptom onset date of the infected
-individual (given as an integer). Should be such that \code{SR >= SL}
-\item \code{type} (optional): can have entries 0, 1, or 2, corresponding to doubly
-interval-censored, single interval-censored or exact observations,
-respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-will be automatically computed from the dates
-}
-
-Assuming a given parametric distribution for the serial interval distribution
-(specified in \code{si_parametric_distr}),
-the posterior distribution of the serial interval is estimated directly from
-these data using MCMC methods implemented in the package
-}
-\examples{
-\dontrun{
-## Note the following examples use an MCMC routine
-## to estimate the serial interval distribution from data,
-## so they may take a few minutes to run
-
-## load data on rotavirus
-data("MockRotavirus")
-
-## estimate the reproduction number (method "si_from_data")
-mcmc_seed <- 1
-burnin <- 1000
-thin <- 10
-mcmc_control <- make_mcmc_control(burnin = burnin, thin = thin, 
-                     seed = mcmc_seed)
-
-incid <- MockRotavirus$incidence
-method <- "si_from_data"
-overall_seed <- 2
-config <- make_config(incid = incid, 
-                     si_parametric_distr = "G",
-                     mcmc_control = mcmc_control,
-                     n1 = 500
-                     n2 = 50,
-                     seed = overall_seed)
-
-R_si_from_data <- estimate_R(incid,
-                            method = method,
-                            si_data = MockRotavirus$si_data,
-                            config = config)
-}
+\seealso{
+\code{\link[=si_start_values]{si_start_values()}}
 }

@@ -1,56 +1,82 @@
 process_si_data <- function(si_data) {
   # NULL entries
   if (is.null(si_data)) {
-    stop("Method si_from_data requires non NULL argument si_data")
+    stop("Method si_from_data requires non NULL argument si_data",
+         call. = FALSE)
   }
 
   # wrong number of columns
   si_data <- as.data.frame(si_data)
   num_cols <- dim(si_data)[2]
-  if (num_cols < 4 || num_cols > 5) {
-    stop("si_data should have 4 or 5 columns")
+  if (num_cols < 4 || num_cols > 6) {
+    stop("si_data should have 4, 5 or 6 columns", call. = FALSE)
   }
 
   # entries with incorrect column names
-  if (!all(c("EL", "ER", "SL", "SR") %in% names(si_data))) {
-    names <- c("EL", "ER", "SL", "SR", "type")
-    names(si_data) <- names[seq_len(num_cols)]
+  auto_named <- !all(c("EL", "ER", "SL", "SR") %in% names(si_data))
+  if (auto_named) {
+    default_names <- c("EL", "ER", "SL", "SR", "type", "OT")
+    names(si_data) <- default_names[seq_len(num_cols)]
+  }
+
+  ## the types [0: double censored, 1: single censored, 2: exact
+  ## observation] implied by the dates
+  tmp_type <- 2 - rowSums(cbind(si_data$ER - si_data$EL != 0,
+                                si_data$SR - si_data$SL != 0))
+
+  if (auto_named) {
+    if (num_cols >= 5 && !isTRUE(all(si_data$type == tmp_type))) {
+      stop("The fifth column of si_data does not match the type implied ",
+           "by EL, ER, SL and SR, so it is not read as a type column. ",
+           "If si_data has an OT column, name the columns EL, ER, SL, SR ",
+           "and OT.", call. = FALSE)
+    }
     warning("column names for si_data were not as expected; they were 
-            automatically interpreted as 'EL', 'ER', 'SL', 'SR', and 'type' 
-            (the last one only if si_data had five columns). ")
+            automatically interpreted as 'EL', 'ER', 'SL', 'SR', 'type' 
+            and 'OT' (the last two only if si_data had five or six 
+            columns). ", call. = FALSE)
   }
 
   # non integer entries in date columns
-  if (!all(vlapply(seq_len(4), function(e) is.integer(si_data[, e])))) {
-    stop("si_data has entries for which EL, ER, SL or SR are non integers.")
+  date_cols <- c("EL", "ER", "SL", "SR")
+  if (!all(vlapply(date_cols, function(e) is.integer(si_data[[e]])))) {
+    stop("si_data has entries for which EL, ER, SL or SR are non integers.",
+         call. = FALSE)
+  }
+  if ("OT" %in% names(si_data)) {
+    if (!all(is.na(si_data$OT)) && !is.integer(si_data$OT)) {
+      stop("si_data has entries for which OT is non integer.",
+           call. = FALSE)
+    }
+    if (any(si_data$SL >= si_data$OT, na.rm = TRUE)) {
+      stop("si_data has entries for which SL >= OT.", call. = FALSE)
+    }
   }
 
   # entries with wrong order in lower and upper bounds of dates
   if (any(si_data$ER - si_data$EL < 0)) {
-    stop("si_data has entries for which ER<EL.")
+    stop("si_data has entries for which ER<EL.", call. = FALSE)
   }
   if (any(si_data$SR - si_data$SL < 0)) {
-    stop("si_data has entries for which SR<SL.")
+    stop("si_data has entries for which SR<SL.", call. = FALSE)
   }
 
   # entries with negative serial interval
   if (any(si_data$SR - si_data$EL <= 0)) {
     stop("You cannot fit any of the supported distributions to this SI dataset, 
-         because for some data points the maximum serial interval is <=0.")
+         because for some data points the maximum serial interval is <=0.",
+         call. = FALSE)
   }
 
-  ## check that the types [0: double censored, 1; single censored, 
-  ## 2: exact observation] are correctly specified, and if not present 
-  ## put them in.
-  tmp_type <- 2 - rowSums(cbind(si_data$ER - si_data$EL != 0, 
-                                si_data$SR - si_data$SL != 0))
+  ## check that the types are correctly specified, and if not present put
+  ## them in.
   if (!("type" %in% names(si_data))) {
     warning("si_data contains no 'type' column. This is inferred automatically 
-            from the other columns.")
+            from the other columns.", call. = FALSE)
     si_data$type <- tmp_type
   } else if (anyNA(si_data$type) || !all(si_data$type == tmp_type)) {
     warning("si_data contains unexpected entries in the 'type' column. This is 
-            inferred automatically from the other columns.")
+            inferred automatically from the other columns.", call. = FALSE)
     si_data$type <- tmp_type
   }
 
@@ -88,7 +114,8 @@ process_I <- function(incid) {
         (!("I" %in% names(incid)) &&
          !all(c("local", "imported") %in% names(incid)))) {
       stop("incid must be a vector or a dataframe with either i) a column 
-           called 'I', or ii) 2 columns called 'local' and 'imported'.")
+           called 'I', or ii) 2 columns called 'local' and 'imported'.",
+           call. = FALSE)
     }
     if (("I" %in% names(incid)) && 
         !all(c("local", "imported") %in% names(incid))) {
@@ -99,7 +126,7 @@ process_I <- function(incid) {
     if (incid$local[1] > 0) {
       warning("incid$local[1] is >0 but must be 0, as all cases on the first 
               time step are assumed imported. This is corrected automatically 
-              by cases being transferred to incid$imported.")
+              by cases being transferred to incid$imported.", call. = FALSE)
       I_init <- sum(incid[1, c("local", "imported")])
       incid[1, c("local", "imported")] <- c(0, I_init)
     }
@@ -109,12 +136,11 @@ process_I <- function(incid) {
   date_col <- names(incid) == "dates"
   if (any(date_col)) {
     if (any(incid[, !date_col] < 0)) {
-      stop("incid must contain only non negative integer values.")
+      stop("incid must contain only non negative integer values.",
+           call. = FALSE)
     }
-  } else {
-    if (any(incid < 0)) {
-      stop("incid must contain only non negative integer values.")
-    }
+  } else if (any(incid < 0)) {
+    stop("incid must contain only non negative integer values.", call. = FALSE)
   }
 
   return(incid)
@@ -141,23 +167,22 @@ process_I_vector <- function(incid) {
         incid <- as.vector(incid$I)
       } else if (!all(c("local", "imported") %in% names(incid))) {
         stop("incid must be a vector or a dataframe with at least a column named
-             'I' or two columns named 'local' and 'imported'.")
+             'I' or two columns named 'local' and 'imported'.", call. = FALSE)
       }
     } else {
       stop("incid must be a vector or a dataframe with at least a column named 
-           'I' or two columns named 'local' and 'imported'.")
+           'I' or two columns named 'local' and 'imported'.", call. = FALSE)
     }
   }
   incid[which(is.na(incid))] <- 0
   date_col <- names(incid) == "dates"
   if (any(date_col)) {
     if (any(incid[, !date_col] < 0)) {
-      stop("incid must contain only non negative integer values.")
+      stop("incid must contain only non negative integer values.",
+           call. = FALSE)
     }
-  } else {
-    if (any(incid < 0)) {
-      stop("incid must contain only non negative integer values.")
-    }
+  } else if (any(incid < 0)) {
+    stop("incid must contain only non negative integer values.", call. = FALSE)
   }
 
   return(incid)
@@ -165,21 +190,23 @@ process_I_vector <- function(incid) {
 
 process_si_sample <- function(si_sample) {
   if (is.null(si_sample)) {
-    stop("method si_from_sample requires to specify the si_sample argument.")
+    stop("method si_from_sample requires to specify the si_sample argument.",
+         call. = FALSE)
   }
 
   si_sample <- as.matrix(si_sample)
 
   if (any(si_sample[1, ] != 0)) {
-    stop("method si_from_sample requires that si_sample[1,] contains only 0.")
+    stop("method si_from_sample requires that si_sample[1,] contains only 0.",
+         call. = FALSE)
   }
   if (any(si_sample < 0)) {
     stop("method si_from_sample requires that si_sample must contain only non 
-         negtaive values.")
+         negtaive values.", call. = FALSE)
   }
   if (any(abs(colSums(si_sample) - 1) > 0.01)) {
     stop("method si_from_sample requires the sum of each column in si_sample to 
-         be 1.")
+         be 1.", call. = FALSE)
   }
 
   return(si_sample)
@@ -189,24 +216,24 @@ check_times <- function(t_start, t_end, T)
  ## this only produces warnings and errors, does not return anything
 {
   if (!is.vector(t_start)) {
-    stop("t_start must be a vector.")
+    stop("t_start must be a vector.", call. = FALSE)
   }
   if (!is.vector(t_end)) {
-    stop("t_end must be a vector.")
+    stop("t_end must be a vector.", call. = FALSE)
   }
   if (length(t_start) != length(t_end)) {
-    stop("t_start and t_end must have the same length.")
+    stop("t_start and t_end must have the same length.", call. = FALSE)
   }
   if (any(t_start > t_end)) {
-    stop("t_start[i] must be <= t_end[i] for all i.")
+    stop("t_start[i] must be <= t_end[i] for all i.", call. = FALSE)
   }
   if (any(t_start < 2 | t_start > T | t_start %% 1 != 0)) {
     stop("t_start must be a vector of integers between 2 and the number of 
-         timesteps in incid.")
+         timesteps in incid.", call. = FALSE)
   }
   if (any(t_end < 2 | t_end > T | t_end %% 1 != 0)) {
     stop("t_end must be a vector of integers between 2 and the number of 
-         timesteps in incid.")
+         timesteps in incid.", call. = FALSE)
   }
 }
 
@@ -217,23 +244,23 @@ check_si_distr <- function(si_distr, sumToOne = c("error", "warning"),
   sumToOne <- match.arg(sumToOne)
   if (is.null(si_distr)) {
     stop("si_distr argument is missing but is required for method ",
-         method, ".")
+         method, ".", call. = FALSE)
   }
   if (!is.vector(si_distr)) {
-    stop("si_distr must be a vector.")
+    stop("si_distr must be a vector.", call. = FALSE)
   }
   if (si_distr[1] != 0) {
-    stop("si_distr should be so that si_distr[1] = 0.")
+    stop("si_distr should be so that si_distr[1] = 0.", call. = FALSE)
   }
   if (any(si_distr < 0)) {
-    stop("si_distr must be a positive vector.")
+    stop("si_distr must be a positive vector.", call. = FALSE)
   }
   if (abs(sum(si_distr) - 1) > 0.01) {
     if (sumToOne == "error") {
-      stop("si_distr must sum to 1.")
+      stop("si_distr must sum to 1.", call. = FALSE)
     }
     else if (sumToOne == "warning") {
-      warning("si_distr does not sum to 1.")
+      warning("si_distr does not sum to 1.", call. = FALSE)
     }
   }
 }
@@ -241,13 +268,13 @@ check_si_distr <- function(si_distr, sumToOne = c("error", "warning"),
 check_dates <- function(incid) {
   dates <- incid$dates
   if (!inherits(dates, "Date") && !is.numeric(dates)) {
-    stop("incid$dates must be an object of class date or numeric.")
+    stop("incid$dates must be an object of class date or numeric.",
+         call. = FALSE)
+  } else if (unique(diff(dates)) != 1) {
+    stop("incid$dates must contain dates which are all in a row.",
+         call. = FALSE)
   } else {
-    if (unique(diff(dates)) != 1) {
-      stop("incid$dates must contain dates which are all in a row.")
-    } else {
-      return(dates)
-    }
+    return(dates)
   }
 }
 
@@ -261,19 +288,16 @@ process_config <- function(config) {
   }
 
   if (config$mean_prior <= 0) {
-    stop("config$mean_prior must be >0.")
+    stop("config$mean_prior must be >0.", call. = FALSE)
   }
   if (config$std_prior <= 0) {
-    stop("config$std_prior must be >0.")
+    stop("config$std_prior must be >0.", call. = FALSE)
   }
 
   if (!("cv_posterior" %in% names(config))) {
     config$cv_posterior <- 0.3
   }
 
-  if (!("mcmc_control" %in% names(config))) {
-    config$mcmc_control <- make_mcmc_control()
-  }
 
   return(config)
 }
@@ -286,29 +310,27 @@ process_config_si_from_data <- function(config, si_data) {
     config$si_parametric_distr, valid_distrs    
   )
   if (is.null(config$n1)) {
-    stop("method si_from_data requires to specify the config$n1 argument.")
+    stop("method si_from_data requires to specify the config$n1 argument.",
+         call. = FALSE)
   }
   if (is.null(config$n2)) {
-    stop("method si_from_data requires to specify the config$n2 argument.")
+    stop("method si_from_data requires to specify the config$n2 argument.",
+         call. = FALSE)
   }
   if (config$n2 <= 0 || config$n2 %% 1 != 0) {
-    stop("method si_from_data requires a >0 integer value for config$n2.")
+    stop("method si_from_data requires a >0 integer value for config$n2.",
+         call. = FALSE)
   }
   if (config$n1 <= 0 || config$n1 %% 1 != 0) {
-    stop("method si_from_data requires a >0 integer value for config$n1.")
+    stop("method si_from_data requires a >0 integer value for config$n1.",
+         call. = FALSE)
   }
-  if (is.null(config$mcmc_control$init_pars)) {
-    config$mcmc_control$init_pars <-
-      init_mcmc_params(si_data, config$si_parametric_distr)
-  }
-  if ((config$si_parametric_distr == "gamma_offset_1" ||
-    config$si_parametric_distr == "weibull_offset_1" ||
-    config$si_parametric_distr == "lognormal_offset_1") &&
-    any(si_data$SR - si_data$EL <= 1)) {
+  if (si_fit_distr(config$si_parametric_distr)$shift == 1 &&
+        any(si_data$SR - si_data$EL <= 1)) {
     stop(
       "You cannot fit a distribution with offset 1 to this SI ",
       "dataset, because for some data points the maximum serial ",
-      "interval is <=1.\nChoose a different distribution"
+      "interval is <=1.\nChoose a different distribution", call. = FALSE
     )
   }
   return(config)
@@ -321,111 +343,123 @@ check_config <- function(config, method) {
   if (method == "parametric_si") {
     if (is.null(config$mean_si)) {
       stop("method parametric_si requires to specify the config$mean_si 
-           argument.")
+           argument.", call. = FALSE)
     }
     if (is.null(config$std_si)) {
       stop("method parametric_si requires to specify the config$std_si 
-           argument.")
+           argument.", call. = FALSE)
     }
     if (config$mean_si <= 1) {
-      stop("method parametric_si requires a value >1 for config$mean_si.")
+      stop("method parametric_si requires a value >1 for config$mean_si.",
+           call. = FALSE)
     }
     if (config$std_si <= 0) {
-      stop("method parametric_si requires a >0 value for config$std_si.")
+      stop("method parametric_si requires a >0 value for config$std_si.",
+           call. = FALSE)
     }
   }
   if (method == "uncertain_si") {
     if (is.null(config$mean_si)) {
       stop("method uncertain_si requires to specify the config$mean_si 
-           argument.")
+           argument.", call. = FALSE)
     }
     if (is.null(config$std_si)) {
       stop("method uncertain_si requires to specify the config$std_si 
-           argument.")
+           argument.", call. = FALSE)
     }
     if (is.null(config$n1)) {
-      stop("method uncertain_si requires to specify the config$n1 argument.")
+      stop("method uncertain_si requires to specify the config$n1 argument.",
+           call. = FALSE)
     }
     if (is.null(config$n2)) {
-      stop("method uncertain_si requires to specify the config$n2 argument.")
+      stop("method uncertain_si requires to specify the config$n2 argument.",
+           call. = FALSE)
     }
     if (is.null(config$std_mean_si)) {
       stop("method uncertain_si requires to specify the config$std_mean_si 
-           argument.")
+           argument.", call. = FALSE)
     }
     if (is.null(config$min_mean_si)) {
       stop("method uncertain_si requires to specify the config$min_mean_si 
-           argument.")
+           argument.", call. = FALSE)
     }
     if (is.null(config$max_mean_si)) {
       stop("method uncertain_si requires to specify the config$max_mean_si 
-           argument.")
+           argument.", call. = FALSE)
     }
     if (is.null(config$std_std_si)) {
       stop("method uncertain_si requires to specify the config$std_std_si 
-           argument.")
+           argument.", call. = FALSE)
     }
     if (is.null(config$min_std_si)) {
       stop("method uncertain_si requires to specify the config$min_std_si 
-           argument.")
+           argument.", call. = FALSE)
     }
     if (is.null(config$max_std_si)) {
       stop("method uncertain_si requires to specify the config$max_std_si 
-           argument.")
+           argument.", call. = FALSE)
     }
     if (config$mean_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$mean_si.")
+      stop("method uncertain_si requires a >0 value for config$mean_si.",
+           call. = FALSE)
     }
     if (config$std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_si.")
+      stop("method uncertain_si requires a >0 value for config$std_si.",
+           call. = FALSE)
     }
     if (config$n2 <= 0 || config$n2 %% 1 != 0) {
-      stop("method uncertain_si requires a >0 integer value for config$n2.")
+      stop("method uncertain_si requires a >0 integer value for config$n2.",
+           call. = FALSE)
     }
     if (config$n1 <= 0 || config$n1 %% 1 != 0) {
-      stop("method uncertain_si requires a >0 integer value for config$n1.")
+      stop("method uncertain_si requires a >0 integer value for config$n1.",
+           call. = FALSE)
     }
     if (config$std_mean_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_mean_si.")
+      stop("method uncertain_si requires a >0 value for config$std_mean_si.",
+           call. = FALSE)
     }
     if (config$min_mean_si < 1) {
-      stop("method uncertain_si requires a value >=1 for config$min_mean_si.")
+      stop("method uncertain_si requires a value >=1 for config$min_mean_si.",
+           call. = FALSE)
     }
     if (config$max_mean_si < config$mean_si) {
       stop("method uncertain_si requires that config$max_mean_si >= 
-           config$mean_si.")
+           config$mean_si.", call. = FALSE)
     }
     if (config$mean_si < config$min_mean_si) {
       stop("method uncertain_si requires that config$mean_si >= 
-           config$min_mean_si.")
+           config$min_mean_si.", call. = FALSE)
     }
     if (signif(config$max_mean_si - config$mean_si, 3) != signif(config$mean_si -
       config$min_mean_si, 3)) {
       warning("The distribution you chose for the mean SI is not centered around
-              the mean.")
+              the mean.", call. = FALSE)
     }
     if (config$std_std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$std_std_si.")
+      stop("method uncertain_si requires a >0 value for config$std_std_si.",
+           call. = FALSE)
     }
     if (config$min_std_si <= 0) {
-      stop("method uncertain_si requires a >0 value for config$min_std_si.")
+      stop("method uncertain_si requires a >0 value for config$min_std_si.",
+           call. = FALSE)
     }
     if (config$max_std_si < config$std_si) {
       stop("method uncertain_si requires that config$max_std_si >= 
-           config$std_si.")
+           config$std_si.", call. = FALSE)
     }
     if (config$std_si < config$min_std_si) {
       stop("method uncertain_si requires that config$std_si >= 
-           config$min_std_si.")
+           config$min_std_si.", call. = FALSE)
     }
     if (signif(config$max_std_si - config$std_si, 3) != signif(config$std_si -
       config$min_std_si, 3)) {
       warning("The distribution you chose for the std of the SI is not centered 
-              around the mean.")
+              around the mean.", call. = FALSE)
     }
   }
   if (config$cv_posterior < 0) {
-    stop("config$cv_posterior must be >0.")
+    stop("config$cv_posterior must be >0.", call. = FALSE)
   }
 }
 
@@ -452,47 +486,18 @@ vcapply <- function(X, FUN, ...) {
 modify_defaults <- function(defaults, x, strict = TRUE) {
   extra <- setdiff(names(x), names(defaults))
   if (strict && (length(extra) > 0L)) {
-    stop("Additional invalid options: ", toString(extra))
+    stop("Additional invalid options: ", toString(extra), call. = FALSE)
   }
   utils::modifyList(defaults, x, keep.null = TRUE) # keep.null is needed here
 }
 
-##' Convert EpiEstim distribution names to those used by coarsedatatools
-##'
-##' coarseDataTools uses abberviated names for distributions e.g. "G" for gamma etc
-##' To provide a smooth user experience, we convert the more descriptive names.
-##' This function performs the user-provided names to the abberviated ones.
-##' @param distr A string with the name of the distribution as provided by the user.
-##' @return A string with the converted distribution name.
-##' @author Sangeeta Bhatia
-##' @keywords internal
-convert_distr_name_for_mcmc <- function(distr) {
-  if (distr %in% c("gamma") | distr %in% c("G")) {
-    return("G")
-  } else if (distr %in% c("weibull") | distr %in% c("W")) {
-    return("W")
-  } else if (distr %in% c("lognormal") | distr %in% c("L")) {
-    return("L")
-  } else if (distr %in% c("gamma_offset_1") | distr %in% c("off1G")) {
-    return("off1G")
-  } else if (distr %in% c("weibull_offset_1") | distr %in% c("off1W")) {
-    return("off1W")
-  } else if (distr %in% c("lognormal_offset_1") | distr %in% c("off1L")) {
-    return("off1L")
-  } else {
-    stop("Unsupported distribution name: ", distr)
-  }
-}
 
-##' Distribution names valid when using MCMC to estimate SI from data
+##' Distribution names valid when estimating the serial interval from data
 ##'
-##' When using si_from_data method, the package will use
-##' \code{\link[coarseDataTools]{dic.fit.mcmc}} to fit the serial interval
-##' distribution. This method supports only a limited set of distributions.
-##' This function returns the valid distribution names as used by EpiEstim. The
-##' names are internally converted to those used by coarsedatatools by
-##' \code{\link{convert_distr_name_for_mcmc}} function.
-##' @inheritParams coarse2estim
+##' When using the si_from_data method, the serial interval is estimated with
+##' primarycensored for one of a set of named distributions. This function
+##' returns the valid distribution names as used by EpiEstim.
+##' @param dist A string with the name of a distribution.
 ##' 
 ##' @return A two element list - the first element is a flag `is_dist_valid`
 ##' indicating whether the passed distribution is valid. Te second element
@@ -500,19 +505,16 @@ convert_distr_name_for_mcmc <- function(distr) {
 ##' @author Sangeeta Bhatia
 ##' @export
 si_from_data_valid_distrs <- function(dist) {
-  new_names <- c(
-    "gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
-    "lognormal_offset_1"
-  )
+  new_names <- si_distribution_aliases()
+  new_names <- c(new_names, paste0(new_names, "_offset_1"))
   old_names <- c("G", "W", "L", "off1G", "off1W", "off1L")
   valid_names <- c(old_names, new_names)
   if (dist %in% old_names) {
     warning(
-      paste(
-        "The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and
-            'off1L' are deprecated. Please use the more descriptive names",
-        new_names, "instead."
-      )
+      "The distribution names 'G', 'W', 'L', 'off1G', 'off1W', and ",
+      "'off1L' are deprecated. Please use the more descriptive names ",
+      toString(new_names), " instead.",
+      call. = FALSE
     )
   }
   list(is_dist_valid = dist %in% valid_names, all_valid_distrs = valid_names)

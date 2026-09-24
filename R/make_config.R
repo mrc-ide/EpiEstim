@@ -63,12 +63,29 @@
 #' - `si_parametric_distr`: For method "si_from_data"; the parametric
 #'   distribution to use when estimating the serial interval from data on dates
 #'   of symptoms of pairs of infector/infected individuals (see details). Should
-#'   be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
-#'   shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
-#'   shifted by 1).
+#'   be one of "gamma", "lognormal", "weibull" or "exponential", or one of these
+#'   followed by "_offset_1" (e.g. "gamma_offset_1") for a serial interval
+#'   shifted by 1. Other distributions can be used by estimating the serial
+#'   interval with primarycensored and passing it to [primary2estim()] and
+#'   method "si_from_sample".
 #'
-#' - `mcmc_control`: An object of class \code{estimate_R_mcmc_control}, as 
-#' returned by function \code{make_mcmc_control}. 
+#' - `si_discr_args`: For methods "parametric_si", "uncertain_si" and
+#'   "si_from_data"; a named
+#'   list of additional arguments passed to [discr_si()] when discretising the
+#'   serial interval, e.g. `list(dist = stats::plnorm)`. Can contain `dist`
+#'   ([stats::pgamma()] or [stats::plnorm()]), `shift`, `L`, `D`, `dprimary`
+#'   and `primary_args`. The resulting distribution must give zero
+#'   probability to a serial interval of zero. Defaults to an empty list, which
+#'   uses the defaults of [discr_si()]. For method "si_from_data", `dprimary`
+#'   and `primary_args` are also used when estimating the serial interval,
+#'   and `dist` and `shift` are set by `si_parametric_distr`.
+#'
+#' - `mcmc_control`: Deprecated. For method "si_from_data"; an object of class
+#'   \code{estimate_R_mcmc_control}, as returned by function
+#'   \code{make_mcmc_control}, giving the seed used to draw the sample of
+#'   serial interval distributions and starting values for their estimation.
+#'   Defaults to `NULL`, in which case `seed` is used and starting values are
+#'   given by [si_start_values()].
 #'
 #' - `mean_prior`: A positive number giving the mean of the common prior
 #'   distribution for all reproduction numbers (see details).
@@ -111,15 +128,15 @@
 #'   drawn from truncated normal distributions, with parameters specified by the
 #'   user
 #' - "si_from_data": the serial interval distribution is directly
-#'   estimated, using MCMC, from interval censored exposure data, with data
+#'   estimated, by maximum likelihood, from interval censored exposure data, with data
 #'   provided by the user together with a choice of parametric distribution for
 #'   the serial interval
 #' - "si_from_sample": the user directly provides the sample of serial
 #'   interval distribution to use for estimation of R. This can be a useful
-#'   alternative to the previous method, where the MCMC estimation of the serial
+#'   alternative to the previous method, where the estimation of the serial
 #'   interval distribution could be run once, and the same estimated SI
 #'   distribution then used in [estimate_R()] in different contexts, e.g. with
-#'   different time windows, hence avoiding having to rerun the MCMC every time
+#'   different time windows, hence avoiding having to rerun the estimation every time
 #'   [estimate_R()] is called.
 #'
 #' ### `method = "non_parametric_si"`
@@ -170,7 +187,7 @@
 #' scope of serial interval distributions considered is directly informed by
 #' data on the (potentially censored) dates of symptoms of pairs of
 #' infector/infected individuals. This data, specified in argument `si_data`,
-#' should be a dataframe with 5 columns:
+#' should be a dataframe with 4 to 6 columns:
 #' - `EL`: the lower bound of the symptom onset date of the infector (given as
 #'   an integer)
 #' - `ER`: the upper bound of the symptom onset date of the infector (given as
@@ -186,15 +203,31 @@
 #'   respectively, see Reich et al. Statist. Med. 2009. If not specified, this
 #'   will be automatically computed from the dates
 #'
+#' - `OT` (optional): the time (given as an integer) up to which symptom
+#'   onsets of infected individuals are observed. Like `SR` it is a continuous
+#'   bound, so with daily data a pair observed up to and including day `d` has
+#'   `OT = d + 1`. Should be such that `OT > SL`. If given, the estimation
+#'   accounts for right truncation. When pairs of infector/infected
+#'   individuals are observed during an ongoing outbreak, `OT` should be
+#'   given, as otherwise the serial interval may be underestimated (see
+#'   Charniga et al. PLoS Comp Biol 2024). If not given, or for entries that
+#'   are `NA`, no right truncation is assumed.
+#'
+#' As in coarseDataTools, `EL`, `ER`, `SL` and `SR` are continuous bounds, so a
+#' symptom onset known to the day `d` is given as `EL = d` and `ER = d + 1` (as
+#' in the `MockRotavirus` data), and `ER = EL` means the onset time is known
+#' exactly.
+#'
 #' Assuming a given parametric distribution for the serial interval distribution
-#' (specified in `si_parametric_distr`), the posterior distribution of the
-#' serial interval is estimated directly from these data using MCMC methods
-#' implemented in the package coarsedatatools. The argument `mcmc_control` is a
-#' list of characteristics which control the MCMC. The MCMC is run for a total
-#' number of iterations of `mcmc_control$burnin + n1*mcmc_control$thin`; but the
-#' output is only recorded after the burnin, and only 1 in every
-#' `mcmc_control$thin` iterations, so that the posterior sample size is `n1`.
-#' For each element in the posterior sample of serial interval distribution, we
+#' (specified in `si_parametric_distr`), the serial interval is estimated
+#' directly from these data by maximum likelihood, accounting for double
+#' interval censoring, using [primarycensored::fitdistdoublecens()] (Abbott et
+#' al., \doi{10.5281/zenodo.13632839}). A sample of `n1` serial interval
+#' distributions is then drawn from the asymptotic normal distribution of the
+#' parameter estimates, using `seed`. For a Bayesian estimate of the serial
+#' interval, fit it with [primarycensored::pcd_cmdstan_model()] and use
+#' [primary2estim()] with method "si_from_sample".
+#' For each element in the sample of serial interval distributions, we
 #' then draw a sample of size `n2` in the posterior distribution of the
 #' reproduction number over each time window, conditionally on this serial
 #' interval distribution. After pooling, a sample of size \eqn{`n1` \times `n2`}
@@ -212,17 +245,13 @@
 #' @return An object of class `estimate_R_config` with components
 #' `t_start`, `t_end`, `n1`, `n2`, `mean_si`, `std_si`,
 #' `std_mean_si`, `min_mean_si`, `max_mean_si`, `std_std_si`, `min_std_si`, `max_std_si`,
-#' `si_distr`, `si_parametric_distr`, `mcmc_control`, `seed`, `mean_prior`, `std_prior`,
+#' `si_distr`, `si_parametric_distr`, `si_discr_args`, `mcmc_control`, `seed`, `mean_prior`, `std_prior`,
 #' `cv_posterior`, which can be used as an argument of function [estimate_R()].
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' ## Note the following examples use an MCMC routine
-#' ## to estimate the serial interval distribution from data,
-#' ## so they may take a few minutes to run
-#'
 #' ## load data on rotavirus
 #' data("MockRotavirus")
 #'
@@ -232,9 +261,7 @@
 #' incid <- MockRotavirus$incidence
 #' method <- "si_from_data"
 #' config <- make_config(incid = incid,
-#'                      list(si_parametric_distr = "G",
-#'                      mcmc_control = make_mcmc_control(burnin = 1000,
-#'                      thin = 10, seed = 1),
+#'                      list(si_parametric_distr = "gamma",
 #'                      n1 = 500,
 #'                      n2 = 50,
 #'                      seed = 2))
@@ -252,9 +279,7 @@
 #'                             method = method,
 #'                             si_data = MockRotavirus$si_data,
 #'                             config = make_config(
-#'                      list(si_parametric_distr = "G",
-#'                      mcmc_control = make_mcmc_control(burnin = 1000,
-#'                      thin = 10, seed = 1),
+#'                      list(si_parametric_distr = "gamma",
 #'                      n1 = 500,
 #'                      n2 = 50,
 #'                      seed = 2)))
@@ -289,7 +314,8 @@ make_config <- function(..., incid = NULL) {
                    max_std_si = NULL,
                    si_distr = NULL,
                    si_parametric_distr = NULL,
-                   mcmc_control = make_mcmc_control(),
+                   si_discr_args = list(),
+                   mcmc_control = NULL,
                    seed = NULL,
                    mean_prior = 5,
                    std_prior = 5,
@@ -302,7 +328,7 @@ make_config <- function(..., incid = NULL) {
   if (!is.null(incid)) {
     incid <- process_I(incid)
     idx_raw_incid <- as.integer(rownames(incid)) > 0
-    T <- sum(idx_raw_incid)
+    T <- sum(idx_raw_incid) # nolint: object_overwrite_linter.
 
     ## filling in / checking t_start and t_end
     if (is.null(config$t_start) || is.null(config$t_end)) {

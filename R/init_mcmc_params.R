@@ -1,148 +1,17 @@
-#' Find clever starting points for MCMC estimation
-#' 
-#' Finds values of the serial interval distribution 
-#' parameters, used to initialise the MCMC estimation of the serial interval 
-#' distribution (e.g. when using option `si_from_data` in 
-#' [estimate_R()]). Initial values are computed based on the observed mean and 
-#' standard deviation of the sample from which the parameters are to be 
-#' estimated.
-#' 
-#' @param si_data data on dates of symptoms of pairs of infector/infected
-#'   individuals to be used to estimate the serial interval distribution. This
-#'   should be a dataframe with 5 columns: 
-#'   \itemize{ 
-#'   \item{EL: the lower bound
-#'   of the symptom onset date of the infector (given as an integer)} 
-#'   \item{ER:
-#'   the upper bound of the symptom onset date of the infector (given as an
-#'   integer). Should be such that ER>=EL. If the dates are known exactly use
-#'   ER = EL} 
-#'   \item{SL: the lower bound of the
-#'   symptom onset date of the infected individual (given as an integer)} 
-#'   \item{SR: the upper bound of the symptom onset date of the infected
-#'   individual (given as an integer). Should be such that SR>=SL. If the dates 
-#'   are known exactly use SR = SL} 
-#'   \item{type
-#'   (optional): can have entries 0, 1, or 2, corresponding to doubly
-#'   interval-censored, single interval-censored or exact observations, 
-#'   respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-#'   will be automatically computed from the dates} 
-#'   }
-#' @inheritParams coarse2estim
-#' @return A vector containing the initial values for the two parameters of the
-#'   distribution of the serial interval. These are the shape and scale for all
-#'   but the lognormal distribution, for which it is the meanlog and sdlog.
+#' Find starting points for the estimation of the serial interval
 #'
-#' @seealso [estimate_R()]
+#' This function is deprecated. Use [si_start_values()] instead.
+#'
+#' @inheritParams si_start_values
+#' @return A vector containing the starting values for the parameters of the
+#'   distribution of the serial interval, as given by [si_start_values()].
+#'
+#' @seealso [si_start_values()]
 #'
 #' @author Anne Cori
-#' 
+#'
 #' @export
-#' @examples
-#' \dontrun{
-#' ## Note the following examples use an MCMC routine
-#' ## to estimate the serial interval distribution from data,
-#' ## so they may take a few minutes to run
-#' 
-#' ## load data on rotavirus
-#' data("MockRotavirus")
-#' 
-#' ## get clever initial values for shape and scale of a Gamma distribution
-#' ## fitted to the the data MockRotavirus$si_data
-#' clever_init_param <- init_mcmc_params(MockRotavirus$si_data, "gamma")
-#' 
-#' ## estimate the serial interval from data using a clever starting point for 
-#' ## the MCMC chain
-#' SI_fit_clever <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-#'                              dist = "G",
-#'                              init.pars = clever_init_param,
-#'                              burnin = 1000,
-#'                              n.samples = 5000)
-#' 
-#' ## estimate the serial interval from data using a random starting point for 
-#' ## the MCMC chain
-#' SI_fit_naive <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-#'                              dist = "G",
-#'                              burnin = 1000,
-#'                              n.samples = 5000)
-#' 
-#' 
-#' ## use check_cdt_samples_convergence to check convergence in both situations
-#' converg_diag_clever <- check_cdt_samples_convergence(SI_fit_clever@samples)
-#' converg_diag_naive <- check_cdt_samples_convergence(SI_fit_naive@samples)
-#' converg_diag_clever
-#' converg_diag_naive
-#' }
 init_mcmc_params <- function(si_data, dist) {
-  
-  rtn <- si_from_data_valid_distrs(dist)
-  if (!rtn$is_dist_valid) {
-    stop("The supported distributions are 'gamma', 'weibull',
-           'lognormal', 'gamma_offset_1' (Gamma shifted by 1),
-           'weibull_offset_1' (Weibull shifted by 1),
-           or 'lognormal_offset_1' (Lognormal shifted by 1). ")
-  }
-  naive_SI_obs <- (si_data$SR + si_data$SL) / 2 - (si_data$ER + si_data$EL) / 2
-  mu <- mean(naive_SI_obs)
-  sigma <- stats::sd(naive_SI_obs)
-  if (dist == "gamma"| dist == "G") {
-    shape <- (mu / sigma)^2
-    scale <- sigma^2 / mu
-    # check this is what we want
-    # tmp <- stats::rgamma(10000, shape=shape, scale = scale)
-    # mean(tmp)
-    # stats::sd(tmp)
-    param <- c(shape, scale)
-  } else if (dist == "weibull"| dist == "W") {
-    fit.w <- fitdistrplus::fitdist(naive_SI_obs + 0.1, "weibull") 
-    ## using +0.1 to avoid issues with zero
-    shape <- fit.w$estimate["shape"]
-    scale <- fit.w$estimate["scale"]
-    # check this is what we want
-    # tmp <- rweibull(10000, shape=shape, scale = scale)
-    # mean(tmp)
-    # stats::sd(tmp)
-    param <- c(shape, scale)
-  } else if (dist == "lognormal"| dist == "L") {
-    sdlog <- sqrt(log(sigma^2 / (mu^2) + 1))
-    meanlog <- log(mu) - sdlog^2 / 2
-    # check this is what we want
-    # tmp <- rlnorm(10000, meanlog=meanlog, sdlog = sdlog)
-    # mean(tmp)
-    # stats::sd(tmp)
-    param <- c(meanlog, sdlog)
-  } else if (dist == "gamma_offset_1"| dist == "off1G") {
-    shape <- ((mu - 1) / sigma)^2
-    if (shape <= 0) shape <- 0.001 
-    ## this is to avoid issues when the mean SI is <1
-    scale <- sigma^2 / (mu - 1)
-    # check this is what we want
-    # tmp <- 1+stats::rgamma(10000, shape=shape, scale = scale)
-    # mean(tmp)
-    # stats::sd(tmp)
-    param <- c(shape, scale)
-  } else if (dist == "weibull_offset_1"| dist == "off1W") {
-    fit.w <- fitdistrplus::fitdist(naive_SI_obs - 1 + 0.1, "weibull") 
-    ## using +0.1 to avoid issues with zero
-    shape <- fit.w$estimate["shape"]
-    scale <- fit.w$estimate["scale"]
-    # check this is what we want
-    # tmp <- 1+rweibull(10000, shape=shape, scale = scale)
-    # mean(tmp)
-    # stats::sd(tmp)
-    param <- c(shape, scale)
-  } else if (dist == "lognormal_offset_1"| dist == "off1L") {
-    sdlog <- sqrt(log(sigma^2 / ((mu - 1)^2) + 1))
-    meanlog <- log(mu - 1) - sdlog^2 / 2
-    # check this is what we want
-    # tmp <- 1+rlnorm(10000, meanlog=meanlog, sdlog = sdlog)
-    # mean(tmp)
-    # stats::sd(tmp)
-    param <- c(meanlog, sdlog)
-  }
-  
-  if (anyNA(param)) {
-    stop("NA result. Check that si_data is in the right format. ")
-  }
-  return(param)
+  .Deprecated("si_start_values")
+  unname(unlist(si_start_values(si_data, dist)))
 }

@@ -2,94 +2,27 @@
 % Please edit documentation in R/init_mcmc_params.R
 \name{init_mcmc_params}
 \alias{init_mcmc_params}
-\title{Find clever starting points for MCMC estimation}
+\title{Find starting points for the estimation of the serial interval}
 \usage{
 init_mcmc_params(si_data, dist)
 }
 \arguments{
-\item{si_data}{data on dates of symptoms of pairs of infector/infected
-individuals to be used to estimate the serial interval distribution. This
-should be a dataframe with 5 columns:
-\itemize{
-\item{EL: the lower bound
-of the symptom onset date of the infector (given as an integer)}
-\item{ER:
-the upper bound of the symptom onset date of the infector (given as an
-integer). Should be such that ER>=EL. If the dates are known exactly use
-ER = EL}
-\item{SL: the lower bound of the
-symptom onset date of the infected individual (given as an integer)}
-\item{SR: the upper bound of the symptom onset date of the infected
-individual (given as an integer). Should be such that SR>=SL. If the dates
-are known exactly use SR = SL}
-\item{type
-(optional): can have entries 0, 1, or 2, corresponding to doubly
-interval-censored, single interval-censored or exact observations,
-respectively, see Reich et al. Statist. Med. 2009. If not specified, this
-will be automatically computed from the dates}
-}}
+\item{si_data}{The data on dates of symptoms of pairs of infector/infected
+individuals, as described in \code{\link[=estimate_R]{estimate_R()}}.}
 
-\item{dist}{The parametric distribution used when estimating the serial
-interval. Should be one of "gamma", "weibull", "lognormal", "gamma_offset_1",
-"weibull_offset_1", or "lognormal_offset_1". Note the different naming
-convention compared to \code{\link[coarseDataTools]{dic.fit.mcmc}}. The
-distribution may also be specified using the abbreviated forms "G", "W", "L",
-"off1G", "off1W", and "off1L" as used in \code{\link[coarseDataTools]{dic.fit.mcmc}}.
-However, we recommend using the full names to avoid confusion, and a warning
-will be issued if the abbreviated forms are used.
-If not present, computed automatically from \code{x}.}
+\item{dist}{The parametric distribution of the serial interval, as in
+\code{si_parametric_distr} in \code{\link[=make_config]{make_config()}}, e.g. "gamma" or
+"gamma_offset_1".}
 }
 \value{
-A vector containing the initial values for the two parameters of the
-distribution of the serial interval. These are the shape and scale for all
-but the lognormal distribution, for which it is the meanlog and sdlog.
+A vector containing the starting values for the parameters of the
+distribution of the serial interval, as given by \code{\link[=si_start_values]{si_start_values()}}.
 }
 \description{
-Finds values of the serial interval distribution
-parameters, used to initialise the MCMC estimation of the serial interval
-distribution (e.g. when using option \code{si_from_data} in
-\code{\link[=estimate_R]{estimate_R()}}). Initial values are computed based on the observed mean and
-standard deviation of the sample from which the parameters are to be
-estimated.
-}
-\examples{
-\dontrun{
-## Note the following examples use an MCMC routine
-## to estimate the serial interval distribution from data,
-## so they may take a few minutes to run
-
-## load data on rotavirus
-data("MockRotavirus")
-
-## get clever initial values for shape and scale of a Gamma distribution
-## fitted to the the data MockRotavirus$si_data
-clever_init_param <- init_mcmc_params(MockRotavirus$si_data, "gamma")
-
-## estimate the serial interval from data using a clever starting point for 
-## the MCMC chain
-SI_fit_clever <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-                             dist = "G",
-                             init.pars = clever_init_param,
-                             burnin = 1000,
-                             n.samples = 5000)
-
-## estimate the serial interval from data using a random starting point for 
-## the MCMC chain
-SI_fit_naive <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-                             dist = "G",
-                             burnin = 1000,
-                             n.samples = 5000)
-
-
-## use check_cdt_samples_convergence to check convergence in both situations
-converg_diag_clever <- check_cdt_samples_convergence(SI_fit_clever@samples)
-converg_diag_naive <- check_cdt_samples_convergence(SI_fit_naive@samples)
-converg_diag_clever
-converg_diag_naive
-}
+This function is deprecated. Use \code{\link[=si_start_values]{si_start_values()}} instead.
 }
 \seealso{
-\code{\link[=estimate_R]{estimate_R()}}
+\code{\link[=si_start_values]{si_start_values()}}
 }
 \author{
 Anne Cori

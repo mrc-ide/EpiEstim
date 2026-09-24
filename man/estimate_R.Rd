@@ -45,14 +45,17 @@ imported cases.}
 
 \item{si_data}{For method "si_from_data"; the data on dates of symptoms of
 pairs of infector/infected individuals to be used to estimate the serial
-interval distribution should be a dataframe with 5 columns:
+interval distribution should be a dataframe with 5 or 6 columns:
 \itemize{
 \item EL: the lower bound of the symptom onset date of the infector (given as an integer)
 \item ER: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that ER>=EL. If the dates are known exactly use ER = EL
 \item SL: the lower bound of the symptom onset date of the infected individual (given as an integer)
 \item SR: the upper bound of the symptom onset date of the infected individual (given as an integer). Should be such that SR >= SL. If the dates are known exactly use SR = SL
 \item type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates
-}}
+\item OT (optional): the time (given as an integer) up to which symptom onsets of infected individuals are observed, e.g. the time of data collection. Like SR it is a continuous bound, so with daily data a pair observed up to and including day d has OT = d + 1. If given, the estimation of the serial interval accounts for right truncation using \link[primarycensored:primarycensored-package]{primarycensored}. When pairs of infector/infected individuals are observed during an ongoing outbreak, OT should be given, as otherwise the serial interval may be underestimated (see Charniga et al. PLoS Comp Biol 2024). Should be such that OT > SL. If not given, or for entries that are \code{NA}, no right truncation is assumed
+}
+
+As in coarseDataTools, EL, ER, SL and SR are continuous bounds, so a symptom onset known to the day d is given as EL = d and ER = d + 1 (as in the \code{MockRotavirus} data), and ER = EL means the onset time is known exactly.}
 
 \item{si_sample}{For method "si_from_sample"; a matrix where each column
 gives one distribution of the serial interval to be explored (see details).}
@@ -123,9 +126,11 @@ used for estimation
 \code{I_local + I_imported = I})
 \item \code{I_imputed}: the time series of incidence of imputed cases
 \item \code{dates}: a vector of dates corresponding to the incidence time series
-\item \code{MCMC_converged} (only for method \code{si_from_data}): a boolean showing
-whether the Gelman-Rubin MCMC convergence diagnostic was successful
-(\code{TRUE}) or not (\code{FALSE})
+\item \code{si_fit_converged} (only for method \code{si_from_data}): a boolean showing
+whether the maximum likelihood estimation of the serial interval
+converged (\code{TRUE}) or not (\code{FALSE})
+\item \code{MCMC_converged} (only for method \code{si_from_data}): deprecated, the same as
+\code{si_fit_converged}
 }
 }
 \description{
@@ -153,16 +158,21 @@ serial interval
 each drawn from truncated normal distributions, with parameters specified by
 the user
 \item In method "si_from_data", the serial interval distribution is directly
-estimated, using MCMC, from interval censored exposure data, with data
+estimated, by maximum likelihood, from interval censored exposure data, with data
 provided by the user together with a choice of parametric distribution for
 the serial interval
 \item In method "si_from_sample", the user directly provides the sample of
 serial interval distribution to use for estimation of R. This can be a useful
-alternative to the previous method, where the MCMC estimation of the serial
+alternative to the previous method, where the estimation of the serial
 interval distribution could be run once, and the same estimated SI
 distribution then used in estimate_R in different contexts, e.g. with
-different time windows, hence avoiding to rerun the MCMC every time
-estimate_R is called.
+different time windows, hence avoiding to rerun the estimation every time
+estimate_R is called. \code{\link[=primary2estim]{primary2estim()}} gives such a sample from a
+serial interval estimated with
+\link[primarycensored:primarycensored-package]{primarycensored}. For a
+Bayesian estimate of the serial interval, fit it with
+\code{\link[primarycensored:pcd_cmdstan_model]{primarycensored::pcd_cmdstan_model()}} and pass the fit to
+\code{\link[=primary2estim]{primary2estim()}}.
 }
 
 R is estimated within a Bayesian framework, using a Gamma distributed prior,
@@ -271,30 +281,19 @@ plot(res_bi, "R")
 ## used, even though the difference is marginal in this case.
 
 \dontrun{
-## Note the following examples use an MCMC routine
-## to estimate the serial interval distribution from data,
-## so they may take a few minutes to run
-
 ## load data on rotavirus
 data("MockRotavirus")
-
-mcmc_control <- make_mcmc_control(
-  burnin = 1000, # first 1000 iterations discarded as burn-in
-  thin = 10, # every 10th iteration will be kept, the rest discarded
-  seed = 1 # set the seed to make the process reproducible
-)
 
 R_si_from_data <- estimate_R(
   incid = MockRotavirus$incidence,
   method = "si_from_data",
   si_data = MockRotavirus$si_data, # symptom onset data
   config = make_config(
-    si_parametric_distr = "G", # gamma dist. for SI
-    mcmc_control = mcmc_control,
-    n1 = 500, # number of posterior samples of SI dist.
-    n2 = 50, # number of posterior samples of Rt dist.
-    seed = 2
-  ) # set seed for reproducibility
+    si_parametric_distr = "gamma", # gamma dist. for SI
+    n1 = 500, # number of SI distributions drawn
+    n2 = 50, # number of posterior samples of Rt for each SI distribution
+    seed = 2 # set seed for reproducibility
+  )
 )
 
 ## compare with version with no uncertainty
@@ -315,25 +314,30 @@ p_uncertainty + p_no_uncertainty
 ## distribution.
 
 ## estimate the reproduction number (method "si_from_sample")
-MCMC_seed <- 1
-overall_seed <- 2
-SI.fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-                 dist = "G",
-                 init.pars = init_mcmc_params(MockRotavirus$si_data, "G"),
-                 burnin = 1000,
-                 n.samples = 5000,
-                 seed = MCMC_seed)
-si_sample <- coarse2estim(SI.fit, thin = 10)$si_sample
+## first estimate the SI distribution with primarycensored, accounting for
+## double interval censoring, using the same starting values as
+## method "si_from_data"
+si_data <- MockRotavirus$si_data
+censdata <- data.frame(left = si_data$SL - si_data$EL,
+                       right = si_data$SR - si_data$EL,
+                       pwindow = si_data$ER - si_data$EL,
+                       D = Inf)
+SI.fit <- primarycensored::fitdistdoublecens(
+  censdata, distr = "gamma", start = si_start_values(si_data, "gamma")
+)
+## turn this into a sample of SI distributions
+si_sample <- primary2estim(SI.fit, dist = stats::pgamma, n = 500,
+                           seed = 2)$si_sample
 R_si_from_sample <- estimate_R(MockRotavirus$incidence,
                                method = "si_from_sample",
                                si_sample = si_sample,
                                config = make_config(list(n2 = 50,
-                               seed = overall_seed)))
+                               seed = 2)))
 plot(R_si_from_sample)
 
 ## check that R_si_from_sample is the same as R_si_from_data
-## since they were generated using the same MCMC algorithm to generate the SI
-## sample (either internally to EpiEstim or externally)
+## since they were generated using the same estimation of the SI
+## (either internally to EpiEstim or externally)
 all(R_si_from_sample$R$`Mean(R)` == R_si_from_data$R$`Mean(R)`)
 }
 }
@@ -345,6 +349,14 @@ Wallinga, J. and P. Teunis. Different epidemic curves for severe acute
 respiratory syndrome reveal similar impacts of control measures (AJE 2004).
 Reich, N.G. et al. Estimating incubation period distributions with coarse
 data (Statis. Med. 2009)
+
+Abbott, S. et al. \link[primarycensored:primarycensored-package]{primarycensored}:
+Primary Event Censored Distributions.
+\doi{10.5281/zenodo.13632839}
+
+Charniga, K. et al. Best practices for estimating and reporting
+epidemiological delay distributions of infectious diseases
+(PLoS Comp Biol 2024)
 }
 \seealso{
 \itemize{

@@ -1,39 +1,25 @@
 #' Check MCMC chain convergence using the Gelman-Rubin algorithm
-#' 
-#' This function splits an MCMC chain in two halves and uses the Gelman-Rubin 
-#' algorithm to assess convergence of the chain by comparing its two halves.
 #'
-#' @param cdt_samples the `@sample` slot of a `cd.fit.mcmc` S4 object 
-#' (see package `coarseDataTools`)
-#' @return TRUE if the Gelman Rubin test for convergence was successful, FALSE 
+#' This function is deprecated as [estimate_R()] estimates the serial interval
+#' by maximum likelihood. See [primary2estim()] for using primarycensored fits.
+#'
+#' Splits an MCMC chain in two halves and uses the Gelman-Rubin algorithm to
+#' assess convergence of the chain by comparing its two halves.
+#'
+#' @param cdt_samples the `@samples` slot of the output of
+#'   `coarseDataTools::dic.fit.mcmc()`
+#' @return TRUE if the Gelman Rubin test for convergence was successful, FALSE
 #' otherwise
-#' 
-#' @seealso `estimate_R()`
+#'
+#' @seealso [primary2estim()]
 #' @author Anne Cori
 #' @export
-#' @examples
-#' \dontrun{
-#' ## Note the following examples use an MCMC routine
-#' ## to estimate the serial interval distribution from data,
-#' ## so they may take a few minutes to run
-#'
-#' ## load data on rotavirus
-#' data("MockRotavirus")
-#'
-#' ## estimate the serial interval from data
-#' SI_fit <- coarseDataTools::dic.fit.mcmc(dat = MockRotavirus$si_data,
-#'                      dist = "G",
-#'                      init_pars = init_mcmc_params(MockRotavirus$si_data, "G"),
-#'                      burnin = 1000,
-#'                      n.samples = 5000)
-#'
-#' ## use check_cdt_samples_convergence to check convergence
-#' converg_diag <- check_cdt_samples_convergence(SI_fit@samples)
-#' converg_diag
-#'
-#' }
-
 check_cdt_samples_convergence <- function(cdt_samples) {
+  .Deprecated(msg = paste(
+    "check_cdt_samples_convergence() is deprecated as estimate_R()",
+    "estimates the serial interval by maximum likelihood. See",
+    "primary2estim() for using primarycensored fits."
+  ))
   ## checking convergence of the MCMC by using the Gelman-Rubin algorithm 
   ## between the first and second half of the MCMC sample
   spl1 <- cdt_samples[seq_len(floor(nrow(cdt_samples) / 2)), ]
@@ -52,7 +38,7 @@ ylab='Mean SI')
             > plot(res$SI.Moments[,'Std'], type='l', xlab='Iterations', 
 ylab='Std SI'),
             where res is the output of estimate_R
-            and decide whether to rerun for longer.")
+            and decide whether to rerun for longer.", call. = FALSE)
     return(FALSE)
   } else {
     cat("\nGelman-Rubin MCMC convergence diagnostic was successful.")

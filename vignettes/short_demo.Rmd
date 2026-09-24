@@ -141,10 +141,12 @@ Note that you can obtain such a full distribution of the serial interval using
 `discr_si` function (this is how `Flu2009$si_distr` was obtained, with 
 additional rounding). The discretisation method implemented in `discr_si` is
 documented in the supplementary material of Cori et al. AJE 2013. It assumes
-a Gamma distributed serial interval, and accounts
+by default a Gamma distributed serial interval shifted by one day, and accounts
 for the fact that the serial interval is double-censored, i.e. 
 the time of symptom onset in both the primary and secondary cases are
-discrete (typically with a daily interval). 
+discrete (typically with a daily interval).
+`discr_si` uses `primarycensored::dprimarycensored()` for this, which also supports other
+distributions, shifts and truncation of the serial interval (see `?discr_si`).
 
 ```{r discr_si}
 discr_si(0:20, mu = 2.6, sigma = 1.5)
@@ -193,9 +195,10 @@ outbreak which could inform the
 serial interval distribution. 
 
 In `estimate_R`, we now allow the serial interval distribution to be directly
-estimated, using MCMC, from interval censored exposure data. The reproduction 
-number is then estimated using the posterior distribution of the SI, hence 
-accounting for the uncertainty associated with this estimate. 
+estimated, by maximum likelihood using `primarycensored::fitdistdoublecens()`, 
+from interval censored exposure data. The reproduction number is then estimated 
+using a sample of SI distributions drawn from the uncertainty in this 
+estimate, hence accounting for the uncertainty associated with this estimate. 
 
 As the epidemic progresses, newly collected exposure data can be incorporated
 to update the serial interval estimate. 
@@ -221,14 +224,10 @@ These can be used to estimate the SI within `estimate_R`, and produce estimates
 of the reproduction number based on the full SI posterior distribution:
 
 ```{r estimate_r_si_from_data}
-## fixing the random seeds
-MCMC_seed <- 1
+## fixing the random seed
 overall_seed <- 2
-mcmc_control <- make_mcmc_control(seed = MCMC_seed, 
-                                  burnin = 1000)
-dist <- "G" # fitting a Gamma dsitribution for the SI
+dist <- "gamma" # fitting a Gamma distribution for the SI
 config <- make_config(list(si_parametric_distr = dist,
-                           mcmc_control = mcmc_control,
                            seed = overall_seed, 
                            n1 = 50, 
                            n2 = 50))
@@ -238,32 +237,36 @@ res_si_from_data <- estimate_R(Flu2009$incidence,
                                config = config)
 
 plot(res_si_from_data, legend = FALSE)
-## the third plot now shows the posterior sample of SI distributions 
+## the third plot now shows the sample of SI distributions 
 ## that were integrated over
 ```
 
 Now say you want to save your estimates of the serial interval first, 
 and then use them within `estimate_R`. This can be useful e.g. if you want
 to explore several time windows for R estimation, but based on the same SI data, 
-and so you don't want to run the MCMC to estimate the SI within `estimate_R`
-every time. You can do this as follow:
+and so you don't want to estimate the SI within `estimate_R` every time. 
+You can do this by fitting the SI with 
+`primarycensored::fitdistdoublecens()` and converting the fit with 
+`primary2estim()`, as follows. `primary2estim()` also accepts a Bayesian fit 
+from `primarycensored::pcd_cmdstan_model()`.
 
 ```{r estimate_r_si_from_sample}
 ## using the same random seeds as before to be able to compare results
 
-## first estimate the SI distribution using function dic.fit.mcmc fron 
-## coarseDataTools package:
-n_mcmc_samples <- config$n1*mcmc_control$thin
-dist <- "G"
-dist_nice_name <- "gamma"
-SI_fit <- coarseDataTools::dic.fit.mcmc(dat = Flu2009$si_data,
-                  dist = dist,
-                  init.pars = init_mcmc_params(Flu2009$si_data, dist_nice_name),
-                  burnin = mcmc_control$burnin,
-                  n.samples = n_mcmc_samples,
-                  seed = mcmc_control$seed)
-## thinning the output of the MCMC and converting using coarse2estim function
-si_sample <- coarse2estim(SI_fit, thin = mcmc_control$thin)$si_sample
+## first estimate the SI distribution by maximum likelihood with
+## primarycensored, accounting for double interval censoring, using the same
+## starting values as method "si_from_data":
+si_data <- Flu2009$si_data
+censdata <- data.frame(left = si_data$SL - si_data$EL,
+                       right = si_data$SR - si_data$EL,
+                       pwindow = si_data$ER - si_data$EL,
+                       D = Inf)
+SI_fit <- primarycensored::fitdistdoublecens(
+  censdata, distr = "gamma", start = si_start_values(si_data, "gamma")
+)
+## drawing a sample of SI distributions and converting using primary2estim
+si_sample <- primary2estim(SI_fit, dist = stats::pgamma, n = config$n1,
+                           seed = overall_seed)$si_sample
 res_si_from_sample <- estimate_R(Flu2009$incidence,
                                 method = "si_from_sample",
                                 si_sample = si_sample,
@@ -271,8 +274,8 @@ res_si_from_sample <- estimate_R(Flu2009$incidence,
                                 seed = overall_seed)))
 
 ## check that res_si_from_sample is the same as res_si_from_data
-## since they were generated using the same MCMC algorithm to generate the SI
-## sample (either internally to EpiEstim or externally)
+## since they were generated using the same estimation of the SI
+## (either internally to EpiEstim or externally)
 all(res_si_from_sample$R$`Mean(R)` == res_si_from_data$R$`Mean(R)`)
 ```
 

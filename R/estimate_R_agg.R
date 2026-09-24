@@ -348,6 +348,22 @@ estimate_R_agg <- function(incid,
                                  rep_len(reo_dt_end, n_dt - 2)))
   }
   
+  # A parametric serial interval is the same in every iteration, so
+  # discretise it once, truncated at the end of the series so that it is
+  # normalised
+  si_distr_r <- config$si_distr
+  if (is.null(si_distr_r)) {
+    si_discr_args <- config$si_discr_args
+    if (is.null(si_discr_args)) {
+      si_discr_args <- list()
+    }
+    si_discr_args$D <- min(si_discr_args$D, total_t + 1)
+    si_distr_r <- discr_si_config(
+      seq(0, total_t), mu = config$mean_si, sigma = config$std_si,
+      si_discr_args = si_discr_args
+    )
+  }
+
   niter <- seq(1, iter, 1) 
   sim_inc <- matrix(NA, nrow = total_t, ncol = iter)
   
@@ -408,17 +424,8 @@ estimate_R_agg <- function(incid,
       incid_to_reconstruct <- incid[aggs_to_reconstruct]
       
       # Translate R to growth rate
-      get_r_from_R <- function(R, si_mean, si_sd, 
-                               si_distr,
-                               grid) {
+      get_r_from_R <- function(R, si_distr, grid) {
         r_grid <- seq(grid$min, grid$max, grid$precision)
-        if (is.null(si_distr)) {
-          si_distr <- discr_si(seq(0, total_t), mu = si_mean, sigma = si_sd)
-          # remove tail
-          threshold <- 1e-6
-          si_distr <- si_distr[c(TRUE, si_distr[-1] >= threshold)]
-          si_distr <- si_distr / sum(si_distr)
-        }
         # using a grid of r values translate that into R using r2R0
         R_grid <- epitrix::r2R0(r = r_grid, w = si_distr)
         
@@ -438,10 +445,7 @@ estimate_R_agg <- function(incid,
         vapply(idx_r, function(e) r_grid[e], numeric(1L))
       }
       
-      gr <- get_r_from_R(R = Mean_R, 
-                         si_mean = config$mean_si, si_sd = config$std_si, 
-                         si_distr = config$si_distr,
-                         grid = grid)
+      gr <- get_r_from_R(R = Mean_R, si_distr = si_distr_r, grid = grid)
       
       # Assume the growth rates match to reconstruct preceding aggregation window:
       if (recon_opt == "match") {
@@ -539,10 +543,7 @@ estimate_R_agg <- function(incid,
       incid_to_reconstruct <- incid[aggs_to_reconstruct]
       
       # Translate R to growth rate again
-      gr <- get_r_from_R(R = Mean_R, 
-                         si_mean = config$mean_si, si_sd = config$std_si, 
-                         si_distr = config$si_distr,
-                         grid = grid)
+      gr <- get_r_from_R(R = Mean_R, si_distr = si_distr_r, grid = grid)
       
       if (recon_opt == "match"){
       gr <- c(gr[1], gr)

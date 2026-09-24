@@ -25,8 +25,8 @@ reproduction number using the methodology described in Cori et al. AJE 2013.
 Among other features, this supports the following: 
 
 - Within the R estimation, nesting an estimation of the serial interval from 
-double censored data using the `coarseDataTools` package, as described in 
-Thompson et al. Epidemics 2019 
+double censored and optionally right truncated data using the 
+`primarycensored` package, following Thompson et al. Epidemics 2019 
 (EpiEstim versions >= 1.1-0, using `method = "si_from_data"` or 
 `method = "si_from_sample"`)
 
