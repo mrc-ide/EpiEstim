@@ -279,7 +279,11 @@ test_that("si_from_data does not warn about right truncation", {
 test_that("a missing covariance gives an informative error", {
   testthat::local_mocked_bindings(
     fitdistdoublecens = function(...) {
-      list(estimate = c(shape = 2, scale = 1), vcov = NULL, convergence = 0)
+      structure(
+        list(estimate = c(shape = 2, scale = 1), vcov = NULL,
+             convergence = 0),
+        class = "fitdist"
+      )
     },
     .package = "primarycensored"
   )

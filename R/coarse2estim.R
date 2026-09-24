@@ -100,7 +100,11 @@ coarse2estim <- function(x = NULL, dist = x@dist, samples = x@samples,
   }
 
   ## Discretise each serial interval distribution in the sample
-  prob_matrix <- si_sample_from_params(si_fit_distr(dist), samples)
+  fit_distr <- si_fit_distr(dist)
+  samples <- stats::setNames(as.data.frame(samples), fit_distr$params)
+  prob_matrix <- primary2estim(
+    samples, dist = fit_distr$pdist, shift = fit_distr$shift
+  )$si_sample
 
   out <- list(si_sample = prob_matrix, si_parametric_distr = dist)
 

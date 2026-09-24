@@ -21,9 +21,6 @@ si_fit_distr <- function(distr) {
     params = switch(fam,
       G = c("shape", "scale"), W = c("shape", "scale"),
       L = c("meanlog", "sdlog")
-    ),
-    positive = switch(fam,
-      G = c(TRUE, TRUE), W = c(TRUE, TRUE), L = c(FALSE, TRUE)
     )
   )
 }
@@ -118,55 +115,6 @@ draw_si_params <- function(estimate, vcov, n, positive) {
   as.data.frame(draws)
 }
 
-## Discretise a sample of serial interval distributions.
-## Following the approach of the distspec package, the support is set from
-## the 0.999 quantile of the primary censored serial interval (largest across
-## the sample) and each distribution is right truncated at the end of this
-## support. For distributions without an offset P(SI = 0) is set to 0 by
-## truncating below 1.
-## Returns a matrix with one column per distribution, as used by
-## estimate_R with method "si_from_sample".
-si_sample_from_params <- function(fit_distr, samples, discr_args = list()) {
-  if (is.null(discr_args$dprimary)) {
-    discr_args$dprimary <- stats::dunif
-  }
-  if (is.null(discr_args$primary_args)) {
-    discr_args$primary_args <- list()
-  }
-  params <- lapply(seq_len(nrow(samples)), function(i) {
-    stats::setNames(as.list(unlist(samples[i, ])), fit_distr$params)
-  })
-  q_max <- max(vnapply(params, function(p) {
-    do.call(
-      primarycensored::qprimarycensored,
-      c(
-        list(
-          p = 0.999, pdist = fit_distr$pdist, pwindow = 1,
-          dprimary = discr_args$dprimary,
-          primary_args = discr_args$primary_args
-        ),
-        p,
-        list(check = FALSE)
-      )
-    )
-  }))
-  max_value <- ceiling(q_max + fit_distr$shift)
-  k <- seq(0, max_value)
-  lower <- if (fit_distr$shift == 0) 1 else -Inf
-  if (!is.null(discr_args$L)) {
-    lower <- max(lower, discr_args$L)
-  }
-  upper <- max_value + 1
-  if (!is.null(discr_args$D)) {
-    upper <- min(upper, discr_args$D)
-  }
-  si_args <- si_discr_defaults(list(
-    dist = fit_distr$pdist, shift = fit_distr$shift, L = lower, D = upper,
-    dprimary = discr_args$dprimary, primary_args = discr_args$primary_args
-  ))
-  t(discr_si_param_draws(k, params, si_args))
-}
-
 ## Estimate the serial interval from si_data and return a sample of discrete
 ## serial interval distributions
 si_sample_from_data <- function(si_data, config) {
@@ -198,16 +146,14 @@ si_sample_from_data <- function(si_data, config) {
             "did not converge.", call. = FALSE)
   }
 
-  if (!is.null(mcmc_control$seed)) {
-    set.seed(mcmc_control$seed)
-  }
-  samples <- draw_si_params(
-    fit$estimate[fit_distr$params],
-    fit$vcov[fit_distr$params, fit_distr$params],
-    config$n1,
-    fit_distr$positive
-  )
-  si_sample <- si_sample_from_params(fit_distr, samples, discr_args)
+  si_sample <- primary2estim(
+    fit,
+    dist = fit_distr$pdist,
+    n = config$n1,
+    shift = fit_distr$shift,
+    si_discr_args = discr_args,
+    seed = mcmc_control$seed
+  )$si_sample
 
   list(si_sample = si_sample, converged = converged)
 }
