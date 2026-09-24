@@ -136,8 +136,8 @@ test_that("process_si_data accepts an observation time column", {
   si_data$OT <- 30L
   processed <- process_si_data(si_data)
   expect_identical(processed$OT, si_data$OT)
-  si_data$OT <- si_data$SL - 1L
-  expect_error(process_si_data(si_data), "SL > OT")
+  si_data$OT <- si_data$SL
+  expect_error(process_si_data(si_data), "SL >= OT")
   si_data$OT <- 30
   expect_error(process_si_data(si_data), "OT is non integer")
 })
@@ -204,7 +204,8 @@ test_that("si_from_data corrects for right truncation with an OT column", {
   truth <- discr_mean(mu, sigma)
 
   naive <- suppressWarnings(run_si_from_data(si_data, config, incid))
-  si_data$OT <- 40L
+  ## pairs are observed up to and including day 40
+  si_data$OT <- 41L
   truncated <- suppressWarnings(run_si_from_data(si_data, config, incid))
   naive_bias <- mean(naive$SI.Moments$Mean) - truth
   truncated_bias <- mean(truncated$SI.Moments$Mean) - truth
@@ -284,6 +285,15 @@ test_that("exact dates in si_data map to zero width windows", {
   expect_equal(censdata$left, c(3, 4, 4))
   expect_equal(censdata$right, c(4, 5, 4))
   expect_no_message(si_data_to_censdata(si_data, 0))
+})
+
+test_that("OT is a continuous upper bound of the observation time", {
+  si_data <- data.frame(
+    EL = c(0L, 2L), ER = c(1L, 3L), SL = c(3L, 6L), SR = c(4L, 7L),
+    OT = c(10L, NA)
+  )
+  expect_equal(si_data_to_censdata(si_data, 0)$D, c(10, Inf))
+  expect_equal(si_data_to_censdata(si_data, 1)$D, c(9, Inf))
 })
 
 test_that("si_from_data fits mixed type 0, 1 and 2 rows", {
