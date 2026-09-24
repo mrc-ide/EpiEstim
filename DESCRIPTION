@@ -64,5 +64,6 @@ Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 Additional_repositories: https://stan-dev.r-universe.dev
 Remotes: reconverse/incidence2/pkg,
-    epinowcast/primarycensored
+    epinowcast/primarycensored,
+    stan-dev/cmdstanr
 Config/roxygen2/version: 8.0.0
