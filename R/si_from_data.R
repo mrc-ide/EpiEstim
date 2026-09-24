@@ -62,12 +62,13 @@ si_from_data_discr_args <- function(config, fit_distr) {
 ## Following coarseDataTools, EL, ER, SL and SR are continuous bounds, so a
 ## date known to the day is EL = d, ER = d + 1, and EL = ER (or SL = SR) is an
 ## exactly known time. An exact primary time gives pwindow = 0 and an exact
-## secondary time gives left = right, which contributes a density.
+## secondary time gives left = right, which contributes a density. OT is also
+## a continuous bound: secondary onsets are observed up to time OT.
 si_data_to_censdata <- function(si_data, shift) {
   upper <- rep(Inf, nrow(si_data))
   if ("OT" %in% names(si_data)) {
     upper <- ifelse(
-      is.na(si_data$OT), Inf, si_data$OT + 1 - si_data$EL - shift
+      is.na(si_data$OT), Inf, si_data$OT - si_data$EL - shift
     )
   }
   data.frame(

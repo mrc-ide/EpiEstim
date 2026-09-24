@@ -24,7 +24,8 @@
 - `estimate_R()` with method "si_from_data" now estimates the serial 
   interval by maximum likelihood using `primarycensored::fitdistdoublecens()` 
   instead of coarseDataTools. This is faster. An optional `OT` column in `si_data` gives 
-  the last day on which the infected onset could be observed, and the 
+  the time up to which infected onsets are observed (`OT = d + 1` for pairs 
+  observed up to and including day `d`), and the 
   estimation then accounts for right truncation (see Charniga et al., PLoS 
   Comp Biol 2024). `dprimary` and `primary_args` in `si_discr_args` set the 
   distribution of the primary event time for both the estimation and the 

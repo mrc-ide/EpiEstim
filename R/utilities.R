@@ -48,8 +48,8 @@ process_si_data <- function(si_data) {
       stop("si_data has entries for which OT is non integer.",
            call. = FALSE)
     }
-    if (any(si_data$SL > si_data$OT, na.rm = TRUE)) {
-      stop("si_data has entries for which SL > OT.", call. = FALSE)
+    if (any(si_data$SL >= si_data$OT, na.rm = TRUE)) {
+      stop("si_data has entries for which SL >= OT.", call. = FALSE)
     }
   }
 

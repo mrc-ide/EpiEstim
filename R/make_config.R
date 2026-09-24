@@ -203,9 +203,11 @@
 #'   respectively, see Reich et al. Statist. Med. 2009. If not specified, this
 #'   will be automatically computed from the dates
 #'
-#' - `OT` (optional): the last day (given as an integer) on which the symptom
-#'   onset of the infected individual could have been observed. If given, the
-#'   estimation accounts for right truncation. When pairs of infector/infected
+#' - `OT` (optional): the time (given as an integer) up to which symptom
+#'   onsets of infected individuals are observed. Like `SR` it is a continuous
+#'   bound, so with daily data a pair observed up to and including day `d` has
+#'   `OT = d + 1`. Should be such that `OT > SL`. If given, the estimation
+#'   accounts for right truncation. When pairs of infector/infected
 #'   individuals are observed during an ongoing outbreak, `OT` should be
 #'   given, as otherwise the serial interval may be underestimated (see
 #'   Charniga et al. PLoS Comp Biol 2024). If not given, or for entries that
