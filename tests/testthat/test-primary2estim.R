@@ -25,10 +25,8 @@ test_that("primary2estim of a fitdistdoublecens fit matches si_from_data", {
   si_data <- process_si_data(MockRotavirus$si_data)
   config <- quiet_config(si_parametric_distr = "gamma")
   censdata <- si_data_to_censdata(si_data, 0)
-  start <- init_mcmc_params(si_data, "gamma")
   fit <- primarycensored::fitdistdoublecens(
-    censdata, distr = "gamma",
-    start = list(shape = start[1], scale = start[2])
+    censdata, distr = "gamma", start = si_start_values(si_data, "gamma")
   )
   out <- primary2estim(fit, dist = stats::pgamma, n = 100, seed = 1)
   res <- suppressWarnings(run_si_from_data(MockRotavirus$si_data, config))

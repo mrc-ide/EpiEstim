@@ -43,7 +43,6 @@ Imports:
     primarycensored (>= 1.5.2.1000),
     rlang
 Suggests:
-    coarseDataTools (>= 0.6-4),
     testthat,
     utils,
     vdiffr,

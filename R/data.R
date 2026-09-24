@@ -30,10 +30,6 @@
 #'
 #' @examples
 #' \dontrun{
-#' ## Note the following examples use an MCMC routine
-#' ## to estimate the serial interval distribution from data,
-#' ## so they may take a few minutes to run
-#'
 #' ## load data on pandemic flu in a New York school in 2009
 #' data("flu_2009_NYC_school")
 #'
@@ -45,8 +41,8 @@
 #'   config = make_config(list(
 #'     t_start = seq(2, 8),
 #'     t_end = seq(8, 14),
-#'     si_parametric_distr = "G",
-#'     mcmc_control = make_mcmc_control(list(burnin = 1000, thin = 10, seed = 1)),
+#'     si_parametric_distr = "gamma",
+#'     seed = 1,
 #'     n1 = 1000,
 #'     n2 = 50
 #'   ))
@@ -180,20 +176,16 @@ NULL
 #' ## over the 7-day window finishing on that day.
 #'
 #' \dontrun{
-#' ## Note the following examples use an MCMC routine
-#' ## to estimate the serial interval distribution from data,
-#' ## so they may take a few minutes to run
-#'
 #' ## estimate the reproduction number (method "si_from_data")
 #' res <- estimate_R(
 #'   Flu2009$incidence,
 #'   method = "si_from_data",
 #'   si_data = Flu2009$si_data,
 #'   config = make_config(list(
-#'     mcmc_control = make_mcmc_control(list(burnin = 1000, thin = 10, seed = 1)),
+#'     seed = 1,
 #'     n1 = 1000,
 #'     n2 = 50,
-#'     si_parametric_distr = "G"
+#'     si_parametric_distr = "gamma"
 #'   ))
 #' )
 #' 
@@ -384,10 +376,6 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' ## Note the following example uses an MCMC routine
-#' ## to estimate the serial interval distribution from data,
-#' ## so may take a few minutes to run
-#'
 #' ## load data
 #' data("MockRotavirus")
 #'
@@ -397,8 +385,8 @@ NULL
 #'   method = "si_from_data",
 #'   si_data = MockRotavirus$si_data,
 #'   config = make_config(list(
-#'     si_parametric_distr = "G",
-#'     mcmc_control = make_mcmc_control(list(burnin = 3000, thin = 10)),
+#'     si_parametric_distr = "gamma",
+#'     seed = 1,
 #'     n1 = 500,
 #'     n2 = 50
 #'   ))

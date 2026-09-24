@@ -35,8 +35,22 @@
   primarycensored into a sample of serial interval distributions for 
   `estimate_R()` with method "si_from_sample". It accepts a maximum 
   likelihood fit from `primarycensored::fitdistdoublecens()`, a Bayesian fit 
-  from `primarycensored::pcd_cmdstan_model()`, or a data frame of parameter 
-  draws. It replaces `coarse2estim()`.
+  from `primarycensored::pcd_cmdstan_model()`, a fit from 
+  `fitdistrplus::fitdist()` or `fitdistrplus::fitdistcens()`, or a data frame 
+  of parameter draws. Other distributions can be used by giving a short 
+  function mapping the parameters of a Stan fit (`param_map`) or naming the 
+  parameters drawn on the log scale (`log_params`). It replaces 
+  `coarse2estim()`.
+
+- Method "si_from_data" also supports the exponential distribution 
+  (`si_parametric_distr = "exponential"` or `"exponential_offset_1"`).
+
+- New function `si_start_values()` gives starting values for the estimation 
+  of the serial interval from its mean and standard deviation. It replaces 
+  `init_mcmc_params()`.
+
+- `estimate_R()` output for method "si_from_data" gains `si_fit_converged`, 
+  whether the maximum likelihood estimation of the serial interval converged.
 
 ## Bug fixes
 * Superfluous argument "method" removed from `make_config()` function
@@ -51,8 +65,11 @@
   the maximum likelihood estimates, so results differ from previous versions. 
   `burnin` and `thin` in `make_mcmc_control()` are ignored, with a warning if 
   they are changed from their defaults. `seed` and `init_pars` are still 
-  used. `MCMC_converged` in the output now reports whether the maximum 
-  likelihood estimation converged.
+  used. `mcmc_control` in `make_config()` now defaults to `NULL`, in which 
+  case `seed` in `make_config()` is used to draw the sample of serial interval 
+  distributions. `make_mcmc_control()` is deprecated. `MCMC_converged` in the 
+  output is deprecated in favour of `si_fit_converged`, and reports whether 
+  the maximum likelihood estimation converged.
 
 * In `si_data`, dates known exactly (`EL = ER` or `SL = SR`, types 1 and 2) 
   are now treated as one day intervals, as dates are daily. Previously they 
@@ -65,9 +82,14 @@
   distspec package. Previously the midpoint discretisation was renormalised 
   after truncation.
 
+* `coarse2estim()` now discretises the serial interval exactly, so its output 
+  differs from previous versions.
+
 * `coarse2estim()` and `check_cdt_samples_convergence()` are deprecated. 
-  Use `primary2estim()` with a primarycensored fit instead. coarseDataTools 
-  is now only suggested.
+  Use `primary2estim()` with a primarycensored fit instead. 
+  `init_mcmc_params()` is deprecated in favour of `si_start_values()`, whose 
+  starting values for the Weibull distribution come from a moment 
+  approximation. coarseDataTools is no longer a dependency.
 
 
 # EpiEstim 2.5.1

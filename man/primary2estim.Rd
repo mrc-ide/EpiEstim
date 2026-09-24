@@ -49,15 +49,16 @@ primary2estim(x, ...)
 }
 \arguments{
 \item{x}{A fit from \code{\link[primarycensored:fitdistdoublecens]{primarycensored::fitdistdoublecens()}}, a fit from the
-model returned by \code{\link[primarycensored:pcd_cmdstan_model]{primarycensored::pcd_cmdstan_model()}}, or a data frame
-of parameter draws (see details).}
+model returned by \code{\link[primarycensored:pcd_cmdstan_model]{primarycensored::pcd_cmdstan_model()}}, a fit from
+fitdistrplus, or a data frame of parameter draws (see details).}
 
 \item{...}{Not used.}
 
 \item{dist}{The cumulative distribution function of the serial interval
-minus \code{shift}, used for the fit. For fits, one of \code{\link[stats:pgamma]{stats::pgamma()}},
-\code{\link[stats:plnorm]{stats::plnorm()}} or \code{\link[stats:pweibull]{stats::pweibull()}}. For a data frame of parameter
-draws, any cumulative distribution function of a non-negative delay.}
+minus \code{shift}, used for the fit, e.g. \code{\link[stats:pgamma]{stats::pgamma()}}. Any cumulative
+distribution function of a non-negative delay can be used, with
+\code{log_params} or \code{param_map} for distributions not supported by name in
+\code{\link[=estimate_R]{estimate_R()}} with method "si_from_data".}
 
 \item{n}{A positive integer giving the number of serial interval
 distributions to draw. For a Stan fit with fewer posterior draws, all
@@ -73,6 +74,20 @@ which can contain \code{L}, \code{D}, \code{dprimary} and \code{primary_args}. \
 
 \item{seed}{An integer used as the seed for the random number generator
 when drawing from a \code{\link[primarycensored:fitdistdoublecens]{primarycensored::fitdistdoublecens()}} fit.}
+
+\item{log_params}{For a maximum likelihood fit; the names of the parameters
+that are positive, and so drawn on the log scale. Defaults to the positive
+parameters of the distributions supported by name in \code{\link[=estimate_R]{estimate_R()}} with
+method "si_from_data" (e.g. \code{shape} and \code{scale} for \code{\link[stats:pgamma]{stats::pgamma()}}),
+and otherwise to the parameters with a positive estimate.}
+
+\item{param_map}{For a Stan fit; a function taking a matrix of posterior
+draws of the parameters of the primarycensored Stan model (with columns
+\code{params[1]}, \code{params[2]}, ...) and returning a data frame of the
+corresponding parameters of \code{dist}, with one column per parameter. Only
+needed for distributions other than those supported by name in
+\code{\link[=estimate_R]{estimate_R()}} with method "si_from_data", e.g.
+\code{function(draws) data.frame(rate = draws[, 1])}.}
 }
 \value{
 A list with two elements:
@@ -107,6 +122,17 @@ the cmdstanr package.
 parameter of \code{dist}, named as the arguments of \code{dist} (e.g. \code{shape} and
 \code{scale} for \code{\link[stats:pgamma]{stats::pgamma()}}).
 }
+
+Fits from \code{\link[fitdistrplus:fitdist]{fitdistrplus::fitdist()}} and \code{\link[fitdistrplus:fitdistcens]{fitdistrplus::fitdistcens()}} are
+also accepted. For most epidemiological data, a fit with
+\code{\link[primarycensored:fitdistdoublecens]{primarycensored::fitdistdoublecens()}} is preferred as it accounts for the
+censoring of both the primary and secondary events, and for right
+truncation. Only the parameter estimates and their covariance are used, and
+their names are checked against the arguments of \code{dist}.
+
+Distributions beyond those supported by name in \code{\link[=estimate_R]{estimate_R()}} with method
+"si_from_data" can be used by giving \code{log_params} for a maximum likelihood
+fit, or \code{param_map} for a Stan fit.
 
 Each parameter set is discretised with \code{\link[=discr_si]{discr_si()}}. The support runs up to
 the largest 0.999 quantile of the primary censored serial interval across

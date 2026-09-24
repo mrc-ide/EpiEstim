@@ -224,13 +224,10 @@ These can be used to estimate the SI within `estimate_R`, and produce estimates
 of the reproduction number based on the full SI posterior distribution:
 
 ```{r estimate_r_si_from_data}
-## fixing the random seeds
-MCMC_seed <- 1
+## fixing the random seed
 overall_seed <- 2
-mcmc_control <- make_mcmc_control(seed = MCMC_seed)
-dist <- "G" # fitting a Gamma dsitribution for the SI
+dist <- "gamma" # fitting a Gamma distribution for the SI
 config <- make_config(list(si_parametric_distr = dist,
-                           mcmc_control = mcmc_control,
                            seed = overall_seed, 
                            n1 = 50, 
                            n2 = 50))
@@ -240,7 +237,7 @@ res_si_from_data <- estimate_R(Flu2009$incidence,
                                config = config)
 
 plot(res_si_from_data, legend = FALSE)
-## the third plot now shows the posterior sample of SI distributions 
+## the third plot now shows the sample of SI distributions 
 ## that were integrated over
 ```
 
@@ -264,13 +261,12 @@ censdata <- data.frame(left = si_data$SL - si_data$EL,
                        right = si_data$SR - si_data$EL,
                        pwindow = si_data$ER - si_data$EL,
                        D = Inf)
-start <- init_mcmc_params(si_data, "gamma")
 SI_fit <- primarycensored::fitdistdoublecens(
-  censdata, distr = "gamma", start = list(shape = start[1], scale = start[2])
+  censdata, distr = "gamma", start = si_start_values(si_data, "gamma")
 )
 ## drawing a sample of SI distributions and converting using primary2estim
 si_sample <- primary2estim(SI_fit, dist = stats::pgamma, n = config$n1,
-                           seed = mcmc_control$seed)$si_sample
+                           seed = overall_seed)$si_sample
 res_si_from_sample <- estimate_R(Flu2009$incidence,
                                 method = "si_from_sample",
                                 si_sample = si_sample,

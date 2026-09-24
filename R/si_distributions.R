@@ -116,14 +116,12 @@ si_distribution_aliases <- function() {
 si_start_values <- function(si_data, dist) {
   fit_distr <- si_fit_distr(dist)
   naive_si <- (si_data$SR + si_data$SL) / 2 - (si_data$ER + si_data$EL) / 2
-  mu <- mean(naive_si) - fit_distr$shift
-  sigma <- stats::sd(naive_si)
   ## avoid issues when the mean serial interval is below the shift
-  mu <- max(mu, 0.1)
-  start <- fit_distr$start(mu, sigma)
-  if (anyNA(unlist(start))) {
+  si_mean <- max(mean(naive_si) - fit_distr$shift, 0.1)
+  start_values <- fit_distr$start(si_mean, stats::sd(naive_si))
+  if (anyNA(unlist(start_values))) {
     stop("NA result. Check that si_data is in the right format.",
          call. = FALSE)
   }
-  start
+  start_values
 }

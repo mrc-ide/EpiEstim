@@ -492,15 +492,12 @@ modify_defaults <- function(defaults, x, strict = TRUE) {
 }
 
 
-##' Distribution names valid when using MCMC to estimate SI from data
+##' Distribution names valid when estimating the serial interval from data
 ##'
-##' When using si_from_data method, the package will use
-##' \code{\link[coarseDataTools]{dic.fit.mcmc}} to fit the serial interval
-##' distribution. This method supports only a limited set of distributions.
-##' This function returns the valid distribution names as used by EpiEstim. The
-##' names are internally converted to those used by coarsedatatools by
-##' \code{\link{convert_distr_name_for_mcmc}} function.
-##' @inheritParams coarse2estim
+##' When using the si_from_data method, the serial interval is estimated with
+##' primarycensored for one of a set of named distributions. This function
+##' returns the valid distribution names as used by EpiEstim.
+##' @param dist A string with the name of a distribution.
 ##' 
 ##' @return A two element list - the first element is a flag `is_dist_valid`
 ##' indicating whether the passed distribution is valid. Te second element

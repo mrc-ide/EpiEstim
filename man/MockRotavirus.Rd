@@ -28,10 +28,6 @@ infector/infected individuals.
 }
 \examples{
 \dontrun{
-## Note the following example uses an MCMC routine
-## to estimate the serial interval distribution from data,
-## so may take a few minutes to run
-
 ## load data
 data("MockRotavirus")
 
@@ -41,8 +37,8 @@ res <- estimate_R(
   method = "si_from_data",
   si_data = MockRotavirus$si_data,
   config = make_config(list(
-    si_parametric_distr = "G",
-    mcmc_control = make_mcmc_control(list(burnin = 3000, thin = 10)),
+    si_parametric_distr = "gamma",
+    seed = 1,
     n1 = 500,
     n2 = 50
   ))

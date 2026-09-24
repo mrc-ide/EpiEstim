@@ -52,20 +52,16 @@ plot(res)
 ## over the 7-day window finishing on that day.
 
 \dontrun{
-## Note the following examples use an MCMC routine
-## to estimate the serial interval distribution from data,
-## so they may take a few minutes to run
-
 ## estimate the reproduction number (method "si_from_data")
 res <- estimate_R(
   Flu2009$incidence,
   method = "si_from_data",
   si_data = Flu2009$si_data,
   config = make_config(list(
-    mcmc_control = make_mcmc_control(list(burnin = 1000, thin = 10, seed = 1)),
+    seed = 1,
     n1 = 1000,
     n2 = 50,
-    si_parametric_distr = "G"
+    si_parametric_distr = "gamma"
   ))
 )
 

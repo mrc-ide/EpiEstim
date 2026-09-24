@@ -20,6 +20,17 @@
 #'   parameter of `dist`, named as the arguments of `dist` (e.g. `shape` and
 #'   `scale` for [stats::pgamma()]).
 #'
+#' Fits from [fitdistrplus::fitdist()] and [fitdistrplus::fitdistcens()] are
+#' also accepted. For most epidemiological data, a fit with
+#' [primarycensored::fitdistdoublecens()] is preferred as it accounts for the
+#' censoring of both the primary and secondary events, and for right
+#' truncation. Only the parameter estimates and their covariance are used, and
+#' their names are checked against the arguments of `dist`.
+#'
+#' Distributions beyond those supported by name in [estimate_R()] with method
+#' "si_from_data" can be used by giving `log_params` for a maximum likelihood
+#' fit, or `param_map` for a Stan fit.
+#'
 #' Each parameter set is discretised with [discr_si()]. The support runs up to
 #' the largest 0.999 quantile of the primary censored serial interval across
 #' the sample, and each distribution is right truncated at the end of this
@@ -27,12 +38,13 @@
 #' interval of zero is set to zero by truncating below 1.
 #'
 #' @param x A fit from [primarycensored::fitdistdoublecens()], a fit from the
-#'   model returned by [primarycensored::pcd_cmdstan_model()], or a data frame
-#'   of parameter draws (see details).
+#'   model returned by [primarycensored::pcd_cmdstan_model()], a fit from
+#'   fitdistrplus, or a data frame of parameter draws (see details).
 #' @param dist The cumulative distribution function of the serial interval
-#'   minus `shift`, used for the fit. For fits, one of [stats::pgamma()],
-#'   [stats::plnorm()] or [stats::pweibull()]. For a data frame of parameter
-#'   draws, any cumulative distribution function of a non-negative delay.
+#'   minus `shift`, used for the fit, e.g. [stats::pgamma()]. Any cumulative
+#'   distribution function of a non-negative delay can be used, with
+#'   `log_params` or `param_map` for distributions not supported by name in
+#'   [estimate_R()] with method "si_from_data".
 #' @param n A positive integer giving the number of serial interval
 #'   distributions to draw. For a Stan fit with fewer posterior draws, all
 #'   draws are used.
@@ -44,6 +56,18 @@
 #'   `primary_args` should match those used for the fit.
 #' @param seed An integer used as the seed for the random number generator
 #'   when drawing from a [primarycensored::fitdistdoublecens()] fit.
+#' @param log_params For a maximum likelihood fit; the names of the parameters
+#'   that are positive, and so drawn on the log scale. Defaults to the positive
+#'   parameters of the distributions supported by name in [estimate_R()] with
+#'   method "si_from_data" (e.g. `shape` and `scale` for [stats::pgamma()]),
+#'   and otherwise to the parameters with a positive estimate.
+#' @param param_map For a Stan fit; a function taking a matrix of posterior
+#'   draws of the parameters of the primarycensored Stan model (with columns
+#'   `params[1]`, `params[2]`, ...) and returning a data frame of the
+#'   corresponding parameters of `dist`, with one column per parameter. Only
+#'   needed for distributions other than those supported by name in
+#'   [estimate_R()] with method "si_from_data", e.g.
+#'   `function(draws) data.frame(rate = draws[, 1])`.
 #' @param ... Not used.
 #'
 #' @return A list with two elements:
@@ -59,6 +83,7 @@
 #' Abbott, S. et al. [primarycensored][primarycensored::primarycensored-package]:
 #' Primary Event Censored Distributions. \doi{10.5281/zenodo.13632839}
 #'
+#' @importFrom fitdistrplus fitdist
 #' @export
 #' @examples
 #' ## load data on rotavirus

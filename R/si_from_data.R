@@ -87,8 +87,17 @@ si_data_to_censdata <- function(si_data, shift) {
 }
 
 ## Draw n parameter sets from the asymptotic normal distribution of the
-## maximum likelihood estimates. Positive parameters are sampled on the log
-## scale (using the delta method) so that draws stay within their support.
+## maximum likelihood estimates.
+## The maximum likelihood estimate theta_hat is asymptotically normal with
+## covariance V, the inverse Hessian returned by fitdistrplus. For a positive
+## parameter we draw log(theta) instead, which by the multivariate delta method
+## is asymptotically normal with mean log(theta_hat) and covariance J V J,
+## where J = diag(1 / theta_hat) for the positive parameters (and 1 for the
+## others). Exponentiating keeps the draws positive, and using the full
+## covariance keeps the correlation between parameters, which is strong for
+## e.g. the shape and scale of a Gamma distribution. This follows
+## extract_mle_draws() in R/fit-utils.R of
+## https://github.com/epinowcast/primarycensored-paper.
 draw_si_params <- function(estimate, vcov, n, positive) {
   mu <- ifelse(positive, log(estimate), estimate)
   jacobian <- ifelse(positive, 1 / estimate, 1)

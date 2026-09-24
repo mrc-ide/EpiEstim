@@ -12,18 +12,15 @@ make_mcmc_control(
 )
 }
 \arguments{
-\item{burnin}{Not used. Kept so that existing code runs.}
+\item{burnin}{Not used.}
 
-\item{thin}{Not used. Kept so that existing code runs.}
+\item{thin}{Not used.}
 
 \item{seed}{An integer used as the seed for the random number generator
-when drawing the sample of serial interval distributions; useful to get
-reproducible results.}
+when drawing the sample of serial interval distributions.}
 
-\item{init_pars}{vector of size 2 corresponding to the initial values of
-parameters to use for the SI distribution. This is the shape and scale for
-all but the lognormal distribution, for which it is the meanlog and
-sdlog.}
+\item{init_pars}{Starting values for the parameters of the serial interval
+distribution, as given by \code{\link[=si_start_values]{si_start_values()}}.}
 }
 \value{
 An object of class \code{estimate_R_mcmc_control} with components
@@ -31,47 +28,12 @@ An object of class \code{estimate_R_mcmc_control} with components
 used as an argument of function \code{\link[=make_config]{make_config()}}.
 }
 \description{
-Creates a list of control parameters to be used in
-\code{config$mcmc_control}, where \code{config} is an argument of the
-\code{\link[=estimate_R]{estimate_R()}} function. This is used to configure the estimation of the
-serial interval within \code{\link[=estimate_R]{estimate_R()}} (with method "si_from_data").
-The serial interval is estimated by maximum likelihood, so \code{burnin} and
+This function is deprecated. The serial interval is estimated by maximum
+likelihood in \code{\link[=estimate_R]{estimate_R()}} with method "si_from_data", so \code{burnin} and
 \code{thin} are not used, and a warning is given if they differ from their
-defaults.
+defaults. Use \code{seed} in \code{\link[=make_config]{make_config()}} to make the sample of serial
+interval distributions reproducible.
 }
-\details{
-The format of \code{si_data} is described in \code{\link[=estimate_R]{estimate_R()}}.
-
-Assuming a given parametric distribution for the serial interval distribution
-(specified in \code{si_parametric_distr}),
-the serial interval is estimated directly from these data by maximum
-likelihood using \code{\link[primarycensored:fitdistdoublecens]{primarycensored::fitdistdoublecens()}}.
-}
-\examples{
-\dontrun{
-## Note the following examples estimate the serial interval
-## distribution from data, so they may take a few seconds to run
-
-## load data on rotavirus
-data("MockRotavirus")
-
-## estimate the reproduction number (method "si_from_data")
-mcmc_seed <- 1
-mcmc_control <- make_mcmc_control(seed = mcmc_seed)
-
-incid <- MockRotavirus$incidence
-method <- "si_from_data"
-overall_seed <- 2
-config <- make_config(incid = incid, 
-                     si_parametric_distr = "G",
-                     mcmc_control = mcmc_control,
-                     n1 = 500
-                     n2 = 50,
-                     seed = overall_seed)
-
-R_si_from_data <- estimate_R(incid,
-                            method = method,
-                            si_data = MockRotavirus$si_data,
-                            config = config)
-}
+\seealso{
+\code{\link[=si_start_values]{si_start_values()}}
 }

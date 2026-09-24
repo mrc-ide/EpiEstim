@@ -53,9 +53,11 @@ strictly positive.
 \item \code{si_parametric_distr}: For method "si_from_data"; the parametric
 distribution to use when estimating the serial interval from data on dates
 of symptoms of pairs of infector/infected individuals (see details). Should
-be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
-shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
-shifted by 1).
+be one of "gamma", "lognormal", "weibull" or "exponential", or one of these
+followed by "_offset_1" (e.g. "gamma_offset_1") for a serial interval
+shifted by 1. Other distributions can be used by estimating the serial
+interval with primarycensored and passing it to \code{\link[=primary2estim]{primary2estim()}} and
+method "si_from_sample".
 \item \code{si_discr_args}: For methods "parametric_si", "uncertain_si" and
 "si_from_data"; a named
 list of additional arguments passed to \code{\link[=discr_si]{discr_si()}} when discretising the
@@ -66,8 +68,12 @@ probability to a serial interval of zero. Defaults to an empty list, which
 uses the defaults of \code{\link[=discr_si]{discr_si()}}. For method "si_from_data", \code{dprimary}
 and \code{primary_args} are also used when estimating the serial interval,
 and \code{dist} and \code{shift} are set by \code{si_parametric_distr}.
-\item \code{mcmc_control}: An object of class \code{estimate_R_mcmc_control}, as
-returned by function \code{make_mcmc_control}.
+\item \code{mcmc_control}: Deprecated. For method "si_from_data"; an object of class
+\code{estimate_R_mcmc_control}, as returned by function
+\code{make_mcmc_control}, giving the seed used to draw the sample of
+serial interval distributions and starting values for their estimation.
+Defaults to \code{NULL}, in which case \code{seed} is used and starting values are
+given by \code{\link[=si_start_values]{si_start_values()}}.
 \item \code{mean_prior}: A positive number giving the mean of the common prior
 distribution for all reproduction numbers (see details).
 \item \code{std_prior}: A positive number giving the standard deviation of the
@@ -198,18 +204,20 @@ vary the mean and std of the SI in truncated normal distributions, here, the
 scope of serial interval distributions considered is directly informed by
 data on the (potentially censored) dates of symptoms of pairs of
 infector/infected individuals. This data, specified in argument \code{si_data},
-should be a dataframe with 5 columns:
+should be a dataframe with 4 to 6 columns:
 \itemize{
 \item \code{EL}: the lower bound of the symptom onset date of the infector (given as
 an integer)
 \item \code{ER}: the upper bound of the symptom onset date of the infector (given as
-an integer). Should be such that \code{ER >= EL}. If the dates are known exactly
-use \code{ER = EL}
+an integer), so that the onset is between \code{EL} and \code{ER}. Should be such
+that \code{ER >= EL}. A symptom onset on a known day \code{d} is given as \code{EL = d}
+and \code{ER = d + 1}
 \item \code{SL}: the lower bound of the symptom onset date of the infected individual
 (given as an integer)
 \item \code{SR}: the upper bound of the symptom onset date of the infected individual
-(given as an integer). Should be such that \code{SR >= SL}. If the dates are
-known exactly use \code{SR = SL}
+(given as an integer), so that the onset is between \code{SL} and \code{SR}. Should
+be such that \code{SR >= SL}. A symptom onset on a known day \code{d} is given as
+\code{SL = d} and \code{SR = d + 1}
 \item \code{type} (optional): can have entries 0, 1, or 2, corresponding to doubly
 interval-censored, single interval-censored or exact observations,
 respectively, see Reich et al. Statist. Med. 2009. If not specified, this
@@ -223,16 +231,20 @@ Charniga et al. PLoS Comp Biol 2024). If not given, or for entries that
 are \code{NA}, no right truncation is assumed.
 }
 
-As dates are daily, dates known exactly are treated as one day intervals.
+This follows the convention of coarseDataTools and of the \code{MockRotavirus}
+data. As dates are daily, entries with \code{ER = EL} or \code{SR = SL} are treated as
+one day intervals (\code{ER = EL + 1} or \code{SR = SL + 1}), with a message, since a
+serial interval cannot be estimated from windows of zero width.
+
 Assuming a given parametric distribution for the serial interval distribution
 (specified in \code{si_parametric_distr}), the serial interval is estimated
 directly from these data by maximum likelihood, accounting for double
 interval censoring, using \code{\link[primarycensored:fitdistdoublecens]{primarycensored::fitdistdoublecens()}} (Abbott et
 al., \doi{10.5281/zenodo.13632839}). A sample of \code{n1} serial interval
 distributions is then drawn from the asymptotic normal distribution of the
-parameter estimates. The argument \code{mcmc_control} sets the seed used for
-this sample and the starting values of the estimation (\code{burnin} and \code{thin}
-are not used).
+parameter estimates, using \code{seed}. For a Bayesian estimate of the serial
+interval, fit it with \code{\link[primarycensored:pcd_cmdstan_model]{primarycensored::pcd_cmdstan_model()}} and use
+\code{\link[=primary2estim]{primary2estim()}} with method "si_from_sample".
 For each element in the sample of serial interval distributions, we
 then draw a sample of size \code{n2} in the posterior distribution of the
 reproduction number over each time window, conditionally on this serial
@@ -255,9 +267,6 @@ distribution to be explored.
 }
 \examples{
 \dontrun{
-## Note the following examples estimate the serial interval
-## distribution from data, so they may take a few seconds to run
-
 ## load data on rotavirus
 data("MockRotavirus")
 
@@ -267,8 +276,7 @@ data("MockRotavirus")
 incid <- MockRotavirus$incidence
 method <- "si_from_data"
 config <- make_config(incid = incid,
-                     list(si_parametric_distr = "G",
-                     mcmc_control = make_mcmc_control(seed = 1),
+                     list(si_parametric_distr = "gamma",
                      n1 = 500,
                      n2 = 50,
                      seed = 2))
@@ -286,8 +294,7 @@ R_si_from_data <- estimate_R(incid,
                             method = method,
                             si_data = MockRotavirus$si_data,
                             config = make_config(
-                     list(si_parametric_distr = "G",
-                     mcmc_control = make_mcmc_control(seed = 1),
+                     list(si_parametric_distr = "gamma",
                      n1 = 500,
                      n2 = 50,
                      seed = 2)))

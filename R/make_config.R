@@ -63,9 +63,11 @@
 #' - `si_parametric_distr`: For method "si_from_data"; the parametric
 #'   distribution to use when estimating the serial interval from data on dates
 #'   of symptoms of pairs of infector/infected individuals (see details). Should
-#'   be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
-#'   shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
-#'   shifted by 1).
+#'   be one of "gamma", "lognormal", "weibull" or "exponential", or one of these
+#'   followed by "_offset_1" (e.g. "gamma_offset_1") for a serial interval
+#'   shifted by 1. Other distributions can be used by estimating the serial
+#'   interval with primarycensored and passing it to [primary2estim()] and
+#'   method "si_from_sample".
 #'
 #' - `si_discr_args`: For methods "parametric_si", "uncertain_si" and
 #'   "si_from_data"; a named
@@ -78,8 +80,12 @@
 #'   and `primary_args` are also used when estimating the serial interval,
 #'   and `dist` and `shift` are set by `si_parametric_distr`.
 #'
-#' - `mcmc_control`: An object of class \code{estimate_R_mcmc_control}, as 
-#' returned by function \code{make_mcmc_control}. 
+#' - `mcmc_control`: Deprecated. For method "si_from_data"; an object of class
+#'   \code{estimate_R_mcmc_control}, as returned by function
+#'   \code{make_mcmc_control}, giving the seed used to draw the sample of
+#'   serial interval distributions and starting values for their estimation.
+#'   Defaults to `NULL`, in which case `seed` is used and starting values are
+#'   given by [si_start_values()].
 #'
 #' - `mean_prior`: A positive number giving the mean of the common prior
 #'   distribution for all reproduction numbers (see details).
@@ -181,17 +187,19 @@
 #' scope of serial interval distributions considered is directly informed by
 #' data on the (potentially censored) dates of symptoms of pairs of
 #' infector/infected individuals. This data, specified in argument `si_data`,
-#' should be a dataframe with 5 columns:
+#' should be a dataframe with 4 to 6 columns:
 #' - `EL`: the lower bound of the symptom onset date of the infector (given as
 #'   an integer)
 #' - `ER`: the upper bound of the symptom onset date of the infector (given as
-#'   an integer). Should be such that `ER >= EL`. If the dates are known exactly
-#'   use `ER = EL`
+#'   an integer), so that the onset is between `EL` and `ER`. Should be such
+#'   that `ER >= EL`. A symptom onset on a known day `d` is given as `EL = d`
+#'   and `ER = d + 1`
 #' - `SL`: the lower bound of the symptom onset date of the infected individual
 #'   (given as an integer)
 #' - `SR`: the upper bound of the symptom onset date of the infected individual
-#'   (given as an integer). Should be such that `SR >= SL`. If the dates are
-#'   known exactly use `SR = SL`
+#'   (given as an integer), so that the onset is between `SL` and `SR`. Should
+#'   be such that `SR >= SL`. A symptom onset on a known day `d` is given as
+#'   `SL = d` and `SR = d + 1`
 #' - `type` (optional): can have entries 0, 1, or 2, corresponding to doubly
 #'   interval-censored, single interval-censored or exact observations,
 #'   respectively, see Reich et al. Statist. Med. 2009. If not specified, this
@@ -205,16 +213,20 @@
 #'   Charniga et al. PLoS Comp Biol 2024). If not given, or for entries that
 #'   are `NA`, no right truncation is assumed.
 #'
-#' As dates are daily, dates known exactly are treated as one day intervals.
+#' This follows the convention of coarseDataTools and of the `MockRotavirus`
+#' data. As dates are daily, entries with `ER = EL` or `SR = SL` are treated as
+#' one day intervals (`ER = EL + 1` or `SR = SL + 1`), with a message, since a
+#' serial interval cannot be estimated from windows of zero width.
+#'
 #' Assuming a given parametric distribution for the serial interval distribution
 #' (specified in `si_parametric_distr`), the serial interval is estimated
 #' directly from these data by maximum likelihood, accounting for double
 #' interval censoring, using [primarycensored::fitdistdoublecens()] (Abbott et
 #' al., \doi{10.5281/zenodo.13632839}). A sample of `n1` serial interval
 #' distributions is then drawn from the asymptotic normal distribution of the
-#' parameter estimates. The argument `mcmc_control` sets the seed used for
-#' this sample and the starting values of the estimation (`burnin` and `thin`
-#' are not used).
+#' parameter estimates, using `seed`. For a Bayesian estimate of the serial
+#' interval, fit it with [primarycensored::pcd_cmdstan_model()] and use
+#' [primary2estim()] with method "si_from_sample".
 #' For each element in the sample of serial interval distributions, we
 #' then draw a sample of size `n2` in the posterior distribution of the
 #' reproduction number over each time window, conditionally on this serial
@@ -240,9 +252,6 @@
 #'
 #' @examples
 #' \dontrun{
-#' ## Note the following examples estimate the serial interval
-#' ## distribution from data, so they may take a few seconds to run
-#'
 #' ## load data on rotavirus
 #' data("MockRotavirus")
 #'
@@ -252,8 +261,7 @@
 #' incid <- MockRotavirus$incidence
 #' method <- "si_from_data"
 #' config <- make_config(incid = incid,
-#'                      list(si_parametric_distr = "G",
-#'                      mcmc_control = make_mcmc_control(seed = 1),
+#'                      list(si_parametric_distr = "gamma",
 #'                      n1 = 500,
 #'                      n2 = 50,
 #'                      seed = 2))
@@ -271,8 +279,7 @@
 #'                             method = method,
 #'                             si_data = MockRotavirus$si_data,
 #'                             config = make_config(
-#'                      list(si_parametric_distr = "G",
-#'                      mcmc_control = make_mcmc_control(seed = 1),
+#'                      list(si_parametric_distr = "gamma",
 #'                      n1 = 500,
 #'                      n2 = 50,
 #'                      seed = 2)))

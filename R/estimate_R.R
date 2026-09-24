@@ -33,13 +33,13 @@
 #'   interval distribution should be a dataframe with 5 or 6 columns:
 #' 
 #' - EL: the lower bound of the symptom onset date of the infector (given as an integer)
-#' - ER: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that ER>=EL. If the dates are known exactly use ER = EL
+#' - ER: the upper bound of the symptom onset date of the infector (given as an integer), so that the onset is between EL and ER. Should be such that ER>=EL. A symptom onset on a known day d is given as EL = d and ER = d + 1
 #' - SL: the lower bound of the symptom onset date of the infected individual (given as an integer)
-#' - SR: the upper bound of the symptom onset date of the infected individual (given as an integer). Should be such that SR >= SL. If the dates are known exactly use SR = SL
+#' - SR: the upper bound of the symptom onset date of the infected individual (given as an integer), so that the onset is between SL and SR. Should be such that SR >= SL. A symptom onset on a known day d is given as SL = d and SR = d + 1
 #' - type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates
 #' - OT (optional): the last day (given as an integer) on which the symptom onset of the infected individual could have been observed, e.g. the date of data collection. If given, the estimation of the serial interval accounts for right truncation using [primarycensored][primarycensored::primarycensored-package]. When pairs of infector/infected individuals are observed during an ongoing outbreak, OT should be given, as otherwise the serial interval may be underestimated (see Charniga et al. PLoS Comp Biol 2024). Should be such that OT >= SL. If not given, or for entries that are `NA`, no right truncation is assumed
 #'
-#' As dates are daily, dates known exactly (ER = EL or SR = SL) are treated as one day intervals.
+#' This follows the convention of coarseDataTools and of the `MockRotavirus` data. As dates are daily, entries with ER = EL or SR = SL are treated as one day intervals (ER = EL + 1 or SR = SL + 1), with a message, since a serial interval cannot be estimated from windows of zero width.
 #'
 #' @param config An object of class `estimate_R_config`, as returned by
 #' [make_config()].
@@ -115,9 +115,12 @@
 #'
 #' - `dates`: a vector of dates corresponding to the incidence time series
 #'
-#' - `MCMC_converged` (only for method `si_from_data`): a boolean showing 
+#' - `si_fit_converged` (only for method `si_from_data`): a boolean showing 
 #'    whether the maximum likelihood estimation of the serial interval 
 #'    converged (`TRUE`) or not (`FALSE`)
+#'
+#' - `MCMC_converged` (only for method `si_from_data`): deprecated, the same as
+#'    `si_fit_converged`
 #'
 #' @details
 #' Analytical estimates of the reproduction number for an epidemic over
@@ -153,7 +156,12 @@
 #'   interval distribution could be run once, and the same estimated SI
 #'   distribution then used in estimate_R in different contexts, e.g. with
 #'   different time windows, hence avoiding to rerun the estimation every time
-#'   estimate_R is called.
+#'   estimate_R is called. [primary2estim()] gives such a sample from a
+#'   serial interval estimated with
+#'   [primarycensored][primarycensored::primarycensored-package]. For a
+#'   Bayesian estimate of the serial interval, fit it with
+#'   [primarycensored::pcd_cmdstan_model()] and pass the fit to
+#'   [primary2estim()].
 #'
 #' R is estimated within a Bayesian framework, using a Gamma distributed prior,
 #' with mean and standard deviation which can be set using the `mean_prior`
@@ -287,27 +295,19 @@
 #' ## used, even though the difference is marginal in this case.
 #'
 #' \dontrun{
-#' ## Note the following examples estimate the serial interval
-#' ## distribution from data, so they may take a few seconds to run
-#'
 #' ## load data on rotavirus
 #' data("MockRotavirus")
-#'
-#' mcmc_control <- make_mcmc_control(
-#'   seed = 1 # set the seed to make the process reproducible
-#' )
 #'
 #' R_si_from_data <- estimate_R(
 #'   incid = MockRotavirus$incidence,
 #'   method = "si_from_data",
 #'   si_data = MockRotavirus$si_data, # symptom onset data
 #'   config = make_config(
-#'     si_parametric_distr = "G", # gamma dist. for SI
-#'     mcmc_control = mcmc_control,
-#'     n1 = 500, # number of posterior samples of SI dist.
-#'     n2 = 50, # number of posterior samples of Rt dist.
-#'     seed = 2
-#'   ) # set seed for reproducibility
+#'     si_parametric_distr = "gamma", # gamma dist. for SI
+#'     n1 = 500, # number of SI distributions drawn
+#'     n2 = 50, # number of posterior samples of Rt for each SI distribution
+#'     seed = 2 # set seed for reproducibility
+#'   )
 #' )
 #'
 #' ## compare with version with no uncertainty
@@ -328,8 +328,6 @@
 #' ## distribution.
 #'
 #' ## estimate the reproduction number (method "si_from_sample")
-#' MCMC_seed <- 1
-#' overall_seed <- 2
 #' ## first estimate the SI distribution with primarycensored, accounting for
 #' ## double interval censoring, using the same starting values as
 #' ## method "si_from_data"
@@ -338,18 +336,17 @@
 #'                        right = si_data$SR - si_data$EL,
 #'                        pwindow = si_data$ER - si_data$EL,
 #'                        D = Inf)
-#' start <- init_mcmc_params(si_data, "gamma")
 #' SI.fit <- primarycensored::fitdistdoublecens(
-#'   censdata, distr = "gamma", start = list(shape = start[1], scale = start[2])
+#'   censdata, distr = "gamma", start = si_start_values(si_data, "gamma")
 #' )
 #' ## turn this into a sample of SI distributions
 #' si_sample <- primary2estim(SI.fit, dist = stats::pgamma, n = 500,
-#'                            seed = MCMC_seed)$si_sample
+#'                            seed = 2)$si_sample
 #' R_si_from_sample <- estimate_R(MockRotavirus$incidence,
 #'                                method = "si_from_sample",
 #'                                si_sample = si_sample,
 #'                                config = make_config(list(n2 = 50,
-#'                                seed = overall_seed)))
+#'                                seed = 2)))
 #' plot(R_si_from_sample)
 #'
 #' ## check that R_si_from_sample is the same as R_si_from_data
