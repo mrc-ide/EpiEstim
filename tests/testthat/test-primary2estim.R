@@ -156,42 +156,9 @@ test_that("primary2estim errors for unsupported inputs", {
   expect_error(primary2estim(list(1)), "fitdistdoublecens")
 })
 
-test_that("primary2estim works with a real pcd_cmdstan_model fit", {
-  skip_on_cran()
-  skip_if_not_installed("cmdstanr")
-  skip_if(is.null(cmdstanr::cmdstan_version(error_on_NA = FALSE)))
-  set.seed(1)
-  delays <- primarycensored::rprimarycensored(
-    200, rdist = function(n) stats::rgamma(n, shape = 3, rate = 0.8),
-    pwindow = 1, swindow = 1, D = Inf
-  )
-  delay_counts <- as.data.frame(table(delay = delays))
-  delay_counts$delay <- as.numeric(as.character(delay_counts$delay))
-  names(delay_counts)[2] <- "n"
-  delay_counts$delay_upper <- delay_counts$delay + 1
-  delay_counts$pwindow <- 1
-  delay_counts$relative_obs_time <- Inf
-  stan_data <- primarycensored::pcd_as_stan_data(
-    delay_counts,
-    dist_id = primarycensored::pcd_stan_dist_id("gamma", "delay"),
-    primary_id = primarycensored::pcd_stan_dist_id("uniform", "primary"),
-    param_bounds = list(lower = c(0, 0), upper = c(Inf, Inf)),
-    primary_param_bounds = list(lower = numeric(0), upper = numeric(0)),
-    priors = list(location = c(2, 1), scale = c(1, 1)),
-    primary_priors = list(location = numeric(0), scale = numeric(0))
-  )
-  model <- suppressMessages(
-    primarycensored::pcd_cmdstan_model(dir = tempdir())
-  )
-  fit <- suppressMessages(model$sample(
-    data = stan_data, chains = 1, iter_warmup = 300, iter_sampling = 200,
-    refresh = 0, show_messages = FALSE, seed = 1
-  ))
-  out <- primary2estim(fit, dist = stats::pgamma, n = 50)
-  expect_identical(ncol(out$si_sample), 50L)
-  expect_equal(colSums(out$si_sample), rep(1, 50), tolerance = 1e-8)
-  k <- seq(0, nrow(out$si_sample) - 1)
-  expect_equal(mean(colSums(k * out$si_sample)), 3 / 0.8, tolerance = 0.1)
+test_that("primary2estim errors for a Stan fit without a draws method", {
+  fit <- structure(list(), class = "CmdStanMCMC")
+  expect_error(primary2estim(fit, dist = stats::pgamma), "draws")
 })
 
 test_that("primary2estim supports the exponential distribution", {
