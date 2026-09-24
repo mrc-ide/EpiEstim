@@ -274,14 +274,65 @@ test_that("si_from_data errors if si_discr_args conflicts with the fit", {
   }
 })
 
-test_that("si_from_data reads exact dates as one day intervals", {
-  si_data <- MockRotavirus$si_data
-  si_data$ER[1:3] <- si_data$EL[1:3]
+test_that("exact dates in si_data map to zero width windows", {
+  si_data <- data.frame(
+    EL = c(0L, 2L, 5L), ER = c(1L, 2L, 5L),
+    SL = c(3L, 6L, 9L), SR = c(4L, 7L, 9L)
+  )
+  censdata <- si_data_to_censdata(si_data, 0)
+  expect_identical(censdata$pwindow, c(1L, 0L, 0L))
+  expect_identical(censdata$left, c(3L, 4L, 4L))
+  expect_identical(censdata$right, c(4L, 5L, 4L))
+  expect_no_message(si_data_to_censdata(si_data, 0))
+})
+
+test_that("si_from_data fits mixed type 0, 1 and 2 rows", {
+  si_data <- simulate_si_data(300, 5, 2.5, obs_time = 200, seed = 3)
+  exact_primary <- seq(1, 300, by = 3)
+  exact_both <- seq(2, 300, by = 3)
+  si_data$ER[c(exact_primary, exact_both)] <-
+    si_data$EL[c(exact_primary, exact_both)]
+  si_data$SR[exact_both] <- si_data$SL[exact_both]
   si_data$type <- NULL
-  config <- quiet_config(si_parametric_distr = "gamma")
-  expect_message(
-    suppressWarnings(run_si_from_data(si_data, config)),
-    "one day"
+  config <- suppressMessages(
+    si_from_data_config(MockRotavirus$incidence, si_parametric_distr = "gamma")
+  )
+  res <- suppressWarnings(run_si_from_data(si_data, config))
+  expect_true(res$si_fit_converged)
+  expect_equal(mean(res$SI.Moments$Mean), 5, tolerance = 0.5, scale = 1)
+})
+
+test_that("exact rows give the exact and single censored likelihoods", {
+  set.seed(8)
+  delay <- stats::rgamma(200, shape = 4, scale = 1.2)
+  onset <- sample(0:30, 200, replace = TRUE)
+  exact <- data.frame(
+    EL = onset, ER = onset,
+    SL = onset + delay, SR = onset + delay
+  )
+  fit_exact <- primarycensored::fitdistdoublecens(
+    si_data_to_censdata(exact, 0), distr = "gamma",
+    start = list(shape = 2, scale = 2)
+  )
+  reference <- fitdistrplus::fitdist(
+    delay, "gamma", start = list(shape = 2, scale = 2)
+  )
+  expect_equal(fit_exact$estimate, reference$estimate, tolerance = 1e-3)
+
+  single <- data.frame(
+    EL = onset, ER = onset,
+    SL = onset + floor(delay), SR = onset + floor(delay) + 1
+  )
+  fit_single <- primarycensored::fitdistdoublecens(
+    si_data_to_censdata(single, 0), distr = "gamma",
+    start = list(shape = 2, scale = 2)
+  )
+  reference_single <- fitdistrplus::fitdistcens(
+    data.frame(left = floor(delay), right = floor(delay) + 1), "gamma",
+    start = list(shape = 2, scale = 2)
+  )
+  expect_equal(
+    fit_single$estimate, reference_single$estimate, tolerance = 1e-3
   )
 })
 
