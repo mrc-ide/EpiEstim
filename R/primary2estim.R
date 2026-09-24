@@ -14,8 +14,9 @@
 #' - A Bayesian fit from the model returned by
 #'   [primarycensored::pcd_cmdstan_model()] (a `CmdStanMCMC` object). `n`
 #'   evenly spaced posterior draws of the delay parameters are used, so this
-#'   is the way to use a Bayesian fit of the serial interval. This requires
-#'   the cmdstanr package.
+#'   is the way to use a Bayesian fit of the serial interval. The draws are
+#'   read with the fit's own `draws()` method, which needs the posterior
+#'   package, installed alongside cmdstanr when the fit was made.
 #' - A data frame of parameter draws, with one row per draw and one column per
 #'   parameter of `dist`, named as the arguments of `dist` (e.g. `shape` and
 #'   `scale` for [stats::pgamma()]).
@@ -196,6 +197,10 @@ primary2estim.CmdStanMCMC <- function(x, dist, n = 1000, shift = 0,
            "model to those of dist. Give it with param_map.", call. = FALSE)
     }
     param_map <- entry$from_stan
+  }
+  if (!is.function(x$draws)) {
+    stop("x must have a draws() method, as a fit from ",
+         "primarycensored::pcd_cmdstan_model() does.", call. = FALSE)
   }
   draws <- x$draws(variables = "params", format = "draws_matrix")
   draws <- matrix(

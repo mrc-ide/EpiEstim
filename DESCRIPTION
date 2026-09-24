@@ -54,15 +54,12 @@ Suggests:
     projections,
     dplyr,
     readxl,
-    gghighlight,
-    cmdstanr
+    gghighlight
 License: GPL (>=2)
 LazyLoad: yes
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
-Additional_repositories: https://stan-dev.r-universe.dev
 Remotes: reconverse/incidence2/pkg,
-    epinowcast/primarycensored,
-    stan-dev/cmdstanr
+    epinowcast/primarycensored
 Config/roxygen2/version: 8.0.0

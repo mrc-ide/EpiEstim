@@ -116,8 +116,9 @@ approach used by \code{\link[=estimate_R]{estimate_R()}} with method "si_from_da
 \item A Bayesian fit from the model returned by
 \code{\link[primarycensored:pcd_cmdstan_model]{primarycensored::pcd_cmdstan_model()}} (a \code{CmdStanMCMC} object). \code{n}
 evenly spaced posterior draws of the delay parameters are used, so this
-is the way to use a Bayesian fit of the serial interval. This requires
-the cmdstanr package.
+is the way to use a Bayesian fit of the serial interval. The draws are
+read with the fit's own \code{draws()} method, which needs the posterior
+package, installed alongside cmdstanr when the fit was made.
 \item A data frame of parameter draws, with one row per draw and one column per
 parameter of \code{dist}, named as the arguments of \code{dist} (e.g. \code{shape} and
 \code{scale} for \code{\link[stats:pgamma]{stats::pgamma()}}).
