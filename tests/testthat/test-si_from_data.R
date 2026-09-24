@@ -7,7 +7,7 @@ test_that("si_from_data keeps the output structure", {
   expect_s3_class(res, "estimate_R")
   expect_named(res, c(
     "R", "method", "si_distr", "SI.Moments", "dates", "I", "I_local",
-    "I_imported", "MCMC_converged"
+    "I_imported", "si_fit_converged", "MCMC_converged"
   ))
   expect_identical(res$method, "si_from_data")
   expect_identical(nrow(res$si_distr), 100L)
@@ -15,7 +15,58 @@ test_that("si_from_data keeps the output structure", {
   expect_equal(rowSums(res$si_distr), rep(1, 100), tolerance = 1e-8)
   expect_named(res$SI.Moments, c("Mean", "Std"))
   expect_identical(nrow(res$SI.Moments), 100L)
-  expect_true(res$MCMC_converged)
+  expect_true(res$si_fit_converged)
+  expect_identical(res$MCMC_converged, res$si_fit_converged)
+})
+
+test_that("si_from_data works without mcmc_control and uses the config seed", {
+  config <- suppressMessages(make_config(
+    incid = MockRotavirus$incidence,
+    list(si_parametric_distr = "gamma", n1 = 50, n2 = 10, seed = 4)
+  ))
+  expect_null(config$mcmc_control)
+  run <- function() {
+    collect <- collect_warnings(
+      res <- run_si_from_data(MockRotavirus$si_data, config)
+    )
+    list(res = res, warnings = collect)
+  }
+  first <- run()
+  second <- run()
+  expect_identical(first$res$si_distr, second$res$si_distr)
+  expect_false(any(grepl("burnin", first$warnings, fixed = TRUE)))
+})
+
+test_that("si_from_data supports the exponential distribution", {
+  si_data <- simulate_si_data(300, 5, 5, obs_time = 200)
+  config <- suppressMessages(
+    si_from_data_config(
+      MockRotavirus$incidence, si_parametric_distr = "exponential"
+    )
+  )
+  res <- suppressWarnings(run_si_from_data(si_data, config))
+  expect_equal(mean(res$SI.Moments$Mean), 5, tolerance = 0.6, scale = 1)
+})
+
+test_that("si_start_values gives moment based starting values", {
+  si_data <- simulate_si_data(500, 6, 3, obs_time = 300)
+  for (dist in c("gamma", "lognormal", "weibull", "exponential")) {
+    start <- si_start_values(si_data, dist)
+    expect_type(start, "list")
+    expect_true(all(unlist(start[names(start) != "meanlog"]) > 0))
+  }
+  weibull <- si_start_values(si_data, "weibull")
+  mean_weibull <- weibull$scale * gamma(1 + 1 / weibull$shape)
+  naive <- (si_data$SR + si_data$SL) / 2 - (si_data$ER + si_data$EL) / 2
+  expect_equal(mean_weibull, mean(naive), tolerance = 0.01)
+  expect_named(si_start_values(si_data, "lognormal_offset_1"),
+               c("meanlog", "sdlog"))
+})
+
+test_that("init_mcmc_params is deprecated in favour of si_start_values", {
+  si_data <- MockRotavirus$si_data
+  expect_warning(old <- init_mcmc_params(si_data, "gamma"), "si_start_values")
+  expect_equal(old, unname(unlist(si_start_values(si_data, "gamma"))))
 })
 
 test_that("si_from_data is close to coarseDataTools MCMC results", {
