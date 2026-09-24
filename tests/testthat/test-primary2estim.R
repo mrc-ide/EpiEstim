@@ -35,10 +35,12 @@ test_that("primary2estim of a fitdistdoublecens fit matches si_from_data", {
   expect_named(out, c("si_sample", "si_parametric_distr"))
   expect_identical(out$si_parametric_distr, "gamma")
   expect_identical(ncol(out$si_sample), 100L)
+  support <- seq_len(nrow(out$si_sample))
   expect_equal(
-    t(out$si_sample), res$si_distr[, seq_len(nrow(out$si_sample))],
+    unname(t(out$si_sample)), unname(res$si_distr[, support]),
     tolerance = 1e-10
   )
+  expect_true(all(res$si_distr[, -support] == 0))
 })
 
 test_that("primary2estim of parameter draws matches discr_si", {
@@ -179,7 +181,9 @@ test_that("primary2estim works with a real pcd_cmdstan_model fit", {
     priors = list(location = c(2, 1), scale = c(1, 1)),
     primary_priors = list(location = numeric(0), scale = numeric(0))
   )
-  model <- suppressMessages(primarycensored::pcd_cmdstan_model())
+  model <- suppressMessages(
+    primarycensored::pcd_cmdstan_model(dir = tempdir())
+  )
   fit <- suppressMessages(model$sample(
     data = stan_data, chains = 1, iter_warmup = 300, iter_sampling = 200,
     refresh = 0, show_messages = FALSE, seed = 1
