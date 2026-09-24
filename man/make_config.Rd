@@ -209,15 +209,13 @@ should be a dataframe with 4 to 6 columns:
 \item \code{EL}: the lower bound of the symptom onset date of the infector (given as
 an integer)
 \item \code{ER}: the upper bound of the symptom onset date of the infector (given as
-an integer), so that the onset is between \code{EL} and \code{ER}. Should be such
-that \code{ER >= EL}. A symptom onset on a known day \code{d} is given as \code{EL = d}
-and \code{ER = d + 1}
+an integer). Should be such that \code{ER >= EL}. If the dates are known exactly
+use \code{ER = EL}
 \item \code{SL}: the lower bound of the symptom onset date of the infected individual
 (given as an integer)
 \item \code{SR}: the upper bound of the symptom onset date of the infected individual
-(given as an integer), so that the onset is between \code{SL} and \code{SR}. Should
-be such that \code{SR >= SL}. A symptom onset on a known day \code{d} is given as
-\code{SL = d} and \code{SR = d + 1}
+(given as an integer). Should be such that \code{SR >= SL}. If the dates are
+known exactly use \code{SR = SL}
 \item \code{type} (optional): can have entries 0, 1, or 2, corresponding to doubly
 interval-censored, single interval-censored or exact observations,
 respectively, see Reich et al. Statist. Med. 2009. If not specified, this
@@ -231,10 +229,10 @@ Charniga et al. PLoS Comp Biol 2024). If not given, or for entries that
 are \code{NA}, no right truncation is assumed.
 }
 
-This follows the convention of coarseDataTools and of the \code{MockRotavirus}
-data. As dates are daily, entries with \code{ER = EL} or \code{SR = SL} are treated as
-one day intervals (\code{ER = EL + 1} or \code{SR = SL + 1}), with a message, since a
-serial interval cannot be estimated from windows of zero width.
+As in coarseDataTools, \code{EL}, \code{ER}, \code{SL} and \code{SR} are continuous bounds, so a
+symptom onset known to the day \code{d} is given as \code{EL = d} and \code{ER = d + 1} (as
+in the \code{MockRotavirus} data), and \code{ER = EL} means the onset time is known
+exactly.
 
 Assuming a given parametric distribution for the serial interval distribution
 (specified in \code{si_parametric_distr}), the serial interval is estimated

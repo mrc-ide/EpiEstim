@@ -58,20 +58,12 @@ si_from_data_discr_args <- function(config, fit_distr) {
 }
 
 ## Interval censored data in the format used by
-## primarycensored::fitdistdoublecens.
-## Dates are daily, so a date known exactly (EL = ER or SL = SR) is read as a
-## one day interval.
+## primarycensored::fitdistdoublecens().
+## Following coarseDataTools, EL, ER, SL and SR are continuous bounds, so a
+## date known to the day is EL = d, ER = d + 1, and EL = ER (or SL = SR) is an
+## exactly known time. An exact primary time gives pwindow = 0 and an exact
+## secondary time gives left = right, which contributes a density.
 si_data_to_censdata <- function(si_data, shift) {
-  one_day <- si_data$ER == si_data$EL | si_data$SR == si_data$SL
-  if (any(one_day)) {
-    message(
-      sum(one_day), " entries of si_data have EL = ER or SL = SR. ",
-      "Since dates are daily these are read as one day intervals ",
-      "(ER = EL + 1 or SR = SL + 1)."
-    )
-  }
-  ER <- pmax(si_data$ER, si_data$EL + 1)
-  SR <- pmax(si_data$SR, si_data$SL + 1)
   upper <- rep(Inf, nrow(si_data))
   if ("OT" %in% names(si_data)) {
     upper <- ifelse(
@@ -80,8 +72,8 @@ si_data_to_censdata <- function(si_data, shift) {
   }
   data.frame(
     left = si_data$SL - si_data$EL - shift,
-    right = SR - si_data$EL - shift,
-    pwindow = ER - si_data$EL,
+    right = si_data$SR - si_data$EL - shift,
+    pwindow = si_data$ER - si_data$EL,
     D = upper
   )
 }

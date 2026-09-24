@@ -33,13 +33,13 @@
 #'   interval distribution should be a dataframe with 5 or 6 columns:
 #' 
 #' - EL: the lower bound of the symptom onset date of the infector (given as an integer)
-#' - ER: the upper bound of the symptom onset date of the infector (given as an integer), so that the onset is between EL and ER. Should be such that ER>=EL. A symptom onset on a known day d is given as EL = d and ER = d + 1
+#' - ER: the upper bound of the symptom onset date of the infector (given as an integer). Should be such that ER>=EL. If the dates are known exactly use ER = EL
 #' - SL: the lower bound of the symptom onset date of the infected individual (given as an integer)
-#' - SR: the upper bound of the symptom onset date of the infected individual (given as an integer), so that the onset is between SL and SR. Should be such that SR >= SL. A symptom onset on a known day d is given as SL = d and SR = d + 1
+#' - SR: the upper bound of the symptom onset date of the infected individual (given as an integer). Should be such that SR >= SL. If the dates are known exactly use SR = SL
 #' - type (optional): can have entries 0, 1, or 2, corresponding to doubly interval-censored, single interval-censored or exact observations, respectively, see Reich et al. Statist. Med. 2009. If not specified, this will be automatically computed from the dates
 #' - OT (optional): the last day (given as an integer) on which the symptom onset of the infected individual could have been observed, e.g. the date of data collection. If given, the estimation of the serial interval accounts for right truncation using [primarycensored][primarycensored::primarycensored-package]. When pairs of infector/infected individuals are observed during an ongoing outbreak, OT should be given, as otherwise the serial interval may be underestimated (see Charniga et al. PLoS Comp Biol 2024). Should be such that OT >= SL. If not given, or for entries that are `NA`, no right truncation is assumed
 #'
-#' This follows the convention of coarseDataTools and of the `MockRotavirus` data. As dates are daily, entries with ER = EL or SR = SL are treated as one day intervals (ER = EL + 1 or SR = SL + 1), with a message, since a serial interval cannot be estimated from windows of zero width.
+#' As in coarseDataTools, EL, ER, SL and SR are continuous bounds, so a symptom onset known to the day d is given as EL = d and ER = d + 1 (as in the `MockRotavirus` data), and ER = EL means the onset time is known exactly.
 #'
 #' @param config An object of class `estimate_R_config`, as returned by
 #' [make_config()].

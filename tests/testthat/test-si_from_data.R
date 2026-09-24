@@ -280,9 +280,9 @@ test_that("exact dates in si_data map to zero width windows", {
     SL = c(3L, 6L, 9L), SR = c(4L, 7L, 9L)
   )
   censdata <- si_data_to_censdata(si_data, 0)
-  expect_identical(censdata$pwindow, c(1L, 0L, 0L))
-  expect_identical(censdata$left, c(3L, 4L, 4L))
-  expect_identical(censdata$right, c(4L, 5L, 4L))
+  expect_equal(censdata$pwindow, c(1, 0, 0))
+  expect_equal(censdata$left, c(3, 4, 4))
+  expect_equal(censdata$right, c(4, 5, 4))
   expect_no_message(si_data_to_censdata(si_data, 0))
 })
 

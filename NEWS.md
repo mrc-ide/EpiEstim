@@ -71,11 +71,6 @@
   output is deprecated in favour of `si_fit_converged`, and reports whether 
   the maximum likelihood estimation converged.
 
-* In `si_data`, dates known exactly (`EL = ER` or `SL = SR`, types 1 and 2) 
-  are now treated as one day intervals, as dates are daily. Previously they 
-  were treated as exact times. This changes results for data with such 
-  entries and a message is shown when they are present.
-
 * The support of the serial interval distributions used by "si_from_data" is 
   set from the 0.999 quantile of the primary censored distribution and each 
   distribution is right truncated at the end of this support, following the 
