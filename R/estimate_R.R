@@ -436,7 +436,7 @@ estimate_R <- function(incid,
     config <- process_config_si_from_data(config, si_data)
     ## estimate serial interval from serial interval data first
     fit <- si_sample_from_data(si_data, config)
-    MCMC_conv <- fit$converged
+    si_fit_converged <- fit$converged
 
     cat(paste(
       "\n\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",
@@ -460,7 +460,9 @@ estimate_R <- function(incid,
   
   # Add extra fields based on method
   if(method == "si_from_data"){
-    out[["MCMC_converged"]] <- MCMC_conv
+    out[["si_fit_converged"]] <- si_fit_converged
+    ## deprecated name of si_fit_converged
+    out[["MCMC_converged"]] <- si_fit_converged
   }
 
   return(out)

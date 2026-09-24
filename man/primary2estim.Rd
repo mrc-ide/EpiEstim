@@ -4,6 +4,7 @@
 \alias{primary2estim}
 \alias{primary2estim.default}
 \alias{primary2estim.fitdist}
+\alias{primary2estim.fitdistcens}
 \alias{primary2estim.CmdStanMCMC}
 \alias{primary2estim.data.frame}
 \title{Link primarycensored and EpiEstim}
@@ -19,10 +20,30 @@ primary2estim(x, ...)
   shift = 0,
   si_discr_args = list(),
   seed = NULL,
+  log_params = NULL,
   ...
 )
 
-\method{primary2estim}{CmdStanMCMC}(x, dist, n = 1000, shift = 0, si_discr_args = list(), ...)
+\method{primary2estim}{fitdistcens}(
+  x,
+  dist,
+  n = 1000,
+  shift = 0,
+  si_discr_args = list(),
+  seed = NULL,
+  log_params = NULL,
+  ...
+)
+
+\method{primary2estim}{CmdStanMCMC}(
+  x,
+  dist,
+  n = 1000,
+  shift = 0,
+  si_discr_args = list(),
+  param_map = NULL,
+  ...
+)
 
 \method{primary2estim}{data.frame}(x, dist, shift = 0, si_discr_args = list(), ...)
 }

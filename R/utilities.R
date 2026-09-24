@@ -298,9 +298,6 @@ process_config <- function(config) {
     config$cv_posterior <- 0.3
   }
 
-  if (!("mcmc_control" %in% names(config))) {
-    config$mcmc_control <- make_mcmc_control()
-  }
 
   return(config)
 }
@@ -328,19 +325,13 @@ process_config_si_from_data <- function(config, si_data) {
     stop("method si_from_data requires a >0 integer value for config$n1.",
          call. = FALSE)
   }
-  if ((config$si_parametric_distr == "gamma_offset_1" ||
-    config$si_parametric_distr == "weibull_offset_1" ||
-    config$si_parametric_distr == "lognormal_offset_1") &&
-    any(si_data$SR - si_data$EL <= 1)) {
+  if (si_fit_distr(config$si_parametric_distr)$shift == 1 &&
+        any(si_data$SR - si_data$EL <= 1)) {
     stop(
       "You cannot fit a distribution with offset 1 to this SI ",
       "dataset, because for some data points the maximum serial ",
       "interval is <=1.\nChoose a different distribution", call. = FALSE
     )
-  }
-  if (is.null(config$mcmc_control$init_pars)) {
-    config$mcmc_control$init_pars <-
-      init_mcmc_params(si_data, config$si_parametric_distr)
   }
   return(config)
 }
@@ -500,32 +491,6 @@ modify_defaults <- function(defaults, x, strict = TRUE) {
   utils::modifyList(defaults, x, keep.null = TRUE) # keep.null is needed here
 }
 
-##' Convert EpiEstim distribution names to those used by coarsedatatools
-##'
-##' coarseDataTools uses abberviated names for distributions e.g. "G" for gamma etc
-##' To provide a smooth user experience, we convert the more descriptive names.
-##' This function performs the user-provided names to the abberviated ones.
-##' @param distr A string with the name of the distribution as provided by the user.
-##' @return A string with the converted distribution name.
-##' @author Sangeeta Bhatia
-##' @keywords internal
-convert_distr_name_for_mcmc <- function(distr) {
-  if (distr %in% c("gamma", "G")) {
-    return("G")
-  } else if (distr %in% c("weibull", "W")) {
-    return("W")
-  } else if (distr %in% c("lognormal", "L")) {
-    return("L")
-  } else if (distr %in% c("gamma_offset_1", "off1G")) {
-    return("off1G")
-  } else if (distr %in% c("weibull_offset_1", "off1W")) {
-    return("off1W")
-  } else if (distr %in% c("lognormal_offset_1", "off1L")) {
-    return("off1L")
-  } else {
-    stop("Unsupported distribution name: ", distr, call. = FALSE)
-  }
-}
 
 ##' Distribution names valid when using MCMC to estimate SI from data
 ##'
@@ -543,10 +508,8 @@ convert_distr_name_for_mcmc <- function(distr) {
 ##' @author Sangeeta Bhatia
 ##' @export
 si_from_data_valid_distrs <- function(dist) {
-  new_names <- c(
-    "gamma", "weibull", "lognormal", "gamma_offset_1", "weibull_offset_1",
-    "lognormal_offset_1"
-  )
+  new_names <- si_distribution_aliases()
+  new_names <- c(new_names, paste0(new_names, "_offset_1"))
   old_names <- c("G", "W", "L", "off1G", "off1W", "off1L")
   valid_names <- c(old_names, new_names)
   if (dist %in% old_names) {

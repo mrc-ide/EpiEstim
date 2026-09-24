@@ -106,22 +106,45 @@ primary2estim.default <- function(x, ...) {
 #' @rdname primary2estim
 #' @export
 primary2estim.fitdist <- function(x, dist, n = 1000, shift = 0,
-                                  si_discr_args = list(), seed = NULL, ...) {
-  fit_cdf <- si_fit_cdf(dist)
-  if (!all(fit_cdf$params %in% names(x$estimate))) {
-    stop("The parameters of the fit (", toString(names(x$estimate)),
-         ") do not match those of dist (", toString(fit_cdf$params), ").",
+                                  si_discr_args = list(), seed = NULL,
+                                  log_params = NULL, ...) {
+  if (missing(dist) || !is.function(dist)) {
+    stop("dist must be given as a cumulative distribution function, e.g. ",
+         "stats::pgamma.", call. = FALSE)
+  }
+  estimate <- x$estimate
+  if (!is.numeric(estimate) || is.null(names(estimate))) {
+    stop("x$estimate must be a named numeric vector of parameter estimates.",
          call. = FALSE)
   }
+  unknown <- setdiff(names(estimate), names(formals(dist)))
+  if (length(unknown) > 0) {
+    stop("The parameters in x$estimate must be arguments of dist. Unknown ",
+         "parameters: ", toString(unknown), ".", call. = FALSE)
+  }
   fit_vcov <- x$vcov
+  if (!is.null(fit_vcov) &&
+        (!is.matrix(fit_vcov) ||
+           !setequal(rownames(fit_vcov), names(estimate)))) {
+    stop("x$vcov must be a matrix with rows and columns named as the ",
+         "parameters in x$estimate.", call. = FALSE)
+  }
   if (!is.null(fit_vcov)) {
-    fit_vcov <- fit_vcov[fit_cdf$params, fit_cdf$params, drop = FALSE]
+    fit_vcov <- fit_vcov[names(estimate), names(estimate), drop = FALSE]
+  }
+  if (is.null(log_params)) {
+    entry <- si_distribution_from_cdf(dist)
+    log_params <- if (is.null(entry)) {
+      names(estimate)[estimate > 0]
+    } else {
+      entry$params[entry$positive]
+    }
   }
   if (!is.null(seed)) {
     set.seed(seed)
   }
   samples <- draw_si_params(
-    x$estimate[fit_cdf$params], fit_vcov, n, fit_cdf$positive
+    estimate, fit_vcov, n, names(estimate) %in% log_params
   )
   primary2estim(
     samples, dist = dist, shift = shift, si_discr_args = si_discr_args
@@ -130,16 +153,33 @@ primary2estim.fitdist <- function(x, dist, n = 1000, shift = 0,
 
 #' @rdname primary2estim
 #' @export
+primary2estim.fitdistcens <- primary2estim.fitdist
+
+#' @rdname primary2estim
+#' @export
 primary2estim.CmdStanMCMC <- function(x, dist, n = 1000, shift = 0,
-                                      si_discr_args = list(), ...) {
-  fit_cdf <- si_fit_cdf(dist)
+                                      si_discr_args = list(),
+                                      param_map = NULL, ...) {
+  if (missing(dist) || !is.function(dist)) {
+    stop("dist must be given as a cumulative distribution function, e.g. ",
+         "stats::pgamma.", call. = FALSE)
+  }
+  if (is.null(param_map)) {
+    entry <- si_distribution_from_cdf(dist)
+    if (is.null(entry)) {
+      stop("There is no default mapping from the parameters of the Stan ",
+           "model to those of dist. Give it with param_map.", call. = FALSE)
+    }
+    param_map <- entry$from_stan
+  }
   draws <- x$draws(variables = "params", format = "draws_matrix")
   draws <- matrix(
-    as.numeric(draws), nrow = nrow(draws), dimnames = list(NULL, colnames(draws))
+    as.numeric(draws), nrow = nrow(draws),
+    dimnames = list(NULL, colnames(draws))
   )
   n_draws <- nrow(draws)
   keep <- unique(round(seq(1, n_draws, length.out = min(n, n_draws))))
-  samples <- fit_cdf$from_stan(draws[keep, , drop = FALSE])
+  samples <- as.data.frame(param_map(draws[keep, , drop = FALSE]))
   primary2estim(
     samples, dist = dist, shift = shift, si_discr_args = si_discr_args
   )
@@ -225,43 +265,6 @@ si_sample_support <- function(samples, dist, shift, discr_args) {
   ))
   si_args$k <- seq(0, max_value)
   si_args
-}
-
-## Details of the cumulative distribution functions supported for fits:
-## native parameters, which of them are positive, and how to map the
-## parameters of the primarycensored Stan model (params[1], params[2]) to them
-si_fit_cdf <- function(dist) {
-  if (missing(dist) || !is.function(dist)) {
-    stop("dist must be given as stats::pgamma, stats::plnorm or ",
-         "stats::pweibull.", call. = FALSE)
-  }
-  if (identical(dist, stats::pgamma)) {
-    ## Stan's gamma is parameterised by shape and rate
-    list(
-      params = c("shape", "scale"), positive = c(TRUE, TRUE),
-      from_stan = function(draws) {
-        data.frame(shape = draws[, 1], scale = 1 / draws[, 2])
-      }
-    )
-  } else if (identical(dist, stats::plnorm)) {
-    list(
-      params = c("meanlog", "sdlog"), positive = c(FALSE, TRUE),
-      from_stan = function(draws) {
-        data.frame(meanlog = draws[, 1], sdlog = draws[, 2])
-      }
-    )
-  } else if (identical(dist, stats::pweibull)) {
-    list(
-      params = c("shape", "scale"), positive = c(TRUE, TRUE),
-      from_stan = function(draws) {
-        data.frame(shape = draws[, 1], scale = draws[, 2])
-      }
-    )
-  } else {
-    stop("dist must be stats::pgamma, stats::plnorm or stats::pweibull for ",
-         "a fit. For other distributions, pass a data frame of parameter ",
-         "draws.", call. = FALSE)
-  }
 }
 
 ## Name of a serial interval distribution given its CDF and shift

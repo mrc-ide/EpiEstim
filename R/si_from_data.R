@@ -7,22 +7,21 @@
 ## parameter sets is then drawn from the asymptotic normal distribution of the
 ## estimates and each is discretised using discr_si.
 
-## Details of a serial interval distribution given its EpiEstim name
+## Details of a serial interval distribution given its EpiEstim name, e.g.
+## "gamma" or "gamma_offset_1" (see si_distributions)
 si_fit_distr <- function(distr) {
-  distr <- convert_distr_name_for_mcmc(distr)
-  fam <- sub("^off1", "", distr)
-  list(
-    name = distr,
-    shift = as.numeric(startsWith(distr, "off1")),
-    distr = switch(fam, G = "gamma", W = "weibull", L = "lnorm"),
-    pdist = switch(fam,
-      G = stats::pgamma, W = stats::pweibull, L = stats::plnorm
-    ),
-    params = switch(fam,
-      G = c("shape", "scale"), W = c("shape", "scale"),
-      L = c("meanlog", "sdlog")
-    )
-  )
+  old_names <- c(G = "gamma", W = "weibull", L = "lognormal",
+                 off1G = "gamma_offset_1", off1W = "weibull_offset_1",
+                 off1L = "lognormal_offset_1")
+  if (distr %in% names(old_names)) {
+    distr <- old_names[[distr]]
+  }
+  shift <- as.numeric(endsWith(distr, "_offset_1"))
+  entry <- si_distribution_from_alias(sub("_offset_1$", "", distr))
+  if (is.null(entry)) {
+    stop("Unsupported distribution name: ", distr, call. = FALSE)
+  }
+  c(list(epiestim_name = distr, shift = shift), entry)
 }
 
 ## Arguments of discr_si used when discretising the fitted serial interval.
@@ -123,19 +122,24 @@ si_sample_from_data <- function(si_data, config) {
 
   mcmc_control <- config$mcmc_control
   default_control <- make_mcmc_control()
-  if (!identical(mcmc_control$burnin, default_control$burnin) ||
-      !identical(mcmc_control$thin, default_control$thin)) {
+  if (!is.null(mcmc_control) &&
+        (!identical(mcmc_control$burnin, default_control$burnin) ||
+           !identical(mcmc_control$thin, default_control$thin))) {
     warning("burnin and thin in mcmc_control are ignored as the serial ",
             "interval is estimated by maximum likelihood.", call. = FALSE)
   }
 
   censdata <- si_data_to_censdata(si_data, fit_distr$shift)
-  start_pars <- stats::setNames(
-    as.list(unname(mcmc_control$init_pars)), fit_distr$params
-  )
+  if (is.null(mcmc_control$init_pars)) {
+    start_pars <- si_start_values(si_data, fit_distr$epiestim_name)
+  } else {
+    start_pars <- stats::setNames(
+      as.list(unname(mcmc_control$init_pars)), fit_distr$params
+    )
+  }
   fit <- primarycensored::fitdistdoublecens(
     censdata,
-    distr = fit_distr$distr,
+    distr = fit_distr$name,
     start = start_pars,
     dprimary = discr_args$dprimary,
     primary_args = discr_args$primary_args
@@ -152,7 +156,7 @@ si_sample_from_data <- function(si_data, config) {
     n = config$n1,
     shift = fit_distr$shift,
     si_discr_args = discr_args,
-    seed = mcmc_control$seed
+    seed = if (is.null(mcmc_control)) config$seed else mcmc_control$seed
   )$si_sample
 
   list(si_sample = si_sample, converged = converged)
