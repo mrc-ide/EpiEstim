@@ -90,6 +90,8 @@ EstimateR <- function(I, T.Start, T.End,
 #' Prefer the new [discr_si()] function instead
 #' 
 #' @inheritParams discr_si
+#' @param mu A positive real giving the mean of the Gamma distribution. Must be
+#' greater than 1.
 #'
 #' @export
 #'

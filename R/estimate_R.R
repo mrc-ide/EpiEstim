@@ -551,7 +551,9 @@ estimate_R_func <- function(incid,
     nb_time_periods <- length(t_start)
 
     if (is.null(si_distr)) {
-      si_distr <- discr_si(seq(0, T - 1), mean_si, std_si)
+      si_distr <- discr_si_config(
+        seq(0, T - 1), mean_si, std_si, config$si_discr_args
+      )
     }
 
     final_mean_si <- sum(si_distr * (seq(0, length(si_distr) -
@@ -654,9 +656,12 @@ estimate_R_func <- function(incid,
                                     sd = config$std_std_si)
         }
       }
+      si_draws <- discr_si_draws(
+        seq(0, T - 1), mean_si_sample, std_si_sample, config$si_discr_args
+      )
       temp <- lapply(seq_len(config$n1), function(k) { sample_from_posterior(config$n2,
                                                                            incid, mean_si_sample[k], std_si_sample[k],
-                                                                           si_distr = NULL, a_prior,
+                                                                           si_distr = si_draws[k, ], a_prior,
                                                                            b_prior, t_start_imputed, t_end_imputed
       )})
       config$si_distr <- cbind(
@@ -754,7 +759,9 @@ estimate_R_func <- function(incid,
   } else {
     # CertainSI
     if (parametric_si == "Y") {
-      config$si_distr <- discr_si(seq(0,T - 1), config$mean_si, config$std_si)
+      config$si_distr <- discr_si_config(
+        seq(0, T - 1), config$mean_si, config$std_si, config$si_discr_args
+      )
     }
     if (length(config$si_distr) < T + 1) {
       config$si_distr[seq(length(config$si_distr) + 1,T + 1)] <- 0

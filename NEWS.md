@@ -8,6 +8,19 @@
 - `wallinga_teunis()` now returns an S3 object with class "wallinga_teunis"
   (used to be "estimate_R")
 
+- `discr_si()` now uses `primarycensored::dprimarycensored()` to discretise 
+  the serial interval. The default output is unchanged. New arguments allow any 
+  cumulative distribution function (`dist`), given by its mean and standard 
+  deviation for Gamma and Lognormal serial intervals or by its own parameters, 
+  a different `shift`, left (`L`) and right (`D`) truncation, and other 
+  distributions of the primary event time within the day (`dprimary`, 
+  `primary_args`).
+
+- `make_config()` gains `si_discr_args`, a list of these additional arguments 
+  that `estimate_R()`, `wallinga_teunis()` and `estimate_R_agg()` pass to 
+  `discr_si()` for parametric serial intervals. It defaults to an empty list, 
+  which leaves results unchanged.
+
 ## Bug fixes
 * Superfluous argument "method" removed from `make_config()` function
 

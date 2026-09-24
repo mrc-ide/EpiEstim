@@ -67,6 +67,14 @@
 #'   shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
 #'   shifted by 1).
 #'
+#' - `si_discr_args`: For methods "parametric_si" and "uncertain_si"; a named
+#'   list of additional arguments passed to [discr_si()] when discretising the
+#'   serial interval, e.g. `list(dist = stats::plnorm)`. Can contain `dist`
+#'   ([stats::pgamma()] or [stats::plnorm()]), `shift`, `L`, `D`, `dprimary`
+#'   and `primary_args`. The resulting distribution must give zero
+#'   probability to a serial interval of zero. Defaults to an empty list, which
+#'   uses the defaults of [discr_si()].
+#'
 #' - `mcmc_control`: An object of class \code{estimate_R_mcmc_control}, as 
 #' returned by function \code{make_mcmc_control}. 
 #'
@@ -212,7 +220,7 @@
 #' @return An object of class `estimate_R_config` with components
 #' `t_start`, `t_end`, `n1`, `n2`, `mean_si`, `std_si`,
 #' `std_mean_si`, `min_mean_si`, `max_mean_si`, `std_std_si`, `min_std_si`, `max_std_si`,
-#' `si_distr`, `si_parametric_distr`, `mcmc_control`, `seed`, `mean_prior`, `std_prior`,
+#' `si_distr`, `si_parametric_distr`, `si_discr_args`, `mcmc_control`, `seed`, `mean_prior`, `std_prior`,
 #' `cv_posterior`, which can be used as an argument of function [estimate_R()].
 #'
 #' @export
@@ -289,6 +297,7 @@ make_config <- function(..., incid = NULL) {
                    max_std_si = NULL,
                    si_distr = NULL,
                    si_parametric_distr = NULL,
+                   si_discr_args = list(),
                    mcmc_control = make_mcmc_control(),
                    seed = NULL,
                    mean_prior = 5,
@@ -302,7 +311,7 @@ make_config <- function(..., incid = NULL) {
   if (!is.null(incid)) {
     incid <- process_I(incid)
     idx_raw_incid <- as.integer(rownames(incid)) > 0
-    T <- sum(idx_raw_incid)
+    T <- sum(idx_raw_incid) # nolint: object_overwrite_linter.
 
     ## filling in / checking t_start and t_end
     if (is.null(config$t_start) || is.null(config$t_end)) {

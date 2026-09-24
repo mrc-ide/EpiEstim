@@ -4,25 +4,64 @@
 \alias{discr_si}
 \title{Compute discretized generation time distribution}
 \usage{
-discr_si(k, mu, sigma)
+discr_si(
+  k,
+  mu,
+  sigma,
+  dist = stats::pgamma,
+  shift = 1,
+  L = -Inf,
+  D = Inf,
+  dprimary = stats::dunif,
+  primary_args = list(),
+  ...
+)
 }
 \arguments{
 \item{k}{Positive integer, or vector of positive integers for which the
 discrete distribution is desired.}
 
-\item{mu}{A positive real giving the mean of the Gamma distribution.}
+\item{mu}{A positive real giving the mean of the Gamma distribution.
+Must be greater than \code{shift} (1 by default).}
 
 \item{sigma}{A non-negative real giving the standard deviation of the Gamma
 distribution.}
+
+\item{dist}{The cumulative distribution function of the serial interval
+minus \code{shift}. Defaults to \code{\link[stats:pgamma]{stats::pgamma()}}. With \code{\link[stats:pgamma]{stats::pgamma()}} or
+\code{\link[stats:plnorm]{stats::plnorm()}} the distribution can be given by \code{mu} and \code{sigma}.
+Otherwise, or instead, pass the parameters of \code{dist} through \code{...}, e.g.
+\verb{dist = stats::pweibull, shape = 2, scale = 3}.}
+
+\item{shift}{A non-negative real giving the shift of the serial interval
+distribution. The default of 1 means that the serial interval is at
+least one day.}
+
+\item{L}{The serial interval is truncated below \code{L}, so that
+\eqn{w_k = 0} for \eqn{k < L}. Defaults to \code{-Inf}, meaning no truncation.}
+
+\item{D}{The serial interval is truncated at \code{D}, so that
+\eqn{w_k = 0} for \eqn{k \ge D}. Defaults to \code{Inf}, meaning no truncation.}
+
+\item{dprimary}{The probability density function of the time of the
+primary event within the day. Defaults to \code{\link[stats:dunif]{stats::dunif()}}. See
+\code{\link[primarycensored:dprimarycensored]{primarycensored::dprimarycensored()}} for other options, such as
+\code{\link[primarycensored:dexpgrowth]{primarycensored::dexpgrowth()}}.}
+
+\item{primary_args}{A list of additional arguments passed to \code{dprimary}.}
+
+\item{...}{Parameters of \code{dist}, used when \code{mu} and \code{sigma} are not given.}
 }
 \value{
 Gives the discrete probability \eqn{w_k} that the serial interval is
-equal to \eqn{k}.
+equal to \eqn{k}. This is not normalised over \code{k}, so it sums to less than 1
+if \code{k} does not cover the support of the distribution. Use \code{L} and \code{D} to
+truncate and normalise the distribution.
 }
 \description{
 Compute the discrete distribution of the serial interval,
-assuming that the serial interval is a shifted Gamma distributed,
-with shift 1.
+assuming by default that the serial interval is a shifted Gamma
+distributed, with shift 1.
 }
 \details{
 Assuming that the serial interval is a shifted Gamma distributed with mean
@@ -41,6 +80,16 @@ F_{\{\mu-1+\frac{\sigma^2}{\mu-1},
 
 where \eqn{F_{\{\mu,\sigma\}}} is the cumulative density function of a Gamma
 distribution with mean \eqn{\mu} and standard deviation \eqn{\sigma}.
+
+This is the probability that a continuous delay, starting at a time
+uniformly distributed within a day and shifted by \code{shift} days (one by
+default), ends on day \eqn{k}. It is computed using the
+\link[primarycensored:primarycensored-package]{primarycensored} package
+(Abbott et al.), which also allows other delay distributions (\code{dist}), a
+different \code{shift}, other distributions of the primary event time within
+the day (\code{dprimary}), and truncation of the serial interval below \code{L} and at or
+above \code{D}. When \code{L} or \code{D} are finite, \eqn{w_k} is normalised over
+\eqn{L \le k < D}.
 }
 \examples{
 ## Computing the discrete serial interval of influenza
@@ -50,13 +99,25 @@ dicrete_si_distr <- discr_si(seq(0, 20), mean_flu_si, sd_flu_si)
 plot(seq(0, 20), dicrete_si_distr, type = "h",
      lwd = 10, lend = 1, xlab = "time (days)", ylab = "frequency")
 title(main = "Discrete distribution of the serial interval of influenza")
+
+## Using a lognormal serial interval with no shift, truncated below 1
+discr_si(seq(0, 20), mean_flu_si, sd_flu_si, dist = stats::plnorm,
+         shift = 0, L = 1)
+
+## Using a Weibull serial interval given by its shape and scale
+discr_si(seq(0, 20), dist = stats::pweibull, shape = 1.5, scale = 2)
 }
 \references{
 Cori, A. et al. A new framework and software to estimate time-varying
 reproduction numbers during epidemics (AJE 2013).
+
+Abbott, S. et al. \link[primarycensored:primarycensored-package]{primarycensored}:
+Primary Event Censored Distributions.
+\doi{10.5281/zenodo.13632839}
 }
 \seealso{
-\code{\link[=overall_infectivity]{overall_infectivity()}}, \code{\link[=estimate_R]{estimate_R()}}
+\code{\link[=overall_infectivity]{overall_infectivity()}}, \code{\link[=estimate_R]{estimate_R()}},
+\code{\link[primarycensored:dprimarycensored]{primarycensored::dprimarycensored()}}
 }
 \author{
 Anne Cori

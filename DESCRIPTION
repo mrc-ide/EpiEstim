@@ -41,6 +41,7 @@ Imports:
     reshape2,
     epitrix,
     patchwork (>= 1.2.0),
+    primarycensored (>= 1.5.2.1000),
     rlang
 Suggests:
     testthat,
@@ -60,5 +61,6 @@ LazyLoad: yes
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
-Remotes: reconverse/incidence2/pkg
+Remotes: reconverse/incidence2/pkg,
+    epinowcast/primarycensored
 Config/roxygen2/version: 8.0.0

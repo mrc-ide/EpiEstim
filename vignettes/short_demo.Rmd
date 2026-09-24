@@ -141,10 +141,12 @@ Note that you can obtain such a full distribution of the serial interval using
 `discr_si` function (this is how `Flu2009$si_distr` was obtained, with 
 additional rounding). The discretisation method implemented in `discr_si` is
 documented in the supplementary material of Cori et al. AJE 2013. It assumes
-a Gamma distributed serial interval, and accounts
+by default a Gamma distributed serial interval shifted by one day, and accounts
 for the fact that the serial interval is double-censored, i.e. 
 the time of symptom onset in both the primary and secondary cases are
-discrete (typically with a daily interval). 
+discrete (typically with a daily interval).
+`discr_si` uses `primarycensored::dprimarycensored()` for this, which also supports other
+distributions, shifts and truncation of the serial interval (see `?discr_si`).
 
 ```{r discr_si}
 discr_si(0:20, mu = 2.6, sigma = 1.5)

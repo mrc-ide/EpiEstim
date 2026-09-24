@@ -56,6 +56,13 @@ of symptoms of pairs of infector/infected individuals (see details). Should
 be one of "G" (Gamma), "W" (Weibull), "L" (Lognormal), "off1G" (Gamma
 shifted by 1), "off1W" (Weibull shifted by 1), or "off1L" (Lognormal
 shifted by 1).
+\item \code{si_discr_args}: For methods "parametric_si" and "uncertain_si"; a named
+list of additional arguments passed to \code{\link[=discr_si]{discr_si()}} when discretising the
+serial interval, e.g. \code{list(dist = stats::plnorm)}. Can contain \code{dist}
+(\code{\link[stats:pgamma]{stats::pgamma()}} or \code{\link[stats:plnorm]{stats::plnorm()}}), \code{shift}, \code{L}, \code{D}, \code{dprimary}
+and \code{primary_args}. The resulting distribution must give zero
+probability to a serial interval of zero. Defaults to an empty list, which
+uses the defaults of \code{\link[=discr_si]{discr_si()}}.
 \item \code{mcmc_control}: An object of class \code{estimate_R_mcmc_control}, as
 returned by function \code{make_mcmc_control}.
 \item \code{mean_prior}: A positive number giving the mean of the common prior
@@ -88,7 +95,7 @@ imported cases.}
 An object of class \code{estimate_R_config} with components
 \code{t_start}, \code{t_end}, \code{n1}, \code{n2}, \code{mean_si}, \code{std_si},
 \code{std_mean_si}, \code{min_mean_si}, \code{max_mean_si}, \code{std_std_si}, \code{min_std_si}, \code{max_std_si},
-\code{si_distr}, \code{si_parametric_distr}, \code{mcmc_control}, \code{seed}, \code{mean_prior}, \code{std_prior},
+\code{si_distr}, \code{si_parametric_distr}, \code{si_discr_args}, \code{mcmc_control}, \code{seed}, \code{mean_prior}, \code{std_prior},
 \code{cv_posterior}, which can be used as an argument of function \code{\link[=estimate_R]{estimate_R()}}.
 }
 \description{

@@ -136,7 +136,7 @@ wallinga_teunis <- function(incid, ...) {
 wallinga_teunis.default <- function(incid, ...) {
   msg <- sprintf(
     "No `project()` method for object of the class: %s",
-    paste(class(incid), collapse = ", ")
+    toString(class(incid))
     )
   stop(msg)
 }
@@ -186,10 +186,10 @@ wallinga_teunis.numeric <- function(incid,
   if (!is.null(incid$dates)) {
     dates <- check_dates(incid)
     incid <- process_I_vector(rowSums(incid[, c("local", "imported")]))
-    T <- length(incid)
+    T <- length(incid) # nolint: object_overwrite_linter.
   } else {
     incid <- process_I_vector(rowSums(incid[, c("local", "imported")]))
-    T <- length(incid)
+    T <- length(incid) # nolint: object_overwrite_linter.
     dates <- seq_len(T)
   }
   
@@ -211,7 +211,8 @@ wallinga_teunis.numeric <- function(incid,
   
   if (is.null(config$n_sim)) {
     config$n_sim <- 10
-    warning("setting config$n_sim to 10 as config$n_sim was not specified.")
+    warning("setting config$n_sim to 10 as config$n_sim was not specified.",
+            call. = FALSE)
   }
   
   if (method == "non_parametric_si") {
@@ -221,24 +222,24 @@ wallinga_teunis.numeric <- function(incid,
   
   if (method == "parametric_si") {
     if (is.null(config$mean_si)) {
-      stop("method non_parametric_si requires to specify the config$mean_si argument.")
+      stop("method non_parametric_si requires to specify the config$mean_si argument.", call. = FALSE)
     }
     if (is.null(config$std_si)) {
-      stop("method non_parametric_si requires to specify the config$std_si argument.")
+      stop("method non_parametric_si requires to specify the config$std_si argument.", call. = FALSE)
     }
     if (config$mean_si < 1) {
-      stop("method parametric_si requires a value >1 for config$mean_si.")
+      stop("method parametric_si requires a value >1 for config$mean_si.", call. = FALSE)
     }
     if (config$std_si < 0) {
-      stop("method parametric_si requires a >0 value for config$std_si.")
+      stop("method parametric_si requires a >0 value for config$std_si.", call. = FALSE)
     }
   }
   
   if (!is.numeric(config$n_sim)) {
-    stop("config$n_sim must be a positive integer.")
+    stop("config$n_sim must be a positive integer.", call. = FALSE)
   }
   if (config$n_sim < 0) {
-    stop("config$n_sim must be a positive integer.")
+    stop("config$n_sim must be a positive integer.", call. = FALSE)
   }
   
   ### What does each method do ###
@@ -251,7 +252,9 @@ wallinga_teunis.numeric <- function(incid,
   }
   
   if (parametric_si == "Y") {
-    config$si_distr <- discr_si(seq(0,T - 1), config$mean_si, config$std_si)
+    config$si_distr <- discr_si_config(
+      seq(0, T - 1), config$mean_si, config$std_si, config$si_discr_args
+    )
   }
   if (length(config$si_distr) < T + 1) {
     config$si_distr[seq(length(config$si_distr) + 1, T + 1)] <- 0
@@ -427,7 +430,7 @@ wallinga_teunis.incidence <- function(incid,
 
   has_groups <- ncol(incidence::get_counts(incid)) > 1L
   if (has_groups) {
-    msg <- sprintf("stratification in incidence object will be ignored")
+    msg <- "stratification in incidence object will be ignored"
     if (!quiet) warning(msg)
     incid <- incidence::pool(incid)
   }
@@ -458,7 +461,6 @@ wallinga_teunis.incidence2 <- function(incid,
                                        ...) {
 
   ## checks specific to incidence2 objects
-  dates <- incidence2::get_dates(incid)
   interval <- incidence2::get_interval_duration(incid)
   if (any(interval != 1L)) {
     msg <- "daily incidence needed"
@@ -467,7 +469,7 @@ wallinga_teunis.incidence2 <- function(incid,
 
   has_groups <- length(incidence2::get_groups(incid))
   if (has_groups) {
-    msg <- sprintf("stratification in incidence2 object will be ignored")
+    msg <- "stratification in incidence2 object will be ignored"
     if (!quiet) warning(msg)
     incid <- incidence2::regroup(incid)
   }
