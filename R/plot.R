@@ -1,3 +1,32 @@
+theme_epiestimv2 <- function() {
+   theme_light() %+replace%
+
+     theme(
+       panel.border = element_blank(),
+       axis.line = element_line(
+         colour = "black",
+         size = 0.2
+       ),
+       plot.title = element_text(
+         size = 12,
+         hjust = 0,
+         vjust = 4,
+         margin = margin(5, b = 5, t = 10)
+       ),
+       axis.title = element_text(
+         size = 11
+       ),
+       axis.text = element_text(
+         size = 9
+       ),
+       axis.text.x = element_text(
+         margin = margin(5, b = 10)
+       ),
+       axis.text.y = element_text(
+         margin = margin(5, l = 10, r = 4)
+       )
+     )
+}
 #' Plot outputs of [estimate_R()]
 #'
 #' The plot method of [estimate_R()] objects can be used to visualise three
@@ -168,47 +197,7 @@ plot.estimate_R <- function(x, what = c("all", "incid", "R", "SI"), plot_theme =
   if (is.null(options_SI$ylab)) options_SI$ylab <- "Frequency"
 
   ## New theme
-
-  if (plot_theme == "v2") {
-    theme_epiestim <- function() {
-      theme_light() %+replace%
-
-        theme(
-          panel.border = element_blank(),
-          axis.line = element_line(
-            colour = "black",
-            size = 0.2
-          ),
-          plot.title = element_text(
-            size = 12,
-            hjust = 0,
-            vjust = 4,
-            margin = margin(5, b = 5, t = 10)
-          ),
-          axis.title = element_text(
-            size = 11
-          ),
-          axis.text = element_text(
-            size = 9
-          ),
-          axis.text.x = element_text(
-            margin = margin(5, b = 10)
-          ),
-          axis.text.y = element_text(
-            margin = margin(5, l = 10, r = 4)
-          )
-        )
-    }
-
-    options_I$col <- "#5983AB"
-  } else {
-    if (plot_theme == "original") {
-      theme_epiestim <- function() {
-        theme()
-      }
-    }
-  }
-
+  theme_epiestim <- ifelse(plot_theme == "v2", theme_epiestimv2, theme)
 
   # check if x is a single output of EpiEstim or a list of such outputs
   if (is.data.frame(x[[1]])) # x is a single output of EpiEstim
