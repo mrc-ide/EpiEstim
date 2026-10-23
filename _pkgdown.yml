@@ -1,6 +1,6 @@
 url: https://mrc-ide.github.io/EpiEstim
 template:
-  bootstrap: 3
+  bootstrap: 5
 
 reference:
   - title: Pre-processing
