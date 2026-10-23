@@ -1,3 +1,9 @@
+# EpiEstim 3.0.1
+
+- Moved incidence and incidence2 to suggests `walling_teunis()` and
+  `estimate_R()` will check for installations as required (fixes
+  [#241](https://github.com/mrc-ide/EpiEstim/issues/241))
+
 # EpiEstim 3.0.0
 
 ## New features

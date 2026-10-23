@@ -6,7 +6,8 @@ data("Flu2009")
 ## the reproduction number on sliding weekly windows                          
 res <- estimate_R(incid = Flu2009$incidence, 
                   method = "non_parametric_si",
-                  config = make_config(list(si_distr = Flu2009$si_distr)))
+                  config = make_config(list(si_distr = Flu2009$si_distr))) |>
+  suppressMessages()
 
 
 test_that("only estimate_R or wallinga_teunis objects are accepted", {

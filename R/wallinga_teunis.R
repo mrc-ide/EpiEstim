@@ -416,6 +416,8 @@ wallinga_teunis.incidence <- function(incid,
                                       quiet = FALSE,
                                       ...) {
 
+  rlang::check_installed("incidence", "to work with incidence data")
+  
   ## checks specific to incidence objects
   if (as.integer(mean(incidence::get_interval(incid))) != 1L) {
     msg <- sprintf(
@@ -457,6 +459,8 @@ wallinga_teunis.incidence2 <- function(incid,
                                        quiet = FALSE,
                                        ...) {
 
+  rlang::check_installed("incidence2", "to work with incidence2 data")
+  
   ## checks specific to incidence2 objects
   dates <- incidence2::get_dates(incid)
   interval <- incidence2::get_interval_duration(incid)

@@ -1,5 +1,3 @@
-context("Gibbs samplers")
-
 test_that("draw_epsilon produces expected results (2 variants, 4 locations)", {
   n_v <- 2 # 2 variants
   n_loc <- 4 # 4 locations
@@ -26,6 +24,8 @@ test_that("draw_epsilon produces expected results (2 variants, 4 locations)", {
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   expect_equal(mean(x), 1, tolerance = 0.05)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -55,6 +55,8 @@ test_that("draw_epsilon produces expected results (2 variants, 1 location)", {
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   expect_equal(mean(x), 1, tolerance = 0.05)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -86,6 +88,8 @@ test_that("draw_epsilon produces expected results (>2 variants, 4 locations)", {
   expect_equal(
     rowMeans(x), c(1, 1), tolerance = 0.05
   )
+
+  epi_snapshot_value(x)
 })
 
 
@@ -115,7 +119,41 @@ test_that("draw_epsilon produces expected results (>2 variants, 1 location)", {
   ## epsilon should be approximately 1
   ## not exactly 1 because of the first few timesteps & because of priors
   expect_equal(rowMeans(x), c(1, 1), tolerance = 0.05)
+
+  epi_snapshot_value(x)
 })
+
+
+
+test_that("draw_epsilon seed", {
+  n_v <- 3 # 3 variants
+  n_loc <- 1 # 1 location
+  T <- 100 # 100 time steps
+
+  priors <- default_priors()
+
+  # constant incidence 10 per day everywhere
+  incid <- array(10, dim = c(T, n_loc, n_v))
+  incid <- process_I_multivariant(incid)
+
+  # arbitrary serial interval
+  w_v <- c(0, 0.2, 0.5, 0.3)
+  si_distr <- cbind(w_v, w_v, w_v)
+  lambda <- compute_lambda(incid, si_distr)
+
+  # Constant reproduction number of 1
+  R <- matrix(1, nrow = T, ncol = n_loc)
+  R[1, ] <- NA # no estimates of R on first time step
+
+  x1 <- sapply(1:1000, function(e) draw_epsilon(R, incid$local, lambda, priors, seed = 1))
+
+  ## epsilon should be approximately 1
+  ## not exactly 1 because of the first few timesteps & because of priors
+  expect_equal(rowMeans(x1), c(1, 1), tolerance = 0.05)
+
+  epi_snapshot_value(x1)
+})
+
 
 
 test_that("draw_R produces expected results (2 variants, 4 locations)", {
@@ -145,6 +183,8 @@ test_that("draw_R produces expected results (2 variants, 4 locations)", {
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
   expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -175,6 +215,8 @@ test_that("draw_R produces expected results (2 variants, 1 location)", {
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
   expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -205,6 +247,8 @@ test_that("draw_R produces expected results (>2 variants, 4 locations)", {
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
   expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
+
+  epi_snapshot_value(x)
 })
 
 
@@ -235,7 +279,34 @@ test_that("draw_R produces expected results (>2 variants, 1 location)", {
   ## not exactly 1 because of the first few timesteps & because of priors
   ## so ignore fisrt timesteps
   expect_lt(max(abs(x_mean[-c(1, 2, 3), ] - 1)), 0.05)
+
+  epi_snapshot_value(x)
 })
+
+
+test_that("draw_R seed", {
+  n_v <- 3 # 3 variants
+  n_loc <- 1 # 1 locations
+  T <- 100 # 100 time steps
+
+  priors <- default_priors()
+
+  # constant incidence 10 per day everywhere
+  incid <- array(10, dim = c(T, n_loc, n_v))
+  incid <- process_I_multivariant(incid)
+
+  # arbitrary serial interval
+  w_v <- c(0, 0.2, 0.5, 0.3)
+  si_distr <- cbind(w_v, w_v, w_v)
+  lambda <- compute_lambda(incid, si_distr)
+
+  # Epsilon = 1 i.e. no transmission advantage
+  epsilon <- c(1, 1)
+
+  x <- draw_R(epsilon, incid$local, lambda, priors, t_min = 2L, seed = 1)
+
+  epi_snapshot_value(x)
+  })
 
 
 test_that("estimate_advantage produces expected results (2 variants 3 locations)", {
@@ -262,6 +333,9 @@ test_that("estimate_advantage produces expected results (2 variants 3 locations)
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  expect_s3_class(x$diag[[1]], "gelman.diag")
+  epi_snapshot_value(x)
 })
 
 
@@ -289,6 +363,9 @@ test_that("estimate_advantage produces expected results (2 variants 1 location)"
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  expect_s3_class(x$diag[[1]], "gelman.diag")
+  epi_snapshot_value(x)
 })
 
 
@@ -321,6 +398,9 @@ test_that("estimate_advantage produces expected results (>2 variants 4 locs)", {
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  expect_s3_class(x$diag[[1]], "gelman.diag")
+  epi_snapshot_value(x)
 })
 
 
@@ -338,7 +418,8 @@ test_that("estimate_advantage produces expected results (>2 variants 1 loc)", {
   w_v <- c(0, 0.2, 0.5, 0.3)
   si_distr <- cbind(w_v, w_v, w_v)
 
-  x <- estimate_advantage(incid, si_distr, priors, seed = 1, t_min = 2L)
+  x <- estimate_advantage(incid, si_distr, priors, seed = 1, t_min = 2L) |> 
+    suppressMessages()
 
   ## epsilon should be approximately 1
   expect_equal(
@@ -350,6 +431,9 @@ test_that("estimate_advantage produces expected results (>2 variants 1 loc)", {
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  expect_s3_class(x$diag[[1]], "gelman.diag")
+  epi_snapshot_value(x)
 })
 
 
@@ -390,6 +474,8 @@ test_that("process_I_multivariant works as expected", {
   expect_true(all(incid_processed$imported[1, , ] == incid[1, , ]))
   expect_true(all(incid_processed$local[-1, , ] == incid[-1, , ]))
   expect_true(all(incid_processed$local[1, , ] == 0))
+
+  epi_snapshot_value(incid_processed)
 })
 
 
@@ -429,7 +515,8 @@ test_that("estimate_advantage produces expected results (>2var, 1loc, imports)",
   si_distr <- cbind(w_v, w_v, w_v)
 
   x <- estimate_advantage(incid, si_distr, priors, seed = 1,
-                      incid_imported = incid_imported, t_min = 2L)
+                          incid_imported = incid_imported, t_min = 2L) |> 
+    suppressMessages()
 
   ## epsilon should be approximately 0
   expect_equal(
@@ -441,6 +528,9 @@ test_that("estimate_advantage produces expected results (>2var, 1loc, imports)",
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  expect_s3_class(x$diag[[1]], "gelman.diag")
+  epi_snapshot_value(x)
 })
 
 
@@ -467,7 +557,7 @@ test_that("estimate_advantage produces expected results (>2var, 4loc, imports)",
     incid, si_distr, priors, seed = 1,
     incid_imported = incid_imported,
     mcmc_control = list(n_iter = 2000L, burnin = 100L, thin = 10L), t_min = 2L
-  )
+  ) |> suppressMessages()
 
   ## epsilon should be approximately 0
   expect_equal(
@@ -479,6 +569,9 @@ test_that("estimate_advantage produces expected results (>2var, 4loc, imports)",
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  expect_s3_class(x$diag[[1]], "gelman.diag")
+  epi_snapshot_value(x)
 })
 
 
@@ -512,6 +605,9 @@ test_that("estimate_advantage produces expected results (2var, 1loc, imports)", 
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+
+  expect_s3_class(x$diag[[1]], "gelman.diag")
+  epi_snapshot_value(x)
 })
 
 
@@ -548,11 +644,15 @@ test_that("estimate_advantage produces expected results (2var, 4loc, imports)", 
   ## so ignore fisrt timesteps
   mean_R <- rowMeans(x$R, dims = 2)
   expect_lt(max(abs(mean_R[-c(1, 2, 3), ] - 1)), 0.1)
+  
+  expect_s3_class(x$diag[[1]], "gelman.diag")
+  epi_snapshot_value(x)
 })
 
 
 test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 1.1, R_loc2 = 1.5)", {
   skip_if_not_installed("projections")
+  set.seed(1)
   n_v <- 2 # 2 variants
   n_loc <- 2 # 2 locations
   T <- 100 # 100 time steps
@@ -605,12 +705,16 @@ test_that("estimate_advantage produces expected results (2 var, 2 loc, R_loc1 = 
   priors <- default_priors()
   x <- estimate_advantage(
     incid, si_distr, priors, seed = 1, t_min = 2L
-  )
+  ) |> suppressMessages()
 
   ## R should be approx 1.1 for loc1 and 1.5 for loc2
   expect_equal(mean(x$R[,1,], na.rm = TRUE), 1.1, tolerance = 0.5)
   expect_equal(mean(x$R[,2,], na.rm = TRUE), 1.5, tolerance = 0.5)
 
+  expect_s3_class(x$diag[[1]], "gelman.diag")
+
+  skip_on_os("mac")   # Consistently different from the other OS in far decimals
+  epi_snapshot_value(x)
 })
 
 test_that("estimate_advantage faster with precompute (2 variants 3 locations)", {
@@ -775,6 +879,33 @@ test_that("estimate_advantage faster with precompute (3 variants 1 location)", {
   expect_lt(max(abs(mean_R2[-c(1, 2, 3), ] - 1)), 0.1)
 })
 
+test_that("estimate_advantage checks", {
+  n_v <- 3 # 3 variants
+  n_loc <- 1 # 1 locations
+  T <- 100 # 100 time steps
+
+  priors <- default_priors()
+
+  # constant incidence 10 per day everywhere
+  incid <- array(10, dim = c(T, n_loc, n_v))
+
+  # arbitrary serial interval
+  w_v <- c(0, 0.2, 0.5, 0.3)
+  si_distr <- cbind(w_v, w_v, w_v)
+
+  expect_error(
+    estimate_advantage(incid, si_distr, priors, t_min = 90L, t_max = 80L),
+    "t\\_min is greater than t\\_max"
+  )
+  
+  mcmc_control <- default_mcmc_controls()
+  mcmc_control$n_iter <- 10L
+  expect_error(
+    estimate_advantage(incid, si_distr, priors, mcmc_control = mcmc_control),
+    "In mcmc\\_control, n\\_iter must be greater than burnin \\+ thin"
+  )
+})
+
 
 test_that("compute_si_cutoff returns the correct value", {
   si_1 <- c(0.1, 0.2, 0.3, 0.2, 0.1, 0.03, 0.02,
@@ -791,6 +922,14 @@ test_that("compute_si_cutoff returns the correct value", {
   si <- cbind(si_1, si_2)
   expect_equal(compute_si_cutoff(si), 7L)
   expect_equal(compute_si_cutoff(si, 0.5), 3L)
+})
+
+test_that("compute_si_cutoff warns and normalizes", {
+  si_1 <- c(1, 2, 3, 2, 1, 0.3, 0.2, 0.1, 0.1, 0.1, 0.2)
+  si <- cbind(si_1, si_1)
+
+  expect_warning(x <- compute_si_cutoff(si), "Input SI distributions should sum to 1")
+  expect_equal(x, 7L)
 })
 
 test_that("first_nonzero_incid returns correct value", {
@@ -812,6 +951,11 @@ test_that("first_nonzero_incid returns correct value", {
   incid <- array(0, dim = c(10, 2, 2))
   incid[10, , ] <- 1
   expect_equal(first_nonzero_incid(incid), 10L)
+})
+
+test_that("first_nonzero_incid warns if all 0", {
+  incid <- array(0, dim = c(10, 2, 2))
+  expect_warning(first_nonzero_incid(incid), "always zero")
 })
 
 test_that("compute_t_min works correctly", {
@@ -851,9 +995,12 @@ test_that("estimate_advantage uses the correct t_min", {
   ## if t_min is NULL, t_min would be set to
   ## compute_t_min.
   t_min <- compute_t_min(incid, si_distr)
-  x <- estimate_advantage(incid, si_distr, priors, seed = 1)
+  x <- estimate_advantage(incid, si_distr, priors, seed = 1) |> suppressMessages()
   expect_true(all(is.na(x$R[seq(1, t_min - 1, 1), , ])))
   expect_false(anyNA(x$R[seq(t_min, dim(x$R)[1]), , ]))
+
+  expect_s3_class(x$diag[[1]], "gelman.diag")
+  epi_snapshot_value(x)
 })
 
 
@@ -874,12 +1021,15 @@ test_that("estimate_advantage convergence checks work with >2 variants", {
   low_iter <- list(n_iter = 60L, burnin = 10L, thin = 1L)
   x <- estimate_advantage(
     incid, si_distr, priors, seed = 1, t_min = 2L, mcmc_control = low_iter
-  )
+  ) |> suppressMessages()
   ## convergence should be a list of length 2.
   ## not checking whether chains have converged or not.
   ## that is tested in a different set of tests.
   expect_length(x$convergence, 2)
   expect_length(x$diag, 2)
+
+  expect_s3_class(x$diag[[1]], "gelman.diag")
+  epi_snapshot_value(x)
 })
 
 test_that("estimate_advantage produces expected warning message", {
